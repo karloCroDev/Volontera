@@ -1,8 +1,17 @@
+'use client';
+
+// import { Button } from '@/components/ui/button';
+import { LinkAsButton } from '@/components/ui/link-as-button';
+
 export default function PlaygroundPage() {
   return (
     <div>
-      <p className="bg-blue-700 text-red-700">Hello world</p>
-      <svg
+      <p>Hello world</p>
+
+      <LinkAsButton href="/playground" colorScheme="bland" variant="blank">
+        Button
+      </LinkAsButton>
+      {/* <svg
         xmlns="http://www.w3.org/2000/svg"
         width="688.317"
         height="718.54"
@@ -99,7 +108,7 @@ export default function PlaygroundPage() {
             fill="#a4ff63ff"
           />
         </g>
-      </svg>
+      </svg> */}
     </div>
   );
 }
