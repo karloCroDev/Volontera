@@ -1,6 +1,7 @@
 export default function PlaygroundPage() {
   return (
     <div>
+      <p className="bg-blue-700 text-red-700">Hello world</p>
       <svg
         xmlns="http://www.w3.org/2000/svg"
         width="688.317"
