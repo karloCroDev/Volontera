@@ -21,9 +21,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className="dark">
       <body
-        className={`${MonaSansFont.className} bg-blue-700 text-2xl font-bold`}
+        className={`${MonaSansFont.className} bg-background text-background-foreground`}
       >
         {children}
       </body>
