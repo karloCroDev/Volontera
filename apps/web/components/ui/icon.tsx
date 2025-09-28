@@ -8,7 +8,8 @@ export type IconNames =
 	| 'google'
 	| 'login-represntation'
 	| 'register-represntation'
-	| 'password-represntation';
+	| 'password-represntation'
+	| 'forgot-password-represntation';
 
 const baseClasses = 'flex-shrink-0';
 
@@ -38,6 +39,12 @@ export const Icon: React.FC<
 		)}
 		{name === 'register-represntation' && (
 			<Icons.RegisterRepresentation
+				{...rest}
+				className={twMerge(baseClasses, className)}
+			/>
+		)}
+		{name === 'forgot-password-represntation' && (
+			<Icons.ForgotPasswordRepresentation
 				{...rest}
 				className={twMerge(baseClasses, className)}
 			/>

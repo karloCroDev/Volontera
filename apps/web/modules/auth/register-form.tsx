@@ -34,7 +34,7 @@ export const RegisterForm = () => {
 			</div>
 
 			<Button className="w-full" size="lg" colorScheme="yellow">
-				Register
+				Create account
 			</Button>
 
 			<Separator />

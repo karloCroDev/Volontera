@@ -23,7 +23,7 @@ export const LoginForm = () => {
 				<div className="flex items-baseline justify-between">
 					<Label htmlFor="password">Password</Label>
 					<Link
-						href="/login/forgot-password"
+						href="/auth/login/forgot-password"
 						className="hover:text-popover text-muted-foreground underline underline-offset-4 transition-colors"
 					>
 						Forgot Passowrd?
