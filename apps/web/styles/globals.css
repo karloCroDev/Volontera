@@ -34,6 +34,8 @@
   --background-foreground: hsl(0, 0%, 90%);
 }
 
+/* Safelisting (prewriten classes that are supposted to be generated) */
+
 @theme {
   /* Font sizes */
   --text-xs: 12px;
@@ -72,3 +74,5 @@
   --color-background: var(--background);
   --color-background-foreground: var(--background-foreground);
 }
+
+@source inline('{,xs:,sm:,md:,lg:,xl:}col-{start,end}-{1,2,3,4,5,6,7,8,9,10,11,12,13}');

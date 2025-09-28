@@ -27,7 +27,6 @@ export const Button: React.FC<
     {...rest}
     className={twMerge(
       getButtonClassNames({ size, variant, colorScheme, isFullyRounded }),
-
       className
     )}
   >

@@ -1,5 +1,6 @@
 'use client';
 
+import { Layout, LayoutColumn } from '@/components/ui/layout-grid';
 // import { Button } from '@/components/ui/button';
 import { LinkAsButton } from '@/components/ui/link-as-button';
 
@@ -11,6 +12,14 @@ export default function PlaygroundPage() {
       <LinkAsButton href="/playground" colorScheme="bland" variant="blank">
         Button
       </LinkAsButton>
+
+      <Layout className="mx-auto">
+        <LayoutColumn
+          start={{ md: 4 }}
+          end={{ base: 9 }}
+          className="h-20 bg-blue-400"
+        ></LayoutColumn>
+      </Layout>
       {/* <svg
         xmlns="http://www.w3.org/2000/svg"
         width="688.317"
