@@ -10,24 +10,24 @@ export const Layout = React.forwardRef<
     {...rest}
     ref={ref}
     className={twMerge(
-      'mx-auto grid grid-cols-12 gap-x-4 px-4 sm:container md:gap-x-12',
+      'mx-auto grid grid-cols-12 px-4 sm:container',
       className
     )}
   />
 ));
 
-Layout.displayName = 'Layout'; // Kada debuggiramo, da vidimo ime komponente (jer se korsiti puno)
+Layout.displayName = 'Layout'; // When debugging with React DevTools
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const breakpointsNamesArray = ['base', 'xs', 'sm', 'md', 'lg', 'xl'] as const;
-type BreakpointsNames = (typeof breakpointsNamesArray)[number];
+
+type BreakpointsNames = 'base' | 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 type ColumnsNumbers = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13;
 type LayoutOwnProps = {
   start?: { [key in BreakpointsNames]?: ColumnsNumbers } | ColumnsNumbers;
   end?: { [key in BreakpointsNames]?: ColumnsNumbers } | ColumnsNumbers;
 };
 
-export const getLayoutColumnClasses = ({
+const getLayoutColumnClasses = ({
   start = 1,
   end = 13,
 }: Pick<LayoutOwnProps, 'start' | 'end'>): string => {

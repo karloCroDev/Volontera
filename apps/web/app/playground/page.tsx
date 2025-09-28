@@ -1,5 +1,7 @@
 'use client';
 
+import { FilledInput } from '@/components/ui/filled-input';
+import { Input } from '@/components/ui/input';
 import { Layout, LayoutColumn } from '@/components/ui/layout-grid';
 // import { Button } from '@/components/ui/button';
 import { LinkAsButton } from '@/components/ui/link-as-button';
@@ -13,13 +15,35 @@ export default function PlaygroundPage() {
         Button
       </LinkAsButton>
 
-      <Layout className="mx-auto">
-        <LayoutColumn
-          start={{ md: 4 }}
-          end={{ base: 9 }}
-          className="h-20 bg-blue-400"
-        ></LayoutColumn>
+      <Layout className="gap-4">
+        {[...Array(6)].map((_, indx) => (
+          <LayoutColumn
+            key={indx}
+            start={{
+              base:
+                (indx % 3 === 0 && 1) ||
+                (indx % 3 === 1 && 5) ||
+                (indx % 3 === 2 && 9) ||
+                undefined,
+            }}
+            end={{
+              base:
+                (indx % 3 === 0 && 5) ||
+                (indx % 3 === 1 && 9) ||
+                (indx % 3 === 2 && 13) ||
+                undefined,
+            }}
+            className="h-20 bg-blue-400"
+          >
+            <p>Hello world</p>
+          </LayoutColumn>
+        ))}
       </Layout>
+
+      <Input label="Enter your username..." className="w-96" />
+      <Input label="Enter your username..." className="mt-4 w-96" size="sm" />
+      <FilledInput label="Enter your username" className="w-96" />
+      <FilledInput label="Enter your username" className="w-96" size="sm" />
       {/* <svg
         xmlns="http://www.w3.org/2000/svg"
         width="688.317"
