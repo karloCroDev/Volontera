@@ -1,6 +1,6 @@
 // External packages
 import * as RadixAvatar from '@radix-ui/react-avatar';
-import { twJoin, twMerge } from 'tailwind-merge';
+import { twMerge } from 'tailwind-merge';
 import { Pen } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
@@ -29,6 +29,7 @@ export const Avatar: React.FC<
 				size === 'xl' && 'size-16 text-lg',
 				size === '2xl' && 'size-32 text-2xl',
 				size === 'full' && 'size-60 text-3xl',
+				isInput && 'cursor-pointer',
 				className
 			)}
 		>
@@ -49,9 +50,11 @@ export const Avatar: React.FC<
 					.map((l) => l[0])}
 			</RadixAvatar.Fallback>
 
-			<Button className="absolute bottom-2 right-6 z-20 p-3" isFullyRounded>
-				<Pen className="size-4" />
-			</Button>
+			{isInput && (
+				<Button className="absolute bottom-2 right-6 z-20 p-3" isFullyRounded>
+					<Pen className="size-4" />
+				</Button>
+			)}
 		</div>
 	</RadixAvatar.Root>
 );

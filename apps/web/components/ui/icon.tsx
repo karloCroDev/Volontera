@@ -1,0 +1,46 @@
+// External packages
+import { twMerge } from 'tailwind-merge';
+
+// Components
+import * as Icons from '@/components/icons';
+
+export type IconNames =
+	| 'google'
+	| 'login-represntation'
+	| 'register-represntation'
+	| 'password-represntation';
+
+const baseClasses = 'flex-shrink-0';
+
+export const Icon: React.FC<
+	React.ComponentPropsWithoutRef<'svg'> & {
+		name: IconNames;
+	}
+> = ({ name, className, ...rest }) => (
+	<>
+		{name === 'google' && (
+			<Icons.GoogleIcon
+				{...rest}
+				className={twMerge('size-6', baseClasses, className)}
+			/>
+		)}
+		{name === 'login-represntation' && (
+			<Icons.LoginRepresentation
+				{...rest}
+				className={twMerge(baseClasses, className)}
+			/>
+		)}
+		{name === 'password-represntation' && (
+			<Icons.PasswordRepresentation
+				{...rest}
+				className={twMerge(baseClasses, className)}
+			/>
+		)}
+		{name === 'register-represntation' && (
+			<Icons.RegisterRepresentation
+				{...rest}
+				className={twMerge(baseClasses, className)}
+			/>
+		)}
+	</>
+);

@@ -4,8 +4,8 @@ import { Avatar } from '@/components/ui/avatar';
 import { FilledInput } from '@/components/ui/filled-input';
 import { Input } from '@/components/ui/input';
 import { Layout, LayoutColumn } from '@/components/ui/layout-grid';
-// import { Button } from '@/components/ui/button';
 import { LinkAsButton } from '@/components/ui/link-as-button';
+import { Separator } from '@/components/ui/separator';
 
 export default function PlaygroundPage() {
 	return (
@@ -53,6 +53,7 @@ export default function PlaygroundPage() {
 
 			<Avatar
 				size="full"
+				isInput
 				imageProps={
 					{
 						// alt: 'Example avatar',
@@ -62,6 +63,8 @@ export default function PlaygroundPage() {
 			>
 				Ana Horvat
 			</Avatar>
+
+			<Separator />
 			{/* <svg
         xmlns="http://www.w3.org/2000/svg"
         width="688.317"
