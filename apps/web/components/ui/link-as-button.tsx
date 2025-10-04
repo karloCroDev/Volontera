@@ -28,12 +28,12 @@ export const getButtonClassNames = ({
 }): string =>
 	twJoin(
 		// Default styles
-		'flex w-fit items-center justify-center text-center outline-none transition-[opacity] duration-200 hover:opacity-70 disabled:cursor-not-allowed disabled:opacity-50 cursor-pointer',
+		'flex w-fit items-center justify-center text-center outline-none transition-[opacity] duration-200 hover:opacity-70 disabled:cursor-not-allowed disabled:opacity-50 cursor-pointer rounded-lg gap-3',
 
 		// Size
-		size === 'sm' && 'rounded-lg px-4 py-2',
-		size === 'md' && 'rounded-lg px-6 py-3',
-		size === 'lg' && 'text-md rounded-xl px-8 py-5',
+		size === 'sm' && 'px-4 py-2',
+		size === 'md' && 'px-6 py-3',
+		size === 'lg' && 'text-md px-8 py-5',
 
 		// Option to round maximally
 		isFullyRounded && 'rounded-full',
@@ -44,7 +44,7 @@ export const getButtonClassNames = ({
 		// Primary varaiant styles
 		variant === 'primary' &&
 			colorScheme === 'orange' &&
-			'bg-primary hover:bg-primary/90 -background',
+			'bg-primary hover:bg-primary/90 -background text-background',
 		variant === 'primary' &&
 			colorScheme === 'yellow' &&
 			'bg-accent-foreground hover:bg-accent-foreground/90 text-background',
@@ -86,6 +86,7 @@ export const LinkAsButton: React.FC<
 		{...rest}
 		className={twMerge(
 			getButtonClassNames({ colorScheme, size, isFullyRounded, variant }),
+
 			className
 		)}
 	>

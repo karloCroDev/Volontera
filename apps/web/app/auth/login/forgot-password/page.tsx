@@ -6,8 +6,9 @@ import { Layout, LayoutColumn } from '@/components/ui/layout-grid';
 import { LoginForm } from '@modules/auth/login-form';
 import { ArrowLeft } from 'lucide-react';
 import { Icon } from '@/components/ui/icon';
+import { ForgotPasswordForm } from '@modules/auth/forgot-password-form';
 
-export default function LoginPage() {
+export default function ForgotPasswordPage() {
 	return (
 		<Layout className="gap-x16 lg:gap-x-20 xl:gap-x-24">
 			<LayoutColumn
@@ -21,20 +22,14 @@ export default function LoginPage() {
 				className="flex h-[100vh] flex-col items-center justify-center"
 			>
 				<div className="w-full">
-					<Link href="/auth/register" className="self-start">
+					<Link href="/auth/login" className="self-start">
 						<ArrowLeft />
 					</Link>
-					<h1 className="lg:text-max mt-6 text-3xl lg:mt-8">Login</h1>
+					<h1 className="lg:text-max mt-6 text-3xl lg:mt-8">Forgot Password</h1>
 					<p className="text-muted-foreground mt-2 text-sm lg:text-base">
-						Don&apos;t have an account?
-						<Link
-							href="/auth/register"
-							className="text-background-foreground ml-2 font-bold underline underline-offset-2"
-						>
-							Register
-						</Link>
+						We&apos;ll send you a link to change your email address
 					</p>
-					<LoginForm />
+					<ForgotPasswordForm />
 				</div>
 			</LayoutColumn>
 			<LayoutColumn
@@ -43,8 +38,8 @@ export default function LoginPage() {
 				className="hidden items-center justify-end lg:flex"
 			>
 				<Icon
-					name="login-represntation"
-					className="text-primary aspect-[4/3] w-full"
+					name="forgot-password-represntation"
+					className="text-accent-foreground aspect-[4/3] w-full"
 				/>
 			</LayoutColumn>
 		</Layout>

@@ -3,74 +3,74 @@
 @plugin "tailwindcss-animate";
 
 :root {
-  --primary: hsl(38, 92%, 50%);
-  --primary-foreground: hsl(0, 0%, 0%);
-  --accent: hsl(48, 100%, 96%);
-  --accent-foreground: hsl(23, 83%, 31%);
-  --muted: hsl(210, 20%, 98%);
-  --muted-foreground: hsl(215, 14%, 34%);
-  --destructive: hsl(0, 84%, 60%);
-  --success: hsl(129, 54%, 43%);
-  --feedback-info: hsl(221, 97%, 54%);
-  --input-border: hsl(220, 13%, 91%);
-  --popover: hsl(0, 0%, 57%);
-  --background: hsl(0, 0%, 100%);
-  --background-foreground: hsl(0, 0%, 15%);
+	--primary: hsl(38, 92%, 50%);
+	--primary-foreground: hsl(0, 0%, 0%);
+	--accent: hsl(48, 100%, 96%);
+	--accent-foreground: hsl(23, 83%, 31%);
+	--muted: hsl(210, 20%, 98%);
+	--muted-foreground: hsl(215, 14%, 34%);
+	--destructive: hsl(0, 84%, 60%);
+	--success: hsl(129, 54%, 43%);
+	--feedback-info: hsl(221, 97%, 54%);
+	--input-border: hsl(220, 13%, 91%);
+	--popover: hsl(0, 0%, 57%);
+	--background: hsl(0, 0%, 100%);
+	--background-foreground: hsl(0, 0%, 15%);
 }
 
 .dark {
-  --primary: hsl(38, 92%, 50%);
-  --primary-foreground: hsl(0, 0%, 0%);
-  --accent: hsl(23, 83%, 31%);
-  --accent-foreground: hsl(48, 97%, 77%);
-  --muted: hsl(0, 0%, 15%);
-  --muted-foreground: hsl(0, 0%, 64%);
-  --destructive: hsl(0, 84%, 60%);
-  --success: hsl(129, 54%, 43%);
-  --feedback-info: hsl(221, 97%, 54%);
-  --input-border: hsl(0, 0%, 25%);
-  --popover: hsl(0, 0%, 49%);
-  --background: hsl(0, 0%, 9%);
-  --background-foreground: hsl(0, 0%, 90%);
+	--primary: hsl(38, 92%, 50%);
+	--primary-foreground: hsl(0, 0%, 0%);
+	--accent: hsl(23, 83%, 31%);
+	--accent-foreground: hsl(48, 97%, 77%);
+	--muted: hsl(0, 0%, 15%);
+	--muted-foreground: hsl(0, 0%, 64%);
+	--destructive: hsl(0, 84%, 60%);
+	--success: hsl(129, 54%, 43%);
+	--feedback-info: hsl(221, 97%, 54%);
+	--input-border: hsl(0, 0%, 25%);
+	--popover: hsl(0, 0%, 49%);
+	--background: hsl(0, 0%, 9%);
+	--background-foreground: hsl(0, 0%, 90%);
 }
 
 @theme {
-  /* Font sizes */
-  --text-xs: 12px;
-  --text-sm: 14px;
-  --text-base: 16px;
-  --text-md: 20px;
-  --text-lg: 24px;
-  --text-xl: 28px;
-  --text-2xl: 32px;
-  --text-3xl: 40px;
-  --text-max: 48px;
+	/* Font sizes */
+	--text-xs: 12px;
+	--text-sm: 14px;
+	--text-base: 16px;
+	--text-md: 20px;
+	--text-lg: 24px;
+	--text-xl: 28px;
+	--text-2xl: 32px;
+	--text-3xl: 40px;
+	--text-max: 48px;
 
-  /* Border radiuses */
-  --radius-xs: 2px;
-  --radius: 4px;
-  --radius-md: 6px;
-  --radius-lg: 8px;
-  --radius-xl: 10px;
-  --radius-2xl: 12px;
-  --radius-3xl: 16px;
-  --radius-4xl: 24px;
-  --border-full: 999px;
+	/* Border radiuses */
+	--radius-xs: 2px;
+	--radius: 4px;
+	--radius-md: 6px;
+	--radius-lg: 8px;
+	--radius-xl: 10px;
+	--radius-2xl: 12px;
+	--radius-3xl: 16px;
+	--radius-4xl: 24px;
+	--border-full: 999px;
 
-  /* Colors */
-  --color-primary: var(--primary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-accent: var(--accent);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-muted: var(--muted);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-destructive: var(--destructive);
-  --color-success: var(--success);
-  --color-feedback-info: var(--feedback-info);
-  --color-input-border: var(--input-border);
-  --color-popover: var(--popover);
-  --color-background: var(--background);
-  --color-background-foreground: var(--background-foreground);
+	/* Colors */
+	--color-primary: var(--primary);
+	--color-primary-foreground: var(--primary-foreground);
+	--color-accent: var(--accent);
+	--color-accent-foreground: var(--accent-foreground);
+	--color-muted: var(--muted);
+	--color-muted-foreground: var(--muted-foreground);
+	--color-destructive: var(--destructive);
+	--color-success: var(--success);
+	--color-feedback-info: var(--feedback-info);
+	--color-input-border: var(--input-border);
+	--color-popover: var(--popover);
+	--color-background: var(--background);
+	--color-background-foreground: var(--background-foreground);
 }
 
 /* Safelisting (prewriten classes that are supposted to be generated --> used in custom grid layout component) */
