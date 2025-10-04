@@ -21,11 +21,13 @@ const WelcomeEmail: React.FC<{
       <Tailwind>
         <Head />
         <Body className="bg-white my-auto mx-auto font-sans lg:px-6 px-4">
-          <Container className="border border-solid border-[#f59f0a] rounded my-10 p-4  ">
+          <Container className="border-2 border-solid border-[#f59f0a] rounded-lg my-10 p-4">
             <Section>
               <Row>
                 <Column>
-                  <Heading className="text-2xl">Verification code</Heading>
+                  <Heading className="text-2xl font-semibold underline underline-offset-4 italic">
+                    Verification code
+                  </Heading>
                 </Column>
                 <Column>
                   <Row>
@@ -41,11 +43,11 @@ const WelcomeEmail: React.FC<{
               </Row>
             </Section>
 
-            <Hr className="!border-[#f59f0a]" />
+            <Hr className="!border-[#91400d]" />
             <Text className="mt-6 text-base">
-              Thank you for logging in again on [app nane]. We want to make sure
-              it's really you. Please enter the following verification code when
-              prompted.
+              Thank you {name} for logging in again on [app nane]. We want to
+              make sure it's really you. Please enter the following verification
+              code when prompted.
             </Text>
 
             <Section>
