@@ -11,9 +11,11 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import { DatePciker } from '@/components/ui/date-picker';
 
 export const AdditionalInformationForm = () => {
 	const hasUserInput = false;
+
 	return (
 		<Form className="mt-20 flex flex-col items-center gap-6 lg:gap-8">
 			<Avatar
@@ -28,10 +30,8 @@ export const AdditionalInformationForm = () => {
 			</Avatar>
 
 			<div className="w-full">
-				<Label htmlFor="DOB" isOptional>
-					DOB
-				</Label>
-				<Input id="DOB" label="Enter your DOB..." className="mt-2" />
+				<Label isOptional>DOB</Label>
+				<DatePciker className="mt-2" />
 			</div>
 			<div className="w-full">
 				<Label htmlFor="DOB" isOptional>
