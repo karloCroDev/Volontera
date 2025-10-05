@@ -13,8 +13,8 @@ export const ProgressTracker = () => {
 	const type = pathname.split('/').at(-1);
 
 	return (
-		<aside className="flex h-[100vh] flex-col items-center lg:justify-center">
-			<h1 className="text-balance text-center text-xl font-semibold lg:text-2xl">
+		<aside className="mt-16 flex h-fit flex-col items-center lg:mt-0 lg:h-full lg:justify-center">
+			<h1 className="text-balance text-center text-lg font-semibold lg:text-2xl">
 				A few steps away from accessing the [app]
 			</h1>
 
@@ -29,7 +29,7 @@ export const ProgressTracker = () => {
 				/>
 				<hr className="bg-muted mb-14 h-[2px] w-16 border-0 sm:w-20 lg:my-12 lg:ml-3.5 lg:w-20 lg:rotate-90" />
 				<StatusCheckpoint
-					type="Credentials"
+					type="Additional info"
 					status={
 						// It will be routed, so no need to worry about success checmark because I am routing the user
 						type === 'additional-information' ? 'pending' : 'not-fullffiled'
