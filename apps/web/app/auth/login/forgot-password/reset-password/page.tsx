@@ -1,11 +1,8 @@
-// External packages
-import Link from 'next/link';
-
 // Components
 import { Layout, LayoutColumn } from '@/components/ui/layout-grid';
-import { ArrowLeft } from 'lucide-react';
 import { Icon } from '@/components/ui/icon';
-import { ForgotPasswordForm } from '@modules/auth/forgot-password-form';
+
+// Modules
 import { ResetPasswordForm } from '@modules/auth/reset-password-form';
 
 export default function ForgotPasswordPage() {

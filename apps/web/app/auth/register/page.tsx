@@ -1,10 +1,12 @@
 // External packages
 import Link from 'next/link';
+import { ArrowLeft } from 'lucide-react';
 
 // Components
 import { Layout, LayoutColumn } from '@/components/ui/layout-grid';
-import { ArrowLeft } from 'lucide-react';
 import { Icon } from '@/components/ui/icon';
+
+// Modules
 import { RegisterForm } from '@modules/auth/register-form';
 
 export default function RegisterPage() {

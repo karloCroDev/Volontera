@@ -8,3 +8,4 @@
 		"jsx": "react-jsx"
 	}
 }
+// "@react-email/preview-server": "4.2.12", Since this is not isolated (using monorepo) it affects the ts version of some other packages (such as radix), so when I want to test mails run this and

@@ -3,9 +3,10 @@ import Link from 'next/link';
 
 // Components
 import { Layout, LayoutColumn } from '@/components/ui/layout-grid';
-import { LoginForm } from '@modules/auth/login-form';
 import { ArrowLeft } from 'lucide-react';
 import { Icon } from '@/components/ui/icon';
+
+// Modules
 import { ForgotPasswordForm } from '@modules/auth/forgot-password-form';
 
 export default function ForgotPasswordPage() {

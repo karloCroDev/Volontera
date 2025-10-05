@@ -1,5 +1,7 @@
 // Components
 import { Layout, LayoutColumn } from '@/components/ui/layout-grid';
+
+// Modules
 import { ProgressTracker } from '@modules/onboarding/progress-tracker';
 
 // Karlo: TODO: Mobile view not the prettiest one!

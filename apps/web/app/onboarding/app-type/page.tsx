@@ -1,4 +1,4 @@
-// External pcakcgaes
+// Modules
 import { SelectType } from '@modules/onboarding/select-type';
 
 export default async function AppType() {

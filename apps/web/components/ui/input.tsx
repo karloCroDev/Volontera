@@ -5,6 +5,9 @@ import * as React from 'react';
 import { Input as AriaInput, InputProps, Label } from 'react-aria-components';
 import { twJoin, twMerge } from 'tailwind-merge';
 
+export const getTextFieldBasicStyles =
+	'border-input-border data-[invalid]:border-destructive hover:border-popover text-background-foreground focus:border-popover peer h-14 w-full rounded-md border outline-none transition-[border] placeholder-shown:pt-0';
+
 export const Input: React.FC<
 	React.ComponentPropsWithoutRef<'div'> & {
 		label: string;
@@ -20,7 +23,7 @@ export const Input: React.FC<
 			<AriaInput
 				{...inputProps}
 				className={twMerge(
-					'border-input-border data-[invalid]:border-destructive hover:border-popover text-background-foreground focus:border-popover peer h-14 w-full rounded-md border outline-none transition-[border] placeholder-shown:pt-0',
+					getTextFieldBasicStyles,
 					size === 'sm' && 'h-12 px-3 pt-2',
 					size === 'md' && 'h-14 px-4 pt-3',
 					inputProps?.className
