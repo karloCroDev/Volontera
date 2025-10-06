@@ -41,7 +41,7 @@ export const Avatar: React.FC<
 				)}
 			/>
 			<RadixAvatar.Fallback
-				delayMs={600}
+				delayMs={200}
 				className="bg-muted text-background-foreground flex size-full items-center justify-center rounded-full"
 			>
 				{children

@@ -2,10 +2,6 @@
 	"$schema": "https://json.schemastore.org/tsconfig",
 	"extends": "@repo/typescript-config/nextjs.json",
 	"include": ["."],
-	"exclude": ["dist", "build", "node_modules"],
-	"compilerOptions": {
-		"strict": true,
-		"jsx": "react-jsx"
-	}
+	"exclude": ["dist", "build", "node_modules"]
 }
 // "@react-email/preview-server": "4.2.12", Since this is not isolated (using monorepo) it affects the ts version of some other packages (such as radix), so when I want to test mails run this and
