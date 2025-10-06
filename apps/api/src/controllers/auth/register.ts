@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { registerSchema, RegisterArgs } from "@repo/schemas";
+import { registerSchema, RegisterArgs } from "@repo/schemas/auth";
 import { zodErrorDetecter } from "@/src/lib/zodDetectionError";
 import bcrypt from "bcrypt";
 import { prisma } from "@/src/config/prisma";

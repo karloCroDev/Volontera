@@ -1,9 +1,16 @@
+// External packages
 import { Request, Response } from "express";
-import { LoginArgs, loginSchema } from "@repo/schemas";
-import { zodErrorDetecter } from "@/src/lib/zodDetectionError";
 import bcrypt from "bcrypt";
-import { prisma } from "@/src/config/prisma";
-import { verifyUser } from "@/src/lib/verify-user";
+
+// Lib
+import { zodErrorDetecter } from "@/lib/zodDetectionError";
+import { verifyUser } from "@/lib/verify-user";
+
+// Config
+import { prisma } from "@/config/prisma";
+
+// Schemas
+import { LoginArgs, loginSchema } from "@repo/schemas/auth";
 
 export async function login(req: Request, res: Response) {
   try {

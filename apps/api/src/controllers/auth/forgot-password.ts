@@ -1,9 +1,14 @@
-import { resend } from "@/src/config/resend";
-import { forgotPasswordSchema } from "@repo/schemas";
-import { Request, Response } from "express";
+// External packages
 import crypto from "crypto";
-import { prisma } from "@/src/config/prisma";
-import { sendEmail } from "@/src/config/nodemailer";
+import { Request, Response } from "express";
+
+// Config
+import { resend } from "@/config/resend";
+import { prisma } from "@/config/prisma";
+import { sendEmail } from "@/config/nodemailer";
+
+// Schemas
+import { forgotPasswordSchema } from "@repo/schemas/auth";
 
 export async function forgotPassword(req: Request, res: Response) {
   const reqData = req.body;

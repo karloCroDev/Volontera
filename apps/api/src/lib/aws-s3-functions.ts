@@ -1,6 +1,9 @@
-import { s3 } from "@/src/config/aws";
-import { GetObjectCommand, ListObjectsV2Command } from "@aws-sdk/client-s3";
+// External packages
+import { GetObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+
+// Config
+import { s3 } from "@/config/aws";
 
 export async function getImagePresignedUrls(image: string) {
   try {

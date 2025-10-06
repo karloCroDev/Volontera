@@ -1,3 +1,4 @@
+// External packages
 import { type Response, Request } from "express";
 
 export function logout(req: Request, res: Response) {

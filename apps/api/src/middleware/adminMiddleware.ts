@@ -1,4 +1,4 @@
-import { type User } from "@prisma/client";
+// import { type User } from "@prisma/client";
 import { Request, Response, NextFunction } from "express";
 
 declare module "express-serve-static-core" {

@@ -8,11 +8,7 @@
 		],
 		"baseUrl": "./",
 		"paths": {
-			"@lib/*": ["lib/*"],
-			"@modules/*": ["modules/*"],
-			"@hooks/*": ["hooks/*"],
-			"@/components/*": ["components/*"],
-			"@/public/*": ["public/*"]
+			"@/*": ["./*"]
 		}
 	},
 	"include": [

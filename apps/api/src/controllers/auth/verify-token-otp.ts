@@ -1,10 +1,16 @@
-import { prisma } from "@/src/config/prisma";
-import { generateTokenAndSetCookie } from "@/src/lib/set-token-cookie";
-import { verifyEmail } from "@repo/schemas";
+// External packages
 import { Request, Response } from "express";
 import bcrypt from "bcrypt";
-import { resend } from "@/src/config/resend";
-import { verifyUser } from "@/src/lib/verify-user";
+
+// Config
+import { prisma } from "@/config/prisma";
+
+// Lib
+import { generateTokenAndSetCookie } from "@/lib/set-token-cookie";
+import { verifyUser } from "@/lib/verify-user";
+
+// Schemas
+import { verifyEmail } from "@repo/schemas/auth";
 
 export async function verifyTokenOtp(req: Request, res: Response) {
   const data = req.body;

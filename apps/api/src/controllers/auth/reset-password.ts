@@ -1,7 +1,12 @@
-import { resetPasswordSchema } from "@repo/schemas";
+// External packages
 import { Request, Response } from "express";
-import { prisma } from "@/src/config/prisma";
 import bcrypt from "bcrypt";
+
+// Schemas
+import { resetPasswordSchema } from "@repo/schemas/auth";
+
+// Config
+import { prisma } from "@/config/prisma";
 
 export async function resetPassword(req: Request, res: Response) {
   const reqData = req.body;

@@ -1,7 +1,12 @@
+// External packages
 import { Request, Response } from "express";
-import { prisma } from "@/src/config/prisma";
 import jwt from "jsonwebtoken";
-import { getImagePresignedUrls } from "@/src/lib/aws-s3-functions";
+
+// Config
+import { prisma } from "@/config/prisma";
+
+// Lib
+import { getImagePresignedUrls } from "@/lib/aws-s3-functions";
 
 export async function session(req: Request, res: Response) {
   try {

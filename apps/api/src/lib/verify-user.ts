@@ -1,6 +1,9 @@
-import { sendEmail } from "@/src/config/nodemailer";
-import { resend } from "@/src/config/resend";
+// External packages
 import bcrypt from "bcrypt";
+
+// Config
+import { sendEmail } from "@/config/nodemailer";
+import { resend } from "@/config/resend";
 
 export async function verifyUser(email: string) {
   const verificationToken = Math.floor(

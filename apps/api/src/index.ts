@@ -1,13 +1,12 @@
 import cookieParser from "cookie-parser";
 import express from "express";
 import cors from "cors";
-import { authRoutes } from "@/src/routes/authRoutes";
-import { authMiddleware } from "@/src/middleware/authMiddleware";
-import { adminMiddleware } from "@/src/middleware/adminMiddleware";
-import { chatRoutes } from "@/src/routes/chatRoutes";
-import { server, app } from "@/src/config/socket";
-import { paymentRoutes } from "@/src/routes/paymentRoutes";
-import { oAuthGoogle } from "@/src/config/oAuth-google";
+import { authRoutes } from "@/routes/authRoutes";
+import { authMiddleware } from "@/middleware/authMiddleware";
+import { adminMiddleware } from "@/middleware/adminMiddleware";
+import { server, app } from "@/config/socket";
+import { paymentRoutes } from "@/routes/paymentRoutes";
+import { oAuthGoogle } from "@/config/oAuth-google";
 
 app.use(
   cors({
@@ -24,7 +23,6 @@ app.use(oAuthGoogle.initialize());
 
 app.use(express.json());
 app.use("/auth", authRoutes);
-app.use("/chat", authMiddleware, chatRoutes);
 
 // Test
 app.get("/protected", authMiddleware, (req, res) => {
