@@ -14,6 +14,7 @@
 		"@radix-ui/react-avatar": "^1.1.10",
 		"@repo/ui": "*",
 		"@tailwindcss/postcss": "^4.1.13",
+		"axios": "^1.12.2",
 		"input-otp": "^1.4.2",
 		"lucide-react": "^0.544.0",
 		"next": "^15.5.0",
@@ -27,8 +28,8 @@
 	},
 	"devDependencies": {
 		"@repo/eslint-config": "*",
-		"@repo/typescript-config": "*",
 		"@repo/schemas": "*",
+		"@repo/typescript-config": "*",
 		"@types/node": "^22.15.3",
 		"@types/react": "19.1.0",
 		"@types/react-dom": "19.1.1",

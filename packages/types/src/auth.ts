@@ -1,6 +1,6 @@
 import { LoginArgs, RegisterArgs } from "@repo/schemas/auth";
 
-// Login/Register response
+// Login / Register response
 
 type AuthResponse = {
   success: boolean;
@@ -22,7 +22,7 @@ export type User = {
   email: string;
   image?: string;
   bio?: string;
-  role: "USER" | "ADMIN";
+  role: "USER" | "ORGANIZATION" | "ADMIN";
   createdAt: Date;
   updatedAt: Date;
 
