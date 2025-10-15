@@ -1,5 +1,5 @@
 import { Layout, LayoutColumn } from '@/components/ui/layout-grid';
-import { InputOTP } from '@modules/auth/input-otp';
+import { InputOTP } from '@/modules/auth/input-otp';
 import Link from 'next/link';
 
 export default function VerifyOtp() {

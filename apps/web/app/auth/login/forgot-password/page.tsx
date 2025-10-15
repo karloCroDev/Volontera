@@ -7,7 +7,7 @@ import { ArrowLeft } from 'lucide-react';
 import { Icon } from '@/components/ui/icon';
 
 // Modules
-import { ForgotPasswordForm } from '@modules/auth/forgot-password-form';
+import { ForgotPasswordForm } from '@/modules/auth/forgot-password-form';
 
 export default function ForgotPasswordPage() {
 	return (

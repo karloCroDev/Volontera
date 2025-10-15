@@ -3,7 +3,7 @@ import { Layout, LayoutColumn } from '@/components/ui/layout-grid';
 import { Icon } from '@/components/ui/icon';
 
 // Modules
-import { ResetPasswordForm } from '@modules/auth/reset-password-form';
+import { ResetPasswordForm } from '@/modules/auth/reset-password-form';
 
 export default function ForgotPasswordPage() {
 	return (
