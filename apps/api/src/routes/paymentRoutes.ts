@@ -1,5 +1,6 @@
+// External packages
 import { Router } from "express";
-import { stripeWebhook } from "@/src/controllers/stripe-webhook/stripe";
+import { stripeWebhook } from "@/controllers/stripe-webhook/stripe";
 import bodyParser from "body-parser";
 
 export const paymentRoutes = Router();

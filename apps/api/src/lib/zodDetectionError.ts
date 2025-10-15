@@ -1,7 +1,7 @@
 // External packages
 import { z } from "zod";
 
-// Generic function for getting the error back from the server
+// Generic function for getting the error back from the server.Not used in application, however created for debugging purposes
 export function zodErrorDetecter<T>(result: z.ZodError<T>) {
   let zodErrors: Partial<Record<keyof T, string>> = {}; //
 

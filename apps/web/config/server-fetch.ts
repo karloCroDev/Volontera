@@ -17,7 +17,7 @@ export async function serverFetch<T = unknown>({
 		...init,
 		headers: {
 			'Content-Type': 'application/json',
-			...(token ? { cookie: `token=${token}` } : {}),
+			...(token ? { Authorization: `Bearer ${token}` } : {}),
 			...init?.headers,
 		},
 	});

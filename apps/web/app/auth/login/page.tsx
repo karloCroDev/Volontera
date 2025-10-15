@@ -1,5 +1,6 @@
 // External packages
 import Link from 'next/link';
+import axios from 'axios';
 
 // Components
 import { Layout, LayoutColumn } from '@/components/ui/layout-grid';

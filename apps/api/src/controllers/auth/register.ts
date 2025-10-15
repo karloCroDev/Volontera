@@ -1,30 +1,44 @@
+// External packages
 import { Request, Response } from "express";
-import { registerSchema, RegisterArgs } from "@repo/schemas/auth";
-import { zodErrorDetecter } from "@/src/lib/zodDetectionError";
+
+// Config
+import { prisma } from "@/config/prisma";
+
+// Lib
+import { zodErrorDetecter } from "@/lib/zodDetectionError";
+
+// Schemas
+import { registerSchema } from "@repo/schemas/auth";
 import bcrypt from "bcrypt";
-import { prisma } from "@/src/config/prisma";
-import { verifyUser } from "@/src/lib/verify-user";
+import { verifyUser } from "@/lib/verify-user";
 
 export async function register(req: Request, res: Response) {
   try {
-    const data: RegisterArgs = req.body;
+    const data = req.body;
 
-    const validateData = registerSchema.safeParse(data);
+    const {
+      data: validateData,
+      success,
+      error,
+    } = registerSchema.safeParse(data);
 
-    if (!validateData.success) {
+    if (!success) {
       return res.json({
-        errors: zodErrorDetecter(validateData.error),
+        errors: zodErrorDetecter(error),
       });
     }
 
-    const hashedPassword = bcrypt.hashSync(validateData.data.password, 10);
+    const hashedPassword = bcrypt.hashSync(validateData.password, 10);
 
-    console.log(validateData.data.email);
-    const { success, hashedOtp, message, expireDate } = await verifyUser(
-      validateData.data.email
-    ); // Sending email before checking if user exists, not ideal, I would send email after creating user in db, so refacotring this function might not be a bad idea!
+    console.log(validateData.email);
+    const {
+      success: verifySuccess,
+      hashedOtp,
+      message,
+      expireDate,
+    } = await verifyUser(validateData.email); // Sending email before checking if user exists, not ideal, I would send email after creating user in db, so refacotring this function might not be a bad idea!
 
-    if (!success) {
+    if (!verifySuccess) {
       return res.status(400).json({
         message: message,
         success: false,
@@ -33,8 +47,9 @@ export async function register(req: Request, res: Response) {
 
     const user = await prisma.user.create({
       data: {
-        username: validateData.data.username,
-        email: validateData.data.email,
+        firstName: validateData.firstName,
+        lastName: validateData.lastName,
+        email: validateData.email,
         password: hashedPassword,
         verificationToken: hashedOtp,
         verificationTokenExpiresAt: expireDate,

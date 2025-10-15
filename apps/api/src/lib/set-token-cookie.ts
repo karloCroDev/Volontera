@@ -1,7 +1,7 @@
 // External packages
-
 import jwt from "jsonwebtoken";
 import { Response } from "express";
+import { User } from "@prisma/client";
 
 export function generateTokenAndSetCookie({
   res,
@@ -10,7 +10,7 @@ export function generateTokenAndSetCookie({
 }: {
   res: Response;
   userId: string;
-  role: string;
+  role: User["role"];
 }) {
   const token = jwt.sign({ userId, role }, process.env.JWT_SECRET as string, {
     expiresIn: "7d",

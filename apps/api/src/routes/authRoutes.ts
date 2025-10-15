@@ -1,17 +1,24 @@
+// External packages
 import express from "express";
 import { Router } from "express";
-import { login } from "@/src/controllers/auth/login";
-import { register } from "@/src/controllers/auth/register";
-import { logout } from "@/src/controllers/auth/logout";
-import { session } from "@/src/controllers/auth/session";
-import { forgotPassword } from "@/src/controllers/auth/forgot-password";
-import { resetPassword } from "@/src/controllers/auth/reset-password";
+
+// Contorllers
+import { login } from "@/controllers/auth/login";
+import { register } from "@/controllers/auth/register";
+import { logout } from "@/controllers/auth/logout";
+import { session } from "@/controllers/auth/session";
+import { forgotPassword } from "@/controllers/auth/forgot-password";
+import { resetPassword } from "@/controllers/auth/reset-password";
 import {
   resetVerifyToken,
   verifyTokenOtp,
-} from "@/src/controllers/auth/verify-token-otp";
-import { generateTokenAndSetCookie } from "@/src/lib/set-token-cookie";
-import { oAuthGoogle } from "@/src/config/oAuth-google";
+} from "@/controllers/auth/verify-token-otp";
+
+// Lib
+import { generateTokenAndSetCookie } from "@/lib/set-token-cookie";
+
+// Config
+import { oAuthGoogle } from "@/config/oAuth-google";
 
 export const authRoutes = Router();
 
@@ -42,7 +49,7 @@ authRoutes.get(
   (req, res) => {
     generateTokenAndSetCookie({
       res,
-      role: "BASIC",
+      role: req.user.role,
       userId: req.user.userId,
     });
 
