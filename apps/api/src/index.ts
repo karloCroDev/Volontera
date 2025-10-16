@@ -1,12 +1,19 @@
+// External packages
 import cookieParser from "cookie-parser";
 import express from "express";
 import cors from "cors";
 import { authRoutes } from "@/routes/authRoutes";
+
+// Middleware
 import { authMiddleware } from "@/middleware/authMiddleware";
-import { adminMiddleware } from "@/middleware/adminMiddleware";
+import { adminMiddleware } from "@/middleware/organizationMiddleware";
+
+// Config
 import { server, app } from "@/config/socket";
-import { paymentRoutes } from "@/routes/paymentRoutes";
 import { oAuthGoogle } from "@/config/oAuth-google";
+
+// Routes
+import { paymentRoutes } from "@/routes/paymentRoutes";
 
 app.use(
   cors({
