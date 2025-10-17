@@ -6,15 +6,16 @@ import {
 	useQueryClient,
 } from '@tanstack/react-query';
 
-// import {
-// 	clientSession,
-// 	forgotPassword,
-// 	login,
-// 	logout,
-// 	register,
-// 	resetPassword,
-// 	verifyEmail,
-// } from '@/lib/data/auth';
+import {
+	clientSession,
+	forgotPassword,
+	login,
+	logout,
+	register,
+	resetPassword,
+	verifyEmail,
+} from '@/lib/data/auth';
+
 import {
 	ForgotPasswordArgs,
 	LoginArgs,
@@ -24,8 +25,8 @@ import {
 } from '@repo/schemas/auth';
 import { cache } from 'react';
 import {
-	LoginResponse,
-	RegisterResponse,
+	AuthResponse,
+	ErrorAuthResponse,
 	SessionSuccessResponse,
 } from '@repo/types/auth';
 
@@ -38,7 +39,7 @@ export const useSession = () => {
 };
 
 export const useLogin = (
-	options?: UseMutationOptions<LoginResponse, Error, LoginArgs>
+	options?: UseMutationOptions<AuthResponse, ErrorAuthResponse, LoginArgs>
 ) => {
 	const queryClient = useQueryClient();
 	return useMutation({
@@ -53,7 +54,7 @@ export const useLogin = (
 };
 
 export const useRegister = (
-	options?: UseMutationOptions<RegisterResponse, Error, RegisterArgs>
+	options?: UseMutationOptions<AuthResponse, ErrorAuthResponse, RegisterArgs>
 ) => {
 	const queryClient = useQueryClient();
 	return useMutation({

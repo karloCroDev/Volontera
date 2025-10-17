@@ -2,16 +2,16 @@ import { LoginArgs, RegisterArgs } from "@repo/schemas/auth";
 
 // Login / Register response
 
-type AuthResponse = {
+export type AuthResponse = {
   success: boolean;
   message: string;
 };
 
-export type LoginResponse = AuthResponse & {
-  errors?: Record<keyof LoginArgs, string>;
-};
+// export type LoginResponse = AuthResponse & {
+//   errors?: Record<keyof LoginArgs, string>;
+// };
 
-export type RegisterResponse = AuthResponse & {
+export type ErrorAuthResponse = AuthResponse & {
   errors?: Record<keyof RegisterArgs, string>;
 };
 
@@ -30,14 +30,4 @@ export type User = {
   subscriptionType: "NONE" | "MONTHLY" | "YEARLY";
 };
 
-export type SessionSuccessResponse = User & {
-  message: string;
-  success: true;
-};
-
-// See if I want to handle this with toast messgaes or something simmilar!
-type SessionErrorResponse = {
-  message?: string;
-  error?: string;
-  success: false;
-};
+export type SessionSuccessResponse = User & AuthResponse;
