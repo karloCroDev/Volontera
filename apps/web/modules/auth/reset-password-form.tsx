@@ -10,12 +10,13 @@ import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { useResetPassword } from '@/hooks/data/auth';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { ResetPasswordArgs, resetPasswordSchema } from '@repo/schemas/auth';
 
 export const ResetPasswordForm = () => {
 	const { isPending, mutate } = useResetPassword();
 	const {
+		control,
 		handleSubmit,
 		formState: { errors },
 		setError,
@@ -42,20 +43,35 @@ export const ResetPasswordForm = () => {
 		>
 			<div>
 				<Label htmlFor="password">Password</Label>
-				<Input
-					id="password"
-					label="Enter your new password..."
-					className="mt-2"
-					error={errors.password?.message}
+				<Controller
+					control={control}
+					name="password"
+					render={({ field }) => (
+						<Input
+							id="password"
+							label="Enter your new password..."
+							className="mt-2"
+							error={errors.password?.message}
+							{...field}
+						/>
+					)}
 				/>
 			</div>
 			<div>
 				<Label htmlFor="repeat-password">Repeat password</Label>
-				<Input
-					id="repeat-password"
-					label="Repeat your new password..."
-					className="mt-2"
-					error={errors.repeatPassword?.message}
+
+				<Controller
+					control={control}
+					name="repeatPassword"
+					render={({ field }) => (
+						<Input
+							id="repeat-password"
+							label="Repeat your new password..."
+							className="mt-2"
+							error={errors.repeatPassword?.message}
+							{...field}
+						/>
+					)}
 				/>
 			</div>
 			<Button

@@ -4,8 +4,7 @@
 import * as React from 'react';
 import { Form } from 'react-aria-components';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
-import { useRouter } from 'next/navigation';
+import { Controller, useForm } from 'react-hook-form';
 
 // Components
 import { Input } from '@/components/ui/input';
@@ -18,9 +17,13 @@ import { useForgotPassword } from '@/hooks/data/auth';
 // Schemas
 import { ForgotPasswordArgs, forgotPasswordSchema } from '@repo/schemas/auth';
 
-export const ForgotPasswordForm = () => {
+// Config
+import { withReactQueryProvider } from '@/config/react-query';
+
+export const ForgotPasswordForm = withReactQueryProvider(() => {
 	const { isPending, mutate } = useForgotPassword();
 	const {
+		control,
 		handleSubmit,
 		formState: { errors },
 		setError,
@@ -28,7 +31,6 @@ export const ForgotPasswordForm = () => {
 		resolver: zodResolver(forgotPasswordSchema),
 	});
 
-	const router = useRouter();
 	const onSubmit = async (data: ForgotPasswordArgs) => {
 		mutate(data, {
 			onSuccess({ message, success }) {
@@ -47,11 +49,18 @@ export const ForgotPasswordForm = () => {
 		>
 			<div>
 				<Label htmlFor="email">Email</Label>
-				<Input
-					id="email"
-					label="Enter your email..."
-					className="mt-2"
-					error={errors.email?.message}
+				<Controller
+					control={control}
+					name="email"
+					render={({ field }) => (
+						<Input
+							id="email"
+							label="Enter your email..."
+							className="mt-2"
+							error={errors.email?.message}
+							{...field}
+						/>
+					)}
 				/>
 			</div>
 			<Button className="w-full" size="lg" isDisabled={isPending}>
@@ -59,4 +68,4 @@ export const ForgotPasswordForm = () => {
 			</Button>
 		</Form>
 	);
-};
+});

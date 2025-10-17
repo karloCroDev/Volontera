@@ -5,6 +5,9 @@ import * as React from 'react';
 import { Input as AriaInput, InputProps, Label } from 'react-aria-components';
 import { twJoin, twMerge } from 'tailwind-merge';
 
+// Components
+import { Error } from '@/components/ui/error';
+
 export const getTextFieldBasicStyles =
 	'border-input-border data-[invalid]:border-destructive hover:border-popover text-background-foreground focus:border-popover peer h-14 w-full rounded-md border outline-none transition-[border] placeholder-shown:pt-0';
 
@@ -44,14 +47,9 @@ export const Input: React.FC<
 			</div>
 
 			{error && (
-				<p
-					className={twJoin(
-						'text-destructive mt-1.5',
-						size === 'sm' ? 'text-xs' : 'text-sm'
-					)}
-				>
+				<Error className={size === 'sm' ? 'mt-1.5 text-xs' : 'text-sm'}>
 					{error}
-				</p>
+				</Error>
 			)}
 		</div>
 	);

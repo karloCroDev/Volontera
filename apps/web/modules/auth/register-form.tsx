@@ -3,7 +3,7 @@
 // External packages
 import * as React from 'react';
 import { Form } from 'react-aria-components';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
 import { zodResolver } from '@hookform/resolvers/zod';
 
@@ -19,10 +19,12 @@ import { useRegister } from '@/hooks/data/auth';
 
 // Schemas
 import { RegisterArgs, registerSchema } from '@repo/schemas/auth';
+import { withReactQueryProvider } from '@/config/react-query';
 
-export const RegisterForm = () => {
+export const RegisterForm = withReactQueryProvider(() => {
 	const { isPending, mutate } = useRegister();
 	const {
+		control,
 		handleSubmit,
 		formState: { errors },
 		setError,
@@ -52,39 +54,67 @@ export const RegisterForm = () => {
 			<div className="flex gap-8">
 				<div className="flex-1">
 					<Label htmlFor="Email">First name</Label>
-					<Input
-						id="firstName"
-						label="Enter your first name..."
-						className="mt-2"
-						error={errors.firstName?.message}
+					<Controller
+						control={control}
+						name="firstName"
+						render={({ field }) => (
+							<Input
+								id="firstName"
+								label="Enter your first name..."
+								className="mt-2"
+								error={errors.firstName?.message}
+								{...field}
+							/>
+						)}
 					/>
 				</div>
 				<div className="flex-1">
-					<Label htmlFor="Email">Last name</Label>
-					<Input
-						id="lastName"
-						label="Enter your last name..."
-						className="mt-2"
-						error={errors.lastName?.message}
+					<Label htmlFor="lastName">Last name</Label>
+					<Controller
+						control={control}
+						name="lastName"
+						render={({ field }) => (
+							<Input
+								id="lastName"
+								label="Enter your last name..."
+								className="mt-2"
+								error={errors.lastName?.message}
+								{...field}
+							/>
+						)}
 					/>
 				</div>
 			</div>
 			<div>
 				<Label htmlFor="email">Email</Label>
-				<Input
-					id="email"
-					label="Enter your email..."
-					className="mt-2"
-					error={errors.email?.message}
+				<Controller
+					control={control}
+					name="email"
+					render={({ field }) => (
+						<Input
+							id="email"
+							label="Enter your email..."
+							className="mt-2"
+							error={errors.email?.message}
+							{...field}
+						/>
+					)}
 				/>
 			</div>
 			<div>
 				<Label htmlFor="password">Password</Label>
-				<Input
-					id="password"
-					label="Enter your password..."
-					className="mt-2"
-					error={errors.password?.message}
+				<Controller
+					control={control}
+					name="password"
+					render={({ field }) => (
+						<Input
+							id="password"
+							label="Enter your password..."
+							className="mt-2"
+							error={errors.password?.message}
+							{...field}
+						/>
+					)}
 				/>
 			</div>
 
@@ -104,4 +134,4 @@ export const RegisterForm = () => {
 			</Button>
 		</Form>
 	);
-};
+});

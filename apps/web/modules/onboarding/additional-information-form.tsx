@@ -3,7 +3,7 @@
 // External packages
 import * as React from 'react';
 import { Form } from 'react-aria-components';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Trash } from 'lucide-react';
 
 // Components
 import { Avatar } from '@/components/ui/avatar';
@@ -23,6 +23,11 @@ export const AdditionalInformationForm = () => {
 				}}
 				size="full"
 				isInput
+				deleteButton={
+					<Button className="p-3" isFullyRounded colorScheme="yellow">
+						<Trash className="size-4" />
+					</Button>
+				}
 			>
 				Karlo Grgic
 			</Avatar>

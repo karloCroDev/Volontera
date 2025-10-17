@@ -3,9 +3,10 @@
 // External packages
 import * as React from 'react';
 import { Form } from 'react-aria-components';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
 import { zodResolver } from '@hookform/resolvers/zod';
+import Link from 'next/link';
 
 // Components
 import { Input } from '@/components/ui/input';
@@ -13,7 +14,6 @@ import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { Icon } from '@/components/ui/icon';
-import Link from 'next/link';
 
 // Hooks
 import { useLogin } from '@/hooks/data/auth';
@@ -21,9 +21,13 @@ import { useLogin } from '@/hooks/data/auth';
 // Schemas
 import { LoginArgs, loginSchema } from '@repo/schemas/auth';
 
-export const LoginForm = () => {
+// Config
+import { withReactQueryProvider } from '@/config/react-query';
+
+export const LoginForm = withReactQueryProvider(() => {
 	const { isPending, mutate } = useLogin();
 	const {
+		control,
 		handleSubmit,
 		formState: { errors },
 		setError,
@@ -52,11 +56,18 @@ export const LoginForm = () => {
 		>
 			<div>
 				<Label htmlFor="Email">Email</Label>
-				<Input
-					id="Email"
-					label="Enter your email..."
-					className="mt-2"
-					error={errors.email?.message}
+				<Controller
+					control={control}
+					name="email"
+					render={({ field }) => (
+						<Input
+							id="Email"
+							label="Enter your email..."
+							className="mt-2"
+							error={errors.email?.message}
+							{...field}
+						/>
+					)}
 				/>
 			</div>
 			<div>
@@ -69,11 +80,19 @@ export const LoginForm = () => {
 						Forgot Passowrd?
 					</Link>
 				</div>
-				<Input
-					id="password"
-					label="Enter your password..."
-					className="mt-2"
-					error={errors.password?.message}
+
+				<Controller
+					control={control}
+					name="password"
+					render={({ field }) => (
+						<Input
+							id="password"
+							label="Enter your password..."
+							className="mt-2"
+							error={errors.password?.message}
+							{...field}
+						/>
+					)}
 				/>
 			</div>
 
@@ -93,4 +112,4 @@ export const LoginForm = () => {
 			</Button>
 		</Form>
 	);
-};
+});

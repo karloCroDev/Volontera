@@ -4,15 +4,32 @@
 import * as React from 'react';
 import { OTPInput, SlotProps } from 'input-otp';
 import { twJoin } from 'tailwind-merge';
+import { useRouter, useSearchParams } from 'next/navigation';
+
+// Hooks
+import { useVerifyEmail } from '@/hooks/data/auth';
 
 export const InputOTP = () => {
+	const searchParams = useSearchParams();
+	const router = useRouter();
+
+	const { mutate } = useVerifyEmail();
+
 	return (
 		<OTPInput
 			maxLength={6}
 			containerClassName="group mt-8 flex items-center has-[:disabled]:opacity-30"
 			onChange={(val) => {
-				// TODO: Napravi da mogu pratiti koja je pozicja
-				console.log(val);
+				if (val.length === 6) {
+					mutate(
+						{ code: val, email: searchParams.get('email') || '' },
+						{
+							onSuccess: () => {
+								router.push('/chat');
+							},
+						}
+					);
+				}
 			}}
 			render={({ slots }) => (
 				<div className="flex gap-8">

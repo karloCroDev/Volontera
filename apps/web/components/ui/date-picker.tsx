@@ -14,10 +14,11 @@ import {
 	Heading,
 	Popover,
 } from 'react-aria-components';
-
 import { ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react';
-import { getTextFieldBasicStyles } from '@/components/ui/input';
 import { twJoin } from 'tailwind-merge';
+
+// Components
+import { getTextFieldBasicStyles } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 
 export const DatePciker = <T extends DateValue>({
@@ -59,7 +60,7 @@ export const DatePciker = <T extends DateValue>({
 						<CalendarGrid className="mt-3">
 							{(date) => (
 								<CalendarCell
-									className="data-[focus-visible]:bg-primary data-[pressed]:bg-pending data-[outside-month]:text-popover flex h-6 cursor-pointer items-center justify-center rounded px-2 py-4 text-center"
+									className="data-[pressed]:bg-pending data-[outside-month]:text-popover data-[selected]:bg-accent flex h-6 cursor-pointer items-center justify-center rounded px-2 py-4 text-center"
 									date={date}
 								/>
 							)}

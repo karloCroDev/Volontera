@@ -1,6 +1,6 @@
 // External packages
 import * as RadixAvatar from '@radix-ui/react-avatar';
-import { twMerge } from 'tailwind-merge';
+import { twJoin, twMerge } from 'tailwind-merge';
 import { Pen } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
@@ -9,11 +9,13 @@ export const Avatar: React.FC<
 		imageProps: RadixAvatar.AvatarImageProps;
 		size?: 'sm' | 'md' | 'lg' | 'xl' | '2xl' | 'full';
 		isInput?: boolean;
+		deleteButton?: React.ReactNode;
 	}
 > = ({
 	imageProps,
 	size = 'md',
 	isInput = false,
+	deleteButton,
 	children,
 	className,
 	...rest
@@ -40,10 +42,7 @@ export const Avatar: React.FC<
 					imageProps.className
 				)}
 			/>
-			<RadixAvatar.Fallback
-				delayMs={200}
-				className="bg-muted text-background-foreground flex size-full items-center justify-center rounded-full"
-			>
+			<RadixAvatar.Fallback className="bg-muted text-background-foreground flex size-full items-center justify-center rounded-full">
 				{children
 					?.toString()
 					.split(' ')
@@ -51,9 +50,18 @@ export const Avatar: React.FC<
 			</RadixAvatar.Fallback>
 
 			{isInput && (
-				<Button className="absolute bottom-2 right-6 z-20 p-3" isFullyRounded>
-					<Pen className="size-4" />
-				</Button>
+				<div
+					className={twJoin(
+						'absolute bottom-2 right-0 z-20 flex gap-4',
+						!!deleteButton ? 'right-2' : 'right-0'
+					)}
+				>
+					<Button className="p-3" isFullyRounded>
+						<Pen className="size-4" />
+					</Button>
+
+					{deleteButton}
+				</div>
 			)}
 		</div>
 	</RadixAvatar.Root>
