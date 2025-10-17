@@ -3,14 +3,19 @@
 // External packages
 import * as React from 'react';
 import { Form } from 'react-aria-components';
+import { Controller, useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 
 // Components
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
+import { Error } from '@/components/ui/error';
+
+// Hooks
 import { useResetPassword } from '@/hooks/data/auth';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { Controller, useForm } from 'react-hook-form';
+
+// Schemas
 import { ResetPasswordArgs, resetPasswordSchema } from '@repo/schemas/auth';
 
 export const ResetPasswordForm = () => {
@@ -74,6 +79,9 @@ export const ResetPasswordForm = () => {
 					)}
 				/>
 			</div>
+
+			{errors.root && <Error>{errors.root.message}</Error>}
+
 			<Button
 				className="w-full"
 				size="lg"

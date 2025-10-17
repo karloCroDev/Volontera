@@ -2,54 +2,175 @@
 
 // External packages
 import * as React from 'react';
-import { Form } from 'react-aria-components';
+import { Form, Input, Label as AriaLabel } from 'react-aria-components';
 import { ArrowRight, Trash } from 'lucide-react';
+import { Controller, useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useRouter } from 'next/navigation';
 
 // Components
 import { Avatar } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { DatePciker } from '@/components/ui/date-picker';
+import { DatePicker } from '@/components/ui/date-picker';
+import { Error } from '@/components/ui/error';
 
-export const AdditionalInformationForm = () => {
-	const hasUserInput = false;
+// Schemas
+import {
+	AdditionalFormArgs,
+	additionalInformationSchema,
+} from '@repo/schemas/onboarding';
+
+// Config
+import { withReactQueryProvider } from '@/config/react-query';
+
+export const AdditionalInformationForm = withReactQueryProvider(() => {
+	const {
+		control,
+		handleSubmit,
+		formState: { errors },
+		setError,
+		watch,
+	} = useForm<AdditionalFormArgs>({
+		resolver: zodResolver(additionalInformationSchema),
+	});
+
+	const router = useRouter();
+	const hasUserInput = watch().DOB || watch().bio || watch().image;
+	const [currentImage, setCurrentImage] = React.useState<File | undefined>(
+		undefined
+	);
+
+	console.log(watch().image);
+	const onSubmit = async (data: AdditionalFormArgs) => {
+		console.log('test');
+		// mutate(data, {
+		// 	onSuccess({ message, success }) {
+		// 		if (!success) {
+		// 			return setError('root', {
+		// 				message,
+		// 			});
+		// 		}
+		// 	},
+		// });
+	};
 
 	return (
-		<Form className="mt-20 flex flex-col items-center gap-6 lg:gap-8">
-			<Avatar
-				imageProps={{
-					alt: 'Avatar',
-				}}
-				size="full"
-				isInput
-				deleteButton={
-					<Button className="p-3" isFullyRounded colorScheme="yellow">
-						<Trash className="size-4" />
-					</Button>
+		<Form
+			className="mt-20 flex flex-col items-center gap-6 lg:gap-8"
+			onSubmit={() => {
+				console.log('Does this work');
+				if (hasUserInput) {
+					return handleSubmit(onSubmit);
 				}
-			>
-				Karlo Grgic
-			</Avatar>
+
+				router.push('/home');
+			}}
+		>
+			<div className="relative">
+				<Controller
+					control={control}
+					name="image"
+					render={({ field: { onChange } }) => (
+						<>
+							<AriaLabel htmlFor="image">
+								<Avatar
+									imageProps={{
+										src: currentImage && URL.createObjectURL(currentImage),
+										alt: 'Avatar',
+									}}
+									size="full"
+									isInput
+									deleteButton={
+										watch().image && (
+											<Button
+												className="p-3"
+												isFullyRounded
+												colorScheme="yellow"
+												onPress={() => {
+													setCurrentImage(undefined);
+													onChange();
+												}}
+											>
+												<Trash className="size-4" />
+											</Button>
+										)
+									}
+								>
+									Karlo Grgic
+								</Avatar>
+							</AriaLabel>
+
+							<Input
+								id="image"
+								type="file"
+								accept="image/*"
+								onChange={(e) => {
+									const file = e.target?.files?.[0];
+
+									if (!file) return;
+
+									onChange({
+										filename: file.name,
+										contentType: file.type,
+										size: file.size,
+									});
+									setCurrentImage(file);
+								}}
+								className="absolute cursor-pointer opacity-0"
+							/>
+						</>
+					)}
+				/>
+			</div>
 
 			<div className="w-full">
 				<Label isOptional>DOB</Label>
-				<DatePciker onChange={(val) => console.log(val)} className="mt-2" />
+				<Controller
+					control={control}
+					name="DOB" // TODO: Handle format in which way I will send the data
+					render={({ field: { onChange } }) => (
+						<DatePicker
+							onChange={(val) => {
+								if (!val) return;
+								const formatted = `${String(val.month).padStart(2, '0')}-${String(val.day).padStart(2, '0')}-${val.year}`;
+								onChange(formatted);
+							}}
+							className="mt-2"
+						/>
+					)}
+				/>
 			</div>
 			<div className="w-full">
-				<Label htmlFor="DOB" isOptional>
+				<Label htmlFor="bio" isOptional>
 					Bio
 				</Label>
-				<Textarea id="DOB" label="Enter your bio..." className="mt-2" />
+
+				<Controller
+					control={control}
+					name="bio" // TODO: Handle on how am I passing the image data!
+					render={({ field }) => (
+						<Textarea
+							id="bio"
+							label="Enter your bio..."
+							className="mt-2"
+							{...field}
+						/>
+					)}
+				/>
 			</div>
+
+			{errors.root && <Error>{errors.root.message}</Error>}
+
 			<Button
 				className="w-full"
 				size="lg"
 				iconRight={!hasUserInput && <ArrowRight />}
 				colorScheme={hasUserInput ? 'orange' : 'bland'}
 			>
-				{!hasUserInput ? 'Skip' : 'Finish'}
+				{!hasUserInput ? 'Skip' : 'Save'}
 			</Button>
 		</Form>
 	);
-};
+});

@@ -13,6 +13,7 @@ import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { Icon } from '@/components/ui/icon';
+import { Error } from '@/components/ui/error';
 
 // Hooks
 import { useRegister } from '@/hooks/data/auth';
@@ -117,6 +118,7 @@ export const RegisterForm = withReactQueryProvider(() => {
 					)}
 				/>
 			</div>
+			{errors.root && <Error>{errors.root.message}</Error>}
 
 			<Button className="w-full" size="lg" colorScheme="yellow">
 				Create account

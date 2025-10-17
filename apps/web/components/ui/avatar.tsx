@@ -53,12 +53,12 @@ export const Avatar: React.FC<
 				<div
 					className={twJoin(
 						'absolute bottom-2 right-0 z-20 flex gap-4',
-						!!deleteButton ? 'right-2' : 'right-0'
+						!deleteButton ? 'right-2' : 'right-0'
 					)}
 				>
-					<Button className="p-3" isFullyRounded>
+					<div className="bg-primary text-background rounded-full p-3">
 						<Pen className="size-4" />
-					</Button>
+					</div>
 
 					{deleteButton}
 				</div>

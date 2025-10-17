@@ -10,6 +10,7 @@ import { Controller, useForm } from 'react-hook-form';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
+import { Error } from '@/components/ui/error';
 
 // Hooks
 import { useForgotPassword } from '@/hooks/data/auth';
@@ -63,6 +64,7 @@ export const ForgotPasswordForm = withReactQueryProvider(() => {
 					)}
 				/>
 			</div>
+			{errors.root && <Error>{errors.root.message}</Error>}
 			<Button className="w-full" size="lg" isDisabled={isPending}>
 				Send verification code
 			</Button>

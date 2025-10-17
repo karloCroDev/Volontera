@@ -5,7 +5,7 @@ import {
 	CalendarCell,
 	CalendarGrid,
 	DateInput,
-	DatePicker,
+	DatePicker as AriaPicker,
 	DatePickerProps,
 	DateSegment,
 	DateValue,
@@ -21,11 +21,11 @@ import { twJoin } from 'tailwind-merge';
 import { getTextFieldBasicStyles } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 
-export const DatePciker = <T extends DateValue>({
+export const DatePicker = <T extends DateValue>({
 	...rest
 }: DatePickerProps<T>) => {
 	return (
-		<DatePicker {...rest}>
+		<AriaPicker {...rest}>
 			<Group className="flex items-center justify-between">
 				<Button
 					variant="blank"
@@ -68,6 +68,6 @@ export const DatePciker = <T extends DateValue>({
 					</Calendar>
 				</Dialog>
 			</Popover>
-		</DatePicker>
+		</AriaPicker>
 	);
 };

@@ -14,6 +14,7 @@ import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { Icon } from '@/components/ui/icon';
+import { Error } from '@/components/ui/error';
 
 // Hooks
 import { useLogin } from '@/hooks/data/auth';
@@ -95,6 +96,7 @@ export const LoginForm = withReactQueryProvider(() => {
 					)}
 				/>
 			</div>
+			{errors.root && <Error>{errors.root.message}</Error>}
 
 			<Button className="w-full" size="lg" colorScheme="yellow">
 				Login
