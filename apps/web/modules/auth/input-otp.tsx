@@ -10,6 +10,10 @@ export const InputOTP = () => {
 		<OTPInput
 			maxLength={6}
 			containerClassName="group mt-8 flex items-center has-[:disabled]:opacity-30"
+			onChange={(val) => {
+				// TODO: Napravi da mogu pratiti koja je pozicja
+				console.log(val);
+			}}
 			render={({ slots }) => (
 				<div className="flex gap-8">
 					{slots.map((slot, idx) => (
@@ -24,11 +28,7 @@ export const InputOTP = () => {
 const Slot = ({ isActive, char }: SlotProps) => (
 	<div
 		className={twJoin(
-			'relative size-20 rounded-lg text-2xl font-medium',
-			'flex items-center justify-center',
-			'transition-all',
-			'border-accent border',
-			'group-hover:border-accent-foreground/20 group-focus-within:border-accent-foreground/20 outline',
+			'border-accent group-hover:border-accent-foreground/20 group-focus-within:border-accent-foreground/20 relative flex size-20 items-center justify-center rounded-lg border text-2xl font-medium outline transition-all',
 			isActive
 				? 'outline-accent-foreground outline-4'
 				: 'outline-accent-foreground/20 outline-0'

@@ -1,5 +1,5 @@
 // Modules
-import { AdditionalInformationForm } from '@modules/onboarding/additional-information-form';
+import { AdditionalInformationForm } from '@/modules/onboarding/additional-information-form';
 
 export default async function AdditionalInformation() {
 	return (

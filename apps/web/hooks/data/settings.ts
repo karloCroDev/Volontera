@@ -6,7 +6,7 @@ import {
 } from '@tanstack/react-query';
 
 // Data
-import { updateUser } from '@/lib/data/settings';
+import { updateUser } from '@/lib/data/';
 
 // Types
 import { SettingsResponse } from '@repo/types/settings';

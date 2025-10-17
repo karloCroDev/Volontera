@@ -5,7 +5,9 @@ import {
 	useQuery,
 	useQueryClient,
 } from '@tanstack/react-query';
+import { cache } from 'react';
 
+// Lib
 import {
 	clientSession,
 	forgotPassword,
@@ -16,6 +18,7 @@ import {
 	verifyEmail,
 } from '@/lib/data/auth';
 
+// Schemas
 import {
 	ForgotPasswordArgs,
 	LoginArgs,
@@ -23,7 +26,8 @@ import {
 	ResetPasswordArgs,
 	VerifyEmailArgs,
 } from '@repo/schemas/auth';
-import { cache } from 'react';
+
+// Types
 import {
 	AuthResponse,
 	ErrorAuthResponse,
