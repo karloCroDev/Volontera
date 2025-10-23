@@ -17,7 +17,7 @@ datasource db {
 enum UserRole {
   USER
   ORGANIZATION
-  SUPERADMIN // TODO: Add this if I have time to implement (admin dashoboard)
+  ADMIN // TODO: Add this if I have time to implement (admin dashoboard)
 }
 
 enum SubscriptionTier {

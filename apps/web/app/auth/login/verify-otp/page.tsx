@@ -4,7 +4,7 @@ import Link from 'next/link';
 
 export default function VerifyOtp() {
 	return (
-		<Layout className="">
+		<Layout>
 			<LayoutColumn
 				className="flex h-[100vh] flex-col items-center justify-center"
 				start={1}
@@ -23,7 +23,7 @@ export default function VerifyOtp() {
 						href="/login"
 						className="text-background-foreground ml-2 underline underline-offset-4"
 					>
-						login{' '}
+						login
 					</Link>
 				</p>
 			</LayoutColumn>

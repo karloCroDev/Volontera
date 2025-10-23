@@ -26,11 +26,11 @@ export async function session(req: Request, res: Response) {
 
       select: {
         id: true,
-        username: true,
+        firstName: true,
+        lastName: true,
         email: true,
         bio: true,
         image: true,
-        isOnline: true,
         role: true,
         createdAt: true,
         updatedAt: true,

@@ -11,6 +11,7 @@ export function generateTokenAndSetCookie({
   res: Response;
   userId: string;
   role: User["role"];
+  subscriptionTier: User["subscriptionTier"];
 }) {
   const token = jwt.sign({ userId, role }, process.env.JWT_SECRET as string, {
     expiresIn: "7d",
@@ -20,7 +21,7 @@ export function generateTokenAndSetCookie({
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-    path: "/", // <--- ensure it’s global
+    path: "/",
     maxAge: 7 * 24 * 60 * 60 * 1000,
   });
 

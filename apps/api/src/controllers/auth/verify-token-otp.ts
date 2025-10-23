@@ -17,7 +17,6 @@ export async function verifyTokenOtp(req: Request, res: Response) {
 
   const { data: validateData, success } = verifyEmail.safeParse(data);
 
-  console.log(validateData);
   if (!success) {
     return res.status(400).json({ message: "Invalid data", success: false });
   }
@@ -65,6 +64,7 @@ export async function verifyTokenOtp(req: Request, res: Response) {
     res,
     userId: user.id,
     role: user.role,
+    subscriptionTier: user.subscriptionTier,
   });
 
   return res.status(200).json({

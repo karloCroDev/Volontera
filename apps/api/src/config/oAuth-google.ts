@@ -1,6 +1,9 @@
-import { prisma } from "@/src/config/prisma";
+// External packages
 import passport from "passport";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
+
+// Config
+import { prisma } from "@/config/prisma";
 
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID!;
 const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET!;
@@ -49,7 +52,8 @@ export const oAuthGoogle = passport.use(
             update: {},
             create: {
               email: profile.emails[0].value,
-              username: profile.displayName,
+              firstName: profile.displayName,
+              lastName: "",
               image: profile.photos?.[0].value,
               password: "", // or generate a random string if needed
             },

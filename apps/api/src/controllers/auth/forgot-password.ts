@@ -31,7 +31,7 @@ export async function forgotPassword(req: Request, res: Response) {
       resetToken,
       resetTokenExpireDate,
     },
-  }); // Karlo saznaj kako handleati errore s prismom
+  }); // TODO: saznaj kako handleati errore s prismom
 
   if (!user)
     return res.status(400).json({ message: "Invalid email", success: true });

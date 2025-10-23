@@ -6,9 +6,9 @@ export function userMiddleware(
   res: Response,
   next: NextFunction
 ) {
-  const { role } = req.user;
+  const { userId } = req.user;
 
-  if (role !== "USER") {
+  if (!userId) {
     return res.status(400).json({ message: "Forbidden: Users only" });
   }
 

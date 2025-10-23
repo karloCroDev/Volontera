@@ -36,109 +36,115 @@ export const RegisterForm = withReactQueryProvider(() => {
 	const router = useRouter();
 	const onSubmit = async (data: RegisterArgs) => {
 		mutate(data, {
-			onSuccess({ message, success }) {
+			onSuccess({ message }) {
+				router.push(`/auth/login/verify-otp?email=${data.email}`);
+			},
+
+			onError({ message, success }) {
 				if (!success) {
-					return setError('root', {
+					setError('root', {
 						message,
 					});
 				}
-
-				router.push('/login/verify-otp');
 			},
 		});
 	};
 
-	console.log(errors);
 	return (
-		<Form
-			className="mt-12 flex flex-col gap-8 lg:mt-16"
-			onSubmit={handleSubmit(onSubmit)}
-		>
-			<div className="flex gap-8">
-				<div className="flex-1">
-					<Label htmlFor="Email">First name</Label>
-					<Controller
-						control={control}
-						name="firstName"
-						render={({ field }) => (
-							<Input
-								id="firstName"
-								label="Enter your first name..."
-								className="mt-2"
-								error={errors.firstName?.message}
-								{...field}
-							/>
-						)}
-					/>
-				</div>
-				<div className="flex-1">
-					<Label htmlFor="lastName">Last name</Label>
-					<Controller
-						control={control}
-						name="lastName"
-						render={({ field }) => (
-							<Input
-								id="lastName"
-								label="Enter your last name..."
-								className="mt-2"
-								error={errors.lastName?.message}
-								{...field}
-							/>
-						)}
-					/>
-				</div>
-			</div>
-			<div>
-				<Label htmlFor="email">Email</Label>
-				<Controller
-					control={control}
-					name="email"
-					render={({ field }) => (
-						<Input
-							id="email"
-							label="Enter your email..."
-							className="mt-2"
-							error={errors.email?.message}
-							{...field}
-						/>
-					)}
-				/>
-			</div>
-			<div>
-				<Label htmlFor="password">Password</Label>
-				<Controller
-					control={control}
-					name="password"
-					render={({ field }) => (
-						<Input
-							id="password"
-							inputProps={{
-								type: 'password',
-							}}
-							label="Enter your password..."
-							className="mt-2"
-							error={errors.password?.message}
-							{...field}
-						/>
-					)}
-				/>
-			</div>
-			{errors.root && <Error>{errors.root.message}</Error>}
-
-			<Button className="w-full" size="lg" colorScheme="yellow">
-				Create account
-			</Button>
-
-			<Separator />
-			<Button
-				className="w-full"
-				size="lg"
-				colorScheme="bland"
-				iconLeft={<Icon name="google" className="text-background" />}
-				isDisabled={isPending}
+		<>
+			<Form
+				className="mt-12 flex flex-col gap-8 lg:mt-16"
+				onSubmit={handleSubmit(onSubmit)}
 			>
-				Create account with google
-			</Button>
-		</Form>
+				<div className="flex gap-8">
+					<div className="flex-1">
+						<Label htmlFor="Email">First name</Label>
+						<Controller
+							control={control}
+							name="firstName"
+							render={({ field }) => (
+								<Input
+									id="firstName"
+									label="Enter your first name..."
+									className="mt-2"
+									error={errors.firstName?.message}
+									{...field}
+								/>
+							)}
+						/>
+					</div>
+					<div className="flex-1">
+						<Label htmlFor="lastName">Last name</Label>
+						<Controller
+							control={control}
+							name="lastName"
+							render={({ field }) => (
+								<Input
+									id="lastName"
+									label="Enter your last name..."
+									className="mt-2"
+									error={errors.lastName?.message}
+									{...field}
+								/>
+							)}
+						/>
+					</div>
+				</div>
+				<div>
+					<Label htmlFor="email">Email</Label>
+					<Controller
+						control={control}
+						name="email"
+						render={({ field }) => (
+							<Input
+								id="email"
+								label="Enter your email..."
+								className="mt-2"
+								error={errors.email?.message}
+								{...field}
+							/>
+						)}
+					/>
+				</div>
+				<div>
+					<Label htmlFor="password">Password</Label>
+					<Controller
+						control={control}
+						name="password"
+						render={({ field }) => (
+							<Input
+								id="password"
+								inputProps={{
+									type: 'password',
+								}}
+								label="Enter your password..."
+								className="mt-2"
+								error={errors.password?.message}
+								{...field}
+							/>
+						)}
+					/>
+				</div>
+				{errors.root && <Error>{errors.root.message}</Error>}
+				<Button
+					className="w-full"
+					size="lg"
+					colorScheme="yellow"
+					isDisabled={isPending}
+					type="submit"
+				>
+					Create account
+				</Button>
+				<Separator />
+				<Button
+					className="w-full"
+					size="lg"
+					colorScheme="bland"
+					iconLeft={<Icon name="google" className="text-background" />}
+				>
+					Create account with google
+				</Button>
+			</Form>
+		</>
 	);
 });

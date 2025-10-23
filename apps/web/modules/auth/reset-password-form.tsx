@@ -31,12 +31,11 @@ export const ResetPasswordForm = () => {
 
 	const onSubmit = async (data: ResetPasswordArgs) => {
 		mutate(data, {
-			onSuccess({ message, success }) {
-				if (!success) {
-					return setError('root', {
-						message,
-					});
-				}
+			onSuccess({ message }) {},
+			onError({ message }) {
+				setError('root', {
+					message,
+				});
 			},
 		});
 	};
@@ -87,6 +86,7 @@ export const ResetPasswordForm = () => {
 				size="lg"
 				colorScheme="orange"
 				isDisabled={isPending}
+				type="submit"
 			>
 				Reset password
 			</Button>

@@ -2,7 +2,6 @@
 import { twMerge } from 'tailwind-merge';
 
 export const Error: React.FC<React.ComponentPropsWithoutRef<'div'>> = ({
-	children,
 	className,
 	...rest
 }) => (

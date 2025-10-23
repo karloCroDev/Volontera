@@ -3,7 +3,6 @@ import { LoginArgs, RegisterArgs } from "@repo/schemas/auth";
 // Login / Register response
 
 export type AuthResponse = {
-  success: boolean;
   message: string;
 };
 

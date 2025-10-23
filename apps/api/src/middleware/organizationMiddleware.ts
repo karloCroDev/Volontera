@@ -7,6 +7,7 @@ declare module "express-serve-static-core" {
     user: {
       userId: string;
       role: User["role"];
+      pro: User["subscriptionTier"];
     };
   }
 }
@@ -16,10 +17,9 @@ export function adminMiddleware(
   res: Response,
   next: NextFunction
 ) {
-  const { user } = req;
+  const { role } = req.user;
 
-  console.log(user);
-  if (!user || user.role !== "ORGANIZATION") {
+  if (role !== "ADMIN") {
     return res.status(400).json({ message: "Forbidden: Admins only" });
   }
 
