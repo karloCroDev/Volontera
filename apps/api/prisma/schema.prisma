@@ -22,7 +22,7 @@ enum UserRole {
 
 enum SubscriptionTier {
   BASIC
-  PREMIUM
+  PRO
 }
 
 enum SubscriptionType {

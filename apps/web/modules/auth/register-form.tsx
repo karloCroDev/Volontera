@@ -47,6 +47,8 @@ export const RegisterForm = withReactQueryProvider(() => {
 			},
 		});
 	};
+
+	console.log(errors);
 	return (
 		<Form
 			className="mt-12 flex flex-col gap-8 lg:mt-16"
@@ -110,6 +112,9 @@ export const RegisterForm = withReactQueryProvider(() => {
 					render={({ field }) => (
 						<Input
 							id="password"
+							inputProps={{
+								type: 'password',
+							}}
 							label="Enter your password..."
 							className="mt-2"
 							error={errors.password?.message}

@@ -2,16 +2,22 @@
 
 // External packages
 import * as React from 'react';
-import { Form, Radio, RadioGroup } from 'react-aria-components';
+import { Radio, RadioGroup } from 'react-aria-components';
 
 // Components
 import { RadioButtonVisual } from '@/components/ui/radio';
 import { Button } from '@/components/ui/button';
+import { useRouter } from 'next/navigation';
 
 export const SelectType = () => {
+	const [type, setType] = React.useState('');
+	const router = useRouter();
 	return (
-		<Form className="flex flex-col items-end justify-center">
-			<RadioGroup className="mt-8 flex w-full flex-col gap-8 self-start lg:mt-12">
+		<div className="flex flex-col items-end justify-center">
+			<RadioGroup
+				className="mt-8 flex w-full flex-col gap-8 self-start lg:mt-12"
+				onChange={(val) => setType(val)}
+			>
 				<Radio className="group" value="user">
 					<RadioButtonVisual titleLabel="User">
 						Apply and attend various erasmus programme, or volunteer actions and
@@ -25,9 +31,17 @@ export const SelectType = () => {
 				</Radio>
 			</RadioGroup>
 
-			<Button className="mt-8 self-end" size="md" colorScheme="bland">
+			<Button
+				className="mt-8 self-end"
+				size="md"
+				colorScheme="bland"
+				isDisabled={!type}
+				onPress={() => {
+					router.push('/login');
+				}}
+			>
 				Next
 			</Button>
-		</Form>
+		</div>
 	);
 };

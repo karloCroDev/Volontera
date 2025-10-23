@@ -30,7 +30,7 @@ app.use(oAuthGoogle.initialize());
 
 app.use(express.json());
 app.use("/auth", authRoutes);
-
+app.use("/onboarding", authMiddleware);
 // Test
 app.get("/protected", authMiddleware, (req, res) => {
   res.json({ message: "This is a protected route" });
