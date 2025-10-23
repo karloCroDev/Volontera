@@ -15,7 +15,7 @@ export async function resetPassword(req: Request, res: Response) {
     resetPasswordSchema.safeParse(reqData);
 
   if (!success) {
-    return res.status(400).json({ message: "Invalid data", success: true });
+    return res.status(400).json({ message: "Invalid data" });
   }
 
   const hashedPassword = bcrypt.hashSync(validatedData.password, 10);
@@ -34,10 +34,7 @@ export async function resetPassword(req: Request, res: Response) {
     },
   });
 
-  if (!user)
-    return res.status(400).json({ message: "Invalid token", success: true });
+  if (!user) return res.status(400).json({ message: "Invalid token" });
 
-  res
-    .status(200)
-    .json({ message: "Your password is successfuly updated!", success: true });
+  res.status(200).json({ message: "Your password is successfuly updated!" });
 }

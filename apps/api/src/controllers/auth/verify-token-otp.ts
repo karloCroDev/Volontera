@@ -18,7 +18,7 @@ export async function verifyTokenOtp(req: Request, res: Response) {
   const { data: validateData, success } = verifyEmail.safeParse(data);
 
   if (!success) {
-    return res.status(400).json({ message: "Invalid data", success: false });
+    return res.status(400).json({ message: "Invalid data" });
   }
 
   const user = await prisma.user.findUnique({
@@ -31,7 +31,7 @@ export async function verifyTokenOtp(req: Request, res: Response) {
   });
 
   if (!user || !user.verificationToken) {
-    return res.status(400).json({ message: "Invalid code", success: false });
+    return res.status(400).json({ message: "Invalid code" });
   }
 
   const isValidOtp = await bcrypt.compare(
@@ -40,7 +40,7 @@ export async function verifyTokenOtp(req: Request, res: Response) {
   );
 
   if (!isValidOtp) {
-    return res.status(400).json({ message: "Invalid code", success: false });
+    return res.status(400).json({ message: "Invalid code" });
   }
 
   const userUpdated = await prisma.user.update({
@@ -68,7 +68,6 @@ export async function verifyTokenOtp(req: Request, res: Response) {
   });
 
   return res.status(200).json({
-    success: true,
     message: "User is verified successfully",
   });
 }
@@ -80,7 +79,7 @@ export async function resetVerifyToken(req: Request, res: Response) {
 
   console.log(validateData);
   if (!success) {
-    return res.status(400).json({ message: "Invalid data", success: false });
+    return res.status(400).json({ message: "Invalid data" });
   }
 
   const {
@@ -93,7 +92,6 @@ export async function resetVerifyToken(req: Request, res: Response) {
   if (!successResend) {
     return res.status(400).json({
       message: message,
-      success: false,
     });
   }
 
@@ -109,12 +107,9 @@ export async function resetVerifyToken(req: Request, res: Response) {
   });
 
   if (!updatedUser) {
-    return res
-      .status(400)
-      .json({ message: "Error with email", success: false });
+    return res.status(400).json({ message: "Error with email" });
   }
   return res.status(200).json({
-    success: true,
     message: "User logged in successfully",
   });
 }

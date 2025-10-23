@@ -29,8 +29,7 @@ export async function login(req: Request, res: Response) {
       },
     });
 
-    if (!user)
-      return res.status(400).json({ message: "Invalid email", success: false });
+    if (!user) return res.status(400).json({ message: "Invalid email" });
 
     const passwordIsValid = bcrypt.compareSync(
       validateData.data.password,
@@ -47,7 +46,6 @@ export async function login(req: Request, res: Response) {
     if (!success) {
       return res.status(400).json({
         message: message,
-        success: false,
       });
     }
 
@@ -62,17 +60,14 @@ export async function login(req: Request, res: Response) {
     });
 
     if (!updatedUser) {
-      return res
-        .status(400)
-        .json({ message: "Error with email", success: false });
+      return res.status(400).json({ message: "Error with email" });
     }
     ///
     return res.status(200).json({
-      success: true,
       message: "User logged in successfully",
     });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Internal server error", success: false });
+    res.status(500).json({ message: "Internal server error" });
   }
 }

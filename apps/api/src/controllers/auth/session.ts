@@ -49,11 +49,9 @@ export async function session(req: Request, res: Response) {
 
     const response = image ? { ...user, image } : { ...user };
 
-    res
-      .status(200)
-      .json({ ...response, message: "User is logged in", success: true });
+    res.status(200).json({ ...response, message: "User is logged in" });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "Internal server error", success: false });
+    res.status(500).json({ error: "Internal server error" });
   }
 }

@@ -17,7 +17,7 @@ export async function forgotPassword(req: Request, res: Response) {
     forgotPasswordSchema.safeParse(reqData);
 
   if (!success) {
-    return res.status(400).json({ message: "Invalid data", success: true });
+    return res.status(400).json({ message: "Invalid data" });
   }
 
   const resetToken = crypto.randomBytes(20).toString("hex");
@@ -33,8 +33,7 @@ export async function forgotPassword(req: Request, res: Response) {
     },
   }); // TODO: saznaj kako handleati errore s prismom
 
-  if (!user)
-    return res.status(400).json({ message: "Invalid email", success: true });
+  if (!user) return res.status(400).json({ message: "Invalid email" });
 
   if (process.env.NODE_ENV === "production") {
     const { error } = await resend.emails.send({
@@ -45,9 +44,7 @@ export async function forgotPassword(req: Request, res: Response) {
     });
 
     if (error) {
-      return res
-        .status(400)
-        .json({ message: "Error with email", success: false });
+      return res.status(400).json({ message: "Error with email" });
     }
   } else {
     await sendEmail({
@@ -57,5 +54,5 @@ export async function forgotPassword(req: Request, res: Response) {
     });
   }
 
-  res.status(200).json({ message: "Email sent", success: true });
+  res.status(200).json({ message: "Email sent" });
 }

@@ -36,5 +36,5 @@ export async function verifyUser(email: string) {
 
   const expireDate = Date.now() + 1 * 60 * 60 * 1000; // 1 hour
 
-  return { hashedOtp, expireDate, success: true } as const;
+  return { hashedOtp, expireDate } as const;
 }

@@ -41,7 +41,6 @@ export async function register(req: Request, res: Response) {
     if (!verifySuccess) {
       return res.status(400).json({
         message: message,
-        success: false,
       });
     }
 
@@ -59,16 +58,14 @@ export async function register(req: Request, res: Response) {
     if (!user) {
       return res.status(400).json({
         message: "Already existing user, please login!",
-        success: false,
       });
     }
 
     return res.json({
-      success: true,
       message: "User created successfully",
     });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "Internal server error", success: false });
+    res.status(500).json({ error: "Internal server error" });
   }
 }

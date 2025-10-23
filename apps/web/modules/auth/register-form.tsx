@@ -40,12 +40,10 @@ export const RegisterForm = withReactQueryProvider(() => {
 				router.push(`/auth/login/verify-otp?email=${data.email}`);
 			},
 
-			onError({ message, success }) {
-				if (!success) {
-					setError('root', {
-						message,
-					});
-				}
+			onError({ message }) {
+				setError('root', {
+					message,
+				});
 			},
 		});
 	};
