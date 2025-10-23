@@ -73,6 +73,7 @@ export const oAuthGoogle = passport.use(
         return done(null, {
           userId: user.id,
           role: user.role,
+          subscriptionTier: user.subscriptionTier,
         });
       } catch (err) {
         return done(err);

@@ -1,8 +1,10 @@
-import { prisma } from "@/config/prisma";
+// External packages
 import { User } from "@prisma/client";
-// import { User } from "@prisma/client";
 import { Request, Response } from "express";
 import Stripe from "stripe";
+
+// Config
+import { prisma } from "@/config/prisma";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
@@ -65,7 +67,7 @@ export async function stripeWebhook(req: Request, res: Response) {
           where: { email: customer.email },
           data: {
             customerId,
-            subscriptionTier: "PREMIUM",
+            subscriptionTier: "PRO",
             subscriptionType, // Need to set subscription
           },
         });

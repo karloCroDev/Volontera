@@ -51,6 +51,7 @@ authRoutes.get(
       res,
       role: req.user.role,
       userId: req.user.userId,
+      subscriptionTier: req.user.subscriptionTier,
     });
 
     res.redirect("http://localhost:3000/chat");

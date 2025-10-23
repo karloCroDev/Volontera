@@ -30,7 +30,6 @@ export async function register(req: Request, res: Response) {
 
     const hashedPassword = bcrypt.hashSync(validateData.password, 10);
 
-    console.log(validateData.email);
     const {
       success: verifySuccess,
       hashedOtp,

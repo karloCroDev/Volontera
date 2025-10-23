@@ -34,12 +34,9 @@ export const ForgotPasswordForm = withReactQueryProvider(() => {
 
 	const onSubmit = async (data: ForgotPasswordArgs) => {
 		mutate(data, {
-			onSuccess({ message, success }) {
-				if (!success) {
-					return setError('root', {
-						message,
-					});
-				}
+			onSuccess({ message }) {},
+			onError(err) {
+				setError('root', err);
 			},
 		});
 	};
