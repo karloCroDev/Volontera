@@ -14,6 +14,7 @@ import {
 	login,
 	logout,
 	register,
+	resendEmail,
 	resetPassword,
 	verifyEmail,
 } from '@/lib/data/auth';
@@ -42,6 +43,7 @@ export const useSession = () => {
 	});
 };
 
+// Authentication (basics)
 export const useLogin = (
 	options?: UseMutationOptions<AuthResponse, ErrorAuthResponse, LoginArgs>
 ) => {
@@ -85,6 +87,7 @@ export const useLogout = (options?: UseMutationOptions<void, Error, void>) => {
 	});
 };
 
+// Reseting password
 export const useForgotPassword = (
 	options?: UseMutationOptions<
 		SessionSuccessResponse,
@@ -119,6 +122,7 @@ export const useResetPassword = (
 	});
 };
 
+// Email verification
 export const useVerifyEmail = (
 	options?: UseMutationOptions<SessionSuccessResponse, Error, VerifyEmailArgs>
 ) => {
@@ -126,6 +130,20 @@ export const useVerifyEmail = (
 	return useMutation({
 		mutationKey: ['verify-email'],
 		mutationFn: (values: VerifyEmailArgs) => verifyEmail(values),
+		onSuccess: async (...args) => {
+			await queryClient.invalidateQueries({ queryKey: ['session'] });
+			await options?.onSuccess?.(...args);
+		},
+		...options,
+	});
+};
+export const useResetEmail = (
+	options?: UseMutationOptions<SessionSuccessResponse, Error, VerifyEmailArgs>
+) => {
+	const queryClient = useQueryClient();
+	return useMutation({
+		mutationKey: ['verify-email'],
+		mutationFn: (values: VerifyEmailArgs) => resendEmail(values),
 		onSuccess: async (...args) => {
 			await queryClient.invalidateQueries({ queryKey: ['session'] });
 			await options?.onSuccess?.(...args);

@@ -13,6 +13,7 @@ import {
 // Lib
 import { catchError } from '@/lib/utils/error';
 
+// Getting the user
 export async function clientSession() {
 	try {
 		const res = await API().get('auth/session');
@@ -22,6 +23,7 @@ export async function clientSession() {
 	}
 }
 
+// Authentication (basics)
 export async function login(data: LoginArgs) {
 	try {
 		const res = await API().post('auth/login', data);
@@ -49,6 +51,7 @@ export async function logout() {
 	}
 }
 
+// Reseting password
 export async function forgotPassword(data: ForgotPasswordArgs) {
 	try {
 		const res = await API().post('auth/forgot-password', data);
@@ -67,9 +70,19 @@ export async function resetPassword(data: ResetPasswordArgs) {
 	}
 }
 
+// Email verification
 export async function verifyEmail(data: VerifyEmailArgs) {
 	try {
 		const res = await API().post('auth/verify-token-otp', data);
+		return res.data;
+	} catch (err) {
+		catchError(err);
+	}
+}
+
+export async function resendEmail(data: VerifyEmailArgs) {
+	try {
+		const res = await API().post('auth/reset-verify-token', data);
 		return res.data;
 	} catch (err) {
 		catchError(err);

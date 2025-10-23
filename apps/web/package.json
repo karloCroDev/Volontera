@@ -13,6 +13,7 @@
 	"dependencies": {
 		"@hookform/resolvers": "^5.2.2",
 		"@radix-ui/react-avatar": "^1.1.10",
+		"@radix-ui/react-toast": "^1.2.15",
 		"@repo/ui": "*",
 		"@tailwindcss/postcss": "^4.1.13",
 		"@tanstack/react-query": "^5.90.3",
@@ -31,8 +32,8 @@
 	},
 	"devDependencies": {
 		"@repo/eslint-config": "*",
-		"@repo/schemas": "*",
 		"@repo/permissons": "*",
+		"@repo/schemas": "*",
 		"@repo/types": "*",
 		"@repo/typescript-config": "*",
 		"@types/node": "^22.15.3",

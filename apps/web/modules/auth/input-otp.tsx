@@ -5,11 +5,16 @@ import * as React from 'react';
 import { OTPInput, SlotProps } from 'input-otp';
 import { twJoin } from 'tailwind-merge';
 import { useRouter, useSearchParams } from 'next/navigation';
+import Link from 'next/link';
+
+// Components
+import { Error } from '@/components/ui/error';
+import { Button } from '@/components/ui/button';
 
 // Hooks
 import { useVerifyEmail } from '@/hooks/data/auth';
 import { withReactQueryProvider } from '@/config/react-query';
-import { Error } from '@/components/ui/error';
+import { ArrowRight } from 'lucide-react';
 
 export const InputOTP = withReactQueryProvider(() => {
 	const searchParams = useSearchParams();
@@ -19,7 +24,7 @@ export const InputOTP = withReactQueryProvider(() => {
 
 	const [error, setError] = React.useState('');
 	return (
-		<>
+		<div>
 			<OTPInput
 				maxLength={6}
 				containerClassName="group mt-8 flex items-center has-[:disabled]:opacity-30"
@@ -46,9 +51,26 @@ export const InputOTP = withReactQueryProvider(() => {
 					</div>
 				)}
 			/>
-
+			<div className="flex lg:items-baseline lg:justify-between">
+				<p className="text-muted-foreground mt-7">
+					Different account?
+					<Link
+						href="/login"
+						className="text-background-foreground ml-2 underline underline-offset-4"
+					>
+						Login!
+					</Link>
+				</p>
+				<Button
+					variant="blank"
+					className="underline-offset-8 transition-all hover:underline"
+					iconRight={<ArrowRight className="size-4" />}
+				>
+					Send new verification code
+				</Button>
+			</div>
 			{error && <Error className="mt-4 text-base">{error}</Error>}
-		</>
+		</div>
 	);
 });
 
