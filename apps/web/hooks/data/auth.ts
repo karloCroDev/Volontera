@@ -30,11 +30,8 @@ import {
 } from '@repo/schemas/auth';
 
 // Types
-import {
-	AuthResponse,
-	ErrorAuthResponse,
-	SessionSuccessResponse,
-} from '@repo/types/auth';
+import { SessionSuccessResponse } from '@repo/types/auth';
+import { ErrorFormResponse, SuccessfulResponse } from '@repo/types/general';
 
 export const useSession = () => {
 	return useQuery({
@@ -46,7 +43,7 @@ export const useSession = () => {
 
 // Authentication (basics)
 export const useLogin = (
-	options?: UseMutationOptions<AuthResponse, ErrorAuthResponse, LoginArgs>
+	options?: UseMutationOptions<SuccessfulResponse, ErrorFormResponse, LoginArgs>
 ) => {
 	const queryClient = useQueryClient();
 	return useMutation({
@@ -61,7 +58,11 @@ export const useLogin = (
 };
 
 export const useRegister = (
-	options?: UseMutationOptions<AuthResponse, ErrorAuthResponse, RegisterArgs>
+	options?: UseMutationOptions<
+		SuccessfulResponse,
+		ErrorFormResponse,
+		RegisterArgs
+	>
 ) => {
 	const queryClient = useQueryClient();
 	return useMutation({
@@ -91,8 +92,8 @@ export const useLogout = (options?: UseMutationOptions<void, Error, void>) => {
 // Reseting password
 export const useForgotPassword = (
 	options?: UseMutationOptions<
-		SessionSuccessResponse,
-		Error,
+		SuccessfulResponse,
+		ErrorFormResponse,
 		ForgotPasswordArgs
 	>
 ) => {
@@ -109,7 +110,11 @@ export const useForgotPassword = (
 };
 
 export const useResetPassword = (
-	options?: UseMutationOptions<SessionSuccessResponse, Error, ResetPasswordArgs>
+	options?: UseMutationOptions<
+		SuccessfulResponse,
+		ErrorFormResponse,
+		ResetPasswordArgs
+	>
 ) => {
 	const queryClient = useQueryClient();
 	return useMutation({

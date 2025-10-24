@@ -1,18 +1,13 @@
-import { LoginArgs, RegisterArgs } from "@repo/schemas/auth";
-
+import { SuccessfulResponse } from "./general";
 // Login / Register response
-
-export type AuthResponse = {
-  message: string;
-};
 
 // export type LoginResponse = AuthResponse & {
 //   errors?: Record<keyof LoginArgs, string>;
 // };
 
-export type ErrorAuthResponse = AuthResponse & {
-  errors?: Record<keyof RegisterArgs, string>;
-};
+// export type ErrorAuthResponse = AuthResponse & {
+//   errors?: Record<keyof RegisterArgs, string>;
+// };
 
 // Session (User)
 export type User = {
@@ -29,4 +24,4 @@ export type User = {
   subscriptionType: "NONE" | "MONTHLY" | "YEARLY";
 };
 
-export type SessionSuccessResponse = User & AuthResponse;
+export type SessionSuccessResponse = User & SuccessfulResponse;

@@ -1,3 +1,4 @@
+// Schemas
 import { SettingsArgs } from "@repo/schemas/settings";
 
 export type SettingsResponse = {

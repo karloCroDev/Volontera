@@ -54,6 +54,6 @@ authRoutes.get(
       subscriptionTier: req.user.subscriptionTier,
     });
 
-    res.redirect("http://localhost:3000/chat");
+    res.redirect("http://localhost:3000/home");
   }
 );

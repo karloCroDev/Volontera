@@ -2,7 +2,6 @@
 import cookieParser from "cookie-parser";
 import express from "express";
 import cors from "cors";
-import { authRoutes } from "@/routes/authRoutes";
 
 // Middleware
 import { authMiddleware } from "@/middleware/authMiddleware";
@@ -13,7 +12,9 @@ import { server, app } from "@/config/socket";
 import { oAuthGoogle } from "@/config/oAuth-google";
 
 // Routes
+import { authRoutes } from "@/routes/authRoutes";
 import { paymentRoutes } from "@/routes/paymentRoutes";
+import { onboardingRoutes } from "@/routes/onboardingRoutes";
 
 app.use(
   cors({
@@ -30,7 +31,8 @@ app.use(oAuthGoogle.initialize());
 
 app.use(express.json());
 app.use("/auth", authRoutes);
-app.use("/onboarding", authMiddleware);
+app.use("/onboarding", authMiddleware, onboardingRoutes);
+
 // Test
 app.get("/protected", authMiddleware, (req, res) => {
   res.json({ message: "This is a protected route" });
