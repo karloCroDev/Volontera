@@ -18,6 +18,9 @@ import { useResetPassword } from '@/hooks/data/auth';
 // Schemas
 import { ResetPasswordArgs, resetPasswordSchema } from '@repo/schemas/auth';
 
+// Lib
+import { toast } from '@/lib/utils/toast';
+
 export const ResetPasswordForm = () => {
 	const { isPending, mutate } = useResetPassword();
 	const {
@@ -31,7 +34,13 @@ export const ResetPasswordForm = () => {
 
 	const onSubmit = async (data: ResetPasswordArgs) => {
 		mutate(data, {
-			onSuccess({ message }) {},
+			onSuccess({ message }) {
+				toast({
+					title: 'Success',
+					content: message,
+					variant: 'success',
+				});
+			},
 			onError({ message }) {
 				setError('root', {
 					message,

@@ -11,11 +11,6 @@ import { toast } from '@/lib/utils/toast';
 import { Button } from '@/components/ui/button';
 
 export default function PlaygroundPage() {
-	const [isOpen, setIsOpen] = React.useState(true);
-
-	// React.useEffect(() => {
-	// 	setTimeout(() => setIsOpen(true), 3000);
-	// }, []);
 	return (
 		<div>
 			<p>Hello world</p>

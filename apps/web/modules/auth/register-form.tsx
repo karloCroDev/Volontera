@@ -22,6 +22,9 @@ import { useRegister } from '@/hooks/data/auth';
 import { RegisterArgs, registerSchema } from '@repo/schemas/auth';
 import { withReactQueryProvider } from '@/config/react-query';
 
+// Lib
+import { toast } from '@/lib/utils/toast';
+
 export const RegisterForm = withReactQueryProvider(() => {
 	const { isPending, mutate } = useRegister();
 	const {
@@ -37,6 +40,11 @@ export const RegisterForm = withReactQueryProvider(() => {
 	const onSubmit = async (data: RegisterArgs) => {
 		mutate(data, {
 			onSuccess({ message }) {
+				toast({
+					title: 'Success',
+					content: message,
+					variant: 'success',
+				});
 				router.push(`/auth/login/verify-otp?email=${data.email}`);
 			},
 

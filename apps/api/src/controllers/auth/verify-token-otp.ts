@@ -95,10 +95,14 @@ export async function resetVerifyToken(req: Request, res: Response) {
     });
   }
 
-  const updatedUser = await prisma.user.update({
+  // Da budem jasan ne šaljem kod više korisnika, nego updaeMany će samo updateti onog korisnika koji već ima neki token (koji se pokušao logirati) --> ovo je napravljeno kao dodatan sloj sigurnosti da se ne može zloupotrijebiti endpoint za slanje kodova
+  const updatedUser = await prisma.user.updateMany({
     where: {
       email: validateData.email,
-      verificationToken: validateData.code, // Don't check for expiration, because I am reseting with the new code
+      AND: [
+        { verificationToken: { not: null } },
+        { verificationToken: { not: "" } },
+      ],
     },
     data: {
       verificationToken: hashedOtp,

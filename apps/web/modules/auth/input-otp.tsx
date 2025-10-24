@@ -12,7 +12,7 @@ import { Error } from '@/components/ui/error';
 import { Button } from '@/components/ui/button';
 
 // Hooks
-import { useVerifyEmail } from '@/hooks/data/auth';
+import { useResetEmail, useVerifyEmail } from '@/hooks/data/auth';
 import { withReactQueryProvider } from '@/config/react-query';
 import { ArrowRight } from 'lucide-react';
 
@@ -20,7 +20,10 @@ export const InputOTP = withReactQueryProvider(() => {
 	const searchParams = useSearchParams();
 	const router = useRouter();
 
-	const { mutate } = useVerifyEmail();
+	const { mutate: mutateVerifyEmail } = useVerifyEmail();
+	const { mutate: mutateResetEmail } = useResetEmail();
+
+	const email = searchParams.get('email') || '';
 
 	const [error, setError] = React.useState('');
 	return (
@@ -30,8 +33,8 @@ export const InputOTP = withReactQueryProvider(() => {
 				containerClassName="group mt-8 flex items-center has-[:disabled]:opacity-30"
 				onChange={(val) => {
 					if (val.length === 6) {
-						mutate(
-							{ code: val, email: searchParams.get('email') || '' },
+						mutateVerifyEmail(
+							{ code: val, email },
 							{
 								onSuccess: () => {
 									router.push('/home');
@@ -65,6 +68,9 @@ export const InputOTP = withReactQueryProvider(() => {
 					variant="blank"
 					className="underline-offset-8 transition-all hover:underline"
 					iconRight={<ArrowRight className="size-4" />}
+					onPress={() => {
+						mutateResetEmail({ email });
+					}}
 				>
 					Send new verification code
 				</Button>

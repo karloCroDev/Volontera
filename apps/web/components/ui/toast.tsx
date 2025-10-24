@@ -7,24 +7,22 @@ import { twJoin } from 'tailwind-merge';
 import { CircleAlert, CircleCheck, Clock, X } from 'lucide-react';
 
 // Lib
-import { subscribe, ToastArgs, ToastArgsWithId } from '@/lib/utils/toast';
+import { subscribe, ToastArgs } from '@/lib/utils/toast';
 
 export const Toaster = () => {
-	const [toasts, setToasts] = React.useState<ToastArgsWithId[]>([]);
+	const [toasts, setToasts] = React.useState<ToastArgs[]>([]);
 
 	React.useEffect(() => {
-		subscribe((toast) => {
+		const unsubscribe = subscribe((toast) => {
 			setToasts((prev) => [...prev, toast]);
-			setTimeout(
-				() => setToasts((prev) => prev.filter((t) => t.id !== toast.id)),
-				2000
-			);
 		});
+
+		return unsubscribe;
 	}, []);
 	return (
-		<RadixToast.Provider swipeDirection="right">
-			{toasts.map(({ id, title, content, variant }) => (
-				<Toast key={id} title={title} content={content} variant={variant} />
+		<RadixToast.Provider swipeDirection="right" duration={2000}>
+			{toasts.map(({ title, content, variant }, indx) => (
+				<Toast key={indx} title={title} content={content} variant={variant} />
 			))}
 
 			<RadixToast.Viewport className="z-max fixed inset-x-6 bottom-6 md:inset-auto md:bottom-12 md:right-12 md:w-96" />

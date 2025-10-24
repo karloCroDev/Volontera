@@ -6,6 +6,7 @@ import {
 	ForgotPasswordArgs,
 	LoginArgs,
 	RegisterArgs,
+	ResetEmailArgs,
 	ResetPasswordArgs,
 	VerifyEmailArgs,
 } from '@repo/schemas/auth';
@@ -80,7 +81,7 @@ export async function verifyEmail(data: VerifyEmailArgs) {
 	}
 }
 
-export async function resendEmail(data: VerifyEmailArgs) {
+export async function resendEmail(data: ResetEmailArgs) {
 	try {
 		const res = await API().post('auth/reset-verify-token', data);
 		return res.data;
