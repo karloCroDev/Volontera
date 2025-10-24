@@ -4,31 +4,86 @@
 import * as React from 'react';
 import { OTPInput, SlotProps } from 'input-otp';
 import { twJoin } from 'tailwind-merge';
+import { useRouter, useSearchParams } from 'next/navigation';
+import Link from 'next/link';
 
-export const InputOTP = () => {
+// Components
+import { Error } from '@/components/ui/error';
+import { Button } from '@/components/ui/button';
+
+// Hooks
+import { useResetEmail, useVerifyEmail } from '@/hooks/data/auth';
+import { withReactQueryProvider } from '@/config/react-query';
+import { ArrowRight } from 'lucide-react';
+
+export const InputOTP = withReactQueryProvider(() => {
+	const searchParams = useSearchParams();
+	const router = useRouter();
+
+	const { mutate: mutateVerifyEmail } = useVerifyEmail();
+	const { mutate: mutateResetEmail } = useResetEmail();
+
+	const email = searchParams.get('email') || '';
+
+	const [error, setError] = React.useState('');
 	return (
-		<OTPInput
-			maxLength={6}
-			containerClassName="group mt-8 flex items-center has-[:disabled]:opacity-30"
-			render={({ slots }) => (
-				<div className="flex gap-8">
-					{slots.map((slot, idx) => (
-						<Slot key={idx} {...slot} />
-					))}
-				</div>
-			)}
-		/>
+		<div>
+			<OTPInput
+				maxLength={6}
+				containerClassName="group mt-8 flex items-center has-[:disabled]:opacity-30"
+				onChange={(val) => {
+					if (val.length === 6) {
+						mutateVerifyEmail(
+							{ code: val, email },
+							{
+								onSuccess: () => {
+									router.push('/home');
+								},
+								onError: ({ message }) => {
+									setError(message);
+								},
+							}
+						);
+					}
+				}}
+				render={({ slots }) => (
+					<div className="flex gap-8">
+						{slots.map((slot, idx) => (
+							<Slot key={idx} {...slot} />
+						))}
+					</div>
+				)}
+			/>
+			<div className="flex lg:items-baseline lg:justify-between">
+				<p className="text-muted-foreground mt-7">
+					Different account?
+					<Link
+						href="/login"
+						className="text-background-foreground ml-2 underline underline-offset-4"
+					>
+						Login!
+					</Link>
+				</p>
+				<Button
+					variant="blank"
+					className="underline-offset-8 transition-all hover:underline"
+					iconRight={<ArrowRight className="size-4" />}
+					onPress={() => {
+						mutateResetEmail({ email });
+					}}
+				>
+					Send new verification code
+				</Button>
+			</div>
+			{error && <Error className="mt-4 text-base">{error}</Error>}
+		</div>
 	);
-};
+});
 
 const Slot = ({ isActive, char }: SlotProps) => (
 	<div
 		className={twJoin(
-			'relative size-20 rounded-lg text-2xl font-medium',
-			'flex items-center justify-center',
-			'transition-all',
-			'border-accent border',
-			'group-hover:border-accent-foreground/20 group-focus-within:border-accent-foreground/20 outline',
+			'border-accent group-hover:border-accent-foreground/20 group-focus-within:border-accent-foreground/20 relative flex size-20 items-center justify-center rounded-lg border text-2xl font-medium outline transition-all',
 			isActive
 				? 'outline-accent-foreground outline-4'
 				: 'outline-accent-foreground/20 outline-0'

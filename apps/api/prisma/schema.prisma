@@ -1,0 +1,73 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  // output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  USER
+  ORGANIZATION
+  ADMIN // TODO: Add this if I have time to implement (admin dashoboard)
+}
+
+enum SubscriptionTier {
+  BASIC
+  PRO
+}
+
+enum SubscriptionType {
+  NONE
+  MONTHLY
+  YEARLY
+}
+
+model User {
+  id        String    @id @default(cuid())
+  firstName String    @unique
+  lastName  String    @unique
+  email     String    @unique
+  password  String
+  image     String?
+  role      UserRole?
+  bio       String?
+
+  // Reset password token
+  resetToken           String? @unique
+  resetTokenExpireDate BigInt?
+
+  // Verification token
+  verificationToken          String? @unique
+  verificationTokenExpiresAt BigInt?
+
+  // Stripe
+  customerId       String?          @unique
+  subscriptionTier SubscriptionTier @default(BASIC)
+  subscriptionType SubscriptionType @default(NONE)
+
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  // Providers information
+  accounts  Accounts[]
+}
+
+model Accounts {
+  id           String  @id @default(uuid())
+  provider     String
+  providerId   String
+  accessToken  String?
+  refreshToken String?
+  userId       String
+  user         User    @relation(fields: [userId], references: [id])
+
+  @@unique([provider, providerId])
+}

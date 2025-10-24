@@ -8,32 +8,38 @@ import { twJoin, twMerge } from 'tailwind-merge';
 
 // Components
 import { getTextFieldBasicStyles } from '@/components/ui/input';
+import { Error } from '@/components/ui/error';
 
 export const Textarea: React.FC<
 	React.ComponentPropsWithoutRef<'textarea'> &
 		TextAreaProps & {
 			label: string;
+			error?: string;
 		}
-> = ({ label, className, ...rest }) => {
+> = ({ label, error, className, ...rest }) => {
 	return (
-		<div className="relative">
-			<AriaTextarea
-				{...rest}
-				className={twMerge(
-					getTextFieldBasicStyles,
-					'min-h-36 !p-4 py-6',
-					className
-				)}
-				placeholder=""
-			/>
+		<div>
+			<div className="relative">
+				<AriaTextarea
+					{...rest}
+					className={twMerge(
+						getTextFieldBasicStyles,
+						'min-h-36 !p-4 py-6',
+						className
+					)}
+					placeholder=""
+				/>
 
-			<Label
-				className={twJoin(
-					'text-muted-foreground absolute left-4 top-8 -z-[1] origin-left -translate-y-[24px] scale-75 transition-transform peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100'
-				)}
-			>
-				{label}
-			</Label>
+				<Label
+					className={twJoin(
+						'text-muted-foreground absolute left-4 top-8 -z-[1] origin-left -translate-y-[24px] scale-75 transition-transform peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100'
+					)}
+				>
+					{label}
+				</Label>
+			</div>
+
+			{error && <Error>{error}</Error>}
 		</div>
 	);
 };

@@ -1,9 +1,10 @@
 // External packages
 import Link from 'next/link';
+import axios from 'axios';
 
 // Components
 import { Layout, LayoutColumn } from '@/components/ui/layout-grid';
-import { LoginForm } from '@modules/auth/login-form';
+import { LoginForm } from '@/modules/auth/login-form';
 import { ArrowLeft } from 'lucide-react';
 import { Icon } from '@/components/ui/icon';
 

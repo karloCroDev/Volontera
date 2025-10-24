@@ -7,7 +7,7 @@ import { Layout, LayoutColumn } from '@/components/ui/layout-grid';
 import { Icon } from '@/components/ui/icon';
 
 // Modules
-import { RegisterForm } from '@modules/auth/register-form';
+import { RegisterForm } from '@/modules/auth/register-form';
 
 export default function RegisterPage() {
 	return (

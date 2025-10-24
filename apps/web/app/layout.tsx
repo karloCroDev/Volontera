@@ -2,6 +2,9 @@
 import type { Metadata } from 'next';
 import localFont from 'next/font/local';
 
+// Components
+import { Toaster } from '@/components/ui/toast';
+
 // Styles
 import '../styles/globals.css';
 
@@ -26,6 +29,7 @@ export default function RootLayout({
 				className={`${MonaSansFont.className} bg-background text-background-foreground`}
 			>
 				{children}
+				<Toaster />
 			</body>
 		</html>
 	);

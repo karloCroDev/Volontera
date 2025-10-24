@@ -1,0 +1,10 @@
+{
+  "name": "@repo/types",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "description": "Shared types between backend and frontend",
+  "exports": {
+    "./*": "./src/*.ts"
+  }
+}

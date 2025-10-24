@@ -3,6 +3,10 @@
 // External packages
 import * as React from 'react';
 import { Form } from 'react-aria-components';
+import { Controller, useForm } from 'react-hook-form';
+import { useRouter } from 'next/navigation';
+import { zodResolver } from '@hookform/resolvers/zod';
+import Link from 'next/link';
 
 // Components
 import { Input } from '@/components/ui/input';
@@ -10,14 +14,59 @@ import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { Icon } from '@/components/ui/icon';
-import Link from 'next/link';
+import { Error } from '@/components/ui/error';
 
-export const LoginForm = () => {
+// Hooks
+import { useLogin } from '@/hooks/data/auth';
+
+// Schemas
+import { LoginArgs, loginSchema } from '@repo/schemas/auth';
+
+// Config
+import { withReactQueryProvider } from '@/config/react-query';
+
+export const LoginForm = withReactQueryProvider(() => {
+	const { isPending, mutate } = useLogin();
+	const {
+		control,
+		handleSubmit,
+		formState: { errors },
+		setError,
+	} = useForm<LoginArgs>({
+		resolver: zodResolver(loginSchema),
+	});
+
+	const router = useRouter();
+	const onSubmit = async (data: LoginArgs) => {
+		mutate(data, {
+			onSuccess({ message }) {
+				router.push(`/auth/login/verify-otp?email=${data.email}`);
+			},
+			onError(err) {
+				setError('root', err);
+			},
+		});
+	};
 	return (
-		<Form className="mt-12 flex flex-col gap-8 lg:mt-16">
+		<Form
+			className="mt-12 flex flex-col gap-8 lg:mt-16"
+			onSubmit={handleSubmit(onSubmit)}
+		>
 			<div>
 				<Label htmlFor="Email">Email</Label>
-				<Input id="Email" label="Enter your email..." className="mt-2" />
+				<Controller
+					control={control}
+					name="email"
+					render={({ field }) => (
+						<Input
+							id="Email"
+							label="Enter your email..."
+							className="mt-2"
+							error={errors.email?.message}
+							{...field}
+						/>
+					)}
+				/>
 			</div>
 			<div>
 				<div className="flex items-baseline justify-between">
@@ -29,8 +78,22 @@ export const LoginForm = () => {
 						Forgot Passowrd?
 					</Link>
 				</div>
-				<Input id="password" label="Enter your password..." className="mt-2" />
+
+				<Controller
+					control={control}
+					name="password"
+					render={({ field }) => (
+						<Input
+							id="password"
+							label="Enter your password..."
+							className="mt-2"
+							error={errors.password?.message}
+							{...field}
+						/>
+					)}
+				/>
 			</div>
+			{errors.root && <Error>{errors.root.message}</Error>}
 
 			<Button className="w-full" size="lg" colorScheme="yellow">
 				Login
@@ -42,9 +105,10 @@ export const LoginForm = () => {
 				size="lg"
 				colorScheme="bland"
 				iconLeft={<Icon name="google" className="text-background" />}
+				disabled={isPending}
 			>
 				Login with google
 			</Button>
 		</Form>
 	);
-};
+});

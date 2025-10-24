@@ -1,10 +1,13 @@
 {
-	"name": "transactional",
+	"name": "@repo/transactional",
 	"version": "0.0.0",
 	"private": true,
 	"scripts": {
 		"dev": "email dev -p 3001",
 		"export": "email export"
+	},
+	"exports": {
+		"./*": "./emails/*.ts"
 	},
 	"dependencies": {
 		"@react-email/components": "^0.5.5",
