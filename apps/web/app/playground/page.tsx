@@ -9,6 +9,7 @@ import { LinkAsButton } from '@/components/ui/link-as-button';
 import { Separator } from '@/components/ui/separator';
 import { toast } from '@/lib/utils/toast';
 import { Button } from '@/components/ui/button';
+import { Dialog } from '@/components/ui/dialog';
 
 export default function PlaygroundPage() {
 	return (
@@ -81,6 +82,16 @@ export default function PlaygroundPage() {
 			>
 				click me{' '}
 			</Button>
+
+			<Dialog triggerChildren={<Button>Open Dialog</Button>}>
+				Hello world
+			</Dialog>
+
+			<div className="grid grid-cols-12 gap-4">
+				<div className="col-span-6 mx-auto w-full bg-blue-500 p-4">
+					Centered 6-column div
+				</div>
+			</div>
 		</div>
 	);
 }

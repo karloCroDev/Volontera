@@ -57,6 +57,7 @@
 	--radius-4xl: 24px;
 	--border-full: 999px;
 
+	--z-index-max: 999;
 	/* Colors */
 	--color-primary: var(--primary);
 	--color-primary-foreground: var(--primary-foreground);
