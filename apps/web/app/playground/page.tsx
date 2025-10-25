@@ -10,6 +10,7 @@ import { Separator } from '@/components/ui/separator';
 import { toast } from '@/lib/utils/toast';
 import { Button } from '@/components/ui/button';
 import { Dialog } from '@/components/ui/dialog';
+import { Tag } from '@/components/ui/tag';
 
 export default function PlaygroundPage() {
 	return (
@@ -83,15 +84,19 @@ export default function PlaygroundPage() {
 				click me{' '}
 			</Button>
 
-			<Dialog triggerChildren={<Button>Open Dialog</Button>}>
+			<Dialog
+				triggerChildren={<Button>Open Dialog</Button>}
+				title="Hello world"
+				subtitle="What is going on"
+			>
 				Hello world
 			</Dialog>
 
-			<div className="grid grid-cols-12 gap-4">
-				<div className="col-span-6 mx-auto w-full bg-blue-500 p-4">
-					Centered 6-column div
-				</div>
-			</div>
+			<Tag variant="primary" colorScheme="accent">
+				{' '}
+				Hello wolrd
+			</Tag>
+			<Tag> Hello wolrd</Tag>
 		</div>
 	);
 }

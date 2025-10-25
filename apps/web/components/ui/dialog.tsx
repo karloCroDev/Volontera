@@ -13,6 +13,8 @@ import {
 // Components
 import { Layout, LayoutColumn } from '@/components/ui/layout-grid';
 import { twJoin } from 'tailwind-merge';
+import { Button } from '@/components/ui/button';
+import { X } from 'lucide-react';
 
 export const Dialog: React.FC<
 	React.ComponentPropsWithoutRef<'button'> &
@@ -20,7 +22,7 @@ export const Dialog: React.FC<
 			triggerChildren: React.ReactNode;
 			subtitle?: string;
 		}
-> = ({ children, triggerChildren, title, subtitle, isOpen, ...rest }) => (
+> = ({ children, triggerChildren, title, subtitle, ...rest }) => (
 	<DialogTrigger {...rest}>
 		{triggerChildren}
 		<ModalOverlay
@@ -37,19 +39,33 @@ export const Dialog: React.FC<
 						isKeyboardDismissDisabled
 						className={({ isEntering, isExiting }) =>
 							twJoin(
-								'bg-muted z-20 overflow-hidden rounded px-6 text-left lg:px-8 lg:py-6',
+								'bg-muted border-primary relative z-20 overflow-hidden rounded-2xl border px-6 text-left lg:px-8 lg:py-6',
 								isEntering && 'animate-in fade-in slide-in-from-bottom',
 								isExiting && 'animate-out fade-out'
 							)
 						}
 					>
 						<AriaDialog className="relative outline-none">
-							<Heading className="text-center text-lg" slot="title">
-								{title}
-							</Heading>
-							{subtitle && (
-								<p className="text-muted-foreground text-sm">{subtitle}</p>
-							)}
+							<div className="mb-6 flex justify-between">
+								<div>
+									<Heading
+										className="text-center text-lg lg:text-xl"
+										slot="title"
+									>
+										{title}
+									</Heading>
+									{subtitle && (
+										<p className="text-muted-foreground text-sm">{subtitle}</p>
+									)}
+								</div>
+								<Button
+									slot="close"
+									variant="blank"
+									className="text-muted-foreground self-start"
+								>
+									<X className="size-4" />
+								</Button>
+							</div>
 
 							{children}
 						</AriaDialog>
