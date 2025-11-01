@@ -31,15 +31,15 @@ export const Dialog: React.FC<
 		>
 			<Layout className="z-max">
 				<LayoutColumn
-					start={{ base: 1, md: 3, xl: 4 }}
-					end={{ md: 11, base: 13, xl: 10 }}
+					start={{ base: 1, md: 4 }}
+					end={{ md: 10, base: 13 }}
 					className="w-full"
 				>
 					<Modal
 						isKeyboardDismissDisabled
 						className={({ isEntering, isExiting }) =>
 							twJoin(
-								'bg-muted border-primary relative z-20 overflow-hidden rounded-2xl border px-6 text-left lg:px-8 lg:py-6',
+								'bg-muted border-primary relative z-20 overflow-hidden rounded-2xl border px-6 py-6 text-left lg:px-8',
 								isEntering && 'animate-in fade-in slide-in-from-bottom',
 								isExiting && 'animate-out fade-out'
 							)

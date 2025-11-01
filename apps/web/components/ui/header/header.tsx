@@ -4,7 +4,12 @@
 import * as React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { PanelsTopLeftIcon } from 'lucide-react';
+import {
+	Hamburger,
+	Menu,
+	PanelsTopLeft,
+	PanelsTopLeftIcon,
+} from 'lucide-react';
 import {
 	Breadcrumbs,
 	Breadcrumb as AriaBreadcrumb,
@@ -19,8 +24,12 @@ import { twMerge } from 'tailwind-merge';
 import { DarkLightThemeSwitch } from '@/components/ui/header/dark-light-theme';
 import { NotificationButton } from '@/components/ui/header/notification-button';
 import { Search } from '@/components/ui/header/search';
+import { Button } from '@/components/ui/button';
+import { useSidebarContext } from '@/components/ui/sidebar/sidebar-provider';
 
 export const Header = () => {
+	const { setDesktopOpen, setMobileOpen } = useSidebarContext();
+
 	const pathname = usePathname();
 
 	const pathnameWithoutSearchParams = pathname.split('?')[0];
@@ -30,11 +39,26 @@ export const Header = () => {
 		.filter(Boolean);
 
 	return (
-		<div className="border-b-input-border border-b">
-			<Layout className="flex h-24 items-center px-4 lg:h-28 lg:gap-10">
-				<div className="col-span-12">
-					<PanelsTopLeftIcon className="text-muted-foreground hidden size-6 lg:block" />
-				</div>
+		<nav className="border-b-input-border w-full border-b">
+			{/* Karlo: Inaće handleaj ovo s containerom tj. Layoutom umjesto max-w */}
+			<div className="flex h-24 max-w-[3000px] items-center gap-6 pl-5 pr-5 lg:h-28 lg:gap-10 lg:pl-4 lg:pr-8">
+				<Button
+					variant="blank"
+					onClick={() => setDesktopOpen((prev) => !prev)}
+					className="hidden lg:block"
+				>
+					<PanelsTopLeft className="text-muted-foreground" />
+				</Button>
+				<Button
+					variant="outline"
+					colorScheme="bland"
+					isFullyRounded
+					className="block p-2 lg:hidden"
+					onClick={() => setMobileOpen(true)}
+				>
+					<Menu />
+				</Button>
+
 				<Breadcrumbs className="flex gap-4 lg:gap-5">
 					{splittedPathname?.map((path, index) => {
 						const href = '/' + splittedPathname.slice(0, index + 1).join('/');
@@ -55,8 +79,8 @@ export const Header = () => {
 					<NotificationButton />
 					<DarkLightThemeSwitch />
 				</div>
-			</Layout>
-		</div>
+			</div>
+		</nav>
 	);
 };
 const Breadcrumb: React.FC<

@@ -2,6 +2,7 @@
 import { Header } from '@/components/ui/header/header';
 import { Layout, LayoutColumn } from '@/components/ui/layout-grid';
 import { Sidebar } from '@/components/ui/sidebar/sidebar';
+import { SidebarProvider } from '@/components/ui/sidebar/sidebar-provider';
 
 export default async function MainLayout({
 	children,
@@ -9,16 +10,17 @@ export default async function MainLayout({
 	children: React.ReactNode;
 }) {
 	return (
-		<>
-			{/* <div className="flex items-start">
+		<SidebarProvider>
+			<div className="flex h-screen">
 				<Sidebar />
-				<Header />
-			</div> */}
 
-			<Header />
-			<Layout>
-				<LayoutColumn>{children}</LayoutColumn>
-			</Layout>
-		</>
+				<div className="flex flex-1 flex-col overflow-y-auto">
+					<Header />
+					<Layout>
+						<LayoutColumn>{children}</LayoutColumn>
+					</Layout>
+				</div>
+			</div>
+		</SidebarProvider>
 	);
 }

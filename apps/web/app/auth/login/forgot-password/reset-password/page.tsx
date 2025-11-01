@@ -16,7 +16,7 @@ export default function ForgotPasswordPage() {
 					base: 13,
 					lg: 7,
 				}}
-				className="flex h-[100vh] flex-col items-center justify-center"
+				className="flex h-screen flex-col items-center justify-center"
 			>
 				<div className="w-full">
 					<h1 className="lg:text-max mt-6 text-3xl lg:mt-8">Reset Password</h1>

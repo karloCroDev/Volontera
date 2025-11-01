@@ -27,37 +27,33 @@ import { Layout, LayoutColumn } from '@/components/ui/layout-grid';
 import { twJoin } from 'tailwind-merge';
 import { LinkAsButton } from '@/components/ui/link-as-button';
 import { Button } from '@/components/ui/button';
+import { useSidebarContext } from '@/components/ui/sidebar/sidebar-provider';
 
 export const Sidebar = () => {
-	const [open, setOpen] = useState(true);
-	const [mobileOpen, setMobileOpen] = useState(false);
-
+	const { desktopOpen, mobileOpen, setMobileOpen } = useSidebarContext();
 	return (
 		<>
 			{/* Mobile trigger */}
-			<button className="p-2 md:hidden" onClick={() => setMobileOpen(true)}>
+			{/* <button className="p-2 md:hidden" onClick={() => setMobileOpen(true)}>
 				<SidebarIcon className="size-6" />
-			</button>
+			</button> */}
 
 			{/* Desktop sidebar */}
-			<div
+			<aside
 				className={twJoin(
 					`hidden h-screen overflow-hidden border-r transition-all duration-300 md:flex`,
-					open ? 'w-60' : 'w-14'
+					desktopOpen ? 'w-60' : 'w-14'
 				)}
 			>
 				<div className="flex w-full flex-col gap-2 p-2">
 					<LinkAsButton variant="blank" href="/">
-						{open ? 'Dashboard' : 'D'}
+						{desktopOpen ? 'Dashboard' : 'D'}
 					</LinkAsButton>
 					<LinkAsButton href="/settings">
-						{open ? 'Settings' : 'S'}
+						{desktopOpen ? 'Settings' : 'S'}
 					</LinkAsButton>
 				</div>
-			</div>
-			<Button variant="blank" onClick={() => setOpen(!open)}>
-				<PanelsTopLeft className="text-muted-foreground hidden size-6 lg:block" />
-			</Button>
+			</aside>
 
 			{/* Mobile sheet */}
 

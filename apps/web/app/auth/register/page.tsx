@@ -26,7 +26,7 @@ export default function RegisterPage() {
 				end={{
 					base: 13,
 				}}
-				className="flex h-[100vh] flex-col items-center justify-center"
+				className="flex h-screen flex-col items-center justify-center"
 			>
 				<div className="w-full">
 					<Link href="/auth/login" className="self-start">
