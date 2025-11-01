@@ -4,6 +4,7 @@ import localFont from 'next/font/local';
 
 // Components
 import { Toaster } from '@/components/ui/toast';
+import { ThemeProvider } from 'next-themes';
 
 // Styles
 import '../styles/globals.css';
@@ -24,11 +25,18 @@ export default function RootLayout({
 	children: React.ReactNode;
 }>) {
 	return (
-		<html lang="en" className="dark">
+		<html lang="en" suppressHydrationWarning>
 			<body
 				className={`${MonaSansFont.className} bg-background text-background-foreground`}
 			>
-				{children}
+				<ThemeProvider
+					attribute="class"
+					defaultTheme="system"
+					enableSystem
+					disableTransitionOnChange
+				>
+					{children}
+				</ThemeProvider>
 				<Toaster />
 			</body>
 		</html>

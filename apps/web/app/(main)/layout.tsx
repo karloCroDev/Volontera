@@ -1,5 +1,6 @@
-import { Header } from '@/components/ui/header';
-import { Layout } from '@/components/ui/layout-grid';
+// Components
+import { Header } from '@/components/ui/header/header';
+import { Layout, LayoutColumn } from '@/components/ui/layout-grid';
 import { Sidebar } from '@/components/ui/sidebar/sidebar';
 
 export default async function MainLayout({
@@ -9,11 +10,15 @@ export default async function MainLayout({
 }) {
 	return (
 		<>
-			<div className="flex items-start">
+			{/* <div className="flex items-start">
 				<Sidebar />
 				<Header />
-			</div>
-			{children}
+			</div> */}
+
+			<Header />
+			<Layout>
+				<LayoutColumn>{children}</LayoutColumn>
+			</Layout>
 		</>
 	);
 }

@@ -62,7 +62,7 @@ export const getButtonClassNames = ({
 			'text-accent-foreground border-accent-foreground',
 		variant === 'outline' &&
 			colorScheme === 'bland' &&
-			'text-background-foreground border-background-foreground',
+			'text-muted-foreground border-muted-foreground',
 		variant === 'outline' &&
 			colorScheme === 'destructive' &&
 			'text-destructive border-destructive'
