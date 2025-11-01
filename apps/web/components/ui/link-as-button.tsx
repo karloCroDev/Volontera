@@ -53,7 +53,7 @@ export const getButtonClassNames = ({
 			'bg-background-foreground text-background hover:bg-gray-foreground/90',
 
 		// Outline styles
-		variant === 'outline' && 'bg-background border',
+		variant === 'outline' && 'bg-transparent border',
 		variant === 'outline' &&
 			colorScheme === 'orange' &&
 			'text-primary border-primary',

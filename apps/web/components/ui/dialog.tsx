@@ -48,10 +48,7 @@ export const Dialog: React.FC<
 						<AriaDialog className="relative outline-none">
 							<div className="mb-6 flex justify-between">
 								<div>
-									<Heading
-										className="text-center text-lg lg:text-xl"
-										slot="title"
-									>
+									<Heading className="text-lg lg:text-xl" slot="title">
 										{title}
 									</Heading>
 									{subtitle && (

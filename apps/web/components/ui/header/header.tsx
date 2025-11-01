@@ -4,7 +4,7 @@
 import * as React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Bell, Moon, PanelsTopLeftIcon } from 'lucide-react';
+import { PanelsTopLeftIcon } from 'lucide-react';
 import {
 	Breadcrumbs,
 	Breadcrumb as AriaBreadcrumb,
@@ -16,8 +16,9 @@ import { ChevronsRight } from 'lucide-react';
 // Components
 import { Layout } from '@/components/ui/layout-grid';
 import { twMerge } from 'tailwind-merge';
-import { Button } from '@/components/ui/button';
 import { DarkLightThemeSwitch } from '@/components/ui/header/dark-light-theme';
+import { NotificationButton } from '@/components/ui/header/notification-button';
+import { Search } from '@/components/ui/header/search';
 
 export const Header = () => {
 	const pathname = usePathname();
@@ -50,15 +51,8 @@ export const Header = () => {
 				</Breadcrumbs>
 
 				<div className="ml-auto flex items-center gap-5 lg:gap-8">
-					<Button
-						variant="outline"
-						colorScheme="bland"
-						className="relative p-2"
-					>
-						<Bell />
-
-						<div className="bg-success absolute -right-1 -top-1 size-3 rounded-full" />
-					</Button>
+					<Search />
+					<NotificationButton />
 					<DarkLightThemeSwitch />
 				</div>
 			</Layout>

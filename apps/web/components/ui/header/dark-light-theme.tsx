@@ -23,7 +23,7 @@ export const DarkLightThemeSwitch = () => {
 		<Button
 			variant="outline"
 			colorScheme="bland"
-			className="p-2"
+			className="hidden p-2 sm:block"
 			onPress={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
 		>
 			<SunMoon />
