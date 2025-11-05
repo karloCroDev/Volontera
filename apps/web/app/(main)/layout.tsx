@@ -14,11 +14,13 @@ export default async function MainLayout({
 			<div className="flex h-screen">
 				<Sidebar />
 
-				<div className="flex flex-1 flex-col overflow-y-auto">
+				<div className="flex flex-1 flex-col px-6 lg:pl-8 lg:pr-12">
 					<Header />
-					<Layout>
-						<LayoutColumn>{children}</LayoutColumn>
-					</Layout>
+					<div className="border-input-border mb-5 h-[calc(100vh-96px-20px-28px)] rounded-2xl border lg:mb-12 lg:pl-8 lg:pr-12">
+						<Layout>
+							<LayoutColumn className="py-6">{children}</LayoutColumn>
+						</Layout>
+					</div>
 				</div>
 			</div>
 		</SidebarProvider>

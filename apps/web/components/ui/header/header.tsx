@@ -39,46 +39,36 @@ export const Header = () => {
 		.filter(Boolean);
 
 	return (
-		<nav className="border-b-input-border w-full border-b">
-			{/* Karlo: Inaće handleaj ovo s containerom tj. Layoutom umjesto max-w */}
-			<div className="flex h-24 max-w-[3000px] items-center gap-6 pl-5 pr-5 lg:h-28 lg:gap-10 lg:pl-4 lg:pr-8">
-				<Button
-					variant="blank"
-					onClick={() => setDesktopOpen((prev) => !prev)}
-					className="hidden lg:block"
-				>
-					<PanelsTopLeft className="text-muted-foreground" />
-				</Button>
-				<Button
-					variant="outline"
-					colorScheme="bland"
-					isFullyRounded
-					className="block p-2 lg:hidden"
-					onClick={() => setMobileOpen(true)}
-				>
-					<Menu />
-				</Button>
+		<nav className="flex h-24 w-full items-center gap-6 lg:h-28 lg:gap-10">
+			<Button
+				variant="outline"
+				colorScheme="bland"
+				isFullyRounded
+				className="block p-2 lg:hidden"
+				onClick={() => setMobileOpen(true)}
+			>
+				<Menu />
+			</Button>
 
-				<Breadcrumbs className="flex gap-4 lg:gap-5">
-					{splittedPathname?.map((path, index) => {
-						const href = '/' + splittedPathname.slice(0, index + 1).join('/');
-						return (
-							<Breadcrumb
-								href={href}
-								key={index}
-								removeChevrons={splittedPathname.length - 1 !== index}
-							>
-								{path[0]?.toUpperCase() + path.slice(1).toLowerCase()}
-							</Breadcrumb>
-						);
-					})}
-				</Breadcrumbs>
+			<Breadcrumbs className="flex gap-4 lg:gap-5">
+				{splittedPathname?.map((path, index) => {
+					const href = '/' + splittedPathname.slice(0, index + 1).join('/');
+					return (
+						<Breadcrumb
+							href={href}
+							key={index}
+							removeChevrons={splittedPathname.length - 1 !== index}
+						>
+							{path[0]?.toUpperCase() + path.slice(1).toLowerCase()}
+						</Breadcrumb>
+					);
+				})}
+			</Breadcrumbs>
 
-				<div className="ml-auto flex items-center gap-5 lg:gap-8">
-					<Search />
-					<NotificationButton />
-					<DarkLightThemeSwitch />
-				</div>
+			<div className="ml-auto flex items-center gap-5 lg:gap-8">
+				<Search />
+				<NotificationButton />
+				<DarkLightThemeSwitch />
 			</div>
 		</nav>
 	);

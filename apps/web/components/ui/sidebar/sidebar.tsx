@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import {
+	ChevronLast,
 	Circle,
 	CircleX,
 	Menu,
@@ -30,7 +31,8 @@ import { Button } from '@/components/ui/button';
 import { useSidebarContext } from '@/components/ui/sidebar/sidebar-provider';
 
 export const Sidebar = () => {
-	const { desktopOpen, mobileOpen, setMobileOpen } = useSidebarContext();
+	const { desktopOpen, mobileOpen, setMobileOpen, setDesktopOpen } =
+		useSidebarContext();
 	return (
 		<>
 			{/* Mobile trigger */}
@@ -41,18 +43,36 @@ export const Sidebar = () => {
 			{/* Desktop sidebar */}
 			<aside
 				className={twJoin(
-					`hidden h-screen overflow-hidden border-r transition-all duration-300 md:flex`,
-					desktopOpen ? 'w-60' : 'w-14'
+					`border-input-border relative mx-10 my-12 hidden h-[calc(100vh-48px-48px)] rounded-2xl border transition-all duration-300 lg:flex`,
+					desktopOpen ? 'w-80' : 'w-36'
 				)}
 			>
-				<div className="flex w-full flex-col gap-2 p-2">
-					<LinkAsButton variant="blank" href="/">
+				<Button
+					variant="outline"
+					colorScheme="bland"
+					isFullyRounded
+					onClick={() => setDesktopOpen((prev) => !prev)}
+					className="absolute -right-6 top-20 p-2"
+				>
+					<ChevronLast
+						className={twJoin(
+							'text-muted-foreground transition-transform duration-500',
+							desktopOpen && 'rotate-180'
+						)}
+					/>
+				</Button>
+				{/* <div className="flex w-full flex-col gap-2 p-5">
+					<LinkAsButton
+						colorScheme="bland"
+						variant="outline"
+						href="/notifications"
+					>
 						{desktopOpen ? 'Dashboard' : 'D'}
 					</LinkAsButton>
-					<LinkAsButton href="/settings">
+					<LinkAsButton href="/home">
 						{desktopOpen ? 'Settings' : 'S'}
 					</LinkAsButton>
-				</div>
+				</div> */}
 			</aside>
 
 			{/* Mobile sheet */}
@@ -62,26 +82,32 @@ export const Sidebar = () => {
 					isDismissable
 					className="fixed inset-0 isolate z-20 flex min-h-full items-center justify-center overflow-y-auto bg-black/25 text-center backdrop-blur"
 				>
-					<div className="bg-muted !z-max absolute left-0 top-0 h-full w-3/4 px-2 py-4 md:lg:w-1/4">
-						<Modal className="h-full">
-							<Dialog>
-								<form>
-									<Heading slot="title">Sign up</Heading>
-									<TextField autoFocus>
-										<Label>First Name</Label>
-										<Input />
-									</TextField>
-									<TextField>
-										<Label>Last Name</Label>
-										<Input />
-									</TextField>
-									<Button slot="close" style={{ marginTop: 8 }}>
-										Clouse
-									</Button>
-								</form>
-							</Dialog>
-						</Modal>
-					</div>
+					<Modal
+						className={({ isEntering, isExiting }) =>
+							twJoin(
+								'bg-muted !z-max absolute left-0 top-0 h-full w-3/4 rounded-r-2xl px-2 py-4 duration-300 md:lg:w-1/4',
+								isEntering && 'animate-in slide-in-from-left',
+								isExiting && 'animate-out slide-out-to-left'
+							)
+						}
+					>
+						<Dialog>
+							<form>
+								<Heading slot="title">Sign up</Heading>
+								<TextField autoFocus>
+									<Label>First Name</Label>
+									<Input />
+								</TextField>
+								<TextField>
+									<Label>Last Name</Label>
+									<Input />
+								</TextField>
+								<Button slot="close" style={{ marginTop: 8 }}>
+									Clouse
+								</Button>
+							</form>
+						</Dialog>
+					</Modal>
 				</ModalOverlay>
 			</DialogTrigger>
 		</>

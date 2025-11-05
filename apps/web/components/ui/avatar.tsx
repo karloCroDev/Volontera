@@ -49,7 +49,7 @@ export const Avatar: React.FC<
 				className={twJoin(
 					'flex size-full items-center justify-center rounded-full',
 					variant === 'secondary'
-						? 'text-background bg-[#D9D9D9]'
+						? 'text-background bg-secondary-background'
 						: 'bg-muted text-background-foreground'
 				)}
 			>
