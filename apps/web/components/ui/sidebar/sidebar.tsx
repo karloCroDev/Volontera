@@ -29,6 +29,7 @@ import { twJoin } from 'tailwind-merge';
 import { LinkAsButton } from '@/components/ui/link-as-button';
 import { Button } from '@/components/ui/button';
 import { useSidebarContext } from '@/components/ui/sidebar/sidebar-provider';
+import { UserInformation } from '@/components/ui/sidebar/user-information';
 
 export const Sidebar = () => {
 	const { desktopOpen, mobileOpen, setMobileOpen, setDesktopOpen } =
@@ -43,8 +44,9 @@ export const Sidebar = () => {
 			{/* Desktop sidebar */}
 			<aside
 				className={twJoin(
-					`border-input-border relative mx-10 my-12 hidden h-[calc(100vh-48px-48px)] rounded-2xl border transition-all duration-300 lg:flex`,
-					desktopOpen ? 'w-80' : 'w-36'
+					`border-input-border relative mx-10 my-12 hidden h-[calc(100vh-48px-48px)] rounded-2xl border p-4 transition-all duration-300 lg:flex lg:flex-col`,
+					desktopOpen && 'w-80',
+					!desktopOpen && 'w-36 items-center'
 				)}
 			>
 				<Button
@@ -61,6 +63,12 @@ export const Sidebar = () => {
 						)}
 					/>
 				</Button>
+
+				<p className="text-muted-foreground mb-3 mt-auto">
+					{desktopOpen ? 'Current plan: Free' : 'Free'}
+				</p>
+				<UserInformation />
+
 				{/* <div className="flex w-full flex-col gap-2 p-5">
 					<LinkAsButton
 						colorScheme="bland"
