@@ -121,10 +121,10 @@ export const UserInformation = () => {
 						</ul>
 						<hr className="bg-input-border h-px w-full border-0" />
 						<Button
-							variant="blank"
+							colorScheme="destructive"
 							iconLeft={<LogOut className="size-4" />}
 							size="sm"
-							className="w-full justify-start px-0"
+							className="w-full justify-start"
 						>
 							Log out
 						</Button>

@@ -1,47 +1,37 @@
 'use client';
 
-import { useState } from 'react';
-import Link from 'next/link';
+// External packages
 import {
 	ChevronLast,
-	Circle,
-	CircleX,
-	Menu,
-	PanelLeft,
-	PanelsTopLeft,
-	SidebarIcon,
-	SidebarOpen,
+	HelpCircle,
+	Home,
+	MessageCircleMore,
+	Settings,
 	X,
 } from 'lucide-react';
-import * as Sheet from '@radix-ui/react-dialog';
 import {
 	Dialog,
 	DialogTrigger,
-	Heading,
-	Input,
-	Label,
 	Modal,
 	ModalOverlay,
-	TextField,
 } from 'react-aria-components';
-import { Layout, LayoutColumn } from '@/components/ui/layout-grid';
 import { twJoin } from 'tailwind-merge';
-import { LinkAsButton } from '@/components/ui/link-as-button';
+import Link from 'next/link';
+
+// Components
 import { Button } from '@/components/ui/button';
 import { useSidebarContext } from '@/components/ui/sidebar/sidebar-provider';
 import { UserInformation } from '@/components/ui/sidebar/user-information';
+import {
+	Organizations,
+	SidebarItem,
+} from '@/components/ui/sidebar/sidebar-items';
 
 export const Sidebar = () => {
 	const { desktopOpen, mobileOpen, setMobileOpen, setDesktopOpen } =
 		useSidebarContext();
 	return (
 		<>
-			{/* Mobile trigger */}
-			{/* <button className="p-2 md:hidden" onClick={() => setMobileOpen(true)}>
-				<SidebarIcon className="size-6" />
-			</button> */}
-
-			{/* Desktop sidebar */}
 			<aside
 				className={twJoin(
 					`border-input-border relative mx-10 my-7 hidden h-[calc(100vh-28px-28px)] rounded-2xl border p-4 transition-all duration-300 lg:flex lg:flex-col`,
@@ -64,6 +54,54 @@ export const Sidebar = () => {
 					/>
 				</Button>
 
+				<div className={`flex flex-col ${desktopOpen ? 'gap-4' : 'gap-6'}`}>
+					<Link href="/home">
+						{desktopOpen ? (
+							<SidebarItem iconLeft={<Home className="size-5" />} isSelected>
+								Home
+							</SidebarItem>
+						) : (
+							<SidebarItem isSelected size="lg" isFullyRounded className="p-4">
+								<Home className="size-8" />
+							</SidebarItem>
+						)}
+					</Link>
+					<Organizations />
+
+					<Link href="/private-chats">
+						{desktopOpen ? (
+							<SidebarItem iconLeft={<MessageCircleMore className="size-5" />}>
+								Private chats
+							</SidebarItem>
+						) : (
+							<SidebarItem size="lg" isFullyRounded className="p-4">
+								<MessageCircleMore className="size-8" />
+							</SidebarItem>
+						)}
+					</Link>
+					<Link href="/settings">
+						{desktopOpen ? (
+							<SidebarItem iconLeft={<Settings className="size-5" />}>
+								Settings
+							</SidebarItem>
+						) : (
+							<SidebarItem size="lg" isFullyRounded className="p-4">
+								<Settings className="size-8" />
+							</SidebarItem>
+						)}
+					</Link>
+					<Link href="/help">
+						{desktopOpen ? (
+							<SidebarItem iconLeft={<HelpCircle className="size-5" />}>
+								Help
+							</SidebarItem>
+						) : (
+							<SidebarItem size="lg" isFullyRounded className="p-4">
+								<HelpCircle className="size-8" />
+							</SidebarItem>
+						)}
+					</Link>
+				</div>
 				<p className="text-muted-foreground mb-3 mt-auto">
 					{desktopOpen ? 'Current plan: Free' : 'Free'}
 				</p>
@@ -83,7 +121,7 @@ export const Sidebar = () => {
 				</div> */}
 			</aside>
 
-			{/* Mobile sheet */}
+			{/* Mobile sidebar */}
 
 			<DialogTrigger isOpen={mobileOpen} onOpenChange={setMobileOpen}>
 				<ModalOverlay
@@ -100,20 +138,42 @@ export const Sidebar = () => {
 						}
 					>
 						<Dialog>
-							<form>
-								<Heading slot="title">Sign up</Heading>
-								<TextField autoFocus>
-									<Label>First Name</Label>
-									<Input />
-								</TextField>
-								<TextField>
-									<Label>Last Name</Label>
-									<Input />
-								</TextField>
-								<Button slot="close" style={{ marginTop: 8 }}>
-									Clouse
+							<div className="mb-4 flex items-center justify-between px-2">
+								<p className="text-md">[app name]</p>
+								<Button slot="close" isFullyRounded className="p-2">
+									<X />
 								</Button>
-							</form>
+							</div>
+
+							<div className="flex w-3/4 flex-col gap-4 md:w-3/5">
+								<Link href="/home">
+									<SidebarItem
+										iconLeft={<Home className="size-5" />}
+										isSelected
+									>
+										Home
+									</SidebarItem>
+								</Link>
+								<Organizations />
+
+								<Link href="/private-chats">
+									<SidebarItem
+										iconLeft={<MessageCircleMore className="size-5" />}
+									>
+										Private chats
+									</SidebarItem>
+								</Link>
+								<Link href="/settings">
+									<SidebarItem iconLeft={<Settings className="size-5" />}>
+										Settings
+									</SidebarItem>
+								</Link>
+								<Link href="/help">
+									<SidebarItem iconLeft={<HelpCircle className="size-5" />}>
+										Help
+									</SidebarItem>
+								</Link>
+							</div>
 						</Dialog>
 					</Modal>
 				</ModalOverlay>

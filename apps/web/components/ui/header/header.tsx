@@ -38,38 +38,40 @@ export const Header = () => {
 		.filter(Boolean);
 
 	return (
-		<nav className="border-input-border flex h-24 w-full items-center gap-6 border-b px-2 lg:h-28 lg:gap-10">
-			<Button
-				variant="outline"
-				colorScheme="bland"
-				isFullyRounded
-				className="block p-2 lg:hidden"
-				onClick={() => setMobileOpen(true)}
-			>
-				<Menu />
-			</Button>
+		<div className="border-input-border border-b">
+			<nav className="flex h-24 w-full items-center gap-6 px-6 lg:h-28 lg:gap-10 lg:pl-8 lg:pr-12">
+				<Button
+					variant="outline"
+					colorScheme="bland"
+					isFullyRounded
+					className="block p-2 lg:hidden"
+					onClick={() => setMobileOpen(true)}
+				>
+					<Menu />
+				</Button>
 
-			<Breadcrumbs className="flex gap-4 lg:gap-5">
-				{splittedPathname?.map((path, index) => {
-					const href = '/' + splittedPathname.slice(0, index + 1).join('/');
-					return (
-						<Breadcrumb
-							href={href}
-							key={index}
-							removeChevrons={splittedPathname.length - 1 !== index}
-						>
-							{path[0]?.toUpperCase() + path.slice(1).toLowerCase()}
-						</Breadcrumb>
-					);
-				})}
-			</Breadcrumbs>
+				<Breadcrumbs className="flex gap-4 lg:gap-5">
+					{splittedPathname?.map((path, index) => {
+						const href = '/' + splittedPathname.slice(0, index + 1).join('/');
+						return (
+							<Breadcrumb
+								href={href}
+								key={index}
+								removeChevrons={splittedPathname.length - 1 !== index}
+							>
+								{path[0]?.toUpperCase() + path.slice(1).toLowerCase()}
+							</Breadcrumb>
+						);
+					})}
+				</Breadcrumbs>
 
-			<div className="ml-auto flex items-center gap-5 lg:gap-8">
-				<Search />
-				<NotificationButton />
-				<DarkLightThemeSwitch />
-			</div>
-		</nav>
+				<div className="ml-auto flex items-center gap-5 lg:gap-8">
+					<Search />
+					<NotificationButton />
+					<DarkLightThemeSwitch />
+				</div>
+			</nav>
+		</div>
 	);
 };
 const Breadcrumb: React.FC<
@@ -82,12 +84,12 @@ const Breadcrumb: React.FC<
 	return (
 		<AriaBreadcrumb
 			{...rest}
-			className={twMerge(
-				'hover:text-muted-foreground flex items-center gap-4 underline-offset-4 hover:underline',
-				className
-			)}
+			className={twMerge('flex items-center gap-4', className)}
 		>
-			<Link href={href} className="lg:text-md text-base">
+			<Link
+				href={href}
+				className="lg:text-md hover:text-muted-foreground text-base underline-offset-4 hover:underline"
+			>
 				{children}
 			</Link>
 			{removeChevrons && <ChevronsRight aria-hidden />}
