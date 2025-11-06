@@ -11,6 +11,11 @@ import { toast } from '@/lib/utils/toast';
 import { Button } from '@/components/ui/button';
 import { Dialog } from '@/components/ui/dialog';
 import { Tag } from '@/components/ui/tag';
+import { Collapsible } from '@/components/ui/collapsible';
+import {
+	SidebarCollapsible,
+	SidebarItem,
+} from '@/components/ui/sidebar/sidebar-items';
 
 export default function PlaygroundPage() {
 	return (
@@ -97,6 +102,10 @@ export default function PlaygroundPage() {
 				Hello wolrd
 			</Tag>
 			<Tag> Hello wolrd</Tag>
+			<SidebarItem isSelected>Cool</SidebarItem>
+			<SidebarItem>Cool</SidebarItem>
+
+			<SidebarCollapsible />
 		</div>
 	);
 }

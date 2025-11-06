@@ -52,7 +52,7 @@ export const Sidebar = () => {
 					colorScheme="bland"
 					isFullyRounded
 					onClick={() => setDesktopOpen((prev) => !prev)}
-					className="absolute -right-6 top-20 p-2"
+					className="bg-background absolute -right-6 top-20 p-2"
 				>
 					<ChevronLast
 						className={twJoin(

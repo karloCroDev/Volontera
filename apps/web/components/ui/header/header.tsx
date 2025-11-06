@@ -19,7 +19,6 @@ import {
 import { ChevronsRight } from 'lucide-react';
 
 // Components
-import { Layout } from '@/components/ui/layout-grid';
 import { twMerge } from 'tailwind-merge';
 import { DarkLightThemeSwitch } from '@/components/ui/header/dark-light-theme';
 import { NotificationButton } from '@/components/ui/header/notification-button';
