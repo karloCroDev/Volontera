@@ -17,8 +17,19 @@ export const Input: React.FC<
 		error?: string;
 		inputProps?: React.ComponentPropsWithoutRef<'input'> & InputProps;
 		size?: 'sm' | 'md';
+		iconLeft?: React.ReactNode;
+		iconRight?: React.ReactNode;
 	}
-> = ({ label, error, size = 'md', inputProps, className, ...rest }) => {
+> = ({
+	label,
+	error,
+	size = 'md',
+	inputProps,
+	iconLeft,
+	iconRight,
+	className,
+	...rest
+}) => {
 	return (
 		<div>
 			<div
@@ -37,12 +48,14 @@ export const Input: React.FC<
 				/>
 				<Label
 					className={twJoin(
-						'text-muted-foreground absolute top-1/2 -z-[1] origin-left scale-75 transition-transform peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100',
+						'text-muted-foreground absolute top-1/2 -z-[1] flex origin-left scale-75 items-center gap-2 transition-transform peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100',
 						size === 'sm' && 'left-3 -translate-y-[22px]',
 						size === 'md' && 'left-4 -translate-y-[24px]'
 					)}
 				>
+					{iconLeft}
 					{label}
+					{iconRight}
 				</Label>
 			</div>
 

@@ -19,7 +19,7 @@ export default function LoginPage() {
 					base: 13,
 					lg: 7,
 				}}
-				className="flex h-[100vh] flex-col items-center justify-center"
+				className="flex h-screen flex-col items-center justify-center"
 			>
 				<div className="w-full">
 					<Link href="/auth/register" className="self-start">

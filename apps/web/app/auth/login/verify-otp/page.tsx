@@ -8,7 +8,7 @@ export default function VerifyOtp() {
 	return (
 		<Layout>
 			<LayoutColumn
-				className="flex h-[100vh] flex-col items-center justify-center"
+				className="flex h-screen flex-col items-center justify-center"
 				start={1}
 				end={13}
 			>

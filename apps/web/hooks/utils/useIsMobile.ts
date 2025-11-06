@@ -3,7 +3,7 @@
 // External packages
 import * as React from 'react';
 
-export function useIsMobile(MOBILE_BREAKPOINT = 768) {
+export function useIsMobile(MOBILE_BREAKPOINT = 1024) {
 	const [isMobile, setIsMobile] = React.useState<undefined | boolean>(
 		undefined
 	);

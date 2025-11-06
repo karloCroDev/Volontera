@@ -51,9 +51,12 @@ export const getButtonClassNames = ({
 		variant === 'primary' &&
 			colorScheme === 'bland' &&
 			'bg-background-foreground text-background hover:bg-gray-foreground/90',
+		variant === 'primary' &&
+			colorScheme === 'destructive' &&
+			'bg-destructive/90 text-background-foreground hover:bg-destructive/80',
 
 		// Outline styles
-		variant === 'outline' && 'bg-background border',
+		variant === 'outline' && 'bg-transparent border',
 		variant === 'outline' &&
 			colorScheme === 'orange' &&
 			'text-primary border-primary',
@@ -62,7 +65,7 @@ export const getButtonClassNames = ({
 			'text-accent-foreground border-accent-foreground',
 		variant === 'outline' &&
 			colorScheme === 'bland' &&
-			'text-background-foreground border-background-foreground',
+			'text-muted-foreground border-muted-foreground',
 		variant === 'outline' &&
 			colorScheme === 'destructive' &&
 			'text-destructive border-destructive'

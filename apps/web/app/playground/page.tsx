@@ -9,6 +9,13 @@ import { LinkAsButton } from '@/components/ui/link-as-button';
 import { Separator } from '@/components/ui/separator';
 import { toast } from '@/lib/utils/toast';
 import { Button } from '@/components/ui/button';
+import { Dialog } from '@/components/ui/dialog';
+import { Tag } from '@/components/ui/tag';
+import { Collapsible } from '@/components/ui/collapsible';
+import {
+	SidebarCollapsible,
+	SidebarItem,
+} from '@/components/ui/sidebar/sidebar-items';
 
 export default function PlaygroundPage() {
 	return (
@@ -81,6 +88,24 @@ export default function PlaygroundPage() {
 			>
 				click me{' '}
 			</Button>
+
+			<Dialog
+				triggerChildren={<Button>Open Dialog</Button>}
+				title="Hello world"
+				subtitle="What is going on"
+			>
+				Hello world
+			</Dialog>
+
+			<Tag variant="primary" colorScheme="accent">
+				{' '}
+				Hello wolrd
+			</Tag>
+			<Tag> Hello wolrd</Tag>
+			<SidebarItem isSelected>Cool</SidebarItem>
+			<SidebarItem>Cool</SidebarItem>
+
+			<SidebarCollapsible />
 		</div>
 	);
 }

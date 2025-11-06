@@ -10,8 +10,10 @@ export const Avatar: React.FC<
 		size?: 'sm' | 'md' | 'lg' | 'xl' | '2xl' | 'full';
 		isInput?: boolean;
 		deleteButton?: React.ReactNode;
+		variant?: 'primary' | 'secondary';
 	}
 > = ({
+	variant = 'primary',
 	imageProps,
 	size = 'md',
 	isInput = false,
@@ -37,12 +39,20 @@ export const Avatar: React.FC<
 		>
 			<RadixAvatar.Image
 				{...imageProps}
+				alt={imageProps?.alt || 'Representation of users profile picture'}
 				className={twMerge(
 					'size-full rounded-full object-cover',
 					imageProps.className
 				)}
 			/>
-			<RadixAvatar.Fallback className="bg-muted text-background-foreground flex size-full items-center justify-center rounded-full">
+			<RadixAvatar.Fallback
+				className={twJoin(
+					'flex size-full items-center justify-center rounded-full',
+					variant === 'secondary'
+						? 'text-background bg-secondary-background'
+						: 'bg-muted text-background-foreground'
+				)}
+			>
 				{children
 					?.toString()
 					.split(' ')

@@ -11,7 +11,7 @@ export default async function OnboardingLayout({
 	children: React.ReactNode;
 }) {
 	return (
-		<Layout className="h-[100vh] place-content-center">
+		<Layout className="h-screen place-content-center">
 			<LayoutColumn
 				start={1}
 				end={{ base: 13, lg: 6 }}
