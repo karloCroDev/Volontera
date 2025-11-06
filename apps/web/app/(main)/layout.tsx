@@ -15,8 +15,8 @@ export default async function MainLayout({
 				<Sidebar />
 
 				<div className="flex flex-1 flex-col px-6 lg:pl-8 lg:pr-12">
-					<Header />
-					<div className="border-input-border mb-5 h-[calc(100vh-96px-20px-28px)] rounded-2xl border lg:mb-12 lg:pl-8 lg:pr-12">
+					<div className="border-input-border my-7 mb-5 h-[calc(100vh-28px-28px)] rounded-2xl border lg:pl-8 lg:pr-12">
+						<Header />
 						<Layout>
 							<LayoutColumn className="py-6">{children}</LayoutColumn>
 						</Layout>

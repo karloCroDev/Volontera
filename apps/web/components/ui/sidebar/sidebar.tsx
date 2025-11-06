@@ -44,7 +44,7 @@ export const Sidebar = () => {
 			{/* Desktop sidebar */}
 			<aside
 				className={twJoin(
-					`border-input-border relative mx-10 my-12 hidden h-[calc(100vh-48px-48px)] rounded-2xl border p-4 transition-all duration-300 lg:flex lg:flex-col`,
+					`border-input-border relative mx-10 my-7 hidden h-[calc(100vh-28px-28px)] rounded-2xl border p-4 transition-all duration-300 lg:flex lg:flex-col`,
 					desktopOpen && 'w-80',
 					!desktopOpen && 'w-36 items-center'
 				)}

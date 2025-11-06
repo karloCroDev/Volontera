@@ -38,7 +38,7 @@ export const Header = () => {
 		.filter(Boolean);
 
 	return (
-		<nav className="flex h-24 w-full items-center gap-6 lg:h-28 lg:gap-10">
+		<nav className="border-input-border flex h-24 w-full items-center gap-6 border-b px-2 lg:h-28 lg:gap-10">
 			<Button
 				variant="outline"
 				colorScheme="bland"
