@@ -24,6 +24,7 @@ import { LoginArgs, loginSchema } from '@repo/schemas/auth';
 
 // Config
 import { withReactQueryProvider } from '@/config/react-query';
+import { toast } from '@/lib/utils/toast';
 
 export const LoginForm = withReactQueryProvider(() => {
 	const { isPending, mutate } = useLogin();
@@ -39,8 +40,13 @@ export const LoginForm = withReactQueryProvider(() => {
 	const router = useRouter();
 	const onSubmit = async (data: LoginArgs) => {
 		mutate(data, {
-			onSuccess({ message }) {
+			onSuccess({ title, message }) {
 				router.push(`/auth/login/verify-otp?email=${data.email}`);
+				toast({
+					title,
+					content: message,
+					variant: 'success',
+				});
 			},
 			onError(err) {
 				setError('root', err);
@@ -86,6 +92,9 @@ export const LoginForm = withReactQueryProvider(() => {
 						<Input
 							id="password"
 							label="Enter your password..."
+							inputProps={{
+								type: 'password',
+							}}
 							className="mt-2"
 							error={errors.password?.message}
 							{...field}
@@ -95,7 +104,14 @@ export const LoginForm = withReactQueryProvider(() => {
 			</div>
 			{errors.root && <Error>{errors.root.message}</Error>}
 
-			<Button className="w-full" size="lg" colorScheme="yellow">
+			<Button
+				className="w-full"
+				size="lg"
+				colorScheme="yellow"
+				type="submit"
+				isLoading={isPending}
+				isDisabled={isPending}
+			>
 				Login
 			</Button>
 
@@ -105,7 +121,7 @@ export const LoginForm = withReactQueryProvider(() => {
 				size="lg"
 				colorScheme="bland"
 				iconLeft={<Icon name="google" className="text-background" />}
-				disabled={isPending}
+				isDisabled={isPending}
 			>
 				Login with google
 			</Button>

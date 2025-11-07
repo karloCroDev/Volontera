@@ -10,7 +10,7 @@ import { generateTokenAndSetCookie } from "@/lib/set-token-cookie";
 import { verifyUser } from "@/lib/verify-user";
 
 // Schemas
-import { verifyEmail } from "@repo/schemas/auth";
+import { resetEmail, verifyEmail } from "@repo/schemas/auth";
 
 export async function verifyTokenOtp(req: Request, res: Response) {
   const data = req.body;
@@ -75,7 +75,7 @@ export async function verifyTokenOtp(req: Request, res: Response) {
 export async function resetVerifyToken(req: Request, res: Response) {
   const data = req.body;
 
-  const { data: validateData, success } = verifyEmail.safeParse(data);
+  const { data: validateData, success } = resetEmail.safeParse(data);
 
   console.log(validateData);
   if (!success) {
@@ -83,17 +83,17 @@ export async function resetVerifyToken(req: Request, res: Response) {
   }
 
   const {
-    success: successResend,
+    // success: successResend,
     hashedOtp,
-    message,
+    // message,
     expireDate,
   } = await verifyUser(validateData.email);
 
-  if (!successResend) {
-    return res.status(400).json({
-      message: message,
-    });
-  }
+  // if (!successResend) {
+  //   return res.status(400).json({
+  //     message: message,
+  //   });
+  // }
 
   // Da budem jasan ne šaljem kod više korisnika, nego updaeMany će samo updateti onog korisnika koji već ima neki token (koji se pokušao logirati) --> ovo je napravljeno kao dodatan sloj sigurnosti da se ne može zloupotrijebiti endpoint za slanje kodova
   const updatedUser = await prisma.user.updateMany({

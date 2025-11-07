@@ -6,32 +6,37 @@ import { twMerge } from 'tailwind-merge';
 
 // Components
 import {
-  AdditionalButtonProps,
-  getButtonClassNames,
+	AdditionalButtonProps,
+	getButtonClassNames,
 } from '@/components/ui/link-as-button';
+import { Spinner } from '@/components/ui/spinner';
 
 export const Button: React.FC<
-  React.ComponentPropsWithoutRef<'button'> & ButtonProps & AdditionalButtonProps
+	React.ComponentPropsWithoutRef<'button'> & ButtonProps & AdditionalButtonProps
 > = ({
-  colorScheme = 'orange',
-  variant = 'primary',
-  size = 'sm',
-  isFullyRounded = false,
-  iconLeft,
-  iconRight,
-  children,
-  className,
-  ...rest
+	isLoading,
+	colorScheme = 'orange',
+	variant = 'primary',
+	size = 'sm',
+	isFullyRounded = false,
+	iconLeft,
+	iconRight,
+	children,
+	className,
+	...rest
 }) => (
-  <AriaButton
-    {...rest}
-    className={twMerge(
-      getButtonClassNames({ size, variant, colorScheme, isFullyRounded }),
-      className
-    )}
-  >
-    {iconLeft}
-    {children}
-    {iconRight}
-  </AriaButton>
+	<AriaButton
+		{...rest}
+		className={twMerge(
+			getButtonClassNames({ size, variant, colorScheme, isFullyRounded }),
+			className
+		)}
+	>
+		{iconLeft}
+		{children}
+		{iconRight}
+		{isLoading && (
+			<Spinner size="sm" className={`${size === 'lg' ? 'ml-4' : 'ml-auto'}`} />
+		)}
+	</AriaButton>
 );

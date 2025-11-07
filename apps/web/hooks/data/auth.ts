@@ -30,11 +30,11 @@ import {
 } from '@repo/schemas/auth';
 
 // Types
-import { SessionSuccessResponse } from '@repo/types/auth';
+import { SessionSuccessResponse, User } from '@repo/types/auth';
 import { ErrorFormResponse, SuccessfulResponse } from '@repo/types/general';
 
 export const useSession = () => {
-	return useQuery({
+	return useQuery<SessionSuccessResponse, ErrorFormResponse>({
 		queryKey: ['session'],
 		queryFn: cache(clientSession),
 		staleTime: 5 * 60 * 1000,
@@ -130,7 +130,7 @@ export const useResetPassword = (
 
 // Email verification
 export const useVerifyEmail = (
-	options?: UseMutationOptions<SessionSuccessResponse, Error, VerifyEmailArgs>
+	options?: UseMutationOptions<SuccessfulResponse, Error, VerifyEmailArgs>
 ) => {
 	const queryClient = useQueryClient();
 	return useMutation({
@@ -144,7 +144,7 @@ export const useVerifyEmail = (
 	});
 };
 export const useResetEmail = (
-	options?: UseMutationOptions<SessionSuccessResponse, Error, ResetEmailArgs>
+	options?: UseMutationOptions<SuccessfulResponse, Error, ResetEmailArgs>
 ) => {
 	const queryClient = useQueryClient();
 	return useMutation({

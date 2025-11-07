@@ -12,7 +12,7 @@ export async function serverFetch<T = unknown>({
 }): Promise<T> {
 	const cookieStore = await cookies();
 	const token = cookieStore.get('token')?.value;
-
+	console.log(token);
 	const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/${url}`, {
 		...init,
 		headers: {
@@ -21,10 +21,6 @@ export async function serverFetch<T = unknown>({
 			...init?.headers,
 		},
 	});
-
-	if (!res.ok) {
-		throw new Error(`Fetch failed (${res.status}`);
-	}
 
 	return (await res.json()) as Promise<T>;
 }

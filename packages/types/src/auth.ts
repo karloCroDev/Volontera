@@ -12,7 +12,8 @@ import { SuccessfulResponse } from "./general";
 // Session (User)
 export type User = {
   id: string;
-  username: string;
+  firstName: string;
+  lastName: string;
   email: string;
   image?: string;
   bio?: string;

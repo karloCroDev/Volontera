@@ -1,15 +1,17 @@
 // External packages
 import { Request, Response, NextFunction } from "express";
 
-export function userMiddleware(
+export function onbaordingMiddleware(
   req: Request,
   res: Response,
   next: NextFunction
 ) {
-  const { userId } = req.user;
+  const { userId, role } = req.user;
 
-  if (!userId) {
-    return res.status(400).json({ message: "Forbidden: Users only" });
+  if (!userId || !!role) {
+    return res
+      .status(400)
+      .json({ message: "Forbidden: Users without role created only" });
   }
 
   next();

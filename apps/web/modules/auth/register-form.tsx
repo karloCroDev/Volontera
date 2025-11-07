@@ -39,9 +39,9 @@ export const RegisterForm = withReactQueryProvider(() => {
 	const router = useRouter();
 	const onSubmit = async (data: RegisterArgs) => {
 		mutate(data, {
-			onSuccess({ message }) {
+			onSuccess({ title, message }) {
 				toast({
-					title: 'Success',
+					title,
 					content: message,
 					variant: 'success',
 				});
@@ -50,6 +50,7 @@ export const RegisterForm = withReactQueryProvider(() => {
 
 			onError(err) {
 				setError('root', err);
+				console.log(err);
 			},
 		});
 	};
@@ -135,6 +136,7 @@ export const RegisterForm = withReactQueryProvider(() => {
 					size="lg"
 					colorScheme="yellow"
 					isDisabled={isPending}
+					isLoading={isPending}
 					type="submit"
 				>
 					Create account
@@ -145,6 +147,7 @@ export const RegisterForm = withReactQueryProvider(() => {
 					size="lg"
 					colorScheme="bland"
 					iconLeft={<Icon name="google" className="text-background" />}
+					isDisabled={isPending}
 				>
 					Create account with google
 				</Button>

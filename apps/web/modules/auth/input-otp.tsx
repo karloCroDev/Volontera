@@ -20,7 +20,8 @@ export const InputOTP = withReactQueryProvider(() => {
 	const searchParams = useSearchParams();
 	const router = useRouter();
 
-	const { mutate: mutateVerifyEmail } = useVerifyEmail();
+	const { mutate: mutateVerifyEmail, isPending: isPendingVerify } =
+		useVerifyEmail();
 	const { mutate: mutateResetEmail } = useResetEmail();
 
 	const email = searchParams.get('email') || '';
@@ -30,7 +31,7 @@ export const InputOTP = withReactQueryProvider(() => {
 		<div>
 			<OTPInput
 				maxLength={6}
-				containerClassName="group mt-8 flex items-center has-[:disabled]:opacity-30"
+				containerClassName="group mt-8 flex items-center has-[:disabled]:opacity-30 justify-center"
 				onChange={(val) => {
 					if (val.length === 6) {
 						mutateVerifyEmail(
@@ -47,14 +48,14 @@ export const InputOTP = withReactQueryProvider(() => {
 					}
 				}}
 				render={({ slots }) => (
-					<div className="flex gap-8">
+					<div className="flex gap-2 sm:gap-4 lg:gap-8">
 						{slots.map((slot, idx) => (
 							<Slot key={idx} {...slot} />
 						))}
 					</div>
 				)}
 			/>
-			<div className="flex lg:items-baseline lg:justify-between">
+			<div className="flex flex-col items-baseline justify-between sm:flex-row sm:text-sm md:text-base">
 				<p className="text-muted-foreground mt-7">
 					Different account?
 					<Link
@@ -66,11 +67,12 @@ export const InputOTP = withReactQueryProvider(() => {
 				</p>
 				<Button
 					variant="blank"
-					className="underline-offset-8 transition-all hover:underline"
+					className="px-0 underline-offset-8 transition-all hover:underline md:px-4"
 					iconRight={<ArrowRight className="size-4" />}
 					onPress={() => {
 						mutateResetEmail({ email });
 					}}
+					isLoading={isPendingVerify}
 				>
 					Send new verification code
 				</Button>
@@ -83,7 +85,7 @@ export const InputOTP = withReactQueryProvider(() => {
 const Slot = ({ isActive, char }: SlotProps) => (
 	<div
 		className={twJoin(
-			'border-accent group-hover:border-accent-foreground/20 group-focus-within:border-accent-foreground/20 relative flex size-20 items-center justify-center rounded-lg border text-2xl font-medium outline transition-all',
+			'border-accent group-hover:border-accent-foreground/20 group-focus-within:border-accent-foreground/20 relative flex size-12 items-center justify-center rounded-lg border text-2xl font-medium outline transition-all lg:size-20',
 			isActive
 				? 'outline-accent-foreground outline-4'
 				: 'outline-accent-foreground/20 outline-0'
