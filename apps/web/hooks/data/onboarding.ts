@@ -18,7 +18,7 @@ export const useAppType = (
 ) => {
 	const queryClient = useQueryClient();
 	return useMutation({
-		mutationKey: ['register'],
+		mutationKey: ['app-type'],
 		mutationFn: (values: AppType) => appType(values),
 		onSuccess: async (...args) => {
 			await queryClient.invalidateQueries({ queryKey: ['onboarding'] });
@@ -37,7 +37,7 @@ export const useAdditionalInformation = (
 ) => {
 	const queryClient = useQueryClient();
 	return useMutation({
-		mutationKey: ['logout'],
+		mutationKey: ['additional-information'],
 		mutationFn: (values: AdditionalFormArgs) => additionalInformation(values),
 		onSuccess: async (...args) => {
 			await queryClient.invalidateQueries({ queryKey: ['onboarding'] });

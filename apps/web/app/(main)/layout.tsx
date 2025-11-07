@@ -27,7 +27,7 @@ export default async function MainLayout({
 	});
 
 	if (!user) redirect('/auth/login');
-	if (!user.role) redirect('/onboarding/choose-type');
+	if (!user.role) redirect('/onboarding/app-type');
 	return (
 		<SidebarProvider>
 			<div className="flex h-screen">

@@ -25,4 +25,5 @@ export type User = {
   subscriptionType: "NONE" | "MONTHLY" | "YEARLY";
 };
 
-export type SessionSuccessResponse = User & SuccessfulResponse;
+export type SessionSuccessResponse = User &
+  SuccessfulResponse & { success: boolean };

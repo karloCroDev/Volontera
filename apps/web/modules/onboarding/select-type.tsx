@@ -3,17 +3,31 @@
 // External packages
 import * as React from 'react';
 import { Radio, RadioGroup } from 'react-aria-components';
-import { AppType } from '@repo/types/onbaording';
+import { Error } from '@/components/ui/error';
 
 // Components
 import { RadioButtonVisual } from '@/components/ui/radio';
 import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
 
-export const SelectType = () => {
+// Hooks
+import { useAppType } from '@/hooks/data/onboarding';
+
+// Config
+import { withReactQueryProvider } from '@/config/react-query';
+
+// Lib
+import { toast } from '@/lib/utils/toast';
+
+// Types
+import { AppType } from '@repo/types/onbaording';
+
+export const SelectType = withReactQueryProvider(() => {
 	const [type, setType] = React.useState<AppType>('USER');
-	console.log(type);
+	const [error, setError] = React.useState('');
 	const router = useRouter();
+	const { mutate, isPending } = useAppType();
+
 	return (
 		<div className="flex flex-col items-end justify-center">
 			<RadioGroup
@@ -33,18 +47,32 @@ export const SelectType = () => {
 					</RadioButtonVisual>
 				</Radio>
 			</RadioGroup>
-
+			<Error className="mr-auto mt-3">{error}</Error>
 			<Button
 				className="mt-8 self-end"
 				size="md"
 				colorScheme="bland"
 				isDisabled={!type}
+				isLoading={isPending}
 				onPress={() => {
-					router.push('/login');
+					mutate(type, {
+						onSuccess: ({ message, title }) => {
+							router.push('/onboarding/additional-information');
+							toast({
+								title,
+								content: message,
+								variant: 'success',
+							});
+						},
+
+						onError: ({ message }) => {
+							setError(message);
+						},
+					});
 				}}
 			>
 				Next
 			</Button>
 		</div>
 	);
-};
+});

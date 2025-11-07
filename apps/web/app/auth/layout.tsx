@@ -20,8 +20,10 @@ export default async function AuthLayout({
 		},
 	});
 
-	if (user && !user.role) redirect('/onboarding/app-type');
-	if (user && user.role) redirect('/home');
+	if (user.success) {
+		if (user && !user.role) redirect('/onboarding/app-type');
+		if (user && user.role) redirect('/home');
+	}
 
 	return children;
 }

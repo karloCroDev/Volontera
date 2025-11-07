@@ -6,9 +6,9 @@ export function onbaordingMiddleware(
   res: Response,
   next: NextFunction
 ) {
-  const { userId, role } = req.user;
+  const { role } = req.user;
 
-  if (!userId || !!role) {
+  if (!!role) {
     return res
       .status(400)
       .json({ message: "Forbidden: Users without role created only" });

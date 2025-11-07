@@ -2,7 +2,7 @@
 
 // External packages
 import * as React from 'react';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { CircleX } from 'lucide-react';
 import { Loader } from 'lucide-react';
 import { Check } from 'lucide-react';
@@ -25,7 +25,6 @@ export const ProgressTracker = () => {
 					type="Choose type"
 					// User lands so that implies that it will be only pending or completed
 					status={type === 'app-type' ? 'pending' : 'completed'}
-					href="/app-type"
 					isRequired
 				/>
 				<hr className="bg-muted mb-14 h-[2px] w-16 border-0 sm:w-20 lg:my-12 lg:ml-3.5 lg:w-20 lg:rotate-90" />
@@ -35,7 +34,6 @@ export const ProgressTracker = () => {
 						// It will be routed, so no need to worry about success checmark because I am routing the user
 						type === 'additional-information' ? 'pending' : 'not-fullffiled'
 					}
-					href="/additional-information"
 				/>
 			</div>
 		</aside>
@@ -45,22 +43,14 @@ export const ProgressTracker = () => {
 const StatusCheckpoint = ({
 	type,
 	isRequired = false,
-	href = '',
 	status,
 }: {
 	type: string;
 	isRequired?: boolean;
-	href?: string;
 	status: 'pending' | 'not-fullffiled' | 'completed';
 }) => {
-	const router = useRouter();
 	return (
-		<div
-			className="flex w-fit flex-col items-center gap-x-5 gap-y-2 lg:flex-row"
-			onClick={() => {
-				if (status === 'completed') router.push(`/onboarding${href}`);
-			}}
-		>
+		<div className="flex w-fit flex-col items-center gap-x-5 gap-y-2 lg:flex-row">
 			<div
 				className={twJoin(
 					'border-input-border bg-muted size-20 rounded-full p-4 lg:size-28 lg:p-6'

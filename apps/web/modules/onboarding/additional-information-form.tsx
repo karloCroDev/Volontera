@@ -24,6 +24,8 @@ import {
 
 // Config
 import { withReactQueryProvider } from '@/config/react-query';
+import { useAdditionalInformation } from '@/hooks/data/onboarding';
+import { toast } from '@/lib/utils/toast';
 
 export const AdditionalInformationForm = withReactQueryProvider(() => {
 	const {
@@ -42,31 +44,32 @@ export const AdditionalInformationForm = withReactQueryProvider(() => {
 		undefined
 	);
 
-	console.log(watch().image);
+	const { mutate, isPending } = useAdditionalInformation();
+
 	const onSubmit = async (data: AdditionalFormArgs) => {
 		console.log('test');
-		// mutate(data, {
-		// 	onSuccess({ message, success }) {
-		// 		if (!success) {
-		// 			return setError('root', {
-		// 				message,
-		// 			});
-		// 		}
-		// 	},
-		// });
+		mutate(data, {
+			onSuccess({ message }) {
+				router.push('/home');
+				toast({
+					title: 'Welcome to [app]',
+					content: message,
+					variant: 'success',
+				});
+			},
+
+			onError({ message }) {
+				setError('root', {
+					message,
+				});
+			},
+		});
 	};
 
 	return (
 		<Form
 			className="mt-20 flex flex-col items-center gap-6 lg:gap-8"
-			onSubmit={() => {
-				console.log('Does this work');
-				if (hasUserInput) {
-					return handleSubmit(onSubmit);
-				}
-
-				router.push('/home');
-			}}
+			onSubmit={handleSubmit(onSubmit)}
 		>
 			<div className="relative">
 				<Controller
@@ -129,7 +132,7 @@ export const AdditionalInformationForm = withReactQueryProvider(() => {
 				<Label isOptional>DOB</Label>
 				<Controller
 					control={control}
-					name="DOB" // TODO: Handle format in which way I will send the data
+					name="DOB"
 					render={({ field: { onChange } }) => (
 						<DatePicker
 							onChange={(val) => {
@@ -168,6 +171,9 @@ export const AdditionalInformationForm = withReactQueryProvider(() => {
 				size="lg"
 				iconRight={!hasUserInput && <ArrowRight />}
 				colorScheme={hasUserInput ? 'orange' : 'bland'}
+				type="submit"
+				isLoading={isPending}
+				isDisabled={isPending}
 			>
 				{!hasUserInput ? 'Skip' : 'Save'}
 			</Button>

@@ -26,8 +26,8 @@ export default async function OnboardingLayout({
 		},
 	});
 
-	if (!user) redirect('/auth/login');
-	if (user && user.role) redirect('/home');
+	// if (!user) redirect('/auth/login');
+	// if (user && user.role) redirect('/home');
 
 	return (
 		<Layout className="h-screen place-content-center">
