@@ -4,11 +4,12 @@ import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 
 // Config
 import { prisma } from "@/config/prisma";
+import { JwtUser } from "@/lib/types/jwt";
 
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID!;
 const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET!;
 
-export const oAuthGoogle = passport.use(
+export const oAuthGoogleHandle = passport.use(
   new GoogleStrategy(
     {
       clientID: GOOGLE_CLIENT_ID,
@@ -48,7 +49,7 @@ export const oAuthGoogle = passport.use(
             return done(null, false);
 
           user = await prisma.user.upsert({
-            where: { email: profile.emails?.[0]?.value || "" },
+            where: { email: profile.emails[0].value || "" },
             update: {},
             create: {
               email: profile.emails[0].value,
@@ -73,8 +74,9 @@ export const oAuthGoogle = passport.use(
         return done(null, {
           userId: user.id,
           role: user.role,
-          subscriptionTier: user.subscriptionTier,
-        });
+          onboardingFinished: user.onboardingFinished,
+          // subscriptionTier: user.subscriptionTier,
+        } as JwtUser);
       } catch (err) {
         return done(err);
       }

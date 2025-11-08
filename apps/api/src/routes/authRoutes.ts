@@ -18,7 +18,7 @@ import {
 import { generateTokenAndSetCookie } from "@/lib/set-token-cookie";
 
 // Config
-import { oAuthGoogle } from "@/config/oAuth-google";
+import { oAuthGoogleHandle } from "@/config/oAuth-google";
 
 export const authRoutes = Router();
 
@@ -34,7 +34,7 @@ authRoutes.post("/verify-token-otp", verifyTokenOtp);
 authRoutes.post("/reset-verify-token", resetVerifyToken);
 authRoutes.get(
   "/google",
-  oAuthGoogle.authenticate("google", {
+  oAuthGoogleHandle.authenticate("google", {
     scope: ["profile", "email"],
     session: false,
   })
@@ -42,7 +42,7 @@ authRoutes.get(
 
 authRoutes.get(
   "/google/callback",
-  oAuthGoogle.authenticate("google", {
+  oAuthGoogleHandle.authenticate("google", {
     failureRedirect: "http://localhost:3000/auth/login",
     session: false,
   }),

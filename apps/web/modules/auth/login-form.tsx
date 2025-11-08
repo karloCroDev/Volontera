@@ -25,6 +25,7 @@ import { LoginArgs, loginSchema } from '@repo/schemas/auth';
 // Config
 import { withReactQueryProvider } from '@/config/react-query';
 import { toast } from '@/lib/utils/toast';
+import { AnchorAsButton } from '@/components/ui/anchor-as-button';
 
 export const LoginForm = withReactQueryProvider(() => {
 	const { isPending, mutate } = useLogin();
@@ -116,15 +117,15 @@ export const LoginForm = withReactQueryProvider(() => {
 			</Button>
 
 			<Separator />
-			<Button
+			<AnchorAsButton
 				className="w-full"
 				size="lg"
 				colorScheme="bland"
 				iconLeft={<Icon name="google" className="text-background" />}
-				isDisabled={isPending}
+				href={`${process.env.NEXT_PUBLIC_API_URL}/auth/google`}
 			>
 				Login with google
-			</Button>
+			</AnchorAsButton>
 		</Form>
 	);
 });

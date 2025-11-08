@@ -24,6 +24,7 @@ import { withReactQueryProvider } from '@/config/react-query';
 
 // Lib
 import { toast } from '@/lib/utils/toast';
+import { AnchorAsButton } from '@/components/ui/anchor-as-button';
 
 export const RegisterForm = withReactQueryProvider(() => {
 	const { isPending, mutate } = useRegister();
@@ -142,15 +143,15 @@ export const RegisterForm = withReactQueryProvider(() => {
 					Create account
 				</Button>
 				<Separator />
-				<Button
+				<AnchorAsButton
 					className="w-full"
 					size="lg"
 					colorScheme="bland"
+					href={`${process.env.NEXT_PUBLIC_API_URL}/auth/google`}
 					iconLeft={<Icon name="google" className="text-background" />}
-					isDisabled={isPending}
 				>
 					Create account with google
-				</Button>
+				</AnchorAsButton>
 			</Form>
 		</>
 	);

@@ -10,7 +10,7 @@ import { onboardingProcessMiddleware } from "@/middleware/onboardingMiddleware";
 
 // Config
 import { server, app } from "@/config/socket";
-import { oAuthGoogle } from "@/config/oAuth-google";
+import { oAuthGoogleHandle } from "@/config/oAuth-google";
 
 // Routes
 import { authRoutes } from "@/routes/authRoutes";
@@ -29,7 +29,7 @@ app.use(cookieParser());
 // Routes
 app.use("/payment", paymentRoutes); // Staviu uvik povise express.json
 
-app.use(oAuthGoogle.initialize());
+app.use(oAuthGoogleHandle.initialize());
 
 app.use(express.json());
 app.use("/auth", authRoutes);
