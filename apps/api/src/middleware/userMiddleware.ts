@@ -8,6 +8,8 @@ export function userMiddleware(
 ) {
   const { role } = req.user;
 
+  console.log(req.user);
+
   if (role !== "USER") {
     return res.status(400).json({ message: "Forbidden: Users only" });
   }

@@ -20,7 +20,7 @@ import { withReactQueryProvider } from '@/config/react-query';
 import { toast } from '@/lib/utils/toast';
 
 // Types
-import { AppType } from '@repo/types/onbaording';
+import { AppType } from '@repo/types/onboarding';
 
 export const SelectType = withReactQueryProvider(() => {
 	const [type, setType] = React.useState<AppType>('USER');

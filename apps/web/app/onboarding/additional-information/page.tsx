@@ -4,8 +4,22 @@ import { ArrowLeft } from 'lucide-react';
 
 // Modules
 import { AdditionalInformationForm } from '@/modules/onboarding/additional-information-form';
+import { SessionSuccessResponse } from '@repo/types/auth';
+import { serverFetch } from '@/config/server-fetch';
+import { redirect } from 'next/navigation';
 
 export default async function AdditionalInformation() {
+	const user: SessionSuccessResponse = await serverFetch({
+		url: 'auth/session',
+		init: {
+			cache: 'no-store',
+			next: { tags: ['session'] },
+		},
+	});
+
+	if (user.success && !user.onboardingFinished && !user.role)
+		redirect('/onboarding/app-type');
+
 	return (
 		<div>
 			<div className="flex items-baseline gap-6 lg:gap-8">

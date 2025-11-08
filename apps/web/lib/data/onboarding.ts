@@ -28,3 +28,11 @@ export async function additionalInformation(data: AdditionalFormArgs) {
 		catchError(err);
 	}
 }
+export async function skipAdditionalInformation() {
+	try {
+		const res = await API().post('onboarding/skip-additional-information');
+		return res.data;
+	} catch (err) {
+		catchError(err);
+	}
+}

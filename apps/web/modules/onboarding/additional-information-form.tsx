@@ -24,7 +24,10 @@ import {
 
 // Config
 import { withReactQueryProvider } from '@/config/react-query';
-import { useAdditionalInformation } from '@/hooks/data/onboarding';
+import {
+	useAdditionalInformation,
+	useSkipAdditionalInformation,
+} from '@/hooks/data/onboarding';
 import { toast } from '@/lib/utils/toast';
 
 export const AdditionalInformationForm = withReactQueryProvider(() => {
@@ -46,8 +49,24 @@ export const AdditionalInformationForm = withReactQueryProvider(() => {
 
 	const { mutate, isPending } = useAdditionalInformation();
 
+	const { mutate: skipAdditionalInformation } = useSkipAdditionalInformation();
 	const onSubmit = async (data: AdditionalFormArgs) => {
-		console.log('test');
+		const hasUserInput = data.DOB || data.bio || data.image;
+
+		if (!hasUserInput) {
+			skipAdditionalInformation(undefined, {
+				onSuccess({ message }) {
+					router.push('/home');
+					toast({
+						title: 'Welcome to [app]',
+						content: message,
+						variant: 'success',
+					});
+				},
+			});
+		}
+
+		// User filled at least one field, process normally
 		mutate(data, {
 			onSuccess({ message }) {
 				router.push('/home');
@@ -57,15 +76,11 @@ export const AdditionalInformationForm = withReactQueryProvider(() => {
 					variant: 'success',
 				});
 			},
-
 			onError({ message }) {
-				setError('root', {
-					message,
-				});
+				setError('root', { message });
 			},
 		});
 	};
-
 	return (
 		<Form
 			className="mt-20 flex flex-col items-center gap-6 lg:gap-8"

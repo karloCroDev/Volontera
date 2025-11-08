@@ -51,7 +51,8 @@ authRoutes.get(
       res,
       role: req.user.role,
       userId: req.user.userId,
-      subscriptionTier: req.user.subscriptionTier,
+      // subscriptionTier: req.user.subscriptionTier,
+      onboardingFinished: req.user.onboardingFinished,
     });
 
     res.redirect("http://localhost:3000/home");

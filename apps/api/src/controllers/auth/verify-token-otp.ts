@@ -64,7 +64,8 @@ export async function verifyTokenOtp(req: Request, res: Response) {
     res,
     userId: user.id,
     role: user.role,
-    subscriptionTier: user.subscriptionTier,
+    // subscriptionTier: user.subscriptionTier,
+    onboardingFinished: user.onboardingFinished,
   });
 
   return res.status(200).json({

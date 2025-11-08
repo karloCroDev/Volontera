@@ -6,11 +6,15 @@ import {
 } from '@tanstack/react-query';
 
 // Lib
-import { additionalInformation, appType } from '@/lib/data/onbaording';
+import {
+	additionalInformation,
+	appType,
+	skipAdditionalInformation,
+} from '@/lib/data/onboarding';
 
 // Repo
 import { ErrorFormResponse, SuccessfulResponse } from '@repo/types/general';
-import { AppType } from '@repo/types/onbaording';
+import { AppType } from '@repo/types/onboarding';
 import { AdditionalFormArgs } from '@repo/schemas/onboarding';
 
 export const useAppType = (
@@ -39,6 +43,21 @@ export const useAdditionalInformation = (
 	return useMutation({
 		mutationKey: ['additional-information'],
 		mutationFn: (values: AdditionalFormArgs) => additionalInformation(values),
+		onSuccess: async (...args) => {
+			await queryClient.invalidateQueries({ queryKey: ['onboarding'] });
+			await options?.onSuccess?.(...args);
+		},
+		...options,
+	});
+};
+
+export const useSkipAdditionalInformation = (
+	options?: UseMutationOptions<SuccessfulResponse, ErrorFormResponse, undefined>
+) => {
+	const queryClient = useQueryClient();
+	return useMutation({
+		mutationKey: ['skip-additional-information'],
+		mutationFn: skipAdditionalInformation,
 		onSuccess: async (...args) => {
 			await queryClient.invalidateQueries({ queryKey: ['onboarding'] });
 			await options?.onSuccess?.(...args);

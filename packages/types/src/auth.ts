@@ -20,7 +20,7 @@ export type User = {
   role: "USER" | "ORGANIZATION" | "ADMIN";
   createdAt: Date;
   updatedAt: Date;
-
+  onboardingFinished: boolean;
   subscriptionTier: "BASIC" | "PREMIUM";
   subscriptionType: "NONE" | "MONTHLY" | "YEARLY";
 };

@@ -5,7 +5,8 @@ import { Request, Response, NextFunction } from "express";
 export interface JwtUser {
   userId: string;
   role: User["role"];
-  subscriptionTier: User["subscriptionTier"];
+  // subscriptionTier: User["subscriptionTier"];
+  onboardingFinished: User["onboardingFinished"];
 }
 
 declare module "express-serve-static-core" {

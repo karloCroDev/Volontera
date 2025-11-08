@@ -6,7 +6,7 @@ import cors from "cors";
 // Middleware
 import { authMiddleware } from "@/middleware/authMiddleware";
 import { adminMiddleware } from "@/middleware/organizationMiddleware";
-import { onbaordingMiddleware } from "@/middleware/onbaordingMiddleware";
+import { onboardingMiddleware } from "@/middleware/onboardingMiddleware";
 
 // Config
 import { server, app } from "@/config/socket";
@@ -32,7 +32,7 @@ app.use(oAuthGoogle.initialize());
 
 app.use(express.json());
 app.use("/auth", authRoutes);
-app.use("/onboarding", authMiddleware, onbaordingMiddleware, onboardingRoutes);
+app.use("/onboarding", authMiddleware, onboardingMiddleware, onboardingRoutes);
 
 // Test
 app.get("/protected", authMiddleware, (req, res) => {
