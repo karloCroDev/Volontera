@@ -7,20 +7,32 @@ import { prisma } from "@/config/prisma";
 
 // Lib
 import { getImagePresignedUrls } from "@/lib/aws-s3-functions";
+import { JwtUser } from "@/lib/types/jwt";
 
 export async function session(req: Request, res: Response) {
   try {
-    const token = req.cookies.token;
+    const header = req.headers.authorization;
+    const cookieToken = req.cookies?.token;
+
+    let token = null;
+
+    if (header && header.startsWith("Bearer ")) {
+      token = header.split(" ")[1];
+    } else if (cookieToken) {
+      token = cookieToken;
+    }
 
     if (!token)
       return res
         .status(401)
         .json({ message: "Not authenticated", success: false });
 
-    const payload = jwt.verify(token, process.env.JWT_SECRET as string) as {
-      userId: string;
-    };
-
+    // console.log(!token);
+    const payload = jwt.verify(
+      token,
+      process.env.JWT_SECRET as string
+    ) as JwtUser;
+    console.log(payload);
     const user = await prisma.user.findUnique({
       where: { id: payload.userId },
 
@@ -35,6 +47,7 @@ export async function session(req: Request, res: Response) {
         createdAt: true,
         updatedAt: true,
         subscriptionTier: true,
+        onboardingFinished: true,
         subscriptionType: true,
       },
     });
@@ -49,7 +62,9 @@ export async function session(req: Request, res: Response) {
 
     const response = image ? { ...user, image } : { ...user };
 
-    res.status(200).json({ ...response, message: "User is logged in" });
+    res
+      .status(200)
+      .json({ ...response, message: "User is logged in", success: true });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal server error" });

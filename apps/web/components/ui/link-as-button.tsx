@@ -2,9 +2,6 @@
 import Link, { LinkProps } from 'next/link';
 import { twJoin, twMerge } from 'tailwind-merge';
 
-// Components
-import { Spinner } from '@/components/ui/spinner';
-
 export interface AdditionalButtonProps {
 	variant?: 'primary' | 'outline' | 'blank';
 	colorScheme?: 'orange' | 'yellow' | 'bland' | 'destructive';
@@ -82,7 +79,6 @@ export const LinkAsButton: React.FC<
 	iconRight,
 	children,
 	className,
-	isLoading,
 	...rest
 }) => (
 	<Link
@@ -96,6 +92,5 @@ export const LinkAsButton: React.FC<
 		{iconLeft}
 		{children}
 		{iconRight}
-		{isLoading && <Spinner size={size} className="ml-auto" />}
 	</Link>
 );

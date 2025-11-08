@@ -12,16 +12,18 @@ import { SuccessfulResponse } from "./general";
 // Session (User)
 export type User = {
   id: string;
-  username: string;
+  firstName: string;
+  lastName: string;
   email: string;
   image?: string;
   bio?: string;
   role: "USER" | "ORGANIZATION" | "ADMIN";
   createdAt: Date;
   updatedAt: Date;
-
+  onboardingFinished: boolean;
   subscriptionTier: "BASIC" | "PREMIUM";
   subscriptionType: "NONE" | "MONTHLY" | "YEARLY";
 };
 
-export type SessionSuccessResponse = User & SuccessfulResponse;
+export type SessionSuccessResponse = User &
+  SuccessfulResponse & { success: boolean };

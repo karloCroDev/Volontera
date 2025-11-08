@@ -31,17 +31,17 @@ export async function register(req: Request, res: Response) {
     const hashedPassword = bcrypt.hashSync(validateData.password, 10);
 
     const {
-      success: verifySuccess,
+      // success: verifySuccess,
       hashedOtp,
-      message,
+      // message,
       expireDate,
     } = await verifyUser(validateData.email); // Sending email before checking if user exists, not ideal, I would send email after creating user in db, so refacotring this function might not be a bad idea!
 
-    if (!verifySuccess) {
-      return res.status(400).json({
-        message: message,
-      });
-    }
+    // if (!verifySuccess) {
+    //   return res.status(400).json({
+    //     message: message,
+    //   });
+    // }
 
     const user = await prisma.user.create({
       data: {
@@ -61,7 +61,8 @@ export async function register(req: Request, res: Response) {
     }
 
     return res.json({
-      message: "User created successfully",
+      title: "Success",
+      message: "Checkout your email inbox for verification code",
     });
   } catch (error) {
     console.error(error);

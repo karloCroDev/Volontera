@@ -1,14 +1,37 @@
+// External packages
+import { redirect } from 'next/navigation';
+
 // Components
 import { Header } from '@/components/ui/header/header';
 import { Layout, LayoutColumn } from '@/components/ui/layout-grid';
 import { Sidebar } from '@/components/ui/sidebar/sidebar';
 import { SidebarProvider } from '@/components/ui/sidebar/sidebar-provider';
 
+// Config
+import { serverFetch } from '@/config/server-fetch';
+
+// Types
+import { SessionSuccessResponse } from '@repo/types/auth';
+
 export default async function MainLayout({
 	children,
 }: {
 	children: React.ReactNode;
 }) {
+	const user: SessionSuccessResponse = await serverFetch({
+		url: 'auth/session',
+		init: {
+			cache: 'no-store',
+			next: { tags: ['session'] },
+		},
+	});
+
+	console.log(user);
+
+	if (!user.success) redirect('/auth/login');
+	if (user.success && !user.onboardingFinished)
+		redirect('/onboarding/app-type');
+
 	return (
 		<SidebarProvider>
 			<div className="flex h-screen">

@@ -15,43 +15,47 @@ import { LoginArgs, loginSchema } from "@repo/schemas/auth";
 export async function login(req: Request, res: Response) {
   try {
     const data: LoginArgs = req.body;
-    const validateData = loginSchema.safeParse(data);
+    const { data: validateData, success: loginSuccess } =
+      loginSchema.safeParse(data);
 
-    if (!validateData.success) {
+    if (!loginSuccess) {
       return res.status(400).json({
-        errors: zodErrorDetecter(validateData.error),
+        message: "Provided data is incorrect",
       });
     }
 
     const user = await prisma.user.findUnique({
       where: {
-        email: validateData.data.email,
+        email: validateData.email,
       },
     });
 
     if (!user) return res.status(400).json({ message: "Invalid email" });
 
     const passwordIsValid = bcrypt.compareSync(
-      validateData.data.password,
+      validateData.password,
       user.password
     );
 
     if (!passwordIsValid)
       return res.status(400).json({ message: "Invalid password" });
 
-    const { success, hashedOtp, message, expireDate } = await verifyUser(
-      validateData.data.email
-    );
+    const {
+      //  success,
+      hashedOtp,
+      //  message,
+      expireDate,
+    } = await verifyUser(validateData.email);
 
-    if (!success) {
-      return res.status(400).json({
-        message: message,
-      });
-    }
+    // if (!success) {
+    //   return res.status(400).json({
+    //     message: message,
+    //   });
+    // }
 
     const updatedUser = await prisma.user.update({
       where: {
-        email: validateData.data.email,
+        email: validateData.email,
       },
       data: {
         verificationToken: hashedOtp,
@@ -62,9 +66,9 @@ export async function login(req: Request, res: Response) {
     if (!updatedUser) {
       return res.status(400).json({ message: "Error with email" });
     }
-    ///
     return res.status(200).json({
-      message: "User logged in successfully",
+      title: "Success",
+      message: "Checkout your email inbox for verification code",
     });
   } catch (error) {
     console.error(error);

@@ -137,7 +137,7 @@ export const Sidebar = () => {
 							)
 						}
 					>
-						<Dialog>
+						<Dialog className="flex h-full flex-col">
 							<div className="mb-4 flex items-center justify-between px-2">
 								<p className="text-md">[app name]</p>
 								<Button slot="close" isFullyRounded className="p-2">
@@ -145,7 +145,7 @@ export const Sidebar = () => {
 								</Button>
 							</div>
 
-							<div className="flex w-3/4 flex-col gap-4 md:w-3/5">
+							<div className="flex w-3/4 flex-1 flex-col gap-4 md:w-3/5">
 								<Link href="/home">
 									<SidebarItem
 										iconLeft={<Home className="size-5" />}
@@ -173,6 +173,9 @@ export const Sidebar = () => {
 										Help
 									</SidebarItem>
 								</Link>
+								<div className="mt-auto">
+									<UserInformation />
+								</div>
 							</div>
 						</Dialog>
 					</Modal>

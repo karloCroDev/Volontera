@@ -5,7 +5,8 @@ import { Request, Response } from "express";
 import { prisma } from "@/config/prisma";
 
 // Types
-import { AppType } from "@repo/types/onbaording";
+import { AppType } from "@repo/types/onboarding";
+import { generateTokenAndSetCookie } from "@/lib/set-token-cookie";
 
 export async function appType(req: Request, res: Response) {
   const type: AppType = req.body;
@@ -23,10 +24,23 @@ export async function appType(req: Request, res: Response) {
     },
   });
 
-  if (userRole) {
-    return res.json({
-      title: "App type saved",
-      message: "Your app type has been saved successfully",
+  if (!userRole) {
+    return res.status(400).json({
+      message:
+        "There has been error with choosing the app type (user non existent)",
     });
   }
+  console.log(type);
+
+  generateTokenAndSetCookie({
+    res,
+    userId: userRole.id,
+    role: type,
+    onboardingFinished: false,
+  });
+
+  return res.json({
+    title: "App type saved",
+    message: "Your app type has been saved successfully",
+  });
 }

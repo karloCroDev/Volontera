@@ -24,6 +24,7 @@ import { withReactQueryProvider } from '@/config/react-query';
 
 // Lib
 import { toast } from '@/lib/utils/toast';
+import { AnchorAsButton } from '@/components/ui/anchor-as-button';
 
 export const RegisterForm = withReactQueryProvider(() => {
 	const { isPending, mutate } = useRegister();
@@ -39,9 +40,9 @@ export const RegisterForm = withReactQueryProvider(() => {
 	const router = useRouter();
 	const onSubmit = async (data: RegisterArgs) => {
 		mutate(data, {
-			onSuccess({ message }) {
+			onSuccess({ title, message }) {
 				toast({
-					title: 'Success',
+					title,
 					content: message,
 					variant: 'success',
 				});
@@ -50,6 +51,7 @@ export const RegisterForm = withReactQueryProvider(() => {
 
 			onError(err) {
 				setError('root', err);
+				console.log(err);
 			},
 		});
 	};
@@ -135,19 +137,21 @@ export const RegisterForm = withReactQueryProvider(() => {
 					size="lg"
 					colorScheme="yellow"
 					isDisabled={isPending}
+					isLoading={isPending}
 					type="submit"
 				>
 					Create account
 				</Button>
 				<Separator />
-				<Button
+				<AnchorAsButton
 					className="w-full"
 					size="lg"
 					colorScheme="bland"
+					href={`${process.env.NEXT_PUBLIC_API_URL}/auth/google`}
 					iconLeft={<Icon name="google" className="text-background" />}
 				>
 					Create account with google
-				</Button>
+				</AnchorAsButton>
 			</Form>
 		</>
 	);

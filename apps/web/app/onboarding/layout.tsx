@@ -1,8 +1,16 @@
+// External packages
+import { redirect } from 'next/navigation';
+
+// Config
+import { serverFetch } from '@/config/server-fetch';
+
 // Components
 import { Layout, LayoutColumn } from '@/components/ui/layout-grid';
-
 // Modules
 import { ProgressTracker } from '@/modules/onboarding/progress-tracker';
+
+// Repo types
+import { SessionSuccessResponse } from '@repo/types/auth';
 
 // Karlo: TODO: Mobile view not the prettiest one!
 export default async function OnboardingLayout({
@@ -10,6 +18,17 @@ export default async function OnboardingLayout({
 }: {
 	children: React.ReactNode;
 }) {
+	const user: SessionSuccessResponse = await serverFetch({
+		url: 'auth/session',
+		init: {
+			cache: 'no-store',
+			next: { tags: ['session'] },
+		},
+	});
+
+	if (!user.success) redirect('/auth/login');
+	if (user.success && user.onboardingFinished) redirect('/home');
+
 	return (
 		<Layout className="h-screen place-content-center">
 			<LayoutColumn

@@ -24,6 +24,12 @@ import {
 
 // Config
 import { withReactQueryProvider } from '@/config/react-query';
+import {
+	useAdditionalInformation,
+	useSkipAdditionalInformation,
+} from '@/hooks/data/onboarding';
+import { toast } from '@/lib/utils/toast';
+import { useSession } from '@/hooks/data/auth';
 
 export const AdditionalInformationForm = withReactQueryProvider(() => {
 	const {
@@ -37,36 +43,55 @@ export const AdditionalInformationForm = withReactQueryProvider(() => {
 	});
 
 	const router = useRouter();
+
+	const { data: user } = useSession();
+
 	const hasUserInput = watch().DOB || watch().bio || watch().image;
 	const [currentImage, setCurrentImage] = React.useState<File | undefined>(
 		undefined
 	);
 
-	console.log(watch().image);
-	const onSubmit = async (data: AdditionalFormArgs) => {
-		console.log('test');
-		// mutate(data, {
-		// 	onSuccess({ message, success }) {
-		// 		if (!success) {
-		// 			return setError('root', {
-		// 				message,
-		// 			});
-		// 		}
-		// 	},
-		// });
-	};
+	const { mutate, isPending } = useAdditionalInformation();
 
+	const { mutate: skipAdditionalInformation } = useSkipAdditionalInformation();
+	const onSubmit = async (data: AdditionalFormArgs) => {
+		const hasUserInput = data.DOB || data.bio || data.image;
+
+		if (!hasUserInput) {
+			skipAdditionalInformation(undefined, {
+				onSuccess({ title, message }) {
+					router.push('/home');
+					toast({
+						title,
+						content: message,
+						variant: 'success',
+					});
+				},
+				onError(err) {
+					setError('root', err);
+				},
+			});
+		}
+
+		// User filled at least one field, process normally
+		mutate(data, {
+			onSuccess({ message }) {
+				router.push('/home');
+				toast({
+					title: 'Welcome to [app]',
+					content: message,
+					variant: 'success',
+				});
+			},
+			onError(err) {
+				setError('root', err);
+			},
+		});
+	};
 	return (
 		<Form
 			className="mt-20 flex flex-col items-center gap-6 lg:gap-8"
-			onSubmit={() => {
-				console.log('Does this work');
-				if (hasUserInput) {
-					return handleSubmit(onSubmit);
-				}
-
-				router.push('/home');
-			}}
+			onSubmit={handleSubmit(onSubmit)}
 		>
 			<div className="relative">
 				<Controller
@@ -98,7 +123,7 @@ export const AdditionalInformationForm = withReactQueryProvider(() => {
 										)
 									}
 								>
-									Karlo Grgic
+									{[user?.firstName, user?.lastName].join(' ')}
 								</Avatar>
 							</AriaLabel>
 
@@ -129,7 +154,7 @@ export const AdditionalInformationForm = withReactQueryProvider(() => {
 				<Label isOptional>DOB</Label>
 				<Controller
 					control={control}
-					name="DOB" // TODO: Handle format in which way I will send the data
+					name="DOB"
 					render={({ field: { onChange } }) => (
 						<DatePicker
 							onChange={(val) => {
@@ -168,6 +193,9 @@ export const AdditionalInformationForm = withReactQueryProvider(() => {
 				size="lg"
 				iconRight={!hasUserInput && <ArrowRight />}
 				colorScheme={hasUserInput ? 'orange' : 'bland'}
+				type="submit"
+				isLoading={isPending}
+				isDisabled={isPending}
 			>
 				{!hasUserInput ? 'Skip' : 'Save'}
 			</Button>

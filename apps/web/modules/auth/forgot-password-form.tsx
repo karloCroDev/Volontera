@@ -62,7 +62,12 @@ export const ForgotPasswordForm = withReactQueryProvider(() => {
 				/>
 			</div>
 			{errors.root && <Error>{errors.root.message}</Error>}
-			<Button className="w-full" size="lg" isDisabled={isPending}>
+			<Button
+				className="w-full"
+				size="lg"
+				isDisabled={isPending}
+				isLoading={isPending}
+			>
 				Send verification code
 			</Button>
 		</Form>

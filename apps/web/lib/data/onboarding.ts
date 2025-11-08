@@ -10,7 +10,11 @@ import { AppType } from '@repo/types/onbaording';
 
 export async function appType(data: AppType) {
 	try {
-		const res = await API().post('onboarding/app-type', data);
+		const res = await API({
+			headers: {
+				'Content-Type': 'text/plain',
+			},
+		}).post('onboarding/app-type', data);
 		return res.data;
 	} catch (err) {
 		catchError(err);
@@ -19,6 +23,14 @@ export async function appType(data: AppType) {
 export async function additionalInformation(data: AdditionalFormArgs) {
 	try {
 		const res = await API().post('onboarding/additional-information', data);
+		return res.data;
+	} catch (err) {
+		catchError(err);
+	}
+}
+export async function skipAdditionalInformation() {
+	try {
+		const res = await API().post('onboarding/skip-additional-information');
 		return res.data;
 	} catch (err) {
 		catchError(err);
