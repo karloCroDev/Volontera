@@ -13,9 +13,8 @@ import { additionalInformationMiddleware } from "@/middleware/onboardingMiddlewa
 export const onboardingRoutes = Router();
 
 onboardingRoutes.use(express.json());
-onboardingRoutes.use(express.text());
 
-onboardingRoutes.post("/app-type", appType);
+onboardingRoutes.post("/app-type", express.text(), appType);
 onboardingRoutes.post(
   "/additional-information",
   additionalInformationMiddleware,

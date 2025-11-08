@@ -1,7 +1,7 @@
 // External packages
 import { Request, Response, NextFunction } from "express";
 
-export function onboardingMiddleware(
+export function onboardingProcessMiddleware(
   req: Request,
   res: Response,
   next: NextFunction

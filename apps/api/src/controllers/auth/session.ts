@@ -7,7 +7,7 @@ import { prisma } from "@/config/prisma";
 
 // Lib
 import { getImagePresignedUrls } from "@/lib/aws-s3-functions";
-import { success } from "zod";
+import { JwtUser } from "@/lib/types/jwt";
 
 export async function session(req: Request, res: Response) {
   try {
@@ -21,17 +21,18 @@ export async function session(req: Request, res: Response) {
     } else if (cookieToken) {
       token = cookieToken;
     }
-    console.log(req.cookies);
+
     if (!token)
       return res
         .status(401)
         .json({ message: "Not authenticated", success: false });
 
-    console.log(!token);
-    const payload = jwt.verify(token, process.env.JWT_SECRET as string) as {
-      userId: string;
-    };
-
+    // console.log(!token);
+    const payload = jwt.verify(
+      token,
+      process.env.JWT_SECRET as string
+    ) as JwtUser;
+    console.log(payload);
     const user = await prisma.user.findUnique({
       where: { id: payload.userId },
 

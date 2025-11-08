@@ -3,7 +3,13 @@ import jwt from "jsonwebtoken";
 import { Request, Response, NextFunction } from "express";
 
 // Middleware
-import { JwtUser } from "@/middleware/organizationMiddleware";
+import { JwtUser } from "@/lib/types/jwt";
+
+declare module "express-serve-static-core" {
+  interface Request {
+    user: JwtUser;
+  }
+}
 
 export function authMiddleware(
   req: Request,

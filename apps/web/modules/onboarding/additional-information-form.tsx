@@ -29,6 +29,7 @@ import {
 	useSkipAdditionalInformation,
 } from '@/hooks/data/onboarding';
 import { toast } from '@/lib/utils/toast';
+import { useSession } from '@/hooks/data/auth';
 
 export const AdditionalInformationForm = withReactQueryProvider(() => {
 	const {
@@ -42,6 +43,9 @@ export const AdditionalInformationForm = withReactQueryProvider(() => {
 	});
 
 	const router = useRouter();
+
+	const { data: user } = useSession();
+
 	const hasUserInput = watch().DOB || watch().bio || watch().image;
 	const [currentImage, setCurrentImage] = React.useState<File | undefined>(
 		undefined
@@ -55,13 +59,16 @@ export const AdditionalInformationForm = withReactQueryProvider(() => {
 
 		if (!hasUserInput) {
 			skipAdditionalInformation(undefined, {
-				onSuccess({ message }) {
+				onSuccess({ title, message }) {
 					router.push('/home');
 					toast({
-						title: 'Welcome to [app]',
+						title,
 						content: message,
 						variant: 'success',
 					});
+				},
+				onError(err) {
+					setError('root', err);
 				},
 			});
 		}
@@ -76,8 +83,8 @@ export const AdditionalInformationForm = withReactQueryProvider(() => {
 					variant: 'success',
 				});
 			},
-			onError({ message }) {
-				setError('root', { message });
+			onError(err) {
+				setError('root', err);
 			},
 		});
 	};
@@ -116,7 +123,7 @@ export const AdditionalInformationForm = withReactQueryProvider(() => {
 										)
 									}
 								>
-									Karlo Grgic
+									{[user?.firstName, user?.lastName].join(' ')}
 								</Avatar>
 							</AriaLabel>
 

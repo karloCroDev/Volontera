@@ -10,7 +10,6 @@ import { generateTokenAndSetCookie } from "@/lib/set-token-cookie";
 
 export async function appType(req: Request, res: Response) {
   const type: AppType = req.body;
-  const user = req.user;
 
   if (type !== "USER" && type !== "ORGANIZATION") {
     return res.status(400).json({ message: "Invalid app type provided" });
@@ -26,17 +25,16 @@ export async function appType(req: Request, res: Response) {
   });
 
   if (!userRole) {
-    return res
-      .status(400)
-      .json({
-        message:
-          "There has been error with choosing the app type (user non existent)",
-      });
+    return res.status(400).json({
+      message:
+        "There has been error with choosing the app type (user non existent)",
+    });
   }
+  console.log(type);
 
   generateTokenAndSetCookie({
     res,
-    userId: user.userId,
+    userId: userRole.id,
     role: type,
     onboardingFinished: false,
   });
