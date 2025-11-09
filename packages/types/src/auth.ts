@@ -14,6 +14,7 @@ export type User = {
   id: string;
   firstName: string;
   lastName: string;
+  fullname: string;
   email: string;
   image?: string;
   bio?: string;

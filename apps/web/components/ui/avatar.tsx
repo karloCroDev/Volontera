@@ -27,8 +27,8 @@ export const Avatar: React.FC<
 			{...rest}
 			className={twMerge(
 				'relative rounded-full',
-				size === 'sm' && 'size-6',
-				size === 'md' && 'size-8',
+				size === 'sm' && 'size-8',
+				size === 'md' && 'size-10',
 				size === 'lg' && 'text-md size-12',
 				size === 'xl' && 'size-16 text-lg',
 				size === '2xl' && 'size-32 text-2xl',

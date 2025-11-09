@@ -1,22 +1,33 @@
+'use client';
+
 // External packages
 import {
 	TextArea as AriaTextarea,
 	Label,
-	TextAreaProps,
+	TextAreaProps as AriaTextareaProps,
 } from 'react-aria-components';
-import { twJoin, twMerge } from 'tailwind-merge';
+import { twMerge } from 'tailwind-merge';
 
 // Components
 import { getTextFieldBasicStyles } from '@/components/ui/input';
 import { Error } from '@/components/ui/error';
 
-export const Textarea: React.FC<
-	React.ComponentPropsWithoutRef<'textarea'> &
-		TextAreaProps & {
-			label: string;
-			error?: string;
-		}
-> = ({ label, error, className, ...rest }) => {
+export type TextAreaProps = React.ComponentProps<'textarea'> &
+	AriaTextareaProps & {
+		label: string;
+		iconLeft?: React.ReactNode;
+		iconRight?: React.ReactNode;
+		error?: string;
+	};
+
+export const Textarea: React.FC<TextAreaProps> = ({
+	label,
+	error,
+	iconLeft,
+	iconRight,
+	className,
+	...rest
+}) => {
 	return (
 		<div>
 			<div className="relative">
@@ -30,11 +41,7 @@ export const Textarea: React.FC<
 					placeholder=""
 				/>
 
-				<Label
-					className={twJoin(
-						'text-muted-foreground absolute left-4 top-8 -z-[1] origin-left -translate-y-[24px] scale-75 transition-transform peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100'
-					)}
-				>
+				<Label className="text-muted-foreground absolute left-4 top-6 -z-[1] origin-left -translate-y-[24px] scale-75 transition-transform peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100">
 					{label}
 				</Label>
 			</div>

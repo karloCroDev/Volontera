@@ -1,5 +1,5 @@
 // External packages
-import { twJoin, twMerge } from 'tailwind-merge';
+import { twMerge } from 'tailwind-merge';
 
 // Components
 import { Tag } from '@/components/ui/tag';

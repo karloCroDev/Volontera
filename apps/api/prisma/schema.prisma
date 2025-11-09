@@ -33,8 +33,9 @@ enum SubscriptionType {
 
 model User {
   id                 String    @id @default(cuid())
-  firstName          String    @unique
-  lastName           String    @unique
+  firstName          String
+  lastName           String
+  fullname           String
   email              String    @unique
   password           String
   image              String?

@@ -37,19 +37,19 @@ export const UserInformation = withReactQueryProvider(() => {
 	const { mutate, isPending } = useLogout();
 
 	if (userPending || !userData) return null;
-	const username = [userData.firstName, userData.lastName].join(' ');
+
 	const subscriptionTier =
 		userData.subscriptionTier[0]?.toUpperCase() +
 		userData.subscriptionTier.slice(1).toLowerCase();
 
 	return (
 		<>
-			<p className="text-muted-foreground mb-3 mt-auto">
+			<p className="text-muted-foreground mb-3 mt-auto text-start">
 				{desktopOpen ? `Current plan: ${subscriptionTier}` : subscriptionTier}
 			</p>
 			<DialogTrigger>
 				{desktopOpen ? (
-					<AriaButton className="border-input-border bg-muted hover:bg-muted/80 flex h-fit w-full cursor-pointer items-center gap-4 rounded-lg border p-3 outline-none">
+					<AriaButton className="border-input-border bg-muted hover:bg-muted/80 flex h-fit w-full cursor-pointer items-center gap-4 rounded-lg border p-3 outline-none sm:w-3/4 md:w-3/5 lg:w-full">
 						<Avatar
 							imageProps={{
 								src: '',
@@ -57,11 +57,11 @@ export const UserInformation = withReactQueryProvider(() => {
 							variant="secondary"
 							size="md"
 						>
-							{username}
+							{userData.fullname}
 						</Avatar>
 						<div>
 							<div className="flex items-center justify-between">
-								<p>{username}</p>
+								<p>{userData.fullname}</p>
 							</div>
 							<p className="text-muted-foreground text-sm">{userData.email}</p>
 						</div>
@@ -78,7 +78,7 @@ export const UserInformation = withReactQueryProvider(() => {
 							size="xl"
 							className="cursor-pointer hover:opacity-65"
 						>
-							{username}
+							{userData.fullname}
 						</Avatar>
 					</AriaButton>
 				)}
@@ -98,11 +98,11 @@ export const UserInformation = withReactQueryProvider(() => {
 									variant="secondary"
 									size="md"
 								>
-									{username}
+									{userData.fullname}
 								</Avatar>
 								<div>
 									<div className="flex items-center justify-between">
-										<p>{username}</p>
+										<p>{userData.fullname}</p>
 									</div>
 									<p className="text-muted-foreground text-sm">
 										{userData.email}

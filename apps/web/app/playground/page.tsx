@@ -13,6 +13,8 @@ import { Dialog } from '@/components/ui/dialog';
 import { Tag } from '@/components/ui/tag';
 import { Collapsible } from '@/components/ui/collapsible';
 import { SidebarItem } from '@/components/ui/sidebar/sidebar-items';
+import { Textarea } from '@/components/ui/textarea';
+import { AdditionalInformationForm } from '@/modules/onboarding/additional-information-form';
 
 export default function PlaygroundPage() {
 	return (
@@ -101,6 +103,9 @@ export default function PlaygroundPage() {
 			<Tag> Hello wolrd</Tag>
 			<SidebarItem isSelected>Cool</SidebarItem>
 			<SidebarItem>Cool</SidebarItem>
+
+			<Textarea label="sss" />
+			<AdditionalInformationForm />
 		</div>
 	);
 }

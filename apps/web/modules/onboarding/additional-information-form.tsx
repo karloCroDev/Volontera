@@ -44,16 +44,15 @@ export const AdditionalInformationForm = withReactQueryProvider(() => {
 
 	const router = useRouter();
 
-	const { data: user } = useSession();
-
 	const hasUserInput = watch().DOB || watch().bio || watch().image;
 	const [currentImage, setCurrentImage] = React.useState<File | undefined>(
 		undefined
 	);
 
+	const { data: user } = useSession();
 	const { mutate, isPending } = useAdditionalInformation();
-
 	const { mutate: skipAdditionalInformation } = useSkipAdditionalInformation();
+
 	const onSubmit = async (data: AdditionalFormArgs) => {
 		const hasUserInput = data.DOB || data.bio || data.image;
 
@@ -88,6 +87,7 @@ export const AdditionalInformationForm = withReactQueryProvider(() => {
 			},
 		});
 	};
+
 	return (
 		<Form
 			className="mt-20 flex flex-col items-center gap-6 lg:gap-8"
@@ -123,7 +123,7 @@ export const AdditionalInformationForm = withReactQueryProvider(() => {
 										)
 									}
 								>
-									{[user?.firstName, user?.lastName].join(' ')}
+									{user?.fullname}
 								</Avatar>
 							</AriaLabel>
 
@@ -151,7 +151,9 @@ export const AdditionalInformationForm = withReactQueryProvider(() => {
 			</div>
 
 			<div className="w-full">
-				<Label isOptional>DOB</Label>
+				<Label isOptional className="mb-2">
+					DOB
+				</Label>
 				<Controller
 					control={control}
 					name="DOB"
@@ -162,13 +164,12 @@ export const AdditionalInformationForm = withReactQueryProvider(() => {
 								const formatted = `${String(val.month).padStart(2, '0')}-${String(val.day).padStart(2, '0')}-${val.year}`;
 								onChange(formatted);
 							}}
-							className="mt-2"
 						/>
 					)}
 				/>
 			</div>
 			<div className="w-full">
-				<Label htmlFor="bio" isOptional>
+				<Label htmlFor="bio" isOptional className="mb-2">
 					Bio
 				</Label>
 
@@ -176,12 +177,7 @@ export const AdditionalInformationForm = withReactQueryProvider(() => {
 					control={control}
 					name="bio" // TODO: Handle on how am I passing the image data!
 					render={({ field }) => (
-						<Textarea
-							id="bio"
-							label="Enter your bio..."
-							className="mt-2"
-							{...field}
-						/>
+						<Textarea id="bio" label="Enter your bio..." {...field} />
 					)}
 				/>
 			</div>
