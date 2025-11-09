@@ -6,45 +6,55 @@ import {
 	Label,
 	TextAreaProps as AriaTextareaProps,
 } from 'react-aria-components';
-import { twMerge } from 'tailwind-merge';
+import { twJoin, twMerge } from 'tailwind-merge';
 
 // Components
 import { getTextFieldBasicStyles } from '@/components/ui/input';
 import { Error } from '@/components/ui/error';
 
-export type TextAreaProps = React.ComponentProps<'textarea'> &
-	AriaTextareaProps & {
-		label: string;
-		iconLeft?: React.ReactNode;
-		iconRight?: React.ReactNode;
-		error?: string;
-	};
+type TextAreaOnlyProps = React.ComponentProps<'textarea'> & AriaTextareaProps;
+
+export type TextAreaProps = React.ComponentPropsWithoutRef<'div'> & {
+	textAreaProps?: TextAreaOnlyProps;
+} & {
+	label: string;
+	iconsLeft?: React.ReactNode;
+	iconsRight?: React.ReactNode;
+	error?: string;
+};
 
 export const Textarea: React.FC<TextAreaProps> = ({
 	label,
+	iconsLeft,
+	iconsRight,
 	error,
-	iconLeft,
-	iconRight,
+	textAreaProps,
 	className,
 	...rest
 }) => {
 	return (
-		<div>
-			<div className="relative">
+		<div
+			{...rest}
+			className={twMerge(
+				'border-input-border flex items-end rounded-md border px-4 pb-4',
+				className
+			)}
+		>
+			{iconsLeft}
+			<div className="relative flex-1">
 				<AriaTextarea
-					{...rest}
-					className={twMerge(
+					className={twJoin(
 						getTextFieldBasicStyles,
-						'min-h-36 !p-4 py-6',
-						className
+						'min-h-36 resize-none border-0 !py-5'
 					)}
 					placeholder=""
 				/>
 
-				<Label className="text-muted-foreground absolute left-4 top-6 -z-[1] origin-left -translate-y-[24px] scale-75 transition-transform peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100">
+				<Label className="text-muted-foreground absolute left-0 top-6 -z-[1] origin-left -translate-y-[24px] scale-75 transition-transform peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100">
 					{label}
 				</Label>
 			</div>
+			{iconsRight}
 
 			{error && <Error>{error}</Error>}
 		</div>

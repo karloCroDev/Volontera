@@ -2,13 +2,12 @@
 import { Avatar } from '@/components/ui/avatar';
 import { Heading } from '@/components/ui/heading';
 import { Message } from '@/components/ui/message';
-import { ResizableTextArea } from '@/components/ui/resizable-input';
-import { Textarea } from '@/components/ui/textarea';
-
-// Lib
 
 // Config
 import { serverFetch } from '@/config/server-fetch';
+
+// Modules
+import { HelpForm } from '@/modules/main/help/help-form';
 
 // Types
 import { SessionSuccessResponse } from '@repo/types/auth';
@@ -65,9 +64,7 @@ export default async function HelpPage() {
 					</Message>
 				</div>
 
-				<div className="mt-auto">
-					<ResizableTextArea label="Enter your question for AI" />
-				</div>
+				<HelpForm />
 			</div>
 		</>
 	);

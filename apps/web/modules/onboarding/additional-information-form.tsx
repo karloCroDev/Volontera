@@ -177,7 +177,13 @@ export const AdditionalInformationForm = withReactQueryProvider(() => {
 					control={control}
 					name="bio" // TODO: Handle on how am I passing the image data!
 					render={({ field }) => (
-						<Textarea id="bio" label="Enter your bio..." {...field} />
+						<Textarea
+							id="bio"
+							label="Enter your bio..."
+							textAreaProps={{
+								...field,
+							}}
+						/>
 					)}
 				/>
 			</div>
