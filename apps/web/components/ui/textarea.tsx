@@ -7,6 +7,7 @@ import {
 	TextAreaProps as AriaTextareaProps,
 } from 'react-aria-components';
 import { twJoin, twMerge } from 'tailwind-merge';
+import * as React from 'react';
 
 // Components
 import { getTextFieldBasicStyles } from '@/components/ui/input';
@@ -23,40 +24,40 @@ export type TextAreaProps = React.ComponentPropsWithoutRef<'div'> & {
 	error?: string;
 };
 
-export const Textarea: React.FC<TextAreaProps> = ({
-	label,
-	iconsLeft,
-	iconsRight,
-	error,
-	textAreaProps,
-	className,
-	...rest
-}) => {
-	return (
-		<div
-			{...rest}
-			className={twMerge(
-				'border-input-border flex items-end rounded-md border px-4 pb-4',
-				className
-			)}
-		>
-			{iconsLeft}
-			<div className="relative flex-1">
-				<AriaTextarea
-					className={twJoin(
-						getTextFieldBasicStyles,
-						'min-h-36 resize-none border-0 !py-5'
-					)}
-					placeholder=""
-				/>
-
-				<Label className="text-muted-foreground absolute left-0 top-6 -z-[1] origin-left -translate-y-[24px] scale-75 transition-transform peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100">
-					{label}
-				</Label>
+export const Textarea = React.forwardRef<HTMLTextAreaElement, TextAreaProps>(
+	(
+		{ label, iconsLeft, iconsRight, error, textAreaProps, className, ...rest },
+		ref
+	) => {
+		return (
+			<div
+				{...rest}
+				className={twMerge(
+					'border-input-border flex items-end rounded-md border px-4 pb-4',
+					className
+				)}
+			>
+				{iconsLeft}
+				<div className="relative flex-1">
+					<AriaTextarea
+						{...textAreaProps}
+						ref={ref}
+						className={twJoin(
+							getTextFieldBasicStyles,
+							'h-auto min-h-36 resize-none border-0 !py-5',
+							textAreaProps?.className
+						)}
+						placeholder=""
+					/>
+					<Label className="text-muted-foreground absolute left-0 top-6 -z-[1] origin-left -translate-y-[24px] scale-75 transition-transform peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100">
+						{label}
+					</Label>
+				</div>
+				{iconsRight}
+				{error && <Error>{error}</Error>}
 			</div>
-			{iconsRight}
+		);
+	}
+);
 
-			{error && <Error>{error}</Error>}
-		</div>
-	);
-};
+Textarea.displayName = 'Textarea'; // When debugging with React DevTools

@@ -41,7 +41,9 @@ export default async function MainLayout({
 					<div className="border-input-border rounded-2xl lg:my-7 lg:mb-5 lg:mr-10 lg:h-[calc(100vh-28px-28px)] lg:border">
 						<Header />
 						<Layout>
-							<LayoutColumn className="py-6">{children}</LayoutColumn>
+							<LayoutColumn className="flex h-[calc(100vh-96px)] flex-col p-4 py-6 lg:h-[calc(100vh-28px-28px-112px)]">
+								{children}
+							</LayoutColumn>
 						</Layout>
 					</div>
 				</div>
