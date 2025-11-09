@@ -102,9 +102,6 @@ export const Sidebar = () => {
 						)}
 					</Link>
 				</div>
-				<p className="text-muted-foreground mb-3 mt-auto">
-					{desktopOpen ? 'Current plan: Free' : 'Free'}
-				</p>
 				<UserInformation />
 
 				{/* <div className="flex w-full flex-col gap-2 p-5">
