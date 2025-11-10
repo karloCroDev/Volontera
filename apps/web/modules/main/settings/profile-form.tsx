@@ -2,50 +2,31 @@
 
 // External packages
 import * as React from 'react';
-import {
-	Form,
-	Label as AriaLabel,
-	Input as AriaInput,
-} from 'react-aria-components';
+import { Trash } from 'lucide-react';
+import { Label as AriaLabel, Input as AriaInput } from 'react-aria-components';
 import { Controller, useForm } from 'react-hook-form';
-import { useRouter } from 'next/navigation';
 import { zodResolver } from '@hookform/resolvers/zod';
 
 // Components
 import { Button } from '@/components/ui/button';
+import { FilledInput } from '@/components/ui/filled-input';
+import { PasswordDialog } from '@/modules/main/settings/reset-password-dialog';
+import { Label } from '@/components/ui/label';
+import { Avatar } from '@/components/ui/avatar';
 
 // Hooks
 import { useSession } from '@/hooks/data/auth';
 
 // Schemas
-import {
-	SettingsProfileArgs,
-	settingsProfileSchema,
-} from '@repo/schemas/settings';
-import { Avatar } from '@/components/ui/avatar';
-import { ArrowRight, Trash } from 'lucide-react';
-import { Label } from '@/components/ui/label';
-import { DatePicker } from '@/components/ui/date-picker';
-import { Textarea } from '@/components/ui/textarea';
-import { Error } from '@/components/ui/error';
+import { SettingsProfileArgs, settingsSchema } from '@repo/schemas/settings';
 
 // Config
 import { withReactQueryProvider } from '@/config/react-query';
-import { getTextFieldBasicStyles, Input } from '@/components/ui/input';
-import { twJoin } from 'tailwind-merge';
 
 export const ProfileForm = withReactQueryProvider(() => {
-	const {
-		control,
-		handleSubmit,
-		formState: { errors },
-		setError,
-		watch,
-	} = useForm<SettingsProfileArgs>({
-		resolver: zodResolver(settingsProfileSchema),
+	const { control, watch } = useForm<SettingsProfileArgs>({
+		resolver: zodResolver(settingsSchema),
 	});
-
-	const router = useRouter();
 
 	const [currentImage, setCurrentImage] = React.useState<File | undefined>(
 		undefined
@@ -53,61 +34,59 @@ export const ProfileForm = withReactQueryProvider(() => {
 
 	const { data: user } = useSession();
 
-	const onSubmit = () => {};
 	return (
-		<Form className="border-input-border flex flex-col justify-between gap-8 rounded-md border p-6 lg:p-8 xl:flex-row 2xl:p-10">
+		<div className="border-input-border flex flex-col justify-between gap-8 rounded-md border p-6 lg:p-8 xl:flex-row 2xl:p-10">
 			<div>
 				<h4 className="text-lg font-semibold">Profile</h4>
 				<p className="text-muted-foreground mt-2">Set your account details</p>
 			</div>
 
-			<div className="flex flex-col items-center gap-12 xl:flex-row xl:items-end">
+			<div className="flex flex-col items-center gap-12 xl:flex-row xl:items-center">
 				<div className="order-2 flex flex-col gap-6 xl:-order-1">
 					<div className="flex gap-4">
 						<div className="flex-1">
 							<Label isOptional>First name</Label>
-							<Controller
-								control={control}
-								name="firstName"
-								render={({ field }) => (
-									<Input
-										label="First name"
-										className="mt-2"
-										inputProps={field}
-									/>
-								)}
-							/>
+
+							{user && (
+								<Controller
+									control={control}
+									name="firstName"
+									render={({ field }) => (
+										<FilledInput
+											placeholderValue="First name"
+											label={user.firstName}
+											className="mt-2"
+											inputProps={field}
+										/>
+									)}
+								/>
+							)}
 						</div>
 						<div className="flex-1">
 							<Label isOptional>Last name</Label>
-							<Controller
-								control={control}
-								name="lastName"
-								render={({ field }) => (
-									<Input
-										label="Last name"
-										className="mt-2"
-										inputProps={field}
-									/>
-								)}
-							/>
+							{user?.lastName && (
+								<Controller
+									control={control}
+									name="lastName"
+									render={({ field }) => (
+										<FilledInput
+											placeholderValue="Last name"
+											label={user.lastName}
+											className="mt-2"
+											inputProps={field}
+										/>
+									)}
+								/>
+							)}
 						</div>
 					</div>
 					<div>
 						<Label isOptional>Password</Label>
-						<Button
-							variant="blank"
-							className={twJoin(
-								getTextFieldBasicStyles,
-								'text-muted-foreground mt-2 flex items-center justify-between px-4'
-							)}
-						>
-							Change your password
-						</Button>
+						<PasswordDialog />
 					</div>
 				</div>
 
-				<div className="relative flex flex-col">
+				<div className="relative">
 					<Controller
 						control={control}
 						name="image"
@@ -162,23 +141,8 @@ export const ProfileForm = withReactQueryProvider(() => {
 							</>
 						)}
 					/>
-					<Button
-						className="order-3 ml-auto mt-8 hidden py-2 xl:block"
-						size="lg"
-						type="submit"
-						colorScheme="bland"
-					>
-						Save
-					</Button>
 				</div>
-				<Button
-					className="order-3 ml-auto py-2 xl:hidden"
-					size="lg"
-					type="submit"
-				>
-					Save
-				</Button>
 			</div>
-		</Form>
+		</div>
 	);
 });

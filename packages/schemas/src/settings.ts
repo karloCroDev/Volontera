@@ -1,7 +1,7 @@
 // External packages
 import { z } from "zod";
 
-export const settingsProfileSchema = z
+export const settingsSchema = z
   .object({
     firstName: z
       .string()
@@ -32,21 +32,19 @@ export const settingsProfileSchema = z
     { message: "At least one field must be provided", path: ["root"] }
   );
 
-export type SettingsProfileArgs = z.infer<typeof settingsProfileSchema>;
+export type SettingsProfileArgs = z.infer<typeof settingsSchema>;
 
-export const settingsGeneralInformation = z
+export const resetPasswordSettingsSchema = z
   .object({
-    bio: z
-      .string()
-      .min(2, "Bio must be at least 2 characters and max of 10")
-      .max(10)
-      .or(z.literal("")),
-    DOB: z.string().length(10).or(z.literal("")),
-    school: z.string("School must be at least 2 characters").min(2),
-    work: z.string("Work must be at least two charachters").min(2),
+    currentPassword: z.string().min(8).max(16),
+    repeatCurrentPassword: z.string().min(8).max(8),
+    newPassword: z.string("Enter ").min(8).max(8),
   })
-  .partial()
-  .refine(
-    (obj) => Object.values(obj).some((v) => v !== undefined && v !== ""),
-    { message: "At least one field must be provided", path: ["root"] }
-  );
+  .refine((data) => data.currentPassword === data.repeatCurrentPassword, {
+    message: "Passwords do not match",
+    path: ["repeatPassword"],
+  });
+
+export type ResetPasswordSettingsSchemaArgs = z.infer<
+  typeof resetPasswordSettingsSchema
+>;

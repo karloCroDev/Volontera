@@ -55,6 +55,7 @@ export const oAuthGoogleHandle = passport.use(
               email: profile.emails[0].value,
               firstName: profile.displayName,
               lastName: "",
+              fullname: profile.displayName,
               image: profile.photos?.[0].value,
               password: "", // or generate a random string if needed
             },

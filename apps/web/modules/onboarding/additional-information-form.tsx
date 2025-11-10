@@ -148,6 +148,10 @@ export const AdditionalInformationForm = withReactQueryProvider(() => {
 						</>
 					)}
 				/>
+
+				{errors.image?.message && (
+					<Error className="mt-2">{errors.image.message}</Error>
+				)}
 			</div>
 
 			<div className="w-full">
@@ -167,6 +171,10 @@ export const AdditionalInformationForm = withReactQueryProvider(() => {
 						/>
 					)}
 				/>
+
+				{errors.DOB?.message && (
+					<Error className="mt-2">{errors.DOB.message}</Error>
+				)}
 			</div>
 			<div className="w-full">
 				<Label htmlFor="bio" isOptional className="mb-2">
@@ -183,6 +191,7 @@ export const AdditionalInformationForm = withReactQueryProvider(() => {
 							textAreaProps={{
 								...field,
 							}}
+							error={errors.bio?.message}
 						/>
 					)}
 				/>
