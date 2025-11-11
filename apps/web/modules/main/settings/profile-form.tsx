@@ -4,8 +4,7 @@
 import * as React from 'react';
 import { Trash } from 'lucide-react';
 import { Label as AriaLabel, Input as AriaInput } from 'react-aria-components';
-import { Controller, useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
+import { Controller, useFormContext } from 'react-hook-form';
 
 // Components
 import { Button } from '@/components/ui/button';
@@ -18,21 +17,18 @@ import { Avatar } from '@/components/ui/avatar';
 import { useSession } from '@/hooks/data/auth';
 
 // Schemas
-import { SettingsProfileArgs, settingsSchema } from '@repo/schemas/settings';
+import { SettingsSchemaArgs } from '@repo/schemas/settings';
 
 // Config
 import { withReactQueryProvider } from '@/config/react-query';
 
 export const ProfileForm = withReactQueryProvider(() => {
-	const { control, watch } = useForm<SettingsProfileArgs>({
-		resolver: zodResolver(settingsSchema),
-	});
+	const { data: user } = useSession();
+	const { control, watch } = useFormContext<SettingsSchemaArgs>();
 
 	const [currentImage, setCurrentImage] = React.useState<File | undefined>(
 		undefined
 	);
-
-	const { data: user } = useSession();
 
 	return (
 		<div className="border-input-border flex flex-col justify-between gap-8 rounded-md border p-6 lg:p-8 xl:flex-row 2xl:p-10">
@@ -42,7 +38,7 @@ export const ProfileForm = withReactQueryProvider(() => {
 			</div>
 
 			<div className="flex flex-col items-center gap-12 xl:flex-row xl:items-center">
-				<div className="order-2 flex flex-col gap-6 xl:-order-1">
+				<div className="order-2 flex w-full flex-col gap-6 xl:-order-1 xl:w-auto">
 					<div className="flex gap-4">
 						<div className="flex-1">
 							<Label isOptional>First name</Label>
@@ -95,7 +91,9 @@ export const ProfileForm = withReactQueryProvider(() => {
 								<AriaLabel htmlFor="image">
 									<Avatar
 										imageProps={{
-											src: currentImage && URL.createObjectURL(currentImage),
+											src:
+												(currentImage && URL.createObjectURL(currentImage)) ||
+												user?.image,
 											alt: 'Avatar',
 										}}
 										size="4xl"

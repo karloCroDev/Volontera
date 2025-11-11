@@ -18,6 +18,8 @@ export type User = {
   email: string;
   image?: string;
   bio?: string;
+  DOB?: string;
+  workOrSchool?: string;
   role: "USER" | "ORGANIZATION" | "ADMIN";
   createdAt: Date;
   updatedAt: Date;

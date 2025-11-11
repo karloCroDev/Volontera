@@ -164,9 +164,7 @@ export const AdditionalInformationForm = withReactQueryProvider(() => {
 					render={({ field: { onChange } }) => (
 						<DatePicker
 							onChange={(val) => {
-								if (!val) return;
-								const formatted = `${String(val.month).padStart(2, '0')}-${String(val.day).padStart(2, '0')}-${val.year}`;
-								onChange(formatted);
+								onChange(val);
 							}}
 						/>
 					)}

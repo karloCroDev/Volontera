@@ -41,6 +41,8 @@ model User {
   image              String?
   role               UserRole?
   bio                String?
+  workOrSchool       String?
+  DOB                String?
   onboardingFinished Boolean   @default(false)
 
   // Reset password token
@@ -56,10 +58,11 @@ model User {
   subscriptionTier SubscriptionTier @default(BASIC)
   subscriptionType SubscriptionType @default(NONE)
 
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
   // Providers information
-  accounts  Accounts[]
+  accounts Accounts[]
 }
 
 model Accounts {
