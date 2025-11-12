@@ -55,8 +55,8 @@ export const FormWrapper = withReactQueryProvider(() => {
 				<PersonalInformationForm />
 				<Button
 					type="submit"
-					className="ml-auto mt-10 w-full md:w-fit md:py-2"
-					size="lg"
+					className="ml-auto mt-10 w-full md:w-fit"
+					size="md"
 					isDisabled={!hasAnyValue}
 				>
 					Save
