@@ -18,13 +18,13 @@ export const CheckboxVisually: React.FC<CheckboxVisuallyProps> = ({
 		<div
 			{...rest}
 			className={twMerge(
-				'group-data-[selected]:text-background-foreground flex cursor-pointer items-center justify-center rounded-md border group-data-[selected]:border-0',
+				'flex cursor-pointer items-center justify-center rounded-md border group-data-[selected]:border-0',
 				size === 'sm' && 'size-6',
 				size === 'lg' && 'size-8',
 				variant === 'primary' &&
-					'group-data-[selected]:bg-accent border-accent hover:group-data-[selected]:bg-accent/80 hover:border-accent/80',
+					'group-data-[selected]:bg-accent border-accent hover:group-data-[selected]:bg-accent/80 hover:border-accent/80 group-data-[selected]:text-background-foreground',
 				variant === 'secondary' &&
-					'group-data-[selected]:bg-accent-foreground border-accent-foreground hover:group-data-[selected]:bg-accent-foreground/80 hover:border-accent-foreground/80',
+					'group-data-[selected]:bg-accent-foreground border-accent-foreground hover:group-data-[selected]:bg-accent-foreground/80 hover:border-accent-foreground/80 group-data-[selected]:text-background',
 				className
 			)}
 		>
