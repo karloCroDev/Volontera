@@ -26,8 +26,11 @@ import {
 	Organizations,
 	SidebarItem,
 } from '@/components/ui/sidebar/sidebar-items';
+import { SessionSuccessResponse } from '@repo/types/auth';
 
-export const Sidebar = () => {
+export const Sidebar: React.FC<{
+	user: SessionSuccessResponse;
+}> = ({ user }) => {
 	const { desktopOpen, mobileOpen, setMobileOpen, setDesktopOpen } =
 		useSidebarContext();
 	return (
@@ -102,23 +105,7 @@ export const Sidebar = () => {
 						)}
 					</Link>
 				</div>
-				<p className="text-muted-foreground mb-3 mt-auto">
-					{desktopOpen ? 'Current plan: Free' : 'Free'}
-				</p>
-				<UserInformation />
-
-				{/* <div className="flex w-full flex-col gap-2 p-5">
-					<LinkAsButton
-						colorScheme="bland"
-						variant="outline"
-						href="/notifications"
-					>
-						{desktopOpen ? 'Dashboard' : 'D'}
-					</LinkAsButton>
-					<LinkAsButton href="/home">
-						{desktopOpen ? 'Settings' : 'S'}
-					</LinkAsButton>
-				</div> */}
+				<UserInformation user={user} />
 			</aside>
 
 			{/* Mobile sidebar */}
@@ -126,12 +113,12 @@ export const Sidebar = () => {
 			<DialogTrigger isOpen={mobileOpen} onOpenChange={setMobileOpen}>
 				<ModalOverlay
 					isDismissable
-					className="fixed inset-0 isolate z-20 flex min-h-full items-center justify-center overflow-y-auto bg-black/25 text-center backdrop-blur"
+					className="fixed inset-0 isolate z-20 flex items-center justify-center overflow-y-auto bg-black/25 text-center backdrop-blur"
 				>
 					<Modal
 						className={({ isEntering, isExiting }) =>
 							twJoin(
-								'bg-muted !z-max absolute left-0 top-0 h-full w-3/4 rounded-r-2xl px-2 py-4 duration-300 md:lg:w-1/4',
+								'bg-muted !z-max absolute left-0 top-0 h-screen w-3/4 rounded-r-2xl px-2 py-4 duration-300 md:lg:w-1/4',
 								isEntering && 'animate-in slide-in-from-left',
 								isExiting && 'animate-out slide-out-to-left'
 							)
@@ -145,16 +132,18 @@ export const Sidebar = () => {
 								</Button>
 							</div>
 
-							<div className="flex w-3/4 flex-1 flex-col gap-4 md:w-3/5">
-								<Link href="/home">
-									<SidebarItem
-										iconLeft={<Home className="size-5" />}
-										isSelected
-									>
-										Home
-									</SidebarItem>
-								</Link>
-								<Organizations />
+							<div>
+								<div className="flex w-3/4 flex-1 flex-col gap-4 md:w-3/5">
+									<Link href="/home">
+										<SidebarItem
+											iconLeft={<Home className="size-5" />}
+											isSelected
+										>
+											Home
+										</SidebarItem>
+									</Link>
+									<Organizations />
+								</div>
 
 								<Link href="/private-chats">
 									<SidebarItem
@@ -173,9 +162,9 @@ export const Sidebar = () => {
 										Help
 									</SidebarItem>
 								</Link>
-								<div className="mt-auto">
-									<UserInformation />
-								</div>
+							</div>
+							<div className="mt-auto">
+								<UserInformation user={user} />
 							</div>
 						</Dialog>
 					</Modal>

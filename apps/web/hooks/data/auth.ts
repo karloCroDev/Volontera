@@ -30,11 +30,15 @@ import {
 } from '@repo/schemas/auth';
 
 // Types
-import { SessionSuccessResponse, User } from '@repo/types/auth';
-import { ErrorFormResponse, SuccessfulResponse } from '@repo/types/general';
+import { SessionSuccessResponse } from '@repo/types/auth';
+import {
+	ErrorFormResponse,
+	ServerHandleResponse,
+	SuccessfulResponse,
+} from '@repo/types/general';
 
 export const useSession = () => {
-	return useQuery<SessionSuccessResponse, ErrorFormResponse>({
+	return useQuery<SessionSuccessResponse, ServerHandleResponse<false>>({
 		queryKey: ['session'],
 		queryFn: cache(clientSession),
 		staleTime: 5 * 60 * 1000,

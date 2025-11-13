@@ -1,26 +1,16 @@
 // External packages
 import { redirect } from 'next/navigation';
 
-// Server fetch
-import { serverFetch } from '@/config/server-fetch';
-
-// Types
-import { SessionSuccessResponse } from '@repo/types/auth';
+// Lib
+import { getSession } from '@/lib/server/get-session';
 
 export default async function AuthLayout({
 	children,
 }: {
 	children: Readonly<React.ReactNode>;
 }) {
-	const user: SessionSuccessResponse = await serverFetch({
-		url: 'auth/session',
-		init: {
-			cache: 'no-store',
-			next: { tags: ['session'] },
-		},
-	});
+	const user = await getSession();
 
-	console.log(user);
 	if (user.success && user.onboardingFinished) redirect('/home');
 	if (user.success && !user.onboardingFinished)
 		redirect('/onboarding/app-type');

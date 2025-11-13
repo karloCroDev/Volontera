@@ -25,7 +25,7 @@ export const Search = () => {
 					<Button
 						variant="outline"
 						colorScheme="bland"
-						className="relative p-2 md:pr-12 lg:pl-4"
+						className="relative p-2 lg:pl-4 lg:pr-12"
 						iconLeft={<SearchIcon />}
 						isFullyRounded={!isMobile}
 					>

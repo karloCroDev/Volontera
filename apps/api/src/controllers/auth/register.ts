@@ -47,6 +47,7 @@ export async function register(req: Request, res: Response) {
       data: {
         firstName: validateData.firstName,
         lastName: validateData.lastName,
+        fullname: [validateData.firstName, validateData.lastName].join(" "),
         email: validateData.email,
         password: hashedPassword,
         verificationToken: hashedOtp,

@@ -40,6 +40,7 @@ export async function session(req: Request, res: Response) {
         id: true,
         firstName: true,
         lastName: true,
+        fullname: true,
         email: true,
         bio: true,
         image: true,

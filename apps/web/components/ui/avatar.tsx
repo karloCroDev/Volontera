@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 export const Avatar: React.FC<
 	React.ComponentPropsWithoutRef<'div'> & {
 		imageProps: RadixAvatar.AvatarImageProps;
-		size?: 'sm' | 'md' | 'lg' | 'xl' | '2xl' | 'full';
+		size?: 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '4xl' | 'full';
 		isInput?: boolean;
 		deleteButton?: React.ReactNode;
 		variant?: 'primary' | 'secondary';
@@ -27,11 +27,12 @@ export const Avatar: React.FC<
 			{...rest}
 			className={twMerge(
 				'relative rounded-full',
-				size === 'sm' && 'size-6',
-				size === 'md' && 'size-8',
+				size === 'sm' && 'size-8',
+				size === 'md' && 'size-10',
 				size === 'lg' && 'text-md size-12',
 				size === 'xl' && 'size-16 text-lg',
 				size === '2xl' && 'size-32 text-2xl',
+				size === '4xl' && 'size-40 text-2xl',
 				size === 'full' && 'size-60 text-3xl',
 				isInput && 'cursor-pointer',
 				className

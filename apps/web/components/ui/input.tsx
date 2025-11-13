@@ -31,7 +31,7 @@ export const Input: React.FC<
 	...rest
 }) => {
 	return (
-		<div>
+		<>
 			<div
 				{...rest}
 				className={twMerge('relative', size === 'sm' && 'text-sm', className)}
@@ -64,6 +64,6 @@ export const Input: React.FC<
 					{error}
 				</Error>
 			)}
-		</div>
+		</>
 	);
 };

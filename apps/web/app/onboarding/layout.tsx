@@ -11,6 +11,7 @@ import { ProgressTracker } from '@/modules/onboarding/progress-tracker';
 
 // Repo types
 import { SessionSuccessResponse } from '@repo/types/auth';
+import { getSession } from '@/lib/server/get-session';
 
 // Karlo: TODO: Mobile view not the prettiest one!
 export default async function OnboardingLayout({
@@ -18,13 +19,7 @@ export default async function OnboardingLayout({
 }: {
 	children: React.ReactNode;
 }) {
-	const user: SessionSuccessResponse = await serverFetch({
-		url: 'auth/session',
-		init: {
-			cache: 'no-store',
-			next: { tags: ['session'] },
-		},
-	});
+	const user = await getSession();
 
 	if (!user.success) redirect('/auth/login');
 	if (user.success && user.onboardingFinished) redirect('/home');

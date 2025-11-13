@@ -4,38 +4,35 @@
 import * as React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import {
-	Hamburger,
-	Menu,
-	PanelsTopLeft,
-	PanelsTopLeftIcon,
-} from 'lucide-react';
+import { Menu } from 'lucide-react';
 import {
 	Breadcrumbs,
 	Breadcrumb as AriaBreadcrumb,
 	BreadcrumbProps,
 } from 'react-aria-components';
-
+import { twMerge } from 'tailwind-merge';
 import { ChevronsRight } from 'lucide-react';
 
 // Components
-import { twMerge } from 'tailwind-merge';
 import { DarkLightThemeSwitch } from '@/components/ui/header/dark-light-theme';
 import { NotificationButton } from '@/components/ui/header/notification-button';
 import { Search } from '@/components/ui/header/search';
 import { Button } from '@/components/ui/button';
 import { useSidebarContext } from '@/components/ui/sidebar/sidebar-provider';
 
-export const Header = () => {
-	const { setDesktopOpen, setMobileOpen } = useSidebarContext();
+// Hooks
+import { useIsMobile } from '@/hooks/utils/useIsMobile';
 
+export const Header = () => {
+	const isMobile = useIsMobile();
+
+	const { setMobileOpen } = useSidebarContext();
 	const pathname = usePathname();
 
 	const pathnameWithoutSearchParams = pathname.split('?')[0];
 
-	const splittedPathname = pathnameWithoutSearchParams
-		?.split('/')
-		.filter(Boolean);
+	const splittedPathname =
+		!isMobile && pathnameWithoutSearchParams?.split('/').filter(Boolean);
 
 	return (
 		<div className="border-input-border border-b">
@@ -50,21 +47,22 @@ export const Header = () => {
 					<Menu />
 				</Button>
 
-				<Breadcrumbs className="flex gap-4 lg:gap-5">
-					{splittedPathname?.map((path, index) => {
-						const href = '/' + splittedPathname.slice(0, index + 1).join('/');
-						return (
-							<Breadcrumb
-								href={href}
-								key={index}
-								removeChevrons={splittedPathname.length - 1 !== index}
-							>
-								{path[0]?.toUpperCase() + path.slice(1).toLowerCase()}
-							</Breadcrumb>
-						);
-					})}
-				</Breadcrumbs>
-
+				{!isMobile && splittedPathname && (
+					<Breadcrumbs className="flex gap-4 lg:gap-5">
+						{splittedPathname.map((path, index) => {
+							const href = '/' + splittedPathname.slice(0, index + 1).join('/');
+							return (
+								<Breadcrumb
+									href={href}
+									key={index}
+									removeChevrons={splittedPathname.length - 1 !== index}
+								>
+									{path[0]?.toUpperCase() + path.slice(1).toLowerCase()}
+								</Breadcrumb>
+							);
+						})}
+					</Breadcrumbs>
+				)}
 				<div className="ml-auto flex items-center gap-5 lg:gap-8">
 					<Search />
 					<NotificationButton />

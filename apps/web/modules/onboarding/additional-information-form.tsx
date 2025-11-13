@@ -44,16 +44,15 @@ export const AdditionalInformationForm = withReactQueryProvider(() => {
 
 	const router = useRouter();
 
-	const { data: user } = useSession();
-
 	const hasUserInput = watch().DOB || watch().bio || watch().image;
 	const [currentImage, setCurrentImage] = React.useState<File | undefined>(
 		undefined
 	);
 
+	const { data: user } = useSession();
 	const { mutate, isPending } = useAdditionalInformation();
-
 	const { mutate: skipAdditionalInformation } = useSkipAdditionalInformation();
+
 	const onSubmit = async (data: AdditionalFormArgs) => {
 		const hasUserInput = data.DOB || data.bio || data.image;
 
@@ -88,6 +87,7 @@ export const AdditionalInformationForm = withReactQueryProvider(() => {
 			},
 		});
 	};
+
 	return (
 		<Form
 			className="mt-20 flex flex-col items-center gap-6 lg:gap-8"
@@ -123,7 +123,7 @@ export const AdditionalInformationForm = withReactQueryProvider(() => {
 										)
 									}
 								>
-									{[user?.firstName, user?.lastName].join(' ')}
+									{user?.fullname}
 								</Avatar>
 							</AriaLabel>
 
@@ -148,27 +148,34 @@ export const AdditionalInformationForm = withReactQueryProvider(() => {
 						</>
 					)}
 				/>
+
+				{errors.image?.message && (
+					<Error className="mt-2">{errors.image.message}</Error>
+				)}
 			</div>
 
 			<div className="w-full">
-				<Label isOptional>DOB</Label>
+				<Label isOptional className="mb-2">
+					DOB
+				</Label>
 				<Controller
 					control={control}
 					name="DOB"
 					render={({ field: { onChange } }) => (
 						<DatePicker
 							onChange={(val) => {
-								if (!val) return;
-								const formatted = `${String(val.month).padStart(2, '0')}-${String(val.day).padStart(2, '0')}-${val.year}`;
-								onChange(formatted);
+								onChange(val);
 							}}
-							className="mt-2"
 						/>
 					)}
 				/>
+
+				{errors.DOB?.message && (
+					<Error className="mt-2">{errors.DOB.message}</Error>
+				)}
 			</div>
 			<div className="w-full">
-				<Label htmlFor="bio" isOptional>
+				<Label htmlFor="bio" isOptional className="mb-2">
 					Bio
 				</Label>
 
@@ -179,8 +186,10 @@ export const AdditionalInformationForm = withReactQueryProvider(() => {
 						<Textarea
 							id="bio"
 							label="Enter your bio..."
-							className="mt-2"
-							{...field}
+							textAreaProps={{
+								...field,
+							}}
+							error={errors.bio?.message}
 						/>
 					)}
 				/>
