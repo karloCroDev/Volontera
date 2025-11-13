@@ -54,7 +54,9 @@ export const PaymentPlanCard: React.FC<
 				className={`my-4 h-px border-0 ${variant === 'primary' ? 'bg-muted-foreground' : 'bg-accent-foreground'}`}
 			/>
 
-			<ul className="list-disc pl-5 text-sm lg:text-base">{reasons}</ul>
+			<ul className="flex list-disc flex-col gap-2 pl-5 text-sm lg:text-base">
+				{reasons}
+			</ul>
 
 			{/* TODO: Get the url from the stripe */}
 			<AnchorAsButton

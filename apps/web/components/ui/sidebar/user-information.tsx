@@ -29,18 +29,20 @@ import { useLogout, useSession } from '@/hooks/data/auth';
 // Config
 import { withReactQueryProvider } from '@/config/react-query';
 
-export const UserInformation = withReactQueryProvider(() => {
+// Types
+import { SessionSuccessResponse } from '@repo/types/auth';
+
+export const UserInformation: React.FC<{
+	user: SessionSuccessResponse;
+}> = withReactQueryProvider(({ user }) => {
 	const router = useRouter();
 	const { desktopOpen } = useSidebarContext();
 
-	const { data: userData, isPending: userPending } = useSession();
 	const { mutate, isPending } = useLogout();
 
-	if (userPending || !userData) return null;
-
 	const subscriptionTier =
-		userData.subscriptionTier[0]?.toUpperCase() +
-		userData.subscriptionTier.slice(1).toLowerCase();
+		user.subscriptionTier[0]?.toUpperCase() +
+		user.subscriptionTier.slice(1).toLowerCase();
 
 	return (
 		<>
@@ -57,13 +59,13 @@ export const UserInformation = withReactQueryProvider(() => {
 							variant="secondary"
 							size="md"
 						>
-							{userData.fullname}
+							{user.fullname}
 						</Avatar>
 						<div>
 							<div className="flex items-center justify-between">
-								<p>{userData.fullname}</p>
+								<p>{user.fullname}</p>
 							</div>
-							<p className="text-muted-foreground text-sm">{userData.email}</p>
+							<p className="text-muted-foreground text-sm">{user.email}</p>
 						</div>
 
 						<EllipsisVertical className="text-muted-foreground ml-auto" />
@@ -72,13 +74,13 @@ export const UserInformation = withReactQueryProvider(() => {
 					<AriaButton>
 						<Avatar
 							imageProps={{
-								src: userData.image,
+								src: user.image,
 							}}
 							variant="secondary"
 							size="xl"
 							className="cursor-pointer hover:opacity-65"
 						>
-							{userData.fullname}
+							{user.fullname}
 						</Avatar>
 					</AriaButton>
 				)}
@@ -98,15 +100,13 @@ export const UserInformation = withReactQueryProvider(() => {
 									variant="secondary"
 									size="md"
 								>
-									{userData.fullname}
+									{user.fullname}
 								</Avatar>
 								<div>
 									<div className="flex items-center justify-between">
-										<p>{userData.fullname}</p>
+										<p>{user.fullname}</p>
 									</div>
-									<p className="text-muted-foreground text-sm">
-										{userData.email}
-									</p>
+									<p className="text-muted-foreground text-sm">{user.email}</p>
 								</div>
 							</div>
 							<hr className="bg-input-border h-px w-full border-0" />

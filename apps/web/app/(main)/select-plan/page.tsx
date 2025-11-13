@@ -1,5 +1,8 @@
 // Components
+import { Carousel } from '@/components/ui/carousel';
 import { Heading } from '@/components/ui/heading';
+
+// Modules
 import { PaymentPlanCard } from '@/modules/main/select-plan/payment-plan-card';
 
 export default async function SelectPlan() {
@@ -9,7 +12,7 @@ export default async function SelectPlan() {
 				Select plan
 			</Heading>
 
-			<div className="flex gap-5">
+			<div className="hidden gap-5 xl:flex">
 				{[...Array(3)].map((_, i) => (
 					<PaymentPlanCard
 						key={i}
@@ -24,6 +27,29 @@ export default async function SelectPlan() {
 					/>
 				))}
 			</div>
+
+			<Carousel
+				slides={[...Array(3)].map((_, i) => (
+					<PaymentPlanCard
+						key={i}
+						title="Free"
+						duration="(All time)"
+						variant={i % 2 == 0 ? 'primary' : 'secondary'}
+						reasons={
+							<>
+								<li>Hello world</li>
+								<li>Hello world</li>
+								<li>Hello world</li>
+								<li>Hello world</li>
+								<li>Hello world</li>
+								<li>Hello world</li>
+								<li>Hello world</li>
+							</>
+						}
+					/>
+				))}
+			/>
+
 			<p className="text-muted-foreground lg:text-md mt-7 text-center lg:mt-10">
 				Your plan will be automatically renewed at the month&apos;s end
 			</p>

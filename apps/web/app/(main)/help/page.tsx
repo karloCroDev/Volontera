@@ -3,8 +3,8 @@ import { Avatar } from '@/components/ui/avatar';
 import { Heading } from '@/components/ui/heading';
 import { Message } from '@/components/ui/message';
 
-// Config
-import { serverFetch } from '@/config/server-fetch';
+// Lib
+import { getSession } from '@/lib/server/get-session';
 
 // Modules
 import { HelpForm } from '@/modules/main/help/help-form';
@@ -13,13 +13,8 @@ import { HelpForm } from '@/modules/main/help/help-form';
 import { SessionSuccessResponse } from '@repo/types/auth';
 
 export default async function HelpPage() {
-	const user: SessionSuccessResponse = await serverFetch({
-		url: 'auth/session',
-		init: {
-			cache: 'no-store',
-			next: { tags: ['session'] },
-		},
-	});
+	// Layout already handles the session
+	const user = (await getSession()) as SessionSuccessResponse;
 
 	return (
 		<>

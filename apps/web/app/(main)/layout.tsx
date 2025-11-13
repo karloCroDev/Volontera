@@ -7,26 +7,15 @@ import { Layout, LayoutColumn } from '@/components/ui/layout-grid';
 import { Sidebar } from '@/components/ui/sidebar/sidebar';
 import { SidebarProvider } from '@/components/ui/sidebar/sidebar-provider';
 
-// Config
-import { serverFetch } from '@/config/server-fetch';
-
 // Types
-import { SessionSuccessResponse } from '@repo/types/auth';
+import { getSession } from '@/lib/server/get-session';
 
 export default async function MainLayout({
 	children,
 }: {
 	children: React.ReactNode;
 }) {
-	const user: SessionSuccessResponse = await serverFetch({
-		url: 'auth/session',
-		init: {
-			cache: 'no-store',
-			next: { tags: ['session'] },
-		},
-	});
-
-	console.log(user);
+	const user = await getSession();
 
 	if (!user.success) redirect('/auth/login');
 	if (user.success && !user.onboardingFinished)
@@ -35,7 +24,7 @@ export default async function MainLayout({
 	return (
 		<SidebarProvider>
 			<div className="flex h-screen">
-				<Sidebar />
+				<Sidebar user={user} />
 
 				<div className="flex flex-1 flex-col">
 					<div className="border-input-border rounded-2xl lg:my-7 lg:mb-5 lg:mr-10 lg:h-[calc(100vh-28px-28px)] lg:border">

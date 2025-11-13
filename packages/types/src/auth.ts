@@ -1,13 +1,4 @@
-import { SuccessfulResponse } from "./general";
-// Login / Register response
-
-// export type LoginResponse = AuthResponse & {
-//   errors?: Record<keyof LoginArgs, string>;
-// };
-
-// export type ErrorAuthResponse = AuthResponse & {
-//   errors?: Record<keyof RegisterArgs, string>;
-// };
+import { ServerHandleResponse } from "./general";
 
 // Session (User)
 export type User = {
@@ -28,5 +19,4 @@ export type User = {
   subscriptionType: "NONE" | "MONTHLY" | "YEARLY";
 };
 
-export type SessionSuccessResponse = User &
-  SuccessfulResponse & { success: boolean };
+export type SessionSuccessResponse = User & ServerHandleResponse<true>;

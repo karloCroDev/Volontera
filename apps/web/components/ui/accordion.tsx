@@ -4,7 +4,6 @@
 import * as React from 'react';
 import * as RadixAccordion from '@radix-ui/react-accordion';
 import { twMerge } from 'tailwind-merge';
-import { ChevronDown } from 'lucide-react';
 
 export const Accordion: React.FC<
 	RadixAccordion.AccordionSingleProps & {

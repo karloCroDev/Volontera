@@ -14,7 +14,7 @@ import { ChevronDown } from 'lucide-react';
 
 export const NotificationSandbox = () => {
 	return (
-		<Form className="border-input-border rounded-xl border py-4">
+		<Form className="border-input-border min-h-1/2 max-h-3/4 overflow-scroll rounded-xl border py-4">
 			<div className="mb-4 flex items-center justify-between px-6">
 				<CheckboxWithLabel
 					checkboxVisuallyProps={{
@@ -29,6 +29,7 @@ export const NotificationSandbox = () => {
 			</div>
 
 			<Accordion
+				defaultValue="item-0"
 				type="single"
 				items={Array.from({ length: 10 }, (_, i) => ({
 					value: `item-${i}`,

@@ -3,6 +3,11 @@ export type SuccessfulResponse = {
   message: string;
 };
 
+export type ServerHandleResponse<T = boolean> = {
+  message: string;
+  success: T;
+};
+
 export type ErrorFormResponse = {
   message: string;
 };

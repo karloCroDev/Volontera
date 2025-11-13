@@ -26,8 +26,11 @@ import {
 	Organizations,
 	SidebarItem,
 } from '@/components/ui/sidebar/sidebar-items';
+import { SessionSuccessResponse } from '@repo/types/auth';
 
-export const Sidebar = () => {
+export const Sidebar: React.FC<{
+	user: SessionSuccessResponse;
+}> = ({ user }) => {
 	const { desktopOpen, mobileOpen, setMobileOpen, setDesktopOpen } =
 		useSidebarContext();
 	return (
@@ -102,20 +105,7 @@ export const Sidebar = () => {
 						)}
 					</Link>
 				</div>
-				<UserInformation />
-
-				{/* <div className="flex w-full flex-col gap-2 p-5">
-					<LinkAsButton
-						colorScheme="bland"
-						variant="outline"
-						href="/notifications"
-					>
-						{desktopOpen ? 'Dashboard' : 'D'}
-					</LinkAsButton>
-					<LinkAsButton href="/home">
-						{desktopOpen ? 'Settings' : 'S'}
-					</LinkAsButton>
-				</div> */}
+				<UserInformation user={user} />
 			</aside>
 
 			{/* Mobile sidebar */}
@@ -174,7 +164,7 @@ export const Sidebar = () => {
 								</Link>
 							</div>
 							<div className="mt-auto">
-								<UserInformation />
+								<UserInformation user={user} />
 							</div>
 						</Dialog>
 					</Modal>
