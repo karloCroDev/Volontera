@@ -1,11 +1,12 @@
 import { Avatar } from '@/components/ui/avatar';
+import { DotWithLabel } from '@/components/ui/dot';
 import { UsersSearch } from '@/modules/main/direct-messages/users-search';
 import { UsersSidebar } from '@/modules/main/direct-messages/users-sidebar';
 
 export default async function DirectMessagesPage() {
 	return (
 		<div className="flex h-full">
-			<aside className="border-input-border flex h-full w-1/4 flex-col border-r px-4 lg:px-6">
+			<aside className="border-input-border flex h-full w-1/4 flex-col border-r px-4 py-6 lg:px-6">
 				<h4 className="mb-4 text-lg underline underline-offset-4 lg:text-xl">
 					Your DM&apos;s
 				</h4>
@@ -23,7 +24,7 @@ export default async function DirectMessagesPage() {
 				</div>
 			</aside>
 
-			<div className="flex h-fit items-center gap-4 px-4 sm:px-6 lg:px-8">
+			<div className="border-input-border flex h-fit w-full items-center gap-4 border-b px-4 pb-4 pt-6 sm:px-6 lg:px-8">
 				<Avatar
 					imageProps={{
 						src: '',
@@ -37,8 +38,11 @@ export default async function DirectMessagesPage() {
 					<h4 className="text-lg lg:text-xl">Karlo Grgic</h4>
 					<p className="text-muted-foreground">Last online: 19:03 22.11.2025</p>
 				</div>
-				<p className="text-success">online</p>
-				<div className="bg-success ml-auto size-4 rounded-full" />
+				<DotWithLabel
+					className="ml-auto"
+					label="Online"
+					dotProps={{ state: 'success', size: 'md' }}
+				/>
 			</div>
 		</div>
 	);
