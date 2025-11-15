@@ -7,7 +7,7 @@ import { Message } from '@/components/ui/message';
 import { getSession } from '@/lib/server/get-session';
 
 // Modules
-import { HelpForm } from '@/modules/main/help/help-form';
+import { HelpMessageForm } from '@/modules/main/help/help-message-form';
 
 // Types
 import { SessionSuccessResponse } from '@repo/types/auth';
@@ -59,7 +59,7 @@ export default async function HelpPage() {
 					</Message>
 				</div>
 
-				<HelpForm />
+				<HelpMessageForm />
 			</div>
 		</>
 	);

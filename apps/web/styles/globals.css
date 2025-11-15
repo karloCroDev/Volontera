@@ -107,3 +107,10 @@
 
 /* Safelisting (prewriten classes that are supposted to be generated --> used in custom grid layout component) */
 @source inline('{,xs:,sm:,md:,lg:,xl:}col-{start,end}-{1,2,3,4,5,6,7,8,9,10,11,12,13}');
+
+.text-editor > div {
+	outline: none;
+	min-height: 56px;
+	max-height: 240px;
+	overflow-wrap: break-word;
+}
