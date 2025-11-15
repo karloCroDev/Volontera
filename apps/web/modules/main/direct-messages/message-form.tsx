@@ -16,6 +16,7 @@ export const MessageForm = () => {
 		<Form className="lg:max-w-3/4 mx-auto mt-auto w-full">
 			<TextEditor
 				setValue={setValue}
+				hasAnImage
 				label="Enter your message"
 				iconsRight={
 					<Button type="submit" className="p-2">

@@ -30,7 +30,7 @@ export const Avatar: React.FC<
 				size === 'sm' && 'size-8',
 				size === 'md' && 'size-10',
 				size === 'lg' && 'text-md size-14',
-				size === 'xl' && 'size-20 text-lg',
+				size === 'xl' && 'size-18 text-lg',
 				size === '2xl' && 'size-32 text-2xl',
 				size === '4xl' && 'size-40 text-2xl',
 				size === 'full' && 'size-60 text-3xl',

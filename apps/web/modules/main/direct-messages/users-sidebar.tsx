@@ -49,3 +49,13 @@ export const UsersSidebar: React.FC<{
 		</Link>
 	);
 };
+
+export const UsersSidebarSkeleton = () => (
+	<div className="flex items-center gap-3 rounded-md p-2">
+		<div className="bg-muted h-10 w-10 flex-shrink-0 animate-pulse rounded-full" />
+		<div className="flex-1">
+			<div className="bg-muted mb-2 h-3 w-1/3 animate-pulse rounded" />
+			<div className="bg-muted h-3 w-1/2 animate-pulse rounded" />
+		</div>
+	</div>
+);

@@ -25,6 +25,7 @@ export default async function HelpPage() {
 			<div className="flex flex-1 flex-col">
 				<div className="flex flex-1 flex-col gap-4">
 					<Message
+						date="16:36 | 8.4. 2024"
 						avatar={
 							<Avatar
 								imageProps={{
@@ -41,6 +42,7 @@ export default async function HelpPage() {
 						obcaecati sint dignissimos eius molestiae?
 					</Message>
 					<Message
+						date="16:36 | 8.4. 2024"
 						variant="secondary"
 						avatar={
 							<Avatar

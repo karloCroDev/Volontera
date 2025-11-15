@@ -12,12 +12,13 @@ import {
 import StarterKit from '@tiptap/starter-kit';
 import { Label } from 'react-aria-components';
 import { CharacterCount } from '@tiptap/extensions';
+import Underline from '@tiptap/extension-underline';
+import Image from '@tiptap/extension-image';
 
 // Components
 import { Error } from '@/components/ui/error';
 
 import { TextEditorTooltips } from '@/components/ui/text-editor/text-editor-tooltips';
-import Underline from '@tiptap/extension-underline';
 
 export const TextEditor: React.FC<
 	React.ComponentPropsWithoutRef<'div'> & {
@@ -27,6 +28,7 @@ export const TextEditor: React.FC<
 		setValue: React.Dispatch<React.SetStateAction<string>>;
 		textEditorProps?: React.ComponentPropsWithoutRef<'div'> &
 			EditorContentProps;
+		hasAnImage?: boolean;
 	}
 > = ({
 	setValue,
@@ -35,12 +37,14 @@ export const TextEditor: React.FC<
 	error,
 	className,
 	textEditorProps,
+	hasAnImage = false,
 	...rest
 }) => {
 	const editor = useEditor({
 		extensions: [
 			StarterKit,
 			Underline,
+			Image,
 			CharacterCount.configure({
 				limit: 200,
 			}),
@@ -71,7 +75,7 @@ export const TextEditor: React.FC<
 				className
 			)}
 		>
-			<TextEditorTooltips editor={editor} />
+			<TextEditorTooltips editor={editor} hasAnImage={hasAnImage} />
 			<div className="flex w-full items-end">
 				<div className="relative flex-1">
 					<EditorContent

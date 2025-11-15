@@ -15,10 +15,12 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { type Editor as EditorArgs } from '@tiptap/react';
+import { Image } from 'lucide-react';
 
 export const TextEditorTooltips: React.FC<{
 	editor: EditorArgs;
-}> = ({ editor }) => {
+	hasAnImage: boolean;
+}> = ({ editor, hasAnImage }) => {
 	return (
 		<div className="border-input-border mb-1 flex items-center gap-3 overflow-x-scroll border-b pb-2">
 			<Button
@@ -109,6 +111,23 @@ export const TextEditorTooltips: React.FC<{
 			>
 				<ListOrdered className="size-5" />
 			</Button>
+
+			{hasAnImage && (
+				<Button
+					variant="blank"
+					className={
+						!editor.isActive('orderedList')
+							? 'text-muted-foreground p-0'
+							: 'p-2'
+					}
+					onPress={() => {
+						// Upload image to s3 get the url and set it here
+						editor.chain().focus().setImage({ src: '' }).run();
+					}}
+				>
+					<Image className="size-5" />
+				</Button>
+			)}
 		</div>
 	);
 };
