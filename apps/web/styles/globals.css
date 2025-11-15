@@ -1,6 +1,7 @@
 @import 'tailwindcss';
 @plugin "tailwindcss-radix";
 @plugin "tailwindcss-animate";
+@plugin '@tailwindcss/typography';
 
 :root {
 	--primary: hsl(38, 92%, 50%);
@@ -28,7 +29,7 @@
 	--muted-foreground: hsl(0, 0%, 64%);
 	--destructive: hsl(0, 84%, 60%);
 	--success: hsl(129, 54%, 43%);
-	--pending: hsl(221, 97%, 54%);
+	--pending: hsl(221, 36%, 57%);
 	--input-border: hsl(0, 0%, 25%);
 	--popover: hsl(0, 0%, 49%);
 	--background: hsl(0, 0%, 9%);
@@ -108,9 +109,41 @@
 /* Safelisting (prewriten classes that are supposted to be generated --> used in custom grid layout component) */
 @source inline('{,xs:,sm:,md:,lg:,xl:}col-{start,end}-{1,2,3,4,5,6,7,8,9,10,11,12,13}');
 
+/* Typography extension */
+@utility prose-custom {
+	--tw-prose-body: var(--background-foreground);
+	--tw-prose-headings: var(--background-foreground);
+	--tw-prose-bold: var(--background-foreground);
+	--tw-prose-counters: var(--background-foreground);
+	--tw-prose-bullets: var(--background-foreground);
+	--tw-prose-hr: var(--background-foreground);
+	--tw-prose-links: #6b84b8;
+	--tw-prose-invert-bullets: var(--background-foreground);
+	--tw-prose-invert-hr: var(--background-foreground);
+}
+
+/* Text Editor specific styles (that generates on elements */
+.prose *:not(h1, h2, h3, h4, h5, h6) {
+	@apply m-0;
+}
+
+.prose h1,
+.prose h2,
+.prose h3,
+.prose h4,
+.prose h5,
+.prose h6 {
+	@apply my-1;
+}
+
 .text-editor > div {
 	outline: none;
 	min-height: 56px;
 	max-height: 240px;
-	overflow-wrap: break-word;
+}
+
+.text-editor p {
+	white-space: normal;
+	word-break: break-word;
+	overflow-wrap: anywhere;
 }

@@ -14,21 +14,23 @@ import { Label } from 'react-aria-components';
 import { CharacterCount } from '@tiptap/extensions';
 
 // Components
-import { getTextFieldBasicStyles } from '@/components/ui/input';
 import { Error } from '@/components/ui/error';
+
+import { TextEditorTooltips } from '@/components/ui/text-editor/text-editor-tooltips';
+import Underline from '@tiptap/extension-underline';
 
 export const TextEditor: React.FC<
 	React.ComponentPropsWithoutRef<'div'> & {
 		label: string;
-		iconsLeft?: React.ReactNode;
 		iconsRight?: React.ReactNode;
 		error?: string;
+		setValue: React.Dispatch<React.SetStateAction<string>>;
 		textEditorProps?: React.ComponentPropsWithoutRef<'div'> &
 			EditorContentProps;
 	}
 > = ({
+	setValue,
 	label,
-	iconsLeft,
 	iconsRight,
 	error,
 	className,
@@ -38,12 +40,15 @@ export const TextEditor: React.FC<
 	const editor = useEditor({
 		extensions: [
 			StarterKit,
+			Underline,
 			CharacterCount.configure({
 				limit: 200,
 			}),
 		],
 		content: '',
-
+		onUpdate: ({ editor }) => {
+			setValue(editor.getHTML());
+		},
 		// Avoding SSR issues
 		immediatelyRender: false,
 	});
@@ -57,39 +62,41 @@ export const TextEditor: React.FC<
 		},
 	}) ?? { charactersCount: 0, wordsCount: 0 };
 
-	console.log(charactersCount);
+	if (!editor) return null;
 	return (
 		<div
 			{...rest}
 			className={twMerge(
-				'border-input-border flex items-end rounded-md border px-4 pb-4',
+				'border-input-border rounded-md border p-4 px-4',
 				className
 			)}
 		>
-			{iconsLeft}
-			<div className="relative flex-1">
-				<EditorContent
-					editor={editor}
-					{...textEditorProps}
-					className={twJoin(
-						'text-editor overflow-x-hidden whitespace-normal break-words py-4',
-						textEditorProps?.className
-					)}
-				/>
-				<Label
-					className={twJoin(
-						'text-muted-foreground absolute left-0 top-6 -z-[1] origin-left -translate-y-1/2 transition-transform',
-						charactersCount > 0 && '-translate-y-[24px] scale-75'
-					)}
-				>
-					{label}
-				</Label>
-				<p className="text-muted-foreground bg-background text-sm">
-					{charactersCount}/200
-				</p>
+			<TextEditorTooltips editor={editor} />
+			<div className="flex w-full items-end">
+				<div className="relative flex-1">
+					<EditorContent
+						editor={editor}
+						{...textEditorProps}
+						className={twJoin(
+							'text-editor prose prose-custom not-prose-p: !m-0 max-w-full overflow-x-scroll overflow-y-scroll py-4',
+							textEditorProps?.className
+						)}
+					/>
+					<Label
+						className={twJoin(
+							'text-muted-foreground absolute left-0 top-6 -z-[1] origin-left -translate-y-1/2 transition-transform',
+							charactersCount > 0 && '-translate-y-[24px] scale-75'
+						)}
+					>
+						{label}
+					</Label>
+					<p className="text-muted-foreground bg-background text-sm">
+						{charactersCount}/200
+					</p>
+				</div>
+				{iconsRight}
+				{error && <Error>{error}</Error>}
 			</div>
-			{iconsRight}
-			{error && <Error>{error}</Error>}
 		</div>
 	);
 };
