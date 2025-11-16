@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation';
 
 // Components
 import { Button } from '@/components/ui/button';
+import { Dot } from '@/components/ui/dot';
 
 export const NotificationButton = () => {
 	const router = useRouter();
@@ -23,7 +24,7 @@ export const NotificationButton = () => {
 		>
 			<Bell />
 
-			<div className="bg-success absolute -right-1 -top-1 size-3 rounded-full" />
+			<Dot state="success" className="absolute -right-1 -top-1 size-3" />
 		</Button>
 	);
 };

@@ -9,7 +9,7 @@ import { Send } from 'lucide-react';
 import { ResizableTextArea } from '@/components/ui/resizable-input';
 import { Button } from '@/components/ui/button';
 
-export const HelpForm = () => {
+export const HelpMessageForm = () => {
 	return (
 		<Form className="mt-auto">
 			<ResizableTextArea

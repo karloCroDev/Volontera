@@ -71,10 +71,10 @@ export const Sidebar: React.FC<{
 					</Link>
 					<Organizations />
 
-					<Link href="/private-chats">
+					<Link href="/direct-messages">
 						{desktopOpen ? (
 							<SidebarItem iconLeft={<MessageCircleMore className="size-5" />}>
-								Private chats
+								Direct messages
 							</SidebarItem>
 						) : (
 							<SidebarItem size="lg" isFullyRounded className="p-4">
@@ -145,11 +145,11 @@ export const Sidebar: React.FC<{
 									<Organizations />
 								</div>
 
-								<Link href="/private-chats">
+								<Link href="/direct-messages">
 									<SidebarItem
 										iconLeft={<MessageCircleMore className="size-5" />}
 									>
-										Private chats
+										Direct messages
 									</SidebarItem>
 								</Link>
 								<Link href="/settings">

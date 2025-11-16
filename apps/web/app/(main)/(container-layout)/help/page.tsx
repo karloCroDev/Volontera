@@ -7,7 +7,7 @@ import { Message } from '@/components/ui/message';
 import { getSession } from '@/lib/server/get-session';
 
 // Modules
-import { HelpForm } from '@/modules/main/help/help-form';
+import { HelpMessageForm } from '@/modules/main/help/help-message-form';
 
 // Types
 import { SessionSuccessResponse } from '@repo/types/auth';
@@ -25,6 +25,7 @@ export default async function HelpPage() {
 			<div className="flex flex-1 flex-col">
 				<div className="flex flex-1 flex-col gap-4">
 					<Message
+						date="16:36 | 8.4. 2024"
 						avatar={
 							<Avatar
 								imageProps={{
@@ -41,6 +42,7 @@ export default async function HelpPage() {
 						obcaecati sint dignissimos eius molestiae?
 					</Message>
 					<Message
+						date="16:36 | 8.4. 2024"
 						variant="secondary"
 						avatar={
 							<Avatar
@@ -59,7 +61,7 @@ export default async function HelpPage() {
 					</Message>
 				</div>
 
-				<HelpForm />
+				<HelpMessageForm />
 			</div>
 		</>
 	);
