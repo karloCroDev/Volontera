@@ -2,22 +2,19 @@
 
 // External packages
 import * as React from 'react';
-import { Trash } from 'lucide-react';
-import { Label as AriaLabel, Input as AriaInput } from 'react-aria-components';
-import { Controller, useForm, useFormContext } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
+import { Controller, useFormContext } from 'react-hook-form';
 
 // Components
 import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { DatePicker } from '@/components/ui/date-picker';
 
 // Schemas
 import { SettingsSchemaArgs } from '@repo/schemas/settings';
 
-// Config
-import { withReactQueryProvider } from '@/config/react-query';
-import { DatePicker } from '@/components/ui/date-picker';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
+// Lib
+import { withReactQueryProvider } from '@/lib/utils/react-query';
 
 export const PersonalInformationForm = withReactQueryProvider(() => {
 	const { control } = useFormContext<SettingsSchemaArgs>();

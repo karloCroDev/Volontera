@@ -19,8 +19,8 @@ import { useSession } from '@/hooks/data/auth';
 // Schemas
 import { SettingsSchemaArgs } from '@repo/schemas/settings';
 
-// Config
-import { withReactQueryProvider } from '@/config/react-query';
+// Lib
+import { withReactQueryProvider } from '@/lib/utils/react-query';
 
 export const ProfileForm = withReactQueryProvider(() => {
 	const { data: user } = useSession();

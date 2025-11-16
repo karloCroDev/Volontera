@@ -1,5 +1,5 @@
 // External pakcages
-import { API } from '@/config/axios-client';
+import { API } from '@/lib/utils/axios-client';
 
 // Schemas
 import {

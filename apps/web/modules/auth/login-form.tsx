@@ -15,6 +15,7 @@ import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { Icon } from '@/components/ui/icon';
 import { Error } from '@/components/ui/error';
+import { AnchorAsButton } from '@/components/ui/anchor-as-button';
 
 // Hooks
 import { useLogin } from '@/hooks/data/auth';
@@ -22,10 +23,9 @@ import { useLogin } from '@/hooks/data/auth';
 // Schemas
 import { LoginArgs, loginSchema } from '@repo/schemas/auth';
 
-// Config
-import { withReactQueryProvider } from '@/config/react-query';
+// Lib
+import { withReactQueryProvider } from '@/lib/utils/react-query';
 import { toast } from '@/lib/utils/toast';
-import { AnchorAsButton } from '@/components/ui/anchor-as-button';
 
 export const LoginForm = withReactQueryProvider(() => {
 	const { isPending, mutate } = useLogin();

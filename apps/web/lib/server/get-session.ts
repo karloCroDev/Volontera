@@ -1,5 +1,5 @@
-// Config
-import { serverFetch } from '@/config/server-fetch';
+// Lib
+import { serverFetch } from '@/lib/utils/server-fetch';
 
 // Types
 import { SessionSuccessResponse } from '@repo/types/auth';

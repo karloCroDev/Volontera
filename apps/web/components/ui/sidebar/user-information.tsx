@@ -24,10 +24,10 @@ import { LinkAsButton } from '@/components/ui/link-as-button';
 import { useSidebarContext } from '@/components/ui/sidebar/sidebar-provider';
 
 // Hooks
-import { useLogout, useSession } from '@/hooks/data/auth';
+import { useLogout } from '@/hooks/data/auth';
 
-// Config
-import { withReactQueryProvider } from '@/config/react-query';
+// Lib
+import { withReactQueryProvider } from '@/lib/utils/react-query';
 
 // Types
 import { SessionSuccessResponse } from '@repo/types/auth';

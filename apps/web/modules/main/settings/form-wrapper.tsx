@@ -16,8 +16,8 @@ import { ProfileForm } from '@/modules/main/settings/profile-form';
 // Hooks
 import { useSession } from '@/hooks/data/auth';
 
-// Config
-import { withReactQueryProvider } from '@/config/react-query';
+// Lib
+import { withReactQueryProvider } from '@/lib/utils/react-query';
 
 // Schemas
 import { settingsSchema, SettingsSchemaArgs } from '@repo/schemas/settings';

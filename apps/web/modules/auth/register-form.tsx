@@ -20,7 +20,7 @@ import { useRegister } from '@/hooks/data/auth';
 
 // Schemas
 import { RegisterArgs, registerSchema } from '@repo/schemas/auth';
-import { withReactQueryProvider } from '@/config/react-query';
+import { withReactQueryProvider } from '@/lib/utils/react-query';
 
 // Lib
 import { toast } from '@/lib/utils/toast';

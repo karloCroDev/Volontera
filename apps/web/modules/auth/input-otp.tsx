@@ -13,7 +13,7 @@ import { Button } from '@/components/ui/button';
 
 // Hooks
 import { useResetEmail, useVerifyEmail } from '@/hooks/data/auth';
-import { withReactQueryProvider } from '@/config/react-query';
+import { withReactQueryProvider } from '@/lib/utils/react-query';
 import { ArrowRight } from 'lucide-react';
 
 export const InputOTP = withReactQueryProvider(() => {

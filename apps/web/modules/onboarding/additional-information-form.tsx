@@ -22,14 +22,16 @@ import {
 	additionalInformationSchema,
 } from '@repo/schemas/onboarding';
 
-// Config
-import { withReactQueryProvider } from '@/config/react-query';
+// Hooks
+import { useSession } from '@/hooks/data/auth';
+
+// Lib
+import { withReactQueryProvider } from '@/lib/utils/react-query';
 import {
 	useAdditionalInformation,
 	useSkipAdditionalInformation,
 } from '@/hooks/data/onboarding';
 import { toast } from '@/lib/utils/toast';
-import { useSession } from '@/hooks/data/auth';
 
 export const AdditionalInformationForm = withReactQueryProvider(() => {
 	const {

@@ -13,11 +13,9 @@ import { useRouter } from 'next/navigation';
 // Hooks
 import { useAppType } from '@/hooks/data/onboarding';
 
-// Config
-import { withReactQueryProvider } from '@/config/react-query';
-
 // Lib
 import { toast } from '@/lib/utils/toast';
+import { withReactQueryProvider } from '@/lib/utils/react-query';
 
 // Types
 import { AppType } from '@repo/types/onboarding';

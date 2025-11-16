@@ -1,12 +1,12 @@
-// Config
-import { API } from '@/config/axios-client';
+// Lib
+import { API } from '@/lib/utils/axios-client';
 
 // Lib
 import { catchError } from '@/lib/utils/error';
 
 // Repo
 import { AdditionalFormArgs } from '@repo/schemas/onboarding';
-import { AppType } from '@repo/types/onbaording';
+import { AppType } from '@repo/types/onboarding';
 
 export async function appType(data: AppType) {
 	try {
