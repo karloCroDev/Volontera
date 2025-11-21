@@ -40,7 +40,7 @@ export async function forgotPassword(req: Request, res: Response) {
       from: process.env.RESEND_FROM!,
       to: validatedData.email,
       subject: "Reset your password",
-      html: `<p>http://localhost:3000/auth/forgot-password/reset-password?token=${resetToken}</p>`, // Karlo dodaj shared components i dodaj react email i ondaj dodaj mail
+      html: `<p>http://localhost:${process.env.NEXT_PORT}/auth/forgot-password/reset-password?token=${resetToken}</p>`, // Karlo dodaj shared components i dodaj react email i ondaj dodaj mail
     });
 
     if (error) {
@@ -48,7 +48,7 @@ export async function forgotPassword(req: Request, res: Response) {
     }
   } else {
     await sendEmail({
-      html: `<p>http://localhost:3000/auth/forgot-password/reset-password?token=${resetToken}</p>`,
+      html: `<p>http://localhost:${process.env.NEXT_PORT}/auth/forgot-password/reset-password?token=${resetToken}</p>`,
       subject: "Reset your password",
       to: validatedData.email,
     });

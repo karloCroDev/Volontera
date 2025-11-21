@@ -6,7 +6,7 @@ import bodyParser from "body-parser";
 export const paymentRoutes = Router();
 
 paymentRoutes.post(
-  "/checkout",
+  "/payment",
   bodyParser.raw({ type: "application/json" }),
   stripeWebhook
 );

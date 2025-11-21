@@ -4,23 +4,23 @@ import express from "express";
 import cors from "cors";
 
 // Middleware
-import { authMiddleware } from "@/middleware/authMiddleware";
-import { organizationMiddleware } from "@/middleware/roleMiddleware";
-import { onboardingProcessMiddleware } from "@/middleware/onboardingMiddleware";
+import { authMiddleware } from "@/middleware/auth-middleware";
+import { organizationMiddleware } from "@/middleware/role-middleware";
+import { onboardingProcessMiddleware } from "@/middleware/onbaording-middleware";
 
 // Config
 import { server, app } from "@/config/socket";
 import { oAuthGoogleHandle } from "@/config/oAuth-google";
 
 // Routes
-import { authRoutes } from "@/routes/authRoutes";
-import { paymentRoutes } from "@/routes/paymentRoutes";
-import { onboardingRoutes } from "@/routes/onboardingRoutes";
-import { userMiddleware } from "@/middleware/roleMiddleware";
+import { authRoutes } from "@/routes/auth-routes";
+import { paymentRoutes } from "@/routes/payment-routes";
+import { onboardingRoutes } from "@/routes/onboarding-routes";
+import { userMiddleware } from "@/middleware/role-middleware";
 
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: `http://localhost:${process.env.NEXT_PORT}`,
     credentials: true,
   })
 );
@@ -57,7 +57,3 @@ app.get(
 // app.get("/admin", authMiddleware, adminMiddleware, (req, res) => {
 //   res.json({ message: "This is a ADMIN protected route" });
 // });
-
-server.listen(4000, () => {
-  console.log("Backend running at http://localhost:4000");
-});

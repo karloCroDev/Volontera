@@ -5,7 +5,7 @@ import { Request, Response } from "express";
 import { prisma } from "@/config/prisma";
 
 // Lib
-import { zodErrorDetecter } from "@/lib/zodDetectionError";
+import { zodErrorDetecter } from "@/lib/utils/zodDetectionError";
 
 // Schemas
 import { registerSchema } from "@repo/schemas/auth";

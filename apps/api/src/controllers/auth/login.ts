@@ -3,7 +3,7 @@ import { Request, Response } from "express";
 import bcrypt from "bcrypt";
 
 // Lib
-import { zodErrorDetecter } from "@/lib/zodDetectionError";
+import { zodErrorDetecter } from "@/lib/utils/zodDetectionError";
 import { verifyUser } from "@/lib/verify-user";
 
 // Config

@@ -8,7 +8,7 @@ import {
   skipAdditionalInformation,
 } from "@/controllers/onboarding/additional-info";
 import { appType } from "@/controllers/onboarding/app-type";
-import { additionalInformationMiddleware } from "@/middleware/onboardingMiddleware";
+import { additionalInformationMiddleware } from "@/middleware/onbaording-middleware";
 
 export const onboardingRoutes = Router();
 
