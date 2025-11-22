@@ -127,3 +127,24 @@ export async function updateVerificationToken({
     },
   });
 }
+
+export async function findUserById(userId: User["id"]) {
+  return prisma.user.findUnique({
+    where: { id: userId },
+    select: {
+      id: true,
+      firstName: true,
+      lastName: true,
+      fullname: true,
+      email: true,
+      bio: true,
+      image: true,
+      role: true,
+      createdAt: true,
+      updatedAt: true,
+      subscriptionTier: true,
+      onboardingFinished: true,
+      subscriptionType: true,
+    },
+  });
+}

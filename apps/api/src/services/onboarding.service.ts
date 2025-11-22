@@ -65,20 +65,13 @@ export async function skipAdditionalInformationService(userId: string) {
     return {
       status: 400,
       body: {
-        message: "There was an issue finishing onboarding (user missing)",
+        message: "User not found",
       },
     };
   }
 
-  // Add this in controller
-  //   generateTokenAndSetCookie({
-  //     res,
-  //     userId: user.id,
-  //     role: user.role,
-  //     onboardingFinished: true,
-  //   });
-
   return {
+    user,
     status: 200,
     body: {
       title: "Account created",

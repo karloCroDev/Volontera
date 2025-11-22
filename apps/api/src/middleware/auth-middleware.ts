@@ -16,16 +16,7 @@ export function authMiddleware(
   res: Response,
   next: NextFunction
 ) {
-  const header = req.headers.authorization;
-  const cookieToken = req.cookies?.token;
-
-  let token = null;
-
-  if (header && header.startsWith("Bearer ")) {
-    token = header.split(" ")[1];
-  } else if (cookieToken) {
-    token = cookieToken;
-  }
+  const token = req.cookies?.token;
 
   if (!token) {
     return res.status(401).json({ message: "Auth token missing" });

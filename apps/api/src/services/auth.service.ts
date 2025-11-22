@@ -1,6 +1,7 @@
 // External packages
 import bcrypt from "bcrypt";
 import crypto from "crypto";
+import jwt from "jsonwebtoken";
 
 // Config
 import { sendEmail } from "@/config/nodemailer";
@@ -23,6 +24,7 @@ import {
   clearOtpVerification,
   createUser,
   findUserByEmail,
+  findUserById,
   findUserForOtpVerification,
   resetPasswordByToken,
   updateResetPasswordToken,
@@ -33,6 +35,8 @@ import {
 // Lib
 import { verifyUser } from "@/lib/verify-user";
 import { generateTokenAndSetCookie } from "@/lib/set-token-cookie";
+import { JwtUser } from "@/lib/types/jwt";
+import { getImagePresignedUrls } from "@/lib/aws-s3-functions";
 
 type AuthServiceResponse = {
   status: number;
@@ -261,4 +265,26 @@ export async function resetVerifyTokenService(rawData: unknown) {
     status: 200,
     body: { message: "Verification code refreshed successfully" },
   };
+}
+
+export async function getSessionUser(token?: string) {
+  if (!token) return null;
+
+  let payload: JwtUser;
+
+  try {
+    payload = jwt.verify(token, process.env.JWT_SECRET as string) as JwtUser;
+  } catch {
+    return null;
+  }
+
+  const user = await findUserById(payload.userId);
+  if (!user) return null;
+
+  if (user.image) {
+    const image = await getImagePresignedUrls(user.image);
+    return { ...user, image };
+  }
+
+  return user;
 }
