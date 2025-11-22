@@ -35,6 +35,7 @@
   },
   "devDependencies": {
     "@repo/permissons": "*",
+    "@repo/types": "*",
     "@repo/schemas": "*",
     "@repo/transactional": "*",
     "@types/cors": "^2.8.19",
