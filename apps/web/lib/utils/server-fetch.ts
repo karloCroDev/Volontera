@@ -11,13 +11,15 @@ export async function serverFetch<T = unknown>({
 	init?: RequestInit | undefined;
 }): Promise<T> {
 	const cookieStore = await cookies();
+
 	const token = cookieStore.get('token')?.value;
-	console.log(token);
+
 	const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/${url}`, {
 		...init,
 		headers: {
 			'Content-Type': 'application/json',
-			...(token ? { Authorization: `Bearer ${token}` } : {}),
+			// Fetching like this because nextjs doesn't forward cookies automatically in server actions, also I can't use credentials: 'include' here, so I am not using authroization bearer token sending method but instead provided method
+			cookie: `token=${token}`,
 			...init?.headers,
 		},
 	});

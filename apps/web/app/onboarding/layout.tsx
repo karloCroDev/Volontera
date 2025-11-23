@@ -1,16 +1,13 @@
 // External packages
 import { redirect } from 'next/navigation';
 
-// Config
-import { serverFetch } from '@/config/server-fetch';
-
 // Components
 import { Layout, LayoutColumn } from '@/components/ui/layout-grid';
+
 // Modules
 import { ProgressTracker } from '@/modules/onboarding/progress-tracker';
 
-// Repo types
-import { SessionSuccessResponse } from '@repo/types/auth';
+// Lib
 import { getSession } from '@/lib/server/get-session';
 
 // Karlo: TODO: Mobile view not the prettiest one!

@@ -8,7 +8,7 @@ export const server = http.createServer(app);
 
 export const io = new Server(server, {
   cors: {
-    origin: ["http://localhost:3000"],
+    origin: [process.env.NEXT_PORT || "http://localhost:3000"],
     methods: ["GET", "POST"],
   },
 });
@@ -33,6 +33,7 @@ io.on("connection", (socket) => {
   socket.on("disconnect", () => {
     console.log("user disconnected", socket.id);
     delete userSocketObj[userId];
+
     // Once the user leaves then send the data once again
     io.emit("get-online-users", Object.keys(userSocketObj));
   });

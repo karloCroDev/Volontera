@@ -1,5 +1,5 @@
 // External pakcages
-import { API } from '@/config/axios-client';
+import { API } from '@/lib/utils/axios-client';
 
 // Schemas
 import {
@@ -74,7 +74,7 @@ export async function resetPassword(data: ResetPasswordArgs) {
 // Email verification
 export async function verifyEmail(data: VerifyEmailArgs) {
 	try {
-		const res = await API().post('auth/verify-token-otp', data);
+		const res = await API().post('auth/verify-token', data);
 		return res.data;
 	} catch (err) {
 		catchError(err);

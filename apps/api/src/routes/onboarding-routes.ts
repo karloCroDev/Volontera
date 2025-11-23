@@ -2,13 +2,15 @@
 import express from "express";
 import { Router } from "express";
 
+// Middleware
+import { additionalInformationMiddleware } from "@/middleware/onbaording-middleware";
+
 // Controllers
 import {
-  addtionalInformation,
+  additionalInformation,
   skipAdditionalInformation,
-} from "@/controllers/onboarding/additional-info";
-import { appType } from "@/controllers/onboarding/app-type";
-import { additionalInformationMiddleware } from "@/middleware/onboardingMiddleware";
+  appType,
+} from "@/controllers/onboaridng.controller";
 
 export const onboardingRoutes = Router();
 
@@ -18,7 +20,7 @@ onboardingRoutes.post("/app-type", express.text(), appType);
 onboardingRoutes.post(
   "/additional-information",
   additionalInformationMiddleware,
-  addtionalInformation
+  additionalInformation
 );
 onboardingRoutes.post(
   "/skip-additional-information",

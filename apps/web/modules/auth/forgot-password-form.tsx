@@ -18,8 +18,8 @@ import { useForgotPassword } from '@/hooks/data/auth';
 // Schemas
 import { ForgotPasswordArgs, forgotPasswordSchema } from '@repo/schemas/auth';
 
-// Config
-import { withReactQueryProvider } from '@/config/react-query';
+// Lib
+import { withReactQueryProvider } from '@/lib/utils/react-query';
 
 export const ForgotPasswordForm = withReactQueryProvider(() => {
 	const { isPending, mutate } = useForgotPassword();

@@ -34,7 +34,7 @@ export async function verifyUser(email: string) {
 
   const hashedOtp = bcrypt.hashSync(verificationToken, 10);
 
-  const expireDate = Date.now() + 1 * 60 * 60 * 1000; // 1 hour
+  const expireDate: bigint = BigInt(Date.now() + 1 * 60 * 60 * 1000); // 1 hour
 
   return { hashedOtp, expireDate } as const;
 }
