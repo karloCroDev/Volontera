@@ -10,8 +10,8 @@ import { getSession } from '@/lib/server/get-session';
 
 // Modules
 import { InformationContainer } from '@/modules/main/public-profile/information-container';
-import { Posts } from '@/modules/main/public-profile/posts';
-import { Comments } from '@/modules/main/public-profile/comments';
+import { ListPosts } from '@/modules/main/public-profile/list-posts';
+import { ListComments } from '@/modules/main/public-profile/list-comments';
 
 export default async function PublicProfilePage() {
 	return (
@@ -85,9 +85,9 @@ export default async function PublicProfilePage() {
 					</LinkAsButton>
 				</div>
 			</InformationContainer>
-			<Comments />
+			<ListComments />
 
-			<Posts />
+			<ListPosts />
 		</div>
 	);
 }

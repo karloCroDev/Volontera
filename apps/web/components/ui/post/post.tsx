@@ -1,14 +1,16 @@
 // External packages
 import * as React from 'react';
-import { ChevronDown, Heart, MessageCircleMore, Share } from 'lucide-react';
+import { ChevronDown, MessageCircleMore } from 'lucide-react';
+import Link from 'next/link';
 
 // Components
 import { Avatar } from '@/components/ui/avatar';
 import { Collapsible } from '@/components/ui/collapsible';
 import { LinkAsButton } from '@/components/ui/link-as-button';
-import Link from 'next/link';
-import { PostLike } from '@/modules/main/home/post-like';
-import { SharePost } from '@/modules/main/home/share-post';
+
+// Modules
+import { PostLike } from '@/components/ui/post/post-like';
+import { SharePost } from '@/components/ui/post/share-post';
 
 export const Post: React.FC<{
 	title: string;

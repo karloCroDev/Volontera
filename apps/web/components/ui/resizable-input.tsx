@@ -19,7 +19,7 @@ export const ResizableTextArea: React.FC<TextAreaProps> = ({
 
 		const lineHeight = 32;
 		const newHeight = lineCount * lineHeight - 1;
-		textareaRef.current.style.height = `${57 + newHeight}px`;
+		textareaRef.current.style.height = `${newHeight}px`;
 	};
 	return (
 		<Textarea
@@ -35,7 +35,7 @@ export const ResizableTextArea: React.FC<TextAreaProps> = ({
 						textAreaProps.onChange(e);
 					}
 				},
-				className: twMerge('!min-h-14 !max-h-60 ', textAreaProps?.className),
+				className: twMerge('!min-h-10 !max-h-60 ', textAreaProps?.className),
 			}}
 		/>
 	);

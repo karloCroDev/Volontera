@@ -10,7 +10,7 @@ import { InformationContainer } from '@/modules/main/public-profile/information-
 import { ChevronRight } from 'lucide-react';
 import { Button } from 'react-aria-components';
 
-export const Posts = () => {
+export const ListPosts = () => {
 	return (
 		<InformationContainer>
 			<Collapsible
