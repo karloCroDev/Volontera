@@ -1,8 +1,8 @@
-// Config
-import { server } from "@/config/socket";
+import "@/app";
+import { server } from "@/ws/socket";
 
-server.listen(process.env.EXPRESS_PORT, () => {
-  console.log(
-    `Backend running at http://localhost:${process.env.EXPRESS_PORT}`
-  );
+const PORT = Number(process.env.EXPRESS_PORT) || 4000;
+
+server.listen(PORT, () => {
+  console.log(`Backend running at http://localhost:${PORT}`);
 });

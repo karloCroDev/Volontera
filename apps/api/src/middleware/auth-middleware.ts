@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 import { Request, Response, NextFunction } from "express";
 
 // Middleware
-import { JwtUser } from "@/lib/types/jwt";
+import { JwtUser } from "@/@types/jwt";
 
 declare module "express-serve-static-core" {
   interface Request {

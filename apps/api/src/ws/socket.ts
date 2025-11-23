@@ -8,7 +8,7 @@ export const server = http.createServer(app);
 
 export const io = new Server(server, {
   cors: {
-    origin: [`http://localhost:${process.env.NEXT_PORT}`],
+    origin: [process.env.NEXT_PORT || "http://localhost:3000"],
     methods: ["GET", "POST"],
   },
 });

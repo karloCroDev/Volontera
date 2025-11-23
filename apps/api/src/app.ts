@@ -7,16 +7,16 @@ import cors from "cors";
 import { authMiddleware } from "@/middleware/auth-middleware";
 import { organizationMiddleware } from "@/middleware/role-middleware";
 import { onboardingProcessMiddleware } from "@/middleware/onbaording-middleware";
+import { userMiddleware } from "@/middleware/role-middleware";
 
 // Config
-import { app } from "@/config/socket";
+import { app } from "@/ws/socket";
 import { oAuthGoogleHandle } from "@/config/oAuth-google";
 
 // Routes
 import { authRoutes } from "@/routes/auth-routes";
-import { paymentRoutes } from "@/routes/payment-routes";
+// import { paymentRoutes } from "@/routes/payment-routes";
 import { onboardingRoutes } from "@/routes/onboarding-routes";
-import { userMiddleware } from "@/middleware/role-middleware";
 
 app.use(
   cors({
@@ -27,7 +27,7 @@ app.use(
 app.use(cookieParser());
 
 // Routes
-app.use("/payment", paymentRoutes); // Staviu uvik povise express.json
+// app.use("/payment", paymentRoutes); // Staviu uvik povise express.json
 
 app.use(oAuthGoogleHandle.initialize());
 

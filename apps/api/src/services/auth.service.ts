@@ -34,7 +34,7 @@ import {
 // Lib
 import { verifyUser } from "@/lib/verify-user";
 import { generateTokenAndSetCookie } from "@/lib/set-token-cookie";
-import { JwtUser } from "@/lib/types/jwt";
+import { JwtUser } from "@/@types/jwt";
 import { getImagePresignedUrls } from "@/lib/aws-s3-functions";
 
 export async function loginService(rawData: LoginArgs) {

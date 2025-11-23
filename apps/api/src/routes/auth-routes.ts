@@ -30,7 +30,7 @@ import { generateTokenAndSetCookie } from "@/lib/set-token-cookie";
 
 // Config
 import { oAuthGoogleHandle } from "@/config/oAuth-google";
-import { session } from "@/controllers/auth/session";
+import { userSession } from "@/controllers/auth.controller";
 import { authMiddleware } from "@/middleware/auth-middleware";
 
 export const authRoutes = Router();
@@ -40,7 +40,6 @@ authRoutes.use(express.json());
 authRoutes.post("/register", register);
 authRoutes.post("/login", login);
 authRoutes.post("/logout", authMiddleware, logout);
-authRoutes.get("/session", authMiddleware, session);
 authRoutes.post("/forgot-password", forgetPassword);
 authRoutes.post("/reset-password", resetPassword);
 authRoutes.post("/verify-token", verifyToken);
@@ -73,3 +72,6 @@ authRoutes.get(
     res.redirect(`${process.env.NEXT_PORT}/home`);
   }
 );
+
+// Retrieving the user session
+authRoutes.get("/session", authMiddleware, userSession);
