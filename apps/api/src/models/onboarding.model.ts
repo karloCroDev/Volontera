@@ -1,7 +1,12 @@
+// External packages
+import { User } from "@prisma/client";
+
 // Config
 import { prisma } from "@/config/prisma";
-import { User } from "@prisma/client";
+
+// Local packages
 import { AdditionalFormArgs } from "@repo/schemas/onboarding";
+import { AppType } from "@repo/types/onboarding";
 
 export async function updateUserOnboarding({
   data,
@@ -24,6 +29,21 @@ export async function finishOnboarding(userId: User["id"]) {
     where: { id: userId },
     data: {
       onboardingFinished: true,
+    },
+  });
+}
+
+export async function updateUserAppType({
+  userId,
+  type,
+}: {
+  userId: string;
+  type: AppType;
+}) {
+  return prisma.user.update({
+    where: { id: userId },
+    data: {
+      role: type,
     },
   });
 }

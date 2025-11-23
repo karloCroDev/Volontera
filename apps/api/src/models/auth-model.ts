@@ -13,7 +13,6 @@ export async function findUserByEmail(email: string) {
 export async function createUser(data: {
   firstName: User["firstName"];
   lastName: User["lastName"];
-  fullname: User["fullname"];
   email: User["email"];
   password: User["password"];
   verificationToken: User["verificationToken"];
@@ -135,7 +134,6 @@ export async function findUserById(userId: User["id"]) {
       id: true,
       firstName: true,
       lastName: true,
-      fullname: true,
       email: true,
       bio: true,
       image: true,

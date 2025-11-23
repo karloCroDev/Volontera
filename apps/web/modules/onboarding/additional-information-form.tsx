@@ -55,6 +55,7 @@ export const AdditionalInformationForm = withReactQueryProvider(() => {
 	const { mutate, isPending } = useAdditionalInformation();
 	const { mutate: skipAdditionalInformation } = useSkipAdditionalInformation();
 
+	console.log(user?.firstName);
 	const onSubmit = async (data: AdditionalFormArgs) => {
 		const hasUserInput = data.DOB || data.bio || data.image;
 

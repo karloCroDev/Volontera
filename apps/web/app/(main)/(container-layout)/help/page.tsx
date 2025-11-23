@@ -15,7 +15,6 @@ import { SessionSuccessResponse } from '@repo/types/auth';
 export default async function HelpPage() {
 	// Layout already handles the session
 	const user = (await getSession()) as SessionSuccessResponse;
-
 	return (
 		<>
 			<Heading subtitle="Ask our automated AI assistant to help you navigate our website">

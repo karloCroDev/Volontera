@@ -19,7 +19,7 @@ export const ResizableTextArea: React.FC<TextAreaProps> = ({
 
 		const lineHeight = 32;
 		const newHeight = lineCount * lineHeight - 1;
-		textareaRef.current.style.height = `${newHeight}px`;
+		textareaRef.current.style.height = `${57 + newHeight}px`;
 	};
 	return (
 		<Textarea

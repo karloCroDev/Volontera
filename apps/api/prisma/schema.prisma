@@ -35,7 +35,6 @@ model User {
   id                 String    @id @default(cuid())
   firstName          String
   lastName           String
-  fullname           String
   email              String    @unique
   password           String
   image              String?

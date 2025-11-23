@@ -4,6 +4,7 @@ import { Response } from "express";
 // Models
 import {
   finishOnboarding,
+  updateUserAppType,
   updateUserOnboarding,
 } from "@/models/onboarding.model";
 
@@ -12,9 +13,6 @@ import {
   AdditionalFormArgs,
   additionalInformationSchema,
 } from "@repo/schemas/onboarding";
-
-// Lib
-import { generateTokenAndSetCookie } from "@/lib/set-token-cookie";
 
 export async function additionalInformationService(
   rawData: unknown,
@@ -72,6 +70,41 @@ export async function skipAdditionalInformationService(userId: string) {
       title: "Account created",
       message: "Onboarding finished successfully",
       user,
+    },
+  };
+}
+
+// app-type.service.ts
+
+import { AppType } from "@repo/types/onboarding";
+
+export async function appTypeService(rawType: unknown, userId: string) {
+  const type = rawType as AppType;
+
+  if (type !== "USER" && type !== "ORGANIZATION") {
+    return {
+      status: 400,
+      body: { message: "Invalid app type provided" },
+    };
+  }
+
+  const updated = await updateUserAppType({ type, userId });
+
+  if (!updated) {
+    return {
+      status: 400,
+      body: {
+        message: "There was an error choosing the app type (user not found)",
+      },
+    };
+  }
+
+  return {
+    status: 200,
+    body: {
+      title: "App type saved",
+      message: "Your app type has been saved successfully",
+      role: type,
     },
   };
 }

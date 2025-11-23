@@ -98,7 +98,6 @@ export async function registerService(rawData: unknown) {
   await createUser({
     firstName: data.firstName,
     lastName: data.lastName,
-    fullname: `${data.firstName} ${data.lastName}`,
     email: data.email,
     password: hashedPassword,
     verificationToken: hashedOtp,
@@ -277,6 +276,7 @@ export async function getSessionUser(userId: string) {
       message: "User fetched successfully",
       success: true,
       ...userData,
+      fullname: `${user.firstName} ${user.lastName}`,
     },
   };
 }
