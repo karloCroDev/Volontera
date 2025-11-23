@@ -17,7 +17,6 @@ import {
   resetPasswordSchema,
   verifyEmail,
 } from "@repo/schemas/auth";
-import { ErrorFormResponse, SuccessfulResponse } from "@repo/types/general";
 
 // Models
 import {
@@ -38,14 +37,7 @@ import { generateTokenAndSetCookie } from "@/lib/set-token-cookie";
 import { JwtUser } from "@/lib/types/jwt";
 import { getImagePresignedUrls } from "@/lib/aws-s3-functions";
 
-type AuthServiceResponse = {
-  status: number;
-  body: ErrorFormResponse | SuccessfulResponse;
-};
-
-export async function loginService(
-  rawData: LoginArgs
-): Promise<AuthServiceResponse> {
+export async function loginService(rawData: LoginArgs) {
   const { data, success } = loginSchema.safeParse(rawData);
   if (!success) {
     return { status: 400, body: { message: "Provided data is incorrect" } };
@@ -208,7 +200,7 @@ export async function resetPasswordService(rawData: unknown) {
   };
 }
 
-export async function verifyOtpService(rawData: unknown, res: any) {
+export async function verifyOtpService(rawData: unknown) {
   const { success, data } = verifyEmail.safeParse(rawData);
 
   if (!success) {
@@ -229,16 +221,9 @@ export async function verifyOtpService(rawData: unknown, res: any) {
 
   await clearOtpVerification(user.id);
 
-  generateTokenAndSetCookie({
-    res,
-    userId: user.id,
-    role: user.role,
-    onboardingFinished: user.onboardingFinished,
-  });
-
   return {
     status: 200,
-    body: { message: "User verified successfully" },
+    body: { message: "User verified successfully", user },
   };
 }
 
@@ -267,24 +252,31 @@ export async function resetVerifyTokenService(rawData: unknown) {
   };
 }
 
-export async function getSessionUser(token?: string) {
-  if (!token) return null;
+export async function getSessionUser(userId: string) {
+  const user = await findUserById(userId);
 
-  let payload: JwtUser;
+  if (!user)
+    return {
+      status: 400,
+      body: {
+        message: "There is no user that we could find with that ID",
+        success: false,
+      },
+    };
 
-  try {
-    payload = jwt.verify(token, process.env.JWT_SECRET as string) as JwtUser;
-  } catch {
-    return null;
-  }
-
-  const user = await findUserById(payload.userId);
-  if (!user) return null;
+  let userData = user;
 
   if (user.image) {
     const image = await getImagePresignedUrls(user.image);
-    return { ...user, image };
+    userData = { ...user, image };
   }
 
-  return user;
+  return {
+    status: 200,
+    body: {
+      message: "User fetched successfully",
+      success: true,
+      ...userData,
+    },
+  };
 }

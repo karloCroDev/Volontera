@@ -3,22 +3,35 @@ import express from "express";
 import { Router } from "express";
 
 // Contorllers
-import { login } from "@/controllers/auth/login";
-import { register } from "@/controllers/auth/register";
-import { logout } from "@/controllers/auth/logout";
-import { session } from "@/controllers/auth/session";
-import { forgotPassword } from "@/controllers/auth/forgot-password";
-import { resetPassword } from "@/controllers/auth/reset-password";
+// import { login } from "@/controllers/auth/login";
+// import { register } from "@/controllers/auth/register";
+// import { logout } from "@/controllers/auth/logout";
+// import { session } from "@/controllers/auth/session";
+// import { forgotPassword } from "@/controllers/auth/forgot-password";
+// import { resetPassword } from "@/controllers/auth/reset-password";
+// import {
+//   resetVerifyToken,
+//   verifyTokenOtp,
+// } from "@/controllers/auth/verify-token-otp";
+
+// Controllers
 import {
+  forgetPassword,
+  login,
+  logout,
+  register,
+  resetPassword,
   resetVerifyToken,
-  verifyTokenOtp,
-} from "@/controllers/auth/verify-token-otp";
+  verifyToken,
+} from "@/controllers/auth.controller";
 
 // Lib
 import { generateTokenAndSetCookie } from "@/lib/set-token-cookie";
 
 // Config
 import { oAuthGoogleHandle } from "@/config/oAuth-google";
+import { session } from "@/controllers/auth/session";
+import { authMiddleware } from "@/middleware/auth-middleware";
 
 export const authRoutes = Router();
 
@@ -26,12 +39,14 @@ authRoutes.use(express.json());
 
 authRoutes.post("/register", register);
 authRoutes.post("/login", login);
-authRoutes.post("/logout", logout);
-authRoutes.get("/session", session);
-authRoutes.post("/forgot-password", forgotPassword);
+authRoutes.post("/logout", authMiddleware, logout);
+authRoutes.get("/session", authMiddleware, session);
+authRoutes.post("/forgot-password", forgetPassword);
 authRoutes.post("/reset-password", resetPassword);
-authRoutes.post("/verify-token-otp", verifyTokenOtp);
+authRoutes.post("/verify-token", verifyToken);
 authRoutes.post("/reset-verify-token", resetVerifyToken);
+
+// Google OAuth sign in method
 authRoutes.get(
   "/google",
   oAuthGoogleHandle.authenticate("google", {
@@ -43,7 +58,7 @@ authRoutes.get(
 authRoutes.get(
   "/google/callback",
   oAuthGoogleHandle.authenticate("google", {
-    failureRedirect: "http://localhost:3000/auth/login",
+    failureRedirect: `${process.env.NEXT_PORT}/auth/login`,
     session: false,
   }),
   (req, res) => {
@@ -55,6 +70,6 @@ authRoutes.get(
       onboardingFinished: req.user.onboardingFinished,
     });
 
-    res.redirect("http://localhost:3000/home");
+    res.redirect(`${process.env.NEXT_PORT}/home`);
   }
 );

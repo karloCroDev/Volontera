@@ -6,14 +6,11 @@ import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import { prisma } from "@/config/prisma";
 import { JwtUser } from "@/lib/types/jwt";
 
-const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID!;
-const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET!;
-
 export const oAuthGoogleHandle = passport.use(
   new GoogleStrategy(
     {
-      clientID: GOOGLE_CLIENT_ID,
-      clientSecret: GOOGLE_CLIENT_SECRET,
+      clientID: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
       callbackURL: "http://localhost:4000/auth/google/callback",
     },
     async (accessToken, refreshToken, profile, done) => {

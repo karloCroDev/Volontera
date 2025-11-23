@@ -25,7 +25,10 @@ export async function additionalInformationService(
   if (!success) {
     return {
       status: 400,
-      body: { message: "Invalid data provided" },
+      body: {
+        message: "Invalid data provided",
+        title: "Please provide the correct data",
+      },
     };
   }
 
@@ -40,20 +43,12 @@ export async function additionalInformationService(
 
   const user = await updateUserOnboarding({ data: payload, userId });
 
-  // Add this in controller
-  //   generateTokenAndSetCookie({
-  //     res,
-  //     userId: user.id,
-  //     role: user.role,
-  //     onboardingFinished: true,
-  //   });
-
   return {
-    user,
     status: 200,
     body: {
       title: "Account created",
       message: "Additional information saved successfully",
+      user,
     },
   };
 }
@@ -65,17 +60,18 @@ export async function skipAdditionalInformationService(userId: string) {
     return {
       status: 400,
       body: {
-        message: "User not found",
+        title: "Account creation failed",
+        message: "Could not finish onboarding for the user",
       },
     };
   }
 
   return {
-    user,
     status: 200,
     body: {
       title: "Account created",
-      message: "Onboarding completed successfully",
+      message: "Onboarding finished successfully",
+      user,
     },
   };
 }
