@@ -29,8 +29,8 @@ export const FormWrapper = withReactQueryProvider(() => {
 		resolver: zodResolver(settingsSchema),
 
 		defaultValues: {
-			firstName: user?.firstName,
-			lastName: user?.lastName,
+			firstName: user?.firstName ?? '', // Getting the values 100%, however hook form needs to accept the values that are string and not undefined
+			lastName: user?.lastName ?? '', // Getting the values 100%, however hook form needs to accept the values that are string and not undefined,
 			bio: user?.bio ?? '',
 			workOrSchool: user?.workOrSchool ?? '',
 			DOB: user?.DOB ?? '',

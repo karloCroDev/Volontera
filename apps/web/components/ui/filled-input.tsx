@@ -40,7 +40,11 @@ export const FilledInput: React.FC<
 					size === 'md' && 'h-14 px-4 pt-3',
 					inputProps?.className
 				)}
-				onChange={(e) => setFocused(e.target.value.length > 0)}
+				onChange={(e) => {
+					setFocused(e.target.value.length > 0);
+
+					inputProps?.onChange?.(e);
+				}}
 				placeholder=""
 			/>
 			<Label

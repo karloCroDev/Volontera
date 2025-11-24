@@ -1,6 +1,6 @@
 // Components
 import { Post } from '@/components/ui/post/post';
-import { Comment, Reply } from '@/modules/main/organization/post/comment';
+import { Comment } from '@/modules/main/organization/post/comment';
 
 // Modules
 import { CommentTextArea } from '@/modules/main/organization/post/comment-text-area';

@@ -9,6 +9,7 @@ import { Collapsible } from '@/components/ui/collapsible';
 import { InformationContainer } from '@/modules/main/public-profile/information-container';
 import { ChevronRight } from 'lucide-react';
 import { Button } from 'react-aria-components';
+import { Post } from '@/components/ui/post/post';
 
 export const ListPosts = () => {
 	return (
@@ -16,7 +17,7 @@ export const ListPosts = () => {
 			<Collapsible
 				trigger={
 					<Button className="group flex w-full justify-between outline-none">
-						<p className="text-md lg:text-lg">Posts</p>
+						<p className="text-lg lg:text-xl">Posts</p>
 						<div className="flex items-center justify-center gap-2">
 							<p className="text-muted-foreground group-data-[state=open]:hidden">
 								See all posts
@@ -29,7 +30,11 @@ export const ListPosts = () => {
 					</Button>
 				}
 				contentProps={{
-					children: <p className="mt-10">Work this time</p>,
+					children: (
+						<div className="my-6">
+							<Post content="xxx" title="sss" />
+						</div>
+					),
 				}}
 			/>
 		</InformationContainer>

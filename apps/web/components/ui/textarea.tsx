@@ -15,7 +15,7 @@ import { Error } from '@/components/ui/error';
 
 type TextAreaOnlyProps = React.ComponentProps<'textarea'> & AriaTextareaProps;
 
-export type TextAreaProps = React.ComponentPropsWithoutRef<'div'> & {
+export type TextAreaProps = React.ComponentProps<'div'> & {
 	textAreaProps?: TextAreaOnlyProps;
 } & {
 	label: string;
