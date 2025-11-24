@@ -35,7 +35,7 @@ export const ResizableTextArea: React.FC<TextAreaProps> = ({
 						textAreaProps.onChange(e);
 					}
 				},
-				className: twMerge('!min-h-10 !max-h-60 ', textAreaProps?.className),
+				className: twMerge('!min-h-14 !max-h-60 ', textAreaProps?.className),
 			}}
 		/>
 	);

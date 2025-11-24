@@ -59,7 +59,7 @@ export const Post: React.FC<{
 				}}
 			/>
 
-			<div className="rouded-md border-input-border mt-4 aspect-[4/3] rounded border" />
+			<div className="rouded-md border-input-border mt-4 aspect-[4/3] max-h-[600px] w-full rounded border" />
 
 			<div className="mt-6 flex items-center gap-8">
 				<p className="text-muted-foreground">

@@ -44,7 +44,7 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextAreaProps>(
 						ref={ref}
 						className={twJoin(
 							getTextFieldBasicStyles,
-							'min-h-36 resize-none border-0 !py-5',
+							'h-auto min-h-36 resize-none border-0 !py-5 transition-[height]',
 							textAreaProps?.className
 						)}
 						placeholder=""

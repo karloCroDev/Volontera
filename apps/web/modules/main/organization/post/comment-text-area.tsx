@@ -9,7 +9,7 @@ import { Avatar } from '@/components/ui/avatar';
 import { useSession } from '@/hooks/data/auth';
 import { withReactQueryProvider } from '@/lib/utils/react-query';
 import { Button } from '@/components/ui/button';
-import { Plus } from 'lucide-react';
+import { Plus, Send } from 'lucide-react';
 
 export const CommentTextArea = withReactQueryProvider(() => {
 	const { data: user } = useSession();
@@ -17,7 +17,7 @@ export const CommentTextArea = withReactQueryProvider(() => {
 	return (
 		<ResizableTextArea
 			label="Enter your message"
-			className="border-input-border gap-4 border"
+			className="border-input-border mt-12 gap-4 border"
 			iconsLeft={
 				<Avatar
 					imageProps={{
@@ -25,18 +25,26 @@ export const CommentTextArea = withReactQueryProvider(() => {
 					}}
 					size="sm"
 					variant="secondary"
+					className="mt-4 self-start"
 				>
 					{user?.fullname}
 				</Avatar>
 			}
 			iconsRight={
-				<Button variant="blank" className="p-0">
-					<Plus />
-				</Button>
+				<>
+					<Button variant="blank" className="mt-4 p-2" size="sm">
+						<Plus />
+					</Button>
+					<Button
+						variant="outline"
+						colorScheme="yellow"
+						className="mt-4 p-2"
+						size="sm"
+					>
+						<Send />
+					</Button>
+				</>
 			}
-			textAreaProps={{
-				className: '!w-full',
-			}}
 		/>
 	);
 });
