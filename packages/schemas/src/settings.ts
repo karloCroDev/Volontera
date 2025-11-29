@@ -22,7 +22,7 @@ export const settingsSchema = z
     { message: "At least one field must be provided", path: ["root"] }
   );
 
-export type SettingsSchemaArgs = z.infer<typeof settingsSchema>;
+export type SettingsArgs = z.infer<typeof settingsSchema>;
 
 export const resetPasswordSettingsSchema = z
   .object({
@@ -35,6 +35,6 @@ export const resetPasswordSettingsSchema = z
     path: ["repeatPassword"],
   });
 
-export type ResetPasswordSettingsSchemaArgs = z.infer<
+export type ResetPasswordSettingsArgs = z.infer<
   typeof resetPasswordSettingsSchema
 >;

@@ -31,13 +31,14 @@
     "resend": "^6.0.3",
     "socket.io": "^4.8.1",
     "stripe": "^18.5.0",
+    "uuid": "^13.0.0",
     "zod": "^4.0.17"
   },
   "devDependencies": {
     "@repo/permissons": "*",
-    "@repo/types": "*",
     "@repo/schemas": "*",
     "@repo/transactional": "*",
+    "@repo/types": "*",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.3",
     "@types/node": "^24.3.0",

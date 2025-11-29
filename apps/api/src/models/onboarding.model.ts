@@ -4,7 +4,7 @@ import { User } from "@prisma/client";
 // Config
 import { prisma } from "@/config/prisma";
 
-// Local packages
+// Shared utils
 import { AdditionalFormArgs } from "@repo/schemas/onboarding";
 import { AppType } from "@repo/types/onboarding";
 

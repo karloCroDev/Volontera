@@ -7,7 +7,7 @@ import jwt from "jsonwebtoken";
 import { sendEmail } from "@/config/nodemailer";
 import { resend } from "@/config/resend";
 
-// Local packages
+// Shared utils
 import {
   forgotPasswordSchema,
   LoginArgs,
@@ -33,8 +33,6 @@ import {
 
 // Lib
 import { verifyUser } from "@/lib/verify-user";
-import { generateTokenAndSetCookie } from "@/lib/set-token-cookie";
-import { JwtUser } from "@/@types/jwt";
 import { getImagePresignedUrls } from "@/lib/aws-s3-functions";
 
 export async function loginService(rawData: LoginArgs) {

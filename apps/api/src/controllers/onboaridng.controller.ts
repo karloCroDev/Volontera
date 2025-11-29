@@ -67,7 +67,6 @@ export async function skipAdditionalInformation(req: Request, res: Response) {
   try {
     const result = await skipAdditionalInformationService(req.user.userId);
 
-    console.log;
     if (result.body.user) {
       generateTokenAndSetCookie({
         res,

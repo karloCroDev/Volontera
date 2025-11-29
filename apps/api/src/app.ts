@@ -17,6 +17,7 @@ import { oAuthGoogleHandle } from "@/config/oAuth-google";
 import { authRoutes } from "@/routes/auth-routes";
 // import { paymentRoutes } from "@/routes/payment-routes";
 import { onboardingRoutes } from "@/routes/onboarding-routes";
+import { settingsRoutes } from "@/routes/settings-routes";
 
 app.use(
   cors({
@@ -39,6 +40,7 @@ app.use(
   onboardingProcessMiddleware,
   onboardingRoutes
 );
+app.use("/settings", authMiddleware, settingsRoutes);
 
 // Test
 app.get("/protected-user", authMiddleware, userMiddleware, (req, res) => {

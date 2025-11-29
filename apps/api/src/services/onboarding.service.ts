@@ -1,6 +1,3 @@
-// External packages
-import { Response } from "express";
-
 // Models
 import {
   finishOnboarding,
