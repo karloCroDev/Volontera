@@ -6,25 +6,23 @@ import {
 } from '@tanstack/react-query';
 
 // Data
-import { updateUser } from '@/lib/data/';
+import { changeProfileInfo } from '@/lib/data/settings';
 
-// Types
-import { SettingsResponse } from '@repo/types/settings';
+//
+import { ErrorFormResponse, SuccessfulResponse } from '@repo/types/general';
+import { SettingsArgs } from '@repo/schemas/settings';
 
-// Schemas
-import { SettingsArgs } from '@repo/schemas';
-
-export type UpdateUserFetch = {
-	data: SettingsArgs;
-	file?: File;
-};
-export const useUpdateUser = (
-	options?: UseMutationOptions<SettingsResponse, Error, UpdateUserFetch>
+export const useChangeProfileInfo = (
+	options?: UseMutationOptions<
+		SuccessfulResponse,
+		ErrorFormResponse,
+		SettingsArgs
+	>
 ) => {
 	const queryClient = useQueryClient();
 	return useMutation({
 		mutationKey: ['register'],
-		mutationFn: ({ data, file }: UpdateUserFetch) => updateUser({ data, file }),
+		mutationFn: (data: SettingsArgs) => changeProfileInfo(data),
 		onSuccess: async (...args) => {
 			await queryClient.invalidateQueries({ queryKey: ['session'] });
 			await options?.onSuccess?.(...args);

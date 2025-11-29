@@ -3,6 +3,7 @@
 // External packages
 import * as React from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
+import { parseDate } from '@internationalized/date';
 
 // Components
 import { Label } from '@/components/ui/label';
@@ -11,14 +12,24 @@ import { Textarea } from '@/components/ui/textarea';
 import { DatePicker } from '@/components/ui/date-picker';
 
 // Schemas
-import { SettingsSchemaArgs } from '@repo/schemas/settings';
+import { SettingsArgs } from '@repo/schemas/settings';
 
 // Lib
 import { withReactQueryProvider } from '@/lib/utils/react-query';
+import { FilledInput } from '@/components/ui/filled-input';
+import { useResetPassword, useSession } from '@/hooks/data/auth';
 
 export const PersonalInformationForm = withReactQueryProvider(() => {
-	const { control } = useFormContext<SettingsSchemaArgs>();
+	// Pull formState.errors from useFormContext to access all validation errors,
+	// or use Controller's fieldState.error inside each render callback.
+	const {
+		control,
+		formState: { errors },
+	} = useFormContext<SettingsArgs>();
 
+	const { data: user } = useSession();
+
+	console.log(user?.DOB);
 	return (
 		<div className="border-input-border mt-10 flex flex-col justify-between gap-8 rounded-md border p-6 lg:p-8 xl:flex-row 2xl:p-10">
 			<div>
@@ -38,13 +49,26 @@ export const PersonalInformationForm = withReactQueryProvider(() => {
 						<Controller
 							control={control}
 							name="DOB"
-							render={({ field: { onChange } }) => (
-								<DatePicker
-									onChange={(val) => {
-										onChange(val);
-									}}
-								/>
-							)}
+							// use fieldState to get the specific error for this controller
+							render={({ field: { onChange }, fieldState }) => {
+								return (
+									<>
+										<DatePicker
+											value={user?.DOB ? parseDate(user.DOB) : undefined}
+											onChange={(val) => {
+												if (!val) return;
+												const formatted = `${String(val.year).padStart(2, '0')}-${String(val.month).padStart(2, '0')}-${val.day}`;
+												onChange(formatted);
+											}}
+										/>
+										{errors.DOB && (
+											<p className="text-destructive mt-1.5">
+												{errors.DOB.message}
+											</p>
+										)}
+									</>
+								);
+							}}
 						/>
 					</div>
 					<div>
@@ -54,9 +78,27 @@ export const PersonalInformationForm = withReactQueryProvider(() => {
 						<Controller
 							control={control}
 							name="workOrSchool"
-							render={({ field }) => (
-								<Input label="Work or School" inputProps={field} />
-							)}
+							render={({ field }) => {
+								return (
+									<>
+										{!user?.workOrSchool ? (
+											<Input
+												label="Work or School"
+												inputProps={field}
+												error={errors.workOrSchool?.message}
+											/>
+										) : (
+											<FilledInput
+												placeholderValue="Work or School"
+												label={user.workOrSchool}
+												className="mt-2"
+												inputProps={field}
+												error={errors.workOrSchool?.message}
+											/>
+										)}
+									</>
+								);
+							}}
 						/>
 					</div>
 					<div>
@@ -67,7 +109,13 @@ export const PersonalInformationForm = withReactQueryProvider(() => {
 							control={control}
 							name="bio"
 							render={({ field }) => (
-								<Textarea label="Bio" textAreaProps={field} />
+								<Textarea
+									label="Bio"
+									textAreaProps={{
+										...field,
+									}}
+									error={errors.bio?.message}
+								/>
 							)}
 						/>
 					</div>

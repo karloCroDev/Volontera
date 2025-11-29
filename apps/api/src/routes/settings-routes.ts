@@ -13,4 +13,4 @@ export const settingsRoutes = Router();
 
 settingsRoutes.use(express.json());
 
-settingsRoutes.post("/change-profile-info", changeProfileInfo);
+settingsRoutes.patch("/change-profile-info", changeProfileInfo);

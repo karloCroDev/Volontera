@@ -14,14 +14,14 @@ import { getTextFieldBasicStyles, Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import {
 	resetPasswordSettingsSchema,
-	ResetPasswordSettingsSchemaArgs,
+	ResetPasswordSettingsArgs,
 } from '@repo/schemas/settings';
 
 export const PasswordDialog = () => {
 	const {
 		control,
 		formState: { errors },
-	} = useForm<ResetPasswordSettingsSchemaArgs>({
+	} = useForm<ResetPasswordSettingsArgs>({
 		resolver: zodResolver(resetPasswordSettingsSchema),
 	});
 

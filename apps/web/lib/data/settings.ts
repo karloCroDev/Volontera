@@ -1,6 +1,12 @@
+// Lib
+import { API } from '@/lib/utils/axios-client';
+import { catchError } from '@/lib/utils/error';
+
+// Schemas
+import { SettingsArgs } from '@repo/schemas/settings';
+
 // // import { UpdateUserFetch } from '@/hooks/settings';
 // // import { SettingsResponse } from '@repo/types';
-
 // export async function updateUser({ data, file }: UpdateUserFetch) {
 // 	const response = await fetch('http://localhost:4000/chat/settings', {
 // 		method: 'PATCH',
@@ -23,3 +29,12 @@
 
 // 	return returnVals;
 // }
+
+export async function changeProfileInfo(data: SettingsArgs) {
+	try {
+		const res = await API().patch('settings/change-profile-info', data);
+		return res.data;
+	} catch (err) {
+		catchError(err);
+	}
+}

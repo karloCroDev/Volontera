@@ -17,14 +17,18 @@ import { Avatar } from '@/components/ui/avatar';
 import { useSession } from '@/hooks/data/auth';
 
 // Schemas
-import { SettingsSchemaArgs } from '@repo/schemas/settings';
+import { SettingsArgs } from '@repo/schemas/settings';
 
 // Lib
 import { withReactQueryProvider } from '@/lib/utils/react-query';
 
 export const ProfileForm = withReactQueryProvider(() => {
 	const { data: user } = useSession();
-	const { control, watch } = useFormContext<SettingsSchemaArgs>();
+	const {
+		control,
+		watch,
+		formState: { errors },
+	} = useFormContext<SettingsArgs>();
 
 	const [currentImage, setCurrentImage] = React.useState<File | undefined>(
 		undefined
@@ -53,6 +57,7 @@ export const ProfileForm = withReactQueryProvider(() => {
 											label={user.firstName}
 											className="mt-2"
 											inputProps={field}
+											error={errors.firstName?.message}
 										/>
 									)}
 								/>
@@ -70,6 +75,7 @@ export const ProfileForm = withReactQueryProvider(() => {
 											label={user.lastName}
 											className="mt-2"
 											inputProps={field}
+											error={errors.lastName?.message}
 										/>
 									)}
 								/>

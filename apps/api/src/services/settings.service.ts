@@ -4,6 +4,7 @@ import { User } from "@prisma/client";
 // Services
 import { createUploadUrl, deleteImage } from "@/models/image.model";
 
+// Schemas
 import { settingsSchema } from "@repo/schemas/settings";
 import { updateUsersInformation } from "@/models/settings.model";
 

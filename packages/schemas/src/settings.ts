@@ -13,7 +13,7 @@ export const settingsSchema = z
     }),
     deleteImage: z.url().or(z.literal("")),
     DOB: z.string().length(10).or(z.literal("")),
-    bio: z.string().min(2).max(10).or(z.literal("")),
+    bio: z.string().min(2).or(z.literal("")),
     workOrSchool: z.string().min(2).max(20).or(z.literal("")),
   })
   .partial()

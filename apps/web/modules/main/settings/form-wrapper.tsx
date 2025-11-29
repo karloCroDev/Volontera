@@ -4,7 +4,7 @@
 import { Form } from 'react-aria-components';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { FormProvider, useForm } from 'react-hook-form';
-import { parseDate } from '@internationalized/date';
+import React from 'react';
 
 // Components
 import { Button } from '@/components/ui/button';
@@ -20,12 +20,15 @@ import { useSession } from '@/hooks/data/auth';
 import { withReactQueryProvider } from '@/lib/utils/react-query';
 
 // Schemas
-import { settingsSchema, SettingsSchemaArgs } from '@repo/schemas/settings';
+import { settingsSchema, SettingsArgs } from '@repo/schemas/settings';
+import { toast } from '@/lib/utils/toast';
+import { useChangeProfileInfo } from '@/hooks/data/settings';
+import { IRevalidateTag } from '@/lib/server/revalidation';
 
 export const FormWrapper = withReactQueryProvider(() => {
 	const { data: user } = useSession();
 
-	const methods = useForm<SettingsSchemaArgs>({
+	const methods = useForm<SettingsArgs>({
 		resolver: zodResolver(settingsSchema),
 
 		defaultValues: {
@@ -37,27 +40,54 @@ export const FormWrapper = withReactQueryProvider(() => {
 		},
 	});
 
-	const watchAll = methods.watch();
-	const hasAnyValue = !!(
-		watchAll.firstName ||
-		watchAll.lastName ||
-		watchAll.image ||
-		watchAll.DOB ||
-		watchAll.bio ||
-		watchAll.workOrSchool
-	);
+	// Reset the form when user data arrives so defaultValues are applied after async load
+	React.useEffect(() => {
+		if (!user) return;
+		methods.reset({
+			firstName: user.firstName ?? '',
+			lastName: user.lastName ?? '',
+			bio: user.bio ?? '',
+			workOrSchool: user.workOrSchool ?? '',
+			DOB: user.DOB ?? '',
+		});
+	}, [user]);
 
-	console.log(hasAnyValue);
+	const canSubmit = methods.formState.isDirty;
+
+	const { mutate } = useChangeProfileInfo();
+
+	const onSubmit = (data: SettingsArgs) => {
+		mutate(data, {
+			onSuccess({ title, message }) {
+				toast({
+					title,
+					content: message,
+					variant: 'success',
+				});
+
+				IRevalidateTag('session');
+				methods.reset();
+			},
+			onError(err) {
+				methods.setError('root', err);
+			},
+		});
+	};
+
 	return (
 		<FormProvider {...methods}>
-			<Form className="flex w-full flex-col">
+			<Form
+				className="flex w-full flex-col"
+				onSubmit={methods.handleSubmit(onSubmit)}
+			>
 				<ProfileForm />
 				<PersonalInformationForm />
 				<Button
 					type="submit"
 					className="ml-auto mt-10 w-full md:w-fit"
 					size="md"
-					isDisabled={!hasAnyValue}
+					// disable until the form is dirty (user made changes)
+					isDisabled={!canSubmit}
 				>
 					Save
 				</Button>
