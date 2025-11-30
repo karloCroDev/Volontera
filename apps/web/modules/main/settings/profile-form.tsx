@@ -22,17 +22,16 @@ import { SettingsArgs } from '@repo/schemas/settings';
 // Lib
 import { withReactQueryProvider } from '@/lib/utils/react-query';
 
-export const ProfileForm = withReactQueryProvider(() => {
+export const ProfileForm: React.FC<{
+	currentImage: File | undefined;
+	setCurrentImage: React.Dispatch<React.SetStateAction<File | undefined>>;
+}> = withReactQueryProvider(({ currentImage, setCurrentImage }) => {
 	const { data: user } = useSession();
 	const {
 		control,
 		watch,
 		formState: { errors },
 	} = useFormContext<SettingsArgs>();
-
-	const [currentImage, setCurrentImage] = React.useState<File | undefined>(
-		undefined
-	);
 
 	return (
 		<div className="border-input-border flex flex-col justify-between gap-8 rounded-md border p-6 lg:p-8 xl:flex-row 2xl:p-10">
@@ -105,14 +104,18 @@ export const ProfileForm = withReactQueryProvider(() => {
 										size="4xl"
 										isInput
 										deleteButton={
-											watch().image && (
+											currentImage && (
 												<Button
 													className="p-3"
 													isFullyRounded
 													colorScheme="yellow"
 													onPress={() => {
 														setCurrentImage(undefined);
-														onChange();
+														if (user?.image) {
+															onChange({
+																deleteImage: user.image,
+															});
+														}
 													}}
 												>
 													<Trash className="size-4" />
@@ -137,6 +140,7 @@ export const ProfileForm = withReactQueryProvider(() => {
 											filename: file.name,
 											contentType: file.type,
 											size: file.size,
+											deleteImage: user?.image,
 										});
 										setCurrentImage(file);
 									}}

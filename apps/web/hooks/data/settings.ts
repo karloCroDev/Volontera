@@ -10,20 +10,28 @@ import { changeProfileInfo, resetPasswordInApp } from '@/lib/data/settings';
 
 //
 import { ErrorFormResponse, SuccessfulResponse } from '@repo/types/general';
-import { SettingsArgs } from '@repo/schemas/settings';
-import { ResetPasswordSettingsArgs } from '@repo/schemas/settings';
+import {
+	SettingsArgs,
+	ResetPasswordSettingsArgs,
+} from '@repo/schemas/settings';
+
+// Add a small local type so mutation can receive both data and an optional file
+export type ChangeProfileArgs = { data: SettingsArgs; file?: File };
 
 export const useChangeProfileInfo = (
 	options?: UseMutationOptions<
 		SuccessfulResponse,
 		ErrorFormResponse,
-		SettingsArgs
+		ChangeProfileArgs
 	>
 ) => {
 	const queryClient = useQueryClient();
 	return useMutation({
-		mutationKey: ['register'],
-		mutationFn: (data: SettingsArgs) => changeProfileInfo(data),
+		// use a distinct key for this mutation
+		mutationKey: ['settings', 'changeProfile'],
+		// mutation receives a single variable object { data, file }
+		mutationFn: (vars: ChangeProfileArgs) =>
+			changeProfileInfo({ data: vars.data, file: vars.file }),
 		onSuccess: async (...args) => {
 			await queryClient.invalidateQueries({ queryKey: ['session'] });
 			await options?.onSuccess?.(...args);
@@ -40,7 +48,8 @@ export const useResetPasswordInApp = (
 ) => {
 	const queryClient = useQueryClient();
 	return useMutation({
-		mutationKey: ['register'],
+		// distinct key for reset password
+		mutationKey: ['settings', 'resetPassword'],
 		mutationFn: (data: ResetPasswordSettingsArgs) => resetPasswordInApp(data),
 		onSuccess: async (...args) => {
 			await queryClient.invalidateQueries({ queryKey: ['session'] });

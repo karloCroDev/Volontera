@@ -267,7 +267,6 @@ export async function getSessionUser(userId: string) {
     const image = await getImagePresignedUrls(user.image);
     userData = { ...user, image };
   }
-
   return {
     status: 200,
     body: {

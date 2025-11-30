@@ -41,14 +41,16 @@ export async function changeProfileInfoService({
   if (data.workOrSchool) payload.workOrSchool = data.workOrSchool;
   if (data.bio) payload.bio = data.bio;
 
-  if (data.deleteImage) {
-    await deleteImage(data.deleteImage);
+  if (data.image?.deleteImage) {
+    await deleteImage(data.image.deleteImage);
 
     payload.image = "";
   }
-
+  let presignedURL = "";
   if (data.image) {
-    await createUploadUrl(data.image);
+    const imageURL = await createUploadUrl(data.image);
+    payload.image = imageURL.key;
+    presignedURL = imageURL.url;
   }
 
   await updateUsersInformation({ data: payload, userId });
@@ -58,6 +60,7 @@ export async function changeProfileInfoService({
     body: {
       title: "Profile updated",
       message: "Your profile information has been updated successfully",
+      presignedURL,
     },
   };
 }

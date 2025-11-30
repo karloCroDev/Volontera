@@ -58,22 +58,28 @@ export const FormWrapper = withReactQueryProvider(() => {
 
 	const { mutate, isPending } = useChangeProfileInfo();
 
+	const [currentImage, setCurrentImage] = React.useState<File | undefined>(
+		undefined
+	);
 	const onSubmit = (data: SettingsArgs) => {
-		mutate(data, {
-			onSuccess({ title, message }) {
-				toast({
-					title,
-					content: message,
-					variant: 'success',
-				});
+		mutate(
+			{ data, file: currentImage },
+			{
+				onSuccess({ title, message }) {
+					toast({
+						title,
+						content: message,
+						variant: 'success',
+					});
 
-				IRevalidateTag('session');
-				methods.reset();
-			},
-			onError(err) {
-				methods.setError('root', err);
-			},
-		});
+					IRevalidateTag('session');
+					methods.reset();
+				},
+				onError(err) {
+					methods.setError('root', err);
+				},
+			}
+		);
 	};
 
 	return (
@@ -82,7 +88,10 @@ export const FormWrapper = withReactQueryProvider(() => {
 				className="flex w-full flex-col"
 				onSubmit={methods.handleSubmit(onSubmit)}
 			>
-				<ProfileForm />
+				<ProfileForm
+					currentImage={currentImage}
+					setCurrentImage={setCurrentImage}
+				/>
 				<PersonalInformationForm />
 				<Button
 					type="submit"
