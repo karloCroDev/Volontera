@@ -1,9 +1,13 @@
 // External packages
 import { prisma } from "@/config/prisma";
 import { User } from "@prisma/client";
+import bcrypt from "bcrypt";
 
 // Repo
-import { SettingsArgs } from "@repo/schemas/settings";
+import {
+  resetPasswordSettingsSchema,
+  SettingsArgs,
+} from "@repo/schemas/settings";
 
 export async function updateUsersInformation({
   data,
@@ -17,5 +21,32 @@ export async function updateUsersInformation({
       id: userId,
     },
     data,
+  });
+}
+
+export async function getUsersOldPassword(userId: string) {
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { password: true },
+  });
+
+  return user?.password;
+}
+
+export async function updateUsersPassword({
+  userId,
+  newPassword,
+}: {
+  userId: User["id"];
+  newPassword: string;
+}) {
+  const hashedPassword = await bcrypt.hash(newPassword, 10);
+  return await prisma.user.update({
+    where: {
+      id: userId,
+    },
+    data: {
+      password: hashedPassword,
+    },
   });
 }

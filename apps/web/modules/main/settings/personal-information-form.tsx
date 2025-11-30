@@ -17,7 +17,7 @@ import { SettingsArgs } from '@repo/schemas/settings';
 // Lib
 import { withReactQueryProvider } from '@/lib/utils/react-query';
 import { FilledInput } from '@/components/ui/filled-input';
-import { useResetPassword, useSession } from '@/hooks/data/auth';
+import { useSession } from '@/hooks/data/auth';
 
 export const PersonalInformationForm = withReactQueryProvider(() => {
 	// Pull formState.errors from useFormContext to access all validation errors,
@@ -50,7 +50,7 @@ export const PersonalInformationForm = withReactQueryProvider(() => {
 							control={control}
 							name="DOB"
 							// use fieldState to get the specific error for this controller
-							render={({ field: { onChange }, fieldState }) => {
+							render={({ field: { onChange } }) => {
 								return (
 									<>
 										<DatePicker

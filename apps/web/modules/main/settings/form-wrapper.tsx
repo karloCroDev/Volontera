@@ -1,10 +1,10 @@
 'use client';
 
 // External packages
+import * as React from 'react';
 import { Form } from 'react-aria-components';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { FormProvider, useForm } from 'react-hook-form';
-import React from 'react';
 
 // Components
 import { Button } from '@/components/ui/button';
@@ -18,12 +18,14 @@ import { useSession } from '@/hooks/data/auth';
 
 // Lib
 import { withReactQueryProvider } from '@/lib/utils/react-query';
+import { toast } from '@/lib/utils/toast';
+import { IRevalidateTag } from '@/lib/server/revalidation';
+
+// Hooks
+import { useChangeProfileInfo } from '@/hooks/data/settings';
 
 // Schemas
 import { settingsSchema, SettingsArgs } from '@repo/schemas/settings';
-import { toast } from '@/lib/utils/toast';
-import { useChangeProfileInfo } from '@/hooks/data/settings';
-import { IRevalidateTag } from '@/lib/server/revalidation';
 
 export const FormWrapper = withReactQueryProvider(() => {
 	const { data: user } = useSession();
@@ -86,7 +88,7 @@ export const FormWrapper = withReactQueryProvider(() => {
 					type="submit"
 					className="ml-auto mt-10 w-full md:w-fit"
 					size="md"
-					// disable until the form is dirty (user made changes)
+					// disable until the form is dirty (use changes the input)
 					isDisabled={!canSubmit}
 				>
 					Save
