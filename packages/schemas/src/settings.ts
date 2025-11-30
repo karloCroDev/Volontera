@@ -27,12 +27,12 @@ export type SettingsArgs = z.infer<typeof settingsSchema>;
 export const resetPasswordSettingsSchema = z
   .object({
     currentPassword: z.string().min(8).max(16),
-    repeatCurrentPassword: z.string().min(8).max(16),
-    newPassword: z.string("Enter ").min(8).max(16),
+    newPassword: z.string().min(8).max(16),
+    repeatNewPassword: z.string().min(8).max(16),
   })
-  .refine((data) => data.currentPassword === data.repeatCurrentPassword, {
+  .refine((data) => data.newPassword === data.repeatNewPassword, {
     message: "Passwords do not match",
-    path: ["currentPassword"],
+    path: ["repeatNewPassword"],
   });
 
 export type ResetPasswordSettingsArgs = z.infer<

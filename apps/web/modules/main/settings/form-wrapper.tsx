@@ -56,7 +56,7 @@ export const FormWrapper = withReactQueryProvider(() => {
 
 	const canSubmit = methods.formState.isDirty;
 
-	const { mutate } = useChangeProfileInfo();
+	const { mutate, isPending } = useChangeProfileInfo();
 
 	const onSubmit = (data: SettingsArgs) => {
 		mutate(data, {
@@ -90,6 +90,7 @@ export const FormWrapper = withReactQueryProvider(() => {
 					size="md"
 					// disable until the form is dirty (use changes the input)
 					isDisabled={!canSubmit}
+					isLoading={isPending}
 				>
 					Save
 				</Button>

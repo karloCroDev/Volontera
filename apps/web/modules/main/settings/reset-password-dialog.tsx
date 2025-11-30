@@ -16,17 +16,52 @@ import {
 	resetPasswordSettingsSchema,
 	ResetPasswordSettingsArgs,
 } from '@repo/schemas/settings';
+import { useResetPasswordInApp } from '@/hooks/data/settings';
+
+// Lib
+import { toast } from '@/lib/utils/toast';
 
 export const PasswordDialog = () => {
 	const {
 		control,
 		formState: { errors },
+		handleSubmit,
+		setError,
+		reset,
 	} = useForm<ResetPasswordSettingsArgs>({
 		resolver: zodResolver(resetPasswordSettingsSchema),
+		defaultValues: {
+			currentPassword: '',
+			newPassword: '',
+			repeatNewPassword: '',
+		},
 	});
 
+	const { mutate, isPending } = useResetPasswordInApp();
+
+	const [handleDialog, setHandleDialog] = React.useState(false);
+
+	const onSubmit = (data: ResetPasswordSettingsArgs) => {
+		mutate(data, {
+			onSuccess({ title, message }) {
+				toast({
+					title,
+					content: message,
+					variant: 'success',
+				});
+
+				reset();
+				setHandleDialog(false);
+			},
+			onError(err) {
+				setError('root', err);
+			},
+		});
+	};
 	return (
 		<Dialog
+			onOpenChange={setHandleDialog}
+			isOpen={handleDialog}
 			triggerChildren={
 				<Button
 					variant="blank"
@@ -42,7 +77,10 @@ export const PasswordDialog = () => {
 			title="Reset password"
 			subtitle="Reset your current password"
 		>
-			<Form className="flex flex-col gap-6 lg:gap-8">
+			<Form
+				className="flex flex-col gap-6 lg:gap-8"
+				onSubmit={handleSubmit(onSubmit)}
+			>
 				<div>
 					<Label className="text-base">Current password</Label>
 					<Controller
@@ -50,46 +88,61 @@ export const PasswordDialog = () => {
 						name="currentPassword"
 						render={({ field }) => (
 							<Input
-								label="Password"
+								label="Current password"
 								className="mt-2"
-								inputProps={field}
+								inputProps={{
+									...field,
+									type: 'password',
+								}}
 								error={errors.currentPassword?.message}
 							/>
 						)}
 					/>
 				</div>
 				<div>
-					<Label className="text-base">Repeat current password</Label>
-					<Controller
-						control={control}
-						name="repeatCurrentPassword"
-						render={({ field }) => (
-							<Input
-								label="Password"
-								className="mt-2"
-								inputProps={field}
-								error={errors.repeatCurrentPassword?.message}
-							/>
-						)}
-					/>
-				</div>
-				<div>
-					<Label className="text-base">Old password</Label>
+					<Label className="text-base">New password</Label>
 					<Controller
 						control={control}
 						name="newPassword"
 						render={({ field }) => (
 							<Input
-								label="Password"
+								label="New password"
 								className="mt-2"
-								inputProps={field}
+								inputProps={{
+									...field,
+									type: 'password',
+								}}
 								error={errors.newPassword?.message}
 							/>
 						)}
 					/>
 				</div>
+				<div>
+					<Label className="text-base">Repeat new password</Label>
+					<Controller
+						control={control}
+						name="repeatNewPassword"
+						render={({ field }) => (
+							<Input
+								label="Repeat new password"
+								className="mt-2"
+								inputProps={{
+									...field,
+									type: 'password',
+								}}
+								error={errors.repeatNewPassword?.message}
+							/>
+						)}
+					/>
+				</div>
 
-				<Button className="ml-auto self-end">Save</Button>
+				<Button
+					className="ml-auto self-end"
+					isLoading={isPending}
+					type="submit"
+				>
+					Save
+				</Button>
 			</Form>
 		</Dialog>
 	);

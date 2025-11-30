@@ -69,8 +69,8 @@ export async function resetPasswordInAppService({
   userId: string;
   rawData: unknown;
 }) {
-  // Validate incoming data
   const { success, data } = resetPasswordSettingsSchema.safeParse(rawData);
+
   if (!success) {
     return {
       status: 400,
@@ -86,7 +86,7 @@ export async function resetPasswordInAppService({
     return {
       status: 400,
       body: {
-        message: "Users password not found",
+        message: "You cannot change password for this account (social login)",
       },
     };
   }
