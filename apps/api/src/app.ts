@@ -18,6 +18,7 @@ import { authRoutes } from "@/routes/auth-routes";
 // import { paymentRoutes } from "@/routes/payment-routes";
 import { onboardingRoutes } from "@/routes/onboarding-routes";
 import { settingsRoutes } from "@/routes/settings-routes";
+import { helpRoutes } from "@/routes/help-routes";
 
 app.use(
   cors({
@@ -41,6 +42,7 @@ app.use(
   onboardingRoutes
 );
 app.use("/settings", authMiddleware, settingsRoutes);
+app.use("/help", authMiddleware, helpRoutes);
 
 // Test
 app.get("/protected-user", authMiddleware, userMiddleware, (req, res) => {
