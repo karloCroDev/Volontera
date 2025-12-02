@@ -2,10 +2,10 @@
 import passport from "passport";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 
-// Config
-import { prisma } from "@/config/prisma";
-
 // Lib
+import { prisma } from "@/lib/config/prisma";
+
+// Root types
 import { JwtUser } from "@/@types/jwt";
 
 export const oAuthGoogleHandle = passport.use(

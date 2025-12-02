@@ -29,7 +29,7 @@ import {
 import { generateTokenAndSetCookie } from "@/lib/set-token-cookie";
 
 // Config
-import { oAuthGoogleHandle } from "@/config/oAuth-google";
+import { oAuthGoogleHandle } from "@/lib/config/oAuth-google";
 import { userSession } from "@/controllers/auth.controller";
 import { authMiddleware } from "@/middleware/auth-middleware";
 

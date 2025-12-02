@@ -3,8 +3,8 @@ import { User } from "@prisma/client";
 import { Request, Response } from "express";
 import Stripe from "stripe";
 
-// Config
-import { prisma } from "@/config/prisma";
+// Lib
+import { prisma } from "@/lib/config/prisma";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 

@@ -1,13 +1,9 @@
 // External packages
-import { prisma } from "@/config/prisma";
 import { User } from "@prisma/client";
 import bcrypt from "bcrypt";
 
-// Repo
-import {
-  resetPasswordSettingsSchema,
-  SettingsArgs,
-} from "@repo/schemas/settings";
+// Lib
+import { prisma } from "@/lib/config/prisma";
 
 export async function updateUsersInformation({
   data,

@@ -3,9 +3,9 @@ import bcrypt from "bcrypt";
 import crypto from "crypto";
 import jwt from "jsonwebtoken";
 
-// Config
-import { sendEmail } from "@/config/nodemailer";
-import { resend } from "@/config/resend";
+// Lib
+import { sendEmail } from "@/lib/config/nodemailer";
+import { resend } from "@/lib/config/resend";
 
 // Shared utils
 import {

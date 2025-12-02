@@ -1,8 +1,8 @@
 // External packages
 import { User } from "@prisma/client";
 
-// Config
-import { prisma } from "@/config/prisma";
+// Lib
+import { prisma } from "@/lib/config/prisma";
 
 // Shared utils
 import { AdditionalFormArgs } from "@repo/schemas/onboarding";

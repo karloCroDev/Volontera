@@ -9,9 +9,9 @@ import { organizationMiddleware } from "@/middleware/role-middleware";
 import { onboardingProcessMiddleware } from "@/middleware/onbaording-middleware";
 import { userMiddleware } from "@/middleware/role-middleware";
 
-// Config
+// Lib
 import { app } from "@/ws/socket";
-import { oAuthGoogleHandle } from "@/config/oAuth-google";
+import { oAuthGoogleHandle } from "@/lib/config/oAuth-google";
 
 // Routes
 import { authRoutes } from "@/routes/auth-routes";
