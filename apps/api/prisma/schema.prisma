@@ -42,6 +42,7 @@ model User {
   bio                String?
   workOrSchool       String?
   DOB                String?
+  address            String?
   onboardingFinished Boolean   @default(false)
 
   // Reset password token

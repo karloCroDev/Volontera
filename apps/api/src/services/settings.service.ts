@@ -40,6 +40,7 @@ export async function changeProfileInfoService({
   if (data.DOB) payload.DOB = data.DOB;
   if (data.workOrSchool) payload.workOrSchool = data.workOrSchool;
   if (data.bio) payload.bio = data.bio;
+  if (data.address) payload.address = data.address;
 
   if (data.image?.deleteImage) {
     await deleteImage(data.image.deleteImage);

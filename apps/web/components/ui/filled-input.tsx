@@ -25,7 +25,6 @@ export const FilledInput: React.FC<
 	error,
 	...rest
 }) => {
-	const [focused, setFocused] = React.useState(false);
 	return (
 		<>
 			<div
@@ -44,11 +43,6 @@ export const FilledInput: React.FC<
 						size === 'md' && 'h-14 px-4 pt-3',
 						inputProps?.className
 					)}
-					onChange={(e) => {
-						setFocused(e.target.value.length > 0);
-
-						inputProps?.onChange?.(e);
-					}}
 					placeholder=""
 				/>
 				<Label
@@ -58,7 +52,7 @@ export const FilledInput: React.FC<
 						size === 'md' && 'left-4 -translate-y-[24px]'
 					)}
 				>
-					{focused ? placeholderValue : label}
+					{placeholderValue}
 				</Label>
 
 				<Pencil

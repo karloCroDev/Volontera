@@ -15,7 +15,7 @@ export const InformationContainer: React.FC<
 			)}
 		>
 			{title && (
-				<h4 className="text-background-foreground text-lg lg:text-xl">
+				<h4 className="text-background-foreground text-lg font-medium lg:text-xl">
 					{title}
 				</h4>
 			)}

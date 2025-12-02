@@ -15,6 +15,7 @@ export const settingsSchema = z
     DOB: z.string().length(10).or(z.literal("")),
     bio: z.string().min(2).or(z.literal("")),
     workOrSchool: z.string().min(2).max(20).or(z.literal("")),
+    address: z.string().min(2).max(50).or(z.literal("")),
   })
   .partial()
   .refine(

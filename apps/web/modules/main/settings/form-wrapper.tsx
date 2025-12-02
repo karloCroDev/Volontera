@@ -34,11 +34,12 @@ export const FormWrapper = withReactQueryProvider(() => {
 		resolver: zodResolver(settingsSchema),
 
 		defaultValues: {
-			firstName: user?.firstName ?? '', // Getting the values 100%, however hook form needs to accept the values that are string and not undefined
-			lastName: user?.lastName ?? '', // Getting the values 100%, however hook form needs to accept the values that are string and not undefined,
-			bio: user?.bio ?? '',
-			workOrSchool: user?.workOrSchool ?? '',
-			DOB: user?.DOB ?? '',
+			firstName: user?.firstName || '', // Getting the values 100%, however hook form needs to accept the values that are string and not undefined
+			lastName: user?.lastName || '', // Getting the values 100%, however hook form needs to accept the values that are string and not undefined,
+			address: user?.address || '',
+			bio: user?.bio || '',
+			workOrSchool: user?.workOrSchool || '',
+			DOB: user?.DOB || '',
 		},
 	});
 
@@ -50,6 +51,7 @@ export const FormWrapper = withReactQueryProvider(() => {
 			lastName: user.lastName ?? '',
 			bio: user.bio ?? '',
 			workOrSchool: user.workOrSchool ?? '',
+			address: user.address ?? '',
 			DOB: user.DOB ?? '',
 		});
 	}, [user]);

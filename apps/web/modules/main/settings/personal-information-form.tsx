@@ -29,7 +29,7 @@ export const PersonalInformationForm = withReactQueryProvider(() => {
 
 	const { data: user } = useSession();
 
-	console.log(user?.DOB);
+	console.log(user?.address);
 	return (
 		<div className="border-input-border mt-10 flex flex-col justify-between gap-8 rounded-md border p-6 lg:p-8 xl:flex-row 2xl:p-10">
 			<div>
@@ -94,6 +94,36 @@ export const PersonalInformationForm = withReactQueryProvider(() => {
 												className="mt-2"
 												inputProps={field}
 												error={errors.workOrSchool?.message}
+											/>
+										)}
+									</>
+								);
+							}}
+						/>
+					</div>
+					<div>
+						<Label isOptional className="mb-2">
+							Address
+						</Label>
+						<Controller
+							control={control}
+							name="address"
+							render={({ field }) => {
+								return (
+									<>
+										{!user?.address ? (
+											<Input
+												label="Address"
+												inputProps={field}
+												error={errors.workOrSchool?.message}
+											/>
+										) : (
+											<FilledInput
+												placeholderValue="Address"
+												label={user.address}
+												className="mt-2"
+												inputProps={field}
+												error={errors.address?.message}
 											/>
 										)}
 									</>
