@@ -29,3 +29,20 @@ export function organizationMiddleware(
 
   next();
 }
+
+export async function hasRoleMiddleware(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  const { role } = req.user;
+
+  if (!role) {
+    return res.status(400).json({
+      message:
+        "Please choose application role before fulffiling additional details",
+    });
+  }
+
+  next();
+}

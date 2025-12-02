@@ -28,8 +28,8 @@ import {
 // Lib
 import { generateTokenAndSetCookie } from "@/lib/set-token-cookie";
 
-// Config
-import { oAuthGoogleHandle } from "@/lib/config/oAuth-google";
+// Lib
+import { oAuthGoogleHandle } from "@/config/oAuth-google";
 import { userSession } from "@/controllers/auth.controller";
 import { authMiddleware } from "@/middleware/auth-middleware";
 

@@ -3,7 +3,7 @@ import { User } from "@prisma/client";
 import bcrypt from "bcrypt";
 
 // Lib
-import { prisma } from "@/lib/config/prisma";
+import { prisma } from "@/config/prisma";
 
 export async function updateUsersInformation({
   data,

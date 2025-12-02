@@ -4,7 +4,7 @@ import { Request, Response } from "express";
 import Stripe from "stripe";
 
 // Lib
-import { prisma } from "@/lib/config/prisma";
+import { prisma } from "@/config/prisma";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 

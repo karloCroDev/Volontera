@@ -3,7 +3,7 @@ import express from "express";
 import { Router } from "express";
 
 // Middleware
-import { additionalInformationMiddleware } from "@/middleware/onbaording-middleware";
+import { hasRoleMiddleware } from "@/middleware/role-middleware";
 
 // Controllers
 import {
@@ -19,11 +19,11 @@ onboardingRoutes.use(express.json());
 onboardingRoutes.post("/app-type", express.text(), appType);
 onboardingRoutes.post(
   "/additional-information",
-  additionalInformationMiddleware,
+  hasRoleMiddleware,
   additionalInformation
 );
 onboardingRoutes.post(
   "/skip-additional-information",
-  additionalInformationMiddleware,
+  hasRoleMiddleware,
   skipAdditionalInformation
 );

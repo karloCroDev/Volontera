@@ -2,7 +2,7 @@
 import { User } from "@prisma/client";
 
 // Lib
-import { prisma } from "@/lib/config/prisma";
+import { prisma } from "@/config/prisma";
 
 // Shared utils
 import { AdditionalFormArgs } from "@repo/schemas/onboarding";

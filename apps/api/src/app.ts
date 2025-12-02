@@ -5,13 +5,16 @@ import cors from "cors";
 
 // Middleware
 import { authMiddleware } from "@/middleware/auth-middleware";
-import { organizationMiddleware } from "@/middleware/role-middleware";
+import {
+  hasRoleMiddleware,
+  organizationMiddleware,
+} from "@/middleware/role-middleware";
 import { onboardingProcessMiddleware } from "@/middleware/onbaording-middleware";
 import { userMiddleware } from "@/middleware/role-middleware";
 
 // Lib
 import { app } from "@/ws/socket";
-import { oAuthGoogleHandle } from "@/lib/config/oAuth-google";
+import { oAuthGoogleHandle } from "@/config/oAuth-google";
 
 // Routes
 import { authRoutes } from "@/routes/auth-routes";
@@ -41,8 +44,8 @@ app.use(
   onboardingProcessMiddleware,
   onboardingRoutes
 );
-app.use("/settings", authMiddleware, settingsRoutes);
-app.use("/help", authMiddleware, helpRoutes);
+app.use("/settings", authMiddleware, hasRoleMiddleware, settingsRoutes);
+app.use("/help", authMiddleware, hasRoleMiddleware, helpRoutes);
 
 // Test
 app.get("/protected-user", authMiddleware, userMiddleware, (req, res) => {

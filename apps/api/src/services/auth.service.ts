@@ -4,8 +4,8 @@ import crypto from "crypto";
 import jwt from "jsonwebtoken";
 
 // Lib
-import { sendEmail } from "@/lib/config/nodemailer";
-import { resend } from "@/lib/config/resend";
+import { sendEmail } from "@/config/nodemailer";
+import { resend } from "@/config/resend";
 
 // Shared utils
 import {
