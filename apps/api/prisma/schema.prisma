@@ -80,25 +80,16 @@ model Accounts {
 }
 
 model Help {
-  id        String        @id @default(cuid())
-  user      User          @relation(fields: [userId], references: [id])
-  userId    String
-  messages  HelpMessage[]
-  createdAt DateTime      @default(now())
-  updatedAt DateTime      @updatedAt
+  id     String @id @default(cuid())
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+
+  senderType SenderType
+  content    String
+  createdAt  DateTime   @default(now())
 }
 
 enum SenderType {
   USER
   AI
-}
-
-model HelpMessage {
-  id         String     @id @default(cuid())
-  helpId     String
-  help       Help       @relation(fields: [helpId], references: [id])
-  senderType SenderType
-  message    String
-  createdAt  DateTime   @default(now())
-  updatedAt  DateTime   @updatedAt
 }

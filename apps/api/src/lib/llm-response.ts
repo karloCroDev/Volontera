@@ -1,7 +1,9 @@
 // External packages
 import OpenAI from "openai";
 
-const ai = new OpenAI();
+const ai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY!,
+});
 
 export async function safetyCheckLlmReponse(
   additionalInput?: string,

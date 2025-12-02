@@ -1,13 +1,18 @@
-// Lib
-import { prisma } from "@/config/prisma";
-import { getLlmResponse, safetyCheckLlmReponse } from "@/lib/llm-response";
-import { addUsersQuestionWithLLMResponse } from "@/models/help-model";
+// External packages
 import { User } from "@prisma/client";
+
+// Lib
+import { getLlmResponse, safetyCheckLlmReponse } from "@/lib/llm-response";
+import {
+  addUsersQuestionWithLLMResponse,
+  deleteMessages,
+  retrieveHelpMessages,
+} from "@/models/help-model";
 
 // Schemas
 import { helpConversationSchema } from "@repo/schemas/help";
 
-export async function helpConversationService({
+export async function addQuestionService({
   rawData,
   userId,
   role,
@@ -32,15 +37,16 @@ export async function helpConversationService({
   const regex =
     /(\b(?:hate|violence|drugs|terrorism|porn|illegal activities|suicide|self-harm)\b)/i;
 
+  const innapropriateContent = {
+    status: 400,
+    body: {
+      title: "Inappropriate content detected",
+      message:
+        "Your message contains inappropriate content and cannot be processed.",
+    },
+  };
   if (regex.test(data.message)) {
-    return {
-      status: 400,
-      body: {
-        title: "Inappropriate content detected",
-        message:
-          "Your message contains inappropriate content and cannot be processed.",
-      },
-    };
+    return innapropriateContent;
   }
 
   // TODO: Write all routes and features (do this once the frontend is done)
@@ -55,34 +61,55 @@ export async function helpConversationService({
   const AIGuard = await safetyCheckLlmReponse();
 
   if (AIGuard === "Y") {
-    return {
-      status: 400,
-      body: {
-        title: "Inappropriate content detected",
-        message:
-          "Your message contains inappropriate content and cannot be processed.",
-      },
-    };
+    return innapropriateContent;
   }
 
-  const LLMResponse = await getLlmResponse(
+  const llmResponse = await getLlmResponse(
     `${appRules} \n Users response:${data.message}`
   );
 
-  const conversation = await prisma.helpConversation.create({
-    data: {
-      userId,
-    },
-  });
-
   await addUsersQuestionWithLLMResponse({
-    conversationId: conversation.id,
+    userId,
     usersQuestion: data.message,
-    LLMResponse,
+    llmResponse,
   });
 
   return {
     status: 200,
-    body: { message: "Message sent successfully" },
+    body: {
+      message: "Message sent successfully",
+      // Updating optimistically on frontend
+      llmResponse,
+    },
+  };
+}
+
+export async function getHelpMessagesService(userId: string) {
+  const allMessages = await retrieveHelpMessages(userId);
+
+  return {
+    status: 200,
+    body: {
+      messages: allMessages, // empty array if no messages
+      title: allMessages.length
+        ? undefined
+        : "Ask our AI assistant any question about [app]!",
+    },
+  };
+}
+export async function deleteConversationService(userId: User["id"]) {
+  const deleteConversation = await deleteMessages(userId);
+  const existed = deleteConversation.count > 0;
+
+  return {
+    status: 200,
+    body: {
+      title: existed
+        ? "Conversation deleted successfully"
+        : "No conversation to delete",
+      messages: existed
+        ? "Feel free to start a new conversation with our AI assistant"
+        : "You can begin chatting anytime",
+    },
   };
 }

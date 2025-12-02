@@ -1,27 +1,51 @@
+// Exteral packages
+import { User, Help } from "@prisma/client";
+
 // Config
 import { prisma } from "@/config/prisma";
 
 export async function addUsersQuestionWithLLMResponse({
-  conversationId,
+  userId,
   usersQuestion,
-  LLMResponse,
+  llmResponse,
 }: {
-  conversationId: string;
-  LLMResponse: string;
-  usersQuestion: string;
+  userId: User["id"];
+  llmResponse: Help["content"];
+  usersQuestion: Help["content"];
 }) {
-  return await prisma.helpMessage.createMany({
+  return await prisma.help.createMany({
     data: [
       {
-        message: usersQuestion,
+        content: usersQuestion,
         senderType: "USER",
-        helpId: conversationId,
+        userId,
       },
       {
-        message: LLMResponse,
+        content: llmResponse,
         senderType: "AI",
-        helpId: conversationId,
+        userId,
       },
     ],
+  });
+}
+
+export async function retrieveHelpMessages(userId: User["id"]) {
+  const messages = await prisma.help.findMany({
+    where: {
+      userId,
+    },
+    orderBy: {
+      createdAt: "asc",
+    },
+  });
+
+  return messages;
+}
+
+export async function deleteMessages(userId: User["id"]) {
+  return await prisma.help.deleteMany({
+    where: {
+      userId,
+    },
   });
 }

@@ -3,10 +3,18 @@ import express from "express";
 import { Router } from "express";
 
 // Controllers
-import { helpConversation } from "@/controllers/help.controller";
+import {
+  addQuestionController,
+  deleteHelpMessagesController,
+  getHelpMessagesController,
+} from "@/controllers/help.controller";
 
 export const helpRoutes = Router();
 
 helpRoutes.use(express.json());
 
-helpRoutes.patch("/help-conversation", helpConversation);
+helpRoutes
+  .route("/help-conversation")
+  .post(addQuestionController)
+  .get(getHelpMessagesController)
+  .delete(deleteHelpMessagesController);
