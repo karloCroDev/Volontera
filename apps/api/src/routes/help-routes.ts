@@ -15,6 +15,6 @@ helpRoutes.use(express.json());
 
 helpRoutes
   .route("/help-conversation")
-  .post(addQuestionController)
   .get(getHelpMessagesController)
+  .post(addQuestionController)
   .delete(deleteHelpMessagesController);

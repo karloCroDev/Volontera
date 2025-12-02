@@ -2,7 +2,7 @@
 import OpenAI from "openai";
 
 const ai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY!,
+  apiKey: process.env.OPEN_AI_API_KEY!,
 });
 
 export async function safetyCheckLlmReponse(

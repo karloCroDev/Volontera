@@ -2,7 +2,7 @@
 import { redirect } from 'next/navigation';
 
 // Lib
-import { getSession } from '@/lib/server/get-session';
+import { getSession } from '@/lib/server/auth';
 
 export default async function AuthLayout({
 	children,

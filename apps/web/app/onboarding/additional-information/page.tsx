@@ -4,7 +4,7 @@ import { ArrowLeft } from 'lucide-react';
 import { redirect } from 'next/navigation';
 
 // Lib
-import { getSession } from '@/lib/server/get-session';
+import { getSession } from '@/lib/server/auth';
 
 // Modules
 import { AdditionalInformationForm } from '@/modules/onboarding/additional-information-form';

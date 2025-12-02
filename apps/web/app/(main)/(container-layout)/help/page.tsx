@@ -4,7 +4,7 @@ import { Heading } from '@/components/ui/heading';
 import { Message } from '@/components/ui/message';
 
 // Lib
-import { getSession } from '@/lib/server/get-session';
+import { getSession } from '@/lib/server/auth';
 
 // Modules
 import { HelpMessageForm } from '@/modules/main/help/help-message-form';

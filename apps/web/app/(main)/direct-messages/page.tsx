@@ -2,7 +2,7 @@ import { Avatar } from '@/components/ui/avatar';
 import { DotWithLabel } from '@/components/ui/dot';
 import { Message } from '@/components/ui/message';
 import { ResizableTextArea } from '@/components/ui/resizable-input';
-import { getSession } from '@/lib/server/get-session';
+import { getSession } from '@/lib/server/auth';
 import { ListUsers } from '@/modules/main/direct-messages/list-users';
 import { MessageForm } from '@/modules/main/direct-messages/message-form';
 import { MessageWrapper } from '@/modules/main/direct-messages/message-wrapper';

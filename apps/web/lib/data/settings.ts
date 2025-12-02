@@ -4,11 +4,7 @@ import { API } from '@/lib/utils/axios-client';
 import { catchError } from '@/lib/utils/error';
 
 // Schemas
-import {
-	ResetPasswordSettingsArgs,
-	SettingsArgs,
-} from '@repo/schemas/settings';
-import { ErrorFormResponse, SuccessfulResponse } from '@repo/types/general';
+import { ResetPasswordSettingsArgs } from '@repo/schemas/settings';
 
 export async function changeProfileInfo({ data, file }: ChangeProfileArgs) {
 	try {

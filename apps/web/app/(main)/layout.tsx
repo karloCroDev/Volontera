@@ -7,7 +7,7 @@ import { Sidebar } from '@/components/ui/sidebar/sidebar';
 import { SidebarProvider } from '@/components/ui/sidebar/sidebar-provider';
 
 // Types
-import { getSession } from '@/lib/server/get-session';
+import { getSession } from '@/lib/server/auth';
 
 export default async function MainLayout({
 	children,
