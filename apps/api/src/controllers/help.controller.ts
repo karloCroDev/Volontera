@@ -18,6 +18,7 @@ export async function addQuestionController(req: Request, res: Response) {
 
     return res.status(result.status).json(result.body);
   } catch (err) {
+    console.error(err);
     return res.status(500).json({ success: false, message: "Internal error" });
   }
 }

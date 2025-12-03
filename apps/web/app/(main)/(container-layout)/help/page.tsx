@@ -2,6 +2,7 @@
 import { Avatar } from '@/components/ui/avatar';
 import { Heading } from '@/components/ui/heading';
 import { Message } from '@/components/ui/message';
+import { getHelpConversation } from '@/lib/server/help';
 
 // Lib
 import { getSession } from '@/lib/server/auth';
@@ -15,6 +16,10 @@ import { SessionSuccessResponse } from '@repo/types/auth';
 export default async function HelpPage() {
 	// Layout already handles the session
 	const user = (await getSession()) as SessionSuccessResponse;
+
+	const getMessages = await getHelpConversation();
+	console.log(getMessages);
+
 	return (
 		<>
 			<Heading subtitle="Ask our automated AI assistant to help you navigate our website">
