@@ -1,7 +1,7 @@
 // Components
 import { Avatar } from '@/components/ui/avatar';
 import { Heading } from '@/components/ui/heading';
-import { Message } from '@/components/ui/message';
+import { Message, MessageSkeleton } from '@/components/ui/message';
 import { getHelpConversation } from '@/lib/server/help';
 
 // Lib
@@ -14,11 +14,10 @@ import { HelpMessageForm } from '@/modules/main/help/help-message-form';
 import { SessionSuccessResponse } from '@repo/types/auth';
 
 export default async function HelpPage() {
-	// Layout already handles the session
+	// Layout already handles the session so we know that the user is 100% logged in
 	const user = (await getSession()) as SessionSuccessResponse;
 
 	const getMessages = await getHelpConversation();
-	console.log(getMessages);
 
 	return (
 		<>
@@ -28,41 +27,43 @@ export default async function HelpPage() {
 
 			<div className="flex flex-1 flex-col">
 				<div className="flex flex-1 flex-col gap-4">
-					<Message
-						date="16:36 | 8.4. 2024"
-						avatar={
-							<Avatar
-								imageProps={{
-									src: user.image,
-								}}
+					{getMessages.messages.map((message) => {
+						const hours = new Date(message.createdAt)
+							.getHours()
+							.toString()
+							.padStart(2, '0');
+						const minutes = new Date(message.createdAt)
+							.getMinutes()
+							.toString()
+							.padStart(2, '0');
+
+						const day = new Date(message.createdAt).getDate();
+						const month = new Date(message.createdAt).getMonth() + 1;
+						const year = new Date(message.createdAt).getFullYear();
+
+						return (
+							<Message
+								key={message.id}
+								variant={
+									message.senderType === 'USER' ? 'primary' : 'secondary'
+								}
+								date={`${hours}:${minutes} | ${day}.${month}. ${year}`}
+								avatar={
+									<Avatar
+										imageProps={{
+											src: message.senderType === 'USER' ? user.image : '',
+										}}
+									>
+										{message.senderType === 'USER' ? user.fullname : 'A I'}
+									</Avatar>
+								}
 							>
-								{user.fullname}
-							</Avatar>
-						}
-					>
-						Lorem ipsum, dolor sit amet consectetur adipisicing elit. Assumenda,
-						sit? Explicabo reprehenderit corporis fugiat cumque minus nobis?
-						Esse error, omnis eum, perferendis velit assumenda recusandae
-						obcaecati sint dignissimos eius molestiae?
-					</Message>
-					<Message
-						date="16:36 | 8.4. 2024"
-						variant="secondary"
-						avatar={
-							<Avatar
-								imageProps={{
-									src: '',
-								}}
-							>
-								Cool man
-							</Avatar>
-						}
-					>
-						Lorem ipsum, dolor sit amet consectetur adipisicing elit. Assumenda,
-						sit? Explicabo reprehenderit corporis fugiat cumque minus nobis?
-						Esse error, omnis eum, perferendis velit assumenda recusandae
-						obcaecati sint dignissimos eius molestiae?
-					</Message>
+								{message.content}
+							</Message>
+						);
+					})}
+
+					<MessageSkeleton variant="primary" />
 				</div>
 
 				<HelpMessageForm />

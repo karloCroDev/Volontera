@@ -5,7 +5,12 @@ import {
 	getHelpConversation,
 } from '@/lib/data/help';
 import { HelpConversationSchemaArgs } from '@repo/schemas/help';
-import { ErrorFormResponse, SuccessfulResponse } from '@repo/types/general';
+import {
+	ErrorFormResponse,
+	ErrorToastResponse,
+	SuccessfulResponse,
+} from '@repo/types/general';
+import { HelpConversationSuccess, RetrieveAIResponse } from '@repo/types/help';
 import {
 	useMutation,
 	UseMutationOptions,
@@ -23,8 +28,8 @@ export const useGetHelpConversation = () => {
 
 export const useAddHelpQuestion = (
 	options?: UseMutationOptions<
-		SuccessfulResponse,
-		ErrorFormResponse,
+		RetrieveAIResponse,
+		ErrorToastResponse,
 		HelpConversationSchemaArgs
 	>
 ) => {

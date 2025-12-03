@@ -17,13 +17,13 @@ import {
 } from '@repo/schemas/help';
 import { useAddHelpQuestion } from '@/hooks/data/help';
 import { withReactQueryProvider } from '@/lib/utils/react-query';
+import { toast } from '@/lib/utils/toast';
 
 export const HelpMessageForm = withReactQueryProvider(() => {
 	const {
 		control,
 		handleSubmit,
 		formState: { errors },
-		setError,
 	} = useForm<HelpConversationSchemaArgs>({
 		resolver: zodResolver(helpConversationSchema),
 	});
@@ -32,10 +32,14 @@ export const HelpMessageForm = withReactQueryProvider(() => {
 	const onSubmit = (data: HelpConversationSchemaArgs) => {
 		mutate(data, {
 			onError: (error) => {
-				setError('message', {
-					message: error.message,
+				toast({
+					title: error.title,
+					content: error.message,
+					variant: 'error',
 				});
 			},
+
+			onSuccess: () => {},
 		});
 	};
 	return (
