@@ -77,9 +77,7 @@ export async function addQuestionService({
   return {
     status: 200,
     body: {
-      title: "Message sent successfully",
-      message: "Your question has been processed successfully",
-      // Updating optimistically on frontend
+      message: "Message sent successfully",
       llmResponse,
     },
   };

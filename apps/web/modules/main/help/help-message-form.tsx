@@ -5,42 +5,96 @@ import * as React from 'react';
 import { Form } from 'react-aria-components';
 import { Send } from 'lucide-react';
 import { Controller } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
 
 // Components
 import { ResizableTextArea } from '@/components/ui/resizable-input';
 import { Button } from '@/components/ui/button';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
+import { useQueryClient } from '@tanstack/react-query';
+
+// Schemas
 import {
 	HelpConversationSchemaArgs,
 	helpConversationSchema,
 } from '@repo/schemas/help';
+
+// Hooks
 import { useAddHelpQuestion } from '@/hooks/data/help';
+
+// Lib
 import { withReactQueryProvider } from '@/lib/utils/react-query';
 import { toast } from '@/lib/utils/toast';
 
-export const HelpMessageForm = withReactQueryProvider(() => {
+// Types
+import { HelpConversationSuccess } from '@repo/types/help';
+
+export const HelpMessageForm: React.FC<{
+	setMutating: React.Dispatch<React.SetStateAction<boolean>>;
+}> = withReactQueryProvider(({ setMutating }) => {
 	const {
 		control,
 		handleSubmit,
-		formState: { errors },
+
+		reset,
 	} = useForm<HelpConversationSchemaArgs>({
 		resolver: zodResolver(helpConversationSchema),
 	});
 
-	const { mutate } = useAddHelpQuestion();
-	const onSubmit = (data: HelpConversationSchemaArgs) => {
-		mutate(data, {
-			onError: (error) => {
-				toast({
-					title: error.title,
-					content: error.message,
-					variant: 'error',
-				});
-			},
+	const queryClient = useQueryClient();
 
-			onSuccess: () => {},
-		});
+	const { mutate, isPending } = useAddHelpQuestion({
+		onMutate: async (newMessage) => {
+			await queryClient.cancelQueries({ queryKey: ['help'] });
+
+			const previous = queryClient.getQueryData<HelpConversationSuccess>([
+				'help',
+			]);
+
+			const optimisticMessage: HelpConversationSuccess['messages'][number] = {
+				id: crypto.randomUUID(),
+				createdAt: new Date(),
+				userId: 'current-user',
+				senderType: 'USER',
+				content: newMessage.message,
+			};
+
+			queryClient.setQueryData<HelpConversationSuccess>(['help'], (old) =>
+				old
+					? {
+							...old,
+							messages: [...old.messages, optimisticMessage],
+						}
+					: old
+			);
+
+			return { previous };
+		},
+
+		onError: (error, _newMessage, context) => {
+			if (context?.previous) {
+				queryClient.setQueryData(['help'], context.previous);
+			}
+
+			toast({
+				title: error.title,
+				content: error.message,
+				variant: 'error',
+			});
+		},
+
+		onSettled: () => {
+			queryClient.invalidateQueries({ queryKey: ['help'] });
+		},
+	});
+
+	React.useEffect(() => {
+		setMutating(isPending);
+	}, [isPending]);
+
+	const onSubmit = (data: HelpConversationSchemaArgs) => {
+		mutate(data);
+		reset();
 	};
 	return (
 		<Form className="mt-auto" onSubmit={handleSubmit(onSubmit)}>
@@ -56,7 +110,6 @@ export const HelpMessageForm = withReactQueryProvider(() => {
 								<Send />
 							</Button>
 						}
-						error={errors.message?.message}
 					/>
 				)}
 			/>

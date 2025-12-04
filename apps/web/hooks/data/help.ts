@@ -16,13 +16,21 @@ import {
 	UseMutationOptions,
 	useQuery,
 	useQueryClient,
+	UseQueryOptions,
+	useSuspenseQuery,
+	UseSuspenseQueryOptions,
 } from '@tanstack/react-query';
 
-export const useGetHelpConversation = () => {
-	return useQuery({
+export const useGetHelpConversation = (
+	options?: Omit<
+		UseSuspenseQueryOptions<HelpConversationSuccess>,
+		'queryKey' | 'queryFn'
+	>
+) => {
+	return useSuspenseQuery({
 		queryKey: ['help'],
 		queryFn: getHelpConversation,
-		staleTime: 5 * 60 * 1000,
+		...options,
 	});
 };
 
@@ -30,7 +38,8 @@ export const useAddHelpQuestion = (
 	options?: UseMutationOptions<
 		RetrieveAIResponse,
 		ErrorToastResponse,
-		HelpConversationSchemaArgs
+		HelpConversationSchemaArgs,
+		{ previous: HelpConversationSuccess | undefined }
 	>
 ) => {
 	const queryClient = useQueryClient();
