@@ -10,11 +10,12 @@ export const settingsSchema = z
       filename: z.string(),
       contentType: z.string(),
       size: z.number(),
+      deleteImage: z.url().or(z.literal("")),
     }),
-    deleteImage: z.url().or(z.literal("")),
     DOB: z.string().length(10).or(z.literal("")),
-    bio: z.string().min(2).max(10).or(z.literal("")),
+    bio: z.string().min(2).or(z.literal("")),
     workOrSchool: z.string().min(2).max(20).or(z.literal("")),
+    address: z.string().min(2).max(50).or(z.literal("")),
   })
   .partial()
   .refine(
@@ -22,19 +23,19 @@ export const settingsSchema = z
     { message: "At least one field must be provided", path: ["root"] }
   );
 
-export type SettingsSchemaArgs = z.infer<typeof settingsSchema>;
+export type SettingsArgs = z.infer<typeof settingsSchema>;
 
 export const resetPasswordSettingsSchema = z
   .object({
     currentPassword: z.string().min(8).max(16),
-    repeatCurrentPassword: z.string().min(8).max(8),
-    newPassword: z.string("Enter ").min(8).max(8),
+    newPassword: z.string().min(8).max(16),
+    repeatNewPassword: z.string().min(8).max(16),
   })
-  .refine((data) => data.currentPassword === data.repeatCurrentPassword, {
+  .refine((data) => data.newPassword === data.repeatNewPassword, {
     message: "Passwords do not match",
-    path: ["repeatPassword"],
+    path: ["repeatNewPassword"],
   });
 
-export type ResetPasswordSettingsSchemaArgs = z.infer<
+export type ResetPasswordSettingsArgs = z.infer<
   typeof resetPasswordSettingsSchema
 >;

@@ -1,7 +1,7 @@
 // External packages
 import { User } from "@prisma/client";
 
-// Config
+// Lib
 import { prisma } from "@/config/prisma";
 
 export async function findUserByEmail(email: string) {
@@ -13,7 +13,6 @@ export async function findUserByEmail(email: string) {
 export async function createUser(data: {
   firstName: User["firstName"];
   lastName: User["lastName"];
-  fullname: User["fullname"];
   email: User["email"];
   password: User["password"];
   verificationToken: User["verificationToken"];
@@ -135,10 +134,12 @@ export async function findUserById(userId: User["id"]) {
       id: true,
       firstName: true,
       lastName: true,
-      fullname: true,
       email: true,
       bio: true,
+      address: true,
+      workOrSchool: true,
       image: true,
+      DOB: true,
       role: true,
       createdAt: true,
       updatedAt: true,

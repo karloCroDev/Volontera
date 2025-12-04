@@ -1,0 +1,114 @@
+// External packages
+import { User } from "@prisma/client";
+
+// Lib
+import { getLlmResponse, safetyCheckLlmReponse } from "@/lib/llm-response";
+import {
+  addUsersQuestionWithLLMResponse,
+  deleteMessages,
+  retrieveHelpMessages,
+} from "@/models/help-model";
+
+// Schemas
+import { helpConversationSchema } from "@repo/schemas/help";
+
+export async function addQuestionService({
+  rawData,
+  userId,
+  role,
+}: {
+  rawData: unknown;
+  userId: string;
+  role: Required<User["role"]>;
+}) {
+  const { success, data } = helpConversationSchema.safeParse(rawData);
+
+  if (!success) {
+    return {
+      status: 400,
+      body: {
+        title: "Invalid data, cannot send this data",
+        message: "Invalid data",
+      },
+    };
+  }
+
+  // 1 line of defense
+  const regex =
+    /(\b(?:hate|violence|drugs|terrorism|porn|illegal activities|suicide|self-harm)\b)/i;
+
+  const innapropriateContent = {
+    status: 400,
+    body: {
+      title: "Inappropriate content detected",
+      message:
+        "Your message contains inappropriate content and cannot be processed.",
+    },
+  };
+  if (regex.test(data.message)) {
+    return innapropriateContent;
+  }
+
+  // TODO: Write all routes and features (do this once the frontend is done)
+  const appRules =
+    role === "USER"
+      ? "You are a helpful AI assistant that has context about this application [app] and tries to assist and navigate users throughout the application. Awesome so here are the app features once the users is logged in."
+      : role === "ORGANIZATION"
+        ? "You are a helpful AI assistant that has context about this application [app] and tries to assist and navigate organizations throughout the application. Awesome so here are the app features once the organization is logged in."
+        : "Your admin you have full access to the application and its features, including the questons and answers";
+
+  // Mitiganiting jailbreaks (lighweight model for checking the )
+  const AIGuard = await safetyCheckLlmReponse();
+
+  if (AIGuard === "Y") {
+    return innapropriateContent;
+  }
+
+  const llmResponse = await getLlmResponse(
+    `${appRules} \n Users response:${data.message}`
+  );
+
+  await addUsersQuestionWithLLMResponse({
+    userId,
+    usersQuestion: data.message,
+    llmResponse,
+  });
+
+  return {
+    status: 200,
+    body: {
+      message: "Message sent successfully",
+      llmResponse,
+    },
+  };
+}
+
+export async function getHelpMessagesService(userId: string) {
+  const allMessages = await retrieveHelpMessages(userId);
+
+  return {
+    status: 200,
+    body: {
+      messages: allMessages, // empty array if no messages
+      title: allMessages.length
+        ? undefined
+        : "Ask our AI assistant any question about [app]!",
+    },
+  };
+}
+export async function deleteConversationService(userId: User["id"]) {
+  const deleteConversation = await deleteMessages(userId);
+  const existed = deleteConversation.count > 0;
+
+  return {
+    status: 200,
+    body: {
+      title: existed
+        ? "Conversation deleted successfully"
+        : "No conversation to delete",
+      messages: existed
+        ? "Feel free to start a new conversation with our AI assistant"
+        : "You can begin chatting anytime",
+    },
+  };
+}

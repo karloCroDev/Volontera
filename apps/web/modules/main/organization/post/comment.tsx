@@ -1,0 +1,138 @@
+'use client';
+
+// External packages
+
+import { Avatar } from '@/components/ui/avatar';
+import { Button } from '@/components/ui/button';
+import { Collapsible } from '@/components/ui/collapsible';
+import { Tag } from '@/components/ui/tag';
+import { useSession } from '@/hooks/data/auth';
+import { SessionSuccessResponse } from '@repo/types/auth';
+import {
+	ChevronRight,
+	Edit,
+	Heart,
+	Reply as ReplyIcon,
+	Trash2,
+} from 'lucide-react';
+
+type CommentOrReplyProps = {
+	numberOfLikes: number;
+	comment: string;
+	// user: SessionSuccessResponse; // Change the type of user when setting the session data
+};
+export const Comment: React.FC<
+	CommentOrReplyProps & {
+		numberOfReplies: number;
+		// user: SessionSuccessResponse; // Change the type of user when setting the session data
+	}
+> = ({ comment, numberOfReplies, numberOfLikes }) => {
+	return (
+		<div className="border-b-input-border border-b py-4">
+			<div className="flex items-center gap-4">
+				<Avatar
+					imageProps={{
+						src: '',
+					}}
+					variant="secondary"
+				>
+					Ana Horvat
+				</Avatar>
+
+				<div>
+					<p className="text-muted-foreground text-xs">Karlo grgic | 1yr ago</p>
+					<p>{comment}</p>
+				</div>
+
+				<div className="ml-auto flex items-baseline gap-6 text-sm">
+					<div className="flex items-center gap-2">
+						<p>{numberOfLikes}</p>
+						<Button variant="blank" className="p-0">
+							<Heart
+								//  fill="#f59f0a" className="text-primary"
+								className="text-background-foreground cursor-pointer"
+							/>
+						</Button>
+					</div>
+
+					<div className="flex items-center gap-2">
+						<p>Reply</p>
+						<Button variant="blank" className="p-0">
+							<ReplyIcon />
+						</Button>
+					</div>
+
+					<Button variant="blank" className="self-end p-0">
+						<Edit />
+					</Button>
+					<Button variant="blank" className="self-end p-0">
+						<Trash2 />
+					</Button>
+				</div>
+			</div>
+
+			{!!numberOfReplies && (
+				<div className="mt-4">
+					<Collapsible
+						trigger={
+							<div className="group">
+								<Tag className="flex items-center gap-4">
+									See {numberOfReplies} replies{' '}
+									<ChevronRight className="size-4 transition-transform group-data-[state=open]:-rotate-90" />
+								</Tag>
+							</div>
+						}
+						contentProps={{
+							children: <Reply numberOfLikes={8} comment="Woah" />,
+						}}
+					/>
+				</div>
+			)}
+		</div>
+	);
+};
+
+export const Reply: React.FC<CommentOrReplyProps> = ({
+	numberOfLikes,
+	comment,
+}) => {
+	return (
+		<div className="ml-8 flex items-center gap-4 py-6">
+			<div className="bg-muted-foreground h-full min-h-16 w-px" />
+			<div className="flex flex-1 items-center gap-4">
+				<Avatar
+					imageProps={{
+						src: '',
+					}}
+					variant="secondary"
+				>
+					Ana Horvat
+				</Avatar>
+
+				<div>
+					<p className="text-muted-foreground text-xs">Karlo grgic | 1yr ago</p>
+					<p>{comment}</p>
+				</div>
+
+				<div className="ml-auto flex items-baseline gap-6 text-sm">
+					<div className="flex items-center gap-2">
+						<p>{numberOfLikes}</p>
+						<Button variant="blank" className="p-0">
+							<Heart
+								//  fill="#f59f0a" className="text-primary"
+								className="text-background-foreground cursor-pointer"
+							/>
+						</Button>
+					</div>
+
+					<Button variant="blank" className="self-end p-0">
+						<Edit />
+					</Button>
+					<Button variant="blank" className="self-end p-0">
+						<Trash2 />
+					</Button>
+				</div>
+			</div>
+		</div>
+	);
+};

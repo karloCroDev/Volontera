@@ -3,11 +3,11 @@ import bcrypt from "bcrypt";
 import crypto from "crypto";
 import jwt from "jsonwebtoken";
 
-// Config
+// Lib
 import { sendEmail } from "@/config/nodemailer";
 import { resend } from "@/config/resend";
 
-// Local packages
+// Shared utils
 import {
   forgotPasswordSchema,
   LoginArgs,
@@ -33,8 +33,6 @@ import {
 
 // Lib
 import { verifyUser } from "@/lib/verify-user";
-import { generateTokenAndSetCookie } from "@/lib/set-token-cookie";
-import { JwtUser } from "@/@types/jwt";
 import { getImagePresignedUrls } from "@/lib/aws-s3-functions";
 
 export async function loginService(rawData: LoginArgs) {
@@ -98,7 +96,6 @@ export async function registerService(rawData: unknown) {
   await createUser({
     firstName: data.firstName,
     lastName: data.lastName,
-    fullname: `${data.firstName} ${data.lastName}`,
     email: data.email,
     password: hashedPassword,
     verificationToken: hashedOtp,
@@ -270,13 +267,13 @@ export async function getSessionUser(userId: string) {
     const image = await getImagePresignedUrls(user.image);
     userData = { ...user, image };
   }
-
   return {
     status: 200,
     body: {
       message: "User fetched successfully",
       success: true,
       ...userData,
+      fullname: `${user.firstName} ${user.lastName}`,
     },
   };
 }

@@ -1,3 +1,4 @@
+// External packages
 import {
 	Body,
 	Container,
@@ -16,8 +17,7 @@ import {
 
 const WelcomeEmail: React.FC<{
 	firstName: string;
-	lastTimeLoggedIn: Date;
-}> = ({ firstName = 'Karlo', lastTimeLoggedIn = new Date() }) => {
+}> = ({ firstName = 'Karlo' }) => {
 	return (
 		<Html>
 			<Tailwind>

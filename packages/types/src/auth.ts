@@ -10,6 +10,7 @@ export type User = {
   image?: string;
   bio?: string;
   DOB?: string;
+  address?: string;
   workOrSchool?: string;
   role: "USER" | "ORGANIZATION" | "ADMIN";
   createdAt: Date;

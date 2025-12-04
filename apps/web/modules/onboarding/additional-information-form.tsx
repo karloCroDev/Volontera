@@ -55,6 +55,7 @@ export const AdditionalInformationForm = withReactQueryProvider(() => {
 	const { mutate, isPending } = useAdditionalInformation();
 	const { mutate: skipAdditionalInformation } = useSkipAdditionalInformation();
 
+	console.log(user?.firstName);
 	const onSubmit = async (data: AdditionalFormArgs) => {
 		const hasUserInput = data.DOB || data.bio || data.image;
 
@@ -166,7 +167,9 @@ export const AdditionalInformationForm = withReactQueryProvider(() => {
 					render={({ field: { onChange } }) => (
 						<DatePicker
 							onChange={(val) => {
-								onChange(val);
+								if (!val) return;
+								const formatted = `${String(val.month).padStart(2, '0')}-${String(val.day).padStart(2, '0')}-${val.year}`;
+								onChange(formatted);
 							}}
 						/>
 					)}

@@ -1,25 +1,33 @@
-// // import { UpdateUserFetch } from '@/hooks/settings';
-// // import { SettingsResponse } from '@repo/types';
+// Lib
+import { ChangeProfileArgs } from '@/hooks/data/settings';
+import { API } from '@/lib/utils/axios-client';
+import { catchError } from '@/lib/utils/error';
 
-// export async function updateUser({ data, file }: UpdateUserFetch) {
-// 	const response = await fetch('http://localhost:4000/chat/settings', {
-// 		method: 'PATCH',
-// 		credentials: 'include',
-// 		headers: {
-// 			'Content-Type': 'application/json',
-// 		},
-// 		body: JSON.stringify(data),
-// 	});
+// Schemas
+import { ResetPasswordSettingsArgs } from '@repo/schemas/settings';
 
-// 	const returnVals: SettingsResponse = await response.json();
+export async function changeProfileInfo({ data, file }: ChangeProfileArgs) {
+	try {
+		const res = await API().patch('settings/change-profile-info', data);
 
-// 	if (returnVals.presignedUrl && data.image && file) {
-// 		await fetch(returnVals.presignedUrl, {
-// 			method: 'PUT',
-// 			headers: { 'Content-type': data.image.contentType },
-// 			body: file,
-// 		});
-// 	}
+		if (res.data?.presignedURL && data.image && file) {
+			await API({
+				headers: { 'Content-type': data.image.contentType },
+			}).put(res.data.presignedURL, file);
+		}
+		delete res.data?.presignedURL;
 
-// 	return returnVals;
-// }
+		return res.data;
+	} catch (err) {
+		catchError(err);
+	}
+}
+export async function resetPasswordInApp(data: ResetPasswordSettingsArgs) {
+	try {
+		const res = await API().post('settings/reset-password-in-app', data);
+
+		return res.data;
+	} catch (err) {
+		catchError(err);
+	}
+}

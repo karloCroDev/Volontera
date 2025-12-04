@@ -1,10 +1,10 @@
 'use client';
 
 // External packages
+import * as React from 'react';
 import { Form } from 'react-aria-components';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { FormProvider, useForm } from 'react-hook-form';
-import { parseDate } from '@internationalized/date';
 
 // Components
 import { Button } from '@/components/ui/button';
@@ -18,46 +18,90 @@ import { useSession } from '@/hooks/data/auth';
 
 // Lib
 import { withReactQueryProvider } from '@/lib/utils/react-query';
+import { toast } from '@/lib/utils/toast';
+import { IRevalidateTag } from '@/lib/server/revalidation';
+
+// Hooks
+import { useChangeProfileInfo } from '@/hooks/data/settings';
 
 // Schemas
-import { settingsSchema, SettingsSchemaArgs } from '@repo/schemas/settings';
+import { settingsSchema, SettingsArgs } from '@repo/schemas/settings';
 
 export const FormWrapper = withReactQueryProvider(() => {
 	const { data: user } = useSession();
 
-	const methods = useForm<SettingsSchemaArgs>({
+	const methods = useForm<SettingsArgs>({
 		resolver: zodResolver(settingsSchema),
 
 		defaultValues: {
-			firstName: user?.firstName,
-			lastName: user?.lastName,
-			bio: user?.bio ?? '',
-			workOrSchool: user?.workOrSchool ?? '',
-			DOB: user?.DOB ?? '',
+			firstName: user?.firstName || '', // Getting the values 100%, however hook form needs to accept the values that are string and not undefined
+			lastName: user?.lastName || '', // Getting the values 100%, however hook form needs to accept the values that are string and not undefined,
+			address: user?.address || '',
+			bio: user?.bio || '',
+			workOrSchool: user?.workOrSchool || '',
+			DOB: user?.DOB || '',
 		},
 	});
 
-	const watchAll = methods.watch();
-	const hasAnyValue = !!(
-		watchAll.firstName ||
-		watchAll.lastName ||
-		watchAll.image ||
-		watchAll.DOB ||
-		watchAll.bio ||
-		watchAll.workOrSchool
-	);
+	// Reset the form when user data arrives so defaultValues are applied after async load
+	React.useEffect(() => {
+		if (!user) return;
+		methods.reset({
+			firstName: user.firstName ?? '',
+			lastName: user.lastName ?? '',
+			bio: user.bio ?? '',
+			workOrSchool: user.workOrSchool ?? '',
+			address: user.address ?? '',
+			DOB: user.DOB ?? '',
+		});
+	}, [user]);
 
-	console.log(hasAnyValue);
+	const canSubmit = methods.formState.isDirty;
+
+	const { mutate, isPending } = useChangeProfileInfo();
+
+	const [currentImage, setCurrentImage] = React.useState<File | undefined>(
+		undefined
+	);
+	const onSubmit = (data: SettingsArgs) => {
+		mutate(
+			{ data, file: currentImage },
+			{
+				onSuccess({ title, message }) {
+					toast({
+						title,
+						content: message,
+						variant: 'success',
+					});
+
+					IRevalidateTag('session');
+					methods.reset();
+				},
+				onError(err) {
+					methods.setError('root', err);
+				},
+			}
+		);
+	};
+
 	return (
 		<FormProvider {...methods}>
-			<Form className="flex w-full flex-col">
-				<ProfileForm />
+			<Form
+				className="flex w-full flex-col"
+				onSubmit={methods.handleSubmit(onSubmit)}
+			>
+				<ProfileForm
+					currentImage={currentImage}
+					setCurrentImage={setCurrentImage}
+				/>
 				<PersonalInformationForm />
 				<Button
 					type="submit"
 					className="ml-auto mt-10 w-full md:w-fit"
 					size="md"
-					isDisabled={!hasAnyValue}
+					// disable until the form is dirty (use changes the input)
+					isDisabled={!canSubmit}
+					isLoading={isPending}
 				>
 					Save
 				</Button>

@@ -17,20 +17,3 @@ export function onboardingProcessMiddleware(
 
   next();
 }
-
-export async function additionalInformationMiddleware(
-  req: Request,
-  res: Response,
-  next: NextFunction
-) {
-  const { role } = req.user;
-
-  if (!role) {
-    return res.status(400).json({
-      message:
-        "Please choose application role before fulffiling additional details",
-    });
-  }
-
-  next();
-}

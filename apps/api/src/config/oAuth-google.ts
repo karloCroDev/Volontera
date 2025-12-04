@@ -2,10 +2,10 @@
 import passport from "passport";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 
-// Config
+// Lib
 import { prisma } from "@/config/prisma";
 
-// Lib
+// Root types
 import { JwtUser } from "@/@types/jwt";
 
 export const oAuthGoogleHandle = passport.use(
@@ -54,7 +54,6 @@ export const oAuthGoogleHandle = passport.use(
               email: profile.emails[0].value,
               firstName: profile.displayName,
               lastName: "",
-              fullname: profile.displayName,
               image: profile.photos?.[0].value,
               password: "", // or generate a random string if needed
             },

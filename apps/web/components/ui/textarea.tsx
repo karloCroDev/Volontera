@@ -15,7 +15,7 @@ import { Error } from '@/components/ui/error';
 
 type TextAreaOnlyProps = React.ComponentProps<'textarea'> & AriaTextareaProps;
 
-export type TextAreaProps = React.ComponentPropsWithoutRef<'div'> & {
+export type TextAreaProps = React.ComponentProps<'div'> & {
 	textAreaProps?: TextAreaOnlyProps;
 } & {
 	label: string;
@@ -44,12 +44,12 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextAreaProps>(
 						ref={ref}
 						className={twJoin(
 							getTextFieldBasicStyles,
-							'h-auto min-h-36 resize-none border-0 !py-5',
+							'h-auto min-h-36 resize-none border-0 !py-5 transition-[height]',
 							textAreaProps?.className
 						)}
 						placeholder=""
 					/>
-					<Label className="text-muted-foreground absolute left-0 top-6 -z-[1] origin-left -translate-y-[24px] scale-75 transition-transform peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100">
+					<Label className="text-muted-foreground absolute left-0 top-6 origin-left -translate-y-[24px] scale-75 transition-transform peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100">
 						{label}
 					</Label>
 				</div>
