@@ -8,17 +8,29 @@ import { AnchorAsButton } from '@/components/ui/anchor-as-button';
 export const PaymentPlanCard: React.FC<
 	React.ComponentPropsWithoutRef<'div'> & {
 		title: string;
+		price: string;
 		duration: string;
+		tag?: string;
 		reasons: React.ReactNode;
-		tag?: React.ReactNode;
+		link: React.ReactNode;
 		variant?: 'primary' | 'secondary';
 	}
-> = ({ title, reasons, duration, variant = 'primary', className, ...rest }) => {
+> = ({
+	title,
+	price,
+	reasons,
+	tag,
+	link,
+	duration,
+	variant = 'primary',
+	className,
+	...rest
+}) => {
 	return (
 		<div
 			{...rest}
 			className={twMerge(
-				'flex-1 rounded-lg border px-5 py-7',
+				'flex flex-1 flex-col rounded-lg border px-5 py-7',
 				variant === 'primary' && 'border-input-border bg-muted',
 				variant === 'secondary' && 'bg-accent border-accent-foreground'
 			)}
@@ -40,14 +52,17 @@ export const PaymentPlanCard: React.FC<
 					)}
 				</div>
 				<div>
-					<p className="text-end text-lg lg:text-2xl">0€</p>
-					<Tag
-						className="mt-2"
-						colorScheme={variant === 'primary' ? 'gray' : 'accent'}
-						variant={variant === 'primary' ? 'primary' : 'outline'}
-					>
-						Popular
-					</Tag>
+					<p className="text-end text-lg lg:text-2xl">{price}€</p>
+
+					{tag && (
+						<Tag
+							className="ml-auto mt-2"
+							colorScheme={variant === 'primary' ? 'gray' : 'accent'}
+							variant={variant === 'primary' ? 'primary' : 'outline'}
+						>
+							{tag}
+						</Tag>
+					)}
 				</div>
 			</div>
 			<hr
@@ -59,14 +74,7 @@ export const PaymentPlanCard: React.FC<
 			</ul>
 
 			{/* TODO: Get the url from the stripe */}
-			<AnchorAsButton
-				className="mt-6 w-full"
-				size="md"
-				variant={variant === 'primary' ? 'primary' : 'outline'}
-				colorScheme={variant === 'primary' ? 'yellow' : 'orange'}
-			>
-				Current plan
-			</AnchorAsButton>
+			{link}
 		</div>
 	);
 };
