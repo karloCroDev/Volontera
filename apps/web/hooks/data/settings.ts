@@ -6,7 +6,11 @@ import {
 } from '@tanstack/react-query';
 
 // Data
-import { changeProfileInfo, resetPasswordInApp } from '@/lib/data/settings';
+import {
+	changeProfileInfo,
+	deleteAccount,
+	resetPasswordInApp,
+} from '@/lib/data/settings';
 
 //
 import { ErrorFormResponse, SuccessfulResponse } from '@repo/types/general';
@@ -51,6 +55,21 @@ export const useResetPasswordInApp = (
 		// distinct key for reset password
 		mutationKey: ['settings', 'resetPassword'],
 		mutationFn: (data: ResetPasswordSettingsArgs) => resetPasswordInApp(data),
+		onSuccess: async (...args) => {
+			await queryClient.invalidateQueries({ queryKey: ['session'] });
+			await options?.onSuccess?.(...args);
+		},
+		...options,
+	});
+};
+export const useDeleteAccount = (
+	options?: UseMutationOptions<SuccessfulResponse, ErrorFormResponse, void>
+) => {
+	const queryClient = useQueryClient();
+	return useMutation({
+		// distinct key for reset password
+		mutationKey: ['settings', 'resetPassword'],
+		mutationFn: deleteAccount,
 		onSuccess: async (...args) => {
 			await queryClient.invalidateQueries({ queryKey: ['session'] });
 			await options?.onSuccess?.(...args);
