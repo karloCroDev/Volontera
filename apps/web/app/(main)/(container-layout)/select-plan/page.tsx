@@ -1,27 +1,68 @@
+// External packages
+import { redirect } from 'next/navigation';
+
 // Components
 import { AnchorAsButton } from '@/components/ui/anchor-as-button';
 import { Carousel } from '@/components/ui/carousel';
 import { Heading } from '@/components/ui/heading';
+
+// Lib
 import { getSession } from '@/lib/server/auth';
 
 // Modules
 import { PaymentPlanCard } from '@/modules/main/select-plan/payment-plan-card';
-import { redirect } from 'next/navigation';
+
+const stripeLinks = {
+	links: {
+		customerPortalLink:
+			process.env.NODE_ENV === 'development'
+				? 'https://billing.stripe.com/p/login/test_3cI7sMb8p0ma5dxbMt9ws00'
+				: '',
+		monthlyLink:
+			process.env.NODE_ENV === 'development'
+				? 'https://buy.stripe.com/test_8x2fZi1xPfh48pJeYF9ws04'
+				: '',
+		yearlyLink:
+			process.env.NODE_ENV === 'development'
+				? 'https://buy.stripe.com/test_00w28sekBgl87lF8Ah9ws05'
+				: '',
+	},
+
+	// These price IDs don't need to be hidden as env variables since they don't have to be secret
+	priceIds: {
+		monthlyPriceId: 'price_1ScvyFKRaMWWrCqzuBTTFbTI',
+		yearlyPriceId: 'price_1ScvxLKRaMWWrCqz6lKILtoL',
+	},
+};
 
 export default async function SelectPlan() {
 	const user = await getSession();
 	// TODO: Look if I need to write once again if I am running this code in layout or not
 	if (!user.success) redirect('/auth/login');
+
+	const prefilledStripeLink = (link: string) =>
+		link + `?prefilled_email=${user.email}`;
+
 	return (
 		<>
-			<Heading subtitle="Choose the additional features that you can use with [app]">
-				Select plan
-			</Heading>
+			<div className="flex items-center justify-between">
+				<Heading subtitle="Choose the additional features that you can use with [app]">
+					Select plan
+				</Heading>
+
+				<AnchorAsButton
+					colorScheme="yellow"
+					variant="outline"
+					href={prefilledStripeLink(stripeLinks.links.customerPortalLink)}
+				>
+					Billing
+				</AnchorAsButton>
+			</div>
 
 			<div className="hidden gap-5 xl:flex">
 				<PaymentPlanCard
 					title="Beginner's Kit"
-					price="4.99"
+					price="0"
 					duration="(All time)"
 					variant="primary"
 					reasons={
@@ -33,14 +74,10 @@ export default async function SelectPlan() {
 						<AnchorAsButton
 							className="mt-auto w-full"
 							size="md"
-							variant="outline"
-							href={
-								process.env.NODE_ENV === 'development'
-									? 'https://buy.stripe.com/test_00w28sekBgl87lF8Ah9ws05'
-									: ''
-							}
+							variant={!user.pricingId ? 'outline' : 'primary'}
+							href={prefilledStripeLink(stripeLinks.links.customerPortalLink)}
 						>
-							Current plan
+							{!user.pricingId ? 'Current plan' : 'Select plan'}
 						</AnchorAsButton>
 					}
 				/>
@@ -67,12 +104,14 @@ export default async function SelectPlan() {
 							size="md"
 							variant="primary"
 							href={
-								process.env.NODE_ENV === 'development'
-									? 'https://buy.stripe.com/test_00w28sekBgl87lF8Ah9ws05'
-									: ''
+								user.pricingId === stripeLinks.priceIds.monthlyPriceId
+									? prefilledStripeLink(stripeLinks.links.customerPortalLink)
+									: prefilledStripeLink(stripeLinks.links.monthlyLink)
 							}
 						>
-							Select plan
+							{user.pricingId === stripeLinks.priceIds.monthlyPriceId
+								? 'Current plan'
+								: 'Select plan'}
 						</AnchorAsButton>
 					}
 				/>
@@ -98,12 +137,14 @@ export default async function SelectPlan() {
 							size="md"
 							colorScheme="orange"
 							href={
-								process.env.NODE_ENV === 'development'
-									? 'https://buy.stripe.com/test_8x2fZi1xPfh48pJeYF9ws04'
-									: ''
+								user.pricingId === stripeLinks.priceIds.yearlyPriceId
+									? prefilledStripeLink(stripeLinks.links.customerPortalLink)
+									: prefilledStripeLink(stripeLinks.links.yearlyLink)
 							}
 						>
-							Select plan
+							{user.pricingId === stripeLinks.priceIds.yearlyPriceId
+								? 'Current plan'
+								: 'Select plan'}
 						</AnchorAsButton>
 					}
 				/>
@@ -134,9 +175,9 @@ export default async function SelectPlan() {
 								variant="outline"
 								colorScheme="orange"
 								href={
-									process.env.NODE_ENV === 'development'
+									(process.env.NODE_ENV === 'development'
 										? 'https://buy.stripe.com/test_8x2fZi1xPfh48pJeYF9ws04'
-										: ''
+										: '') + `?prefilled_email=${user.email}`
 								}
 							>
 								Current plan
@@ -146,34 +187,9 @@ export default async function SelectPlan() {
 				))}
 			/>
 
-			<p className="text-muted-foreground lg:text-md mt-7 text-center lg:mt-10">
+			<p className="text-muted-foreground mt-7 text-center lg:mt-10">
 				Your plan will be automatically renewed at the month&apos;s end
 			</p>
 		</>
 	);
 }
-
-// // Don't need to hide in .env as this is a public link including the procing ID
-
-// export const plans = [
-// 	{
-// 		// TODO: When I am going to deploy change the link to a production one!
-// 		link:
-// 			process.env.NODE_ENV === 'development'
-// 				? 'https://buy.stripe.com/test_00w28sekBgl87lF8Ah9ws05'
-// 				: '',
-// 		priceId: 'price_1ScvyFKRaMWWrCqzuBTTFbTI',
-// 		price: 4.99,
-// 		type: 'monthly',
-// 	},
-// 	{
-// 		// TODO: When I am going to deploy change the link to a production one!
-// 		link:
-// 			process.env.NODE_ENV === 'development'
-// 				? 'https://buy.stripe.com/test_8x2fZi1xPfh48pJeYF9ws04'
-// 				: '',
-// 		priceId: 'price_1ScvxLKRaMWWrCqz6lKILtoL',
-// 		price: 49.99,
-// 		type: 'yearly',
-// 	},
-// ];

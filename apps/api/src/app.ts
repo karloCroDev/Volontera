@@ -22,6 +22,7 @@ import { authRoutes } from "@/routes/auth-routes";
 import { onboardingRoutes } from "@/routes/onboarding-routes";
 import { settingsRoutes } from "@/routes/settings-routes";
 import { helpRoutes } from "@/routes/help-routes";
+import { paymentRoutes } from "@/routes/payment-routes";
 
 app.use(
   cors({
@@ -31,10 +32,8 @@ app.use(
 );
 app.use(cookieParser());
 
-// Routes
-// app.use("/payment", paymentRoutes); // Staviu uvik povise express.json
-
 app.use(oAuthGoogleHandle.initialize());
+app.use("/payment", paymentRoutes);
 
 app.use(express.json());
 app.use("/auth", authRoutes);
