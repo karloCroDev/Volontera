@@ -98,10 +98,14 @@ export async function checkoutService({
   userId: User["id"];
   priceId: string;
 }) {
+  console.log(priceId);
   if (typeof priceId !== "string") {
     return {
       status: 400,
-      body: { message: "Invalid priceId" },
+      body: {
+        title: "Your url for link isn't created successfuly",
+        message: "Invalid priceId",
+      },
     };
   }
   const session = await stripe.checkout.sessions.create({
@@ -120,6 +124,10 @@ export async function checkoutService({
 
   return {
     status: 200,
-    body: { message: "Successfully created the url", url: session.url },
+    body: {
+      title: "Your url for link is created successfuly",
+      message: "Successfully created the url",
+      url: session.url,
+    },
   };
 }

@@ -4,7 +4,10 @@ import { Router } from "express";
 import bodyParser from "body-parser";
 
 // Controllers
-import { stripePayment } from "@/controllers/payment.controller";
+import {
+  stripePayment,
+  stripeCheckout,
+} from "@/controllers/payment.controller";
 
 // Middleware
 import { authMiddleware } from "@/middleware/auth-middleware";
@@ -21,7 +24,8 @@ paymentRoutes.post(
 
 paymentRoutes.post(
   "/checkout",
-  express.json(),
+  express.text(),
   authMiddleware,
-  hasRoleMiddleware
+  hasRoleMiddleware,
+  stripeCheckout
 );

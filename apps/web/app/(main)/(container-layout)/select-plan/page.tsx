@@ -12,6 +12,10 @@ import { getSession } from '@/lib/server/auth';
 // Modules
 import { PaymentPlanCard } from '@/modules/main/select-plan/payment-plan-card';
 
+// Hooks
+import { useCheckout } from '@/hooks/data/payments';
+import { Plans } from '@/modules/main/select-plan/plans';
+
 const stripeLinks = {
 	links: {
 		customerPortalLink:
@@ -59,97 +63,7 @@ export default async function SelectPlan() {
 				</AnchorAsButton>
 			</div>
 
-			<div className="hidden gap-5 xl:flex">
-				<PaymentPlanCard
-					title="Beginner's Kit"
-					price="0"
-					duration="(All time)"
-					variant="primary"
-					reasons={
-						<>
-							<li>Hello world</li>
-						</>
-					}
-					link={
-						<AnchorAsButton
-							className="mt-auto w-full"
-							size="md"
-							variant={!user.pricingId ? 'outline' : 'primary'}
-							href={prefilledStripeLink(stripeLinks.links.customerPortalLink)}
-						>
-							{!user.pricingId ? 'Current plan' : 'Select plan'}
-						</AnchorAsButton>
-					}
-				/>
-
-				<PaymentPlanCard
-					title="Starter Pass"
-					price="4.99"
-					tag="Popular"
-					duration="Monthly"
-					variant="primary"
-					reasons={
-						<>
-							<li>Hello world</li>
-							<li>Hello world</li>
-							<li>Hello world</li>
-							<li>Hello world</li>
-							<li>Hello world</li>
-							<li>Hello world</li>
-						</>
-					}
-					link={
-						<AnchorAsButton
-							className="mt-6 w-full"
-							size="md"
-							variant="primary"
-							href={
-								user.pricingId === stripeLinks.priceIds.monthlyPriceId
-									? prefilledStripeLink(stripeLinks.links.customerPortalLink)
-									: prefilledStripeLink(stripeLinks.links.monthlyLink)
-							}
-						>
-							{user.pricingId === stripeLinks.priceIds.monthlyPriceId
-								? 'Current plan'
-								: 'Select plan'}
-						</AnchorAsButton>
-					}
-				/>
-				<PaymentPlanCard
-					title="Elite Suite"
-					price="49.99"
-					tag="Best value"
-					duration="Yearly"
-					variant="secondary"
-					reasons={
-						<>
-							<li>Hello world</li>
-							<li>Hello world</li>
-							<li>Hello world</li>
-							<li>Hello world</li>
-							<li>Hello world</li>
-							<li>Hello world</li>
-						</>
-					}
-					link={
-						<AnchorAsButton
-							className="mt-6 w-full"
-							size="md"
-							colorScheme="orange"
-							href={
-								user.pricingId === stripeLinks.priceIds.yearlyPriceId
-									? prefilledStripeLink(stripeLinks.links.customerPortalLink)
-									: prefilledStripeLink(stripeLinks.links.yearlyLink)
-							}
-						>
-							{user.pricingId === stripeLinks.priceIds.yearlyPriceId
-								? 'Current plan'
-								: 'Select plan'}
-						</AnchorAsButton>
-					}
-				/>
-			</div>
-
+			<Plans user={user} />
 			<Carousel
 				slides={[...Array(3)].map((_, i) => (
 					<PaymentPlanCard

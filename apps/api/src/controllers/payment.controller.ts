@@ -29,8 +29,9 @@ export async function stripePayment(req: Request, res: Response) {
 
 export async function stripeCheckout(req: Request, res: Response) {
   try {
+    const { userId } = req.user;
     const result = await checkoutService({
-      userId: req.body.userId,
+      userId,
       priceId: req.body,
     });
     return res.status(result.status).json(result.body);
