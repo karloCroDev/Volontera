@@ -25,6 +25,7 @@ export async function assignSubscription({
     },
   });
 }
+
 export async function removeSubscription({
   customerId,
   pricingId,
@@ -41,4 +42,13 @@ export async function removeSubscription({
       pricingId,
     },
   });
+}
+
+export async function getCustomerId(userId: User["id"]) {
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { customerId: true },
+  });
+
+  return user?.customerId;
 }

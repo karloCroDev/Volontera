@@ -3,7 +3,11 @@ import Stripe from "stripe";
 import { User } from "@prisma/client";
 
 // Models
-import { assignSubscription, removeSubscription } from "@/models/payment-model";
+import {
+  assignSubscription,
+  getCustomerId,
+  removeSubscription,
+} from "@/models/payment-model";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
@@ -127,6 +131,72 @@ export async function checkoutService({
     body: {
       title: "Your url for link is created successfuly",
       message: "Successfully created the url",
+      url: session.url,
+    },
+  };
+}
+
+export async function billingService({ userId }: { userId: User["id"] }) {
+  const customerId = await getCustomerId(userId);
+  if (!customerId) {
+    return {
+      status: 400,
+      body: {
+        title: "Billing Portal Error",
+        message: "Customer ID not found",
+      },
+    };
+  }
+
+  const session = await stripe.billingPortal.sessions.create({
+    customer: customerId,
+    return_url: `${process.env.NEXT_PORT}/select-plan`,
+  });
+  return {
+    status: 200,
+    body: {
+      title: "Billing Portal",
+      message: "Redirecting to billing portal",
+      url: session.url,
+    },
+  };
+}
+
+export async function upgradeSubscriptionService({
+  userId,
+  priceId,
+}: {
+  userId: User["id"];
+  priceId: string;
+}) {
+  if (typeof priceId !== "string") {
+    return {
+      status: 400,
+      body: {
+        title: "Upsell Error",
+        message: "Invalid priceId",
+      },
+    };
+  }
+
+  const session = await stripe.checkout.sessions.create({
+    mode: "subscription",
+    success_url: `${process.env.NEXT_PORT}/success`,
+    cancel_url: `${process.env.NEXT_PORT}/cancel`,
+    line_items: [
+      {
+        price: priceId,
+        quantity: 1,
+      },
+    ],
+    client_reference_id: userId,
+  });
+
+  return {
+    status: 200,
+    body: {
+      title: "Upsell Subscription",
+      message: "Successfully created the upsell subscription link",
       url: session.url,
     },
   };
