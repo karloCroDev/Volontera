@@ -33,7 +33,7 @@ export async function upgradeSubscription(priceId: string) {
 			headers: {
 				'Content-Type': 'text/plain',
 			},
-		}).post('payment/checkout', priceId);
+		}).post('payment/upgrade-subscription', priceId);
 		return res.data;
 	} catch (err) {
 		catchError(err);

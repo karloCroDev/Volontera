@@ -15,6 +15,7 @@ import { PaymentPlanCard } from '@/modules/main/select-plan/payment-plan-card';
 // Hooks
 import { useCheckout } from '@/hooks/data/payments';
 import { Plans } from '@/modules/main/select-plan/plans';
+import { getBillingLink } from '@/lib/server/payment';
 
 const stripeLinks = {
 	links: {
@@ -44,9 +45,8 @@ export default async function SelectPlan() {
 	// TODO: Look if I need to write once again if I am running this code in layout or not
 	if (!user.success) redirect('/auth/login');
 
-	const prefilledStripeLink = (link: string) =>
-		link + `?prefilled_email=${user.email}`;
-
+	const billingLink = await getBillingLink();
+	console.log(billingLink.success);
 	return (
 		<>
 			<div className="flex items-center justify-between">
@@ -54,13 +54,15 @@ export default async function SelectPlan() {
 					Select plan
 				</Heading>
 
-				<AnchorAsButton
-					colorScheme="yellow"
-					variant="outline"
-					href={prefilledStripeLink(stripeLinks.links.customerPortalLink)}
-				>
-					Billing
-				</AnchorAsButton>
+				{billingLink.success && (
+					<AnchorAsButton
+						colorScheme="yellow"
+						variant="outline"
+						href={billingLink.url}
+					>
+						Billing
+					</AnchorAsButton>
+				)}
 			</div>
 
 			<Plans user={user} />

@@ -7,6 +7,8 @@ import bodyParser from "body-parser";
 import {
   stripePayment,
   stripeCheckout,
+  billing,
+  upgradeSubscription,
 } from "@/controllers/payment.controller";
 
 // Middleware
@@ -22,10 +24,19 @@ paymentRoutes.post(
   stripePayment
 );
 
+paymentRoutes.use(express.text());
 paymentRoutes.post(
   "/checkout",
-  express.text(),
   authMiddleware,
   hasRoleMiddleware,
   stripeCheckout
+);
+
+paymentRoutes.get("/billing", authMiddleware, hasRoleMiddleware, billing);
+
+paymentRoutes.post(
+  "/upgrade-subscription",
+  authMiddleware,
+  hasRoleMiddleware,
+  upgradeSubscription
 );

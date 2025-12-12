@@ -1,5 +1,5 @@
-import { SuccessfulResponse } from "./general";
+import { ServerHandleResponse, SuccessfulResponse } from "./general";
 
 export type GeneratePaymentLinkResponse = SuccessfulResponse & {
   url: string;
-};
+} & ServerHandleResponse<true>;

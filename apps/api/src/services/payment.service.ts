@@ -142,7 +142,7 @@ export async function billingService({ userId }: { userId: User["id"] }) {
     return {
       status: 400,
       body: {
-        title: "Billing Portal Error",
+        success: false,
         message: "Customer ID not found",
       },
     };
@@ -155,7 +155,7 @@ export async function billingService({ userId }: { userId: User["id"] }) {
   return {
     status: 200,
     body: {
-      title: "Billing Portal",
+      success: true,
       message: "Redirecting to billing portal",
       url: session.url,
     },

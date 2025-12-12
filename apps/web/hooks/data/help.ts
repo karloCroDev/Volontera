@@ -14,9 +14,7 @@ import { HelpConversationSuccess, RetrieveAIResponse } from '@repo/types/help';
 import {
 	useMutation,
 	UseMutationOptions,
-	useQuery,
 	useQueryClient,
-	UseQueryOptions,
 	useSuspenseQuery,
 	UseSuspenseQueryOptions,
 } from '@tanstack/react-query';

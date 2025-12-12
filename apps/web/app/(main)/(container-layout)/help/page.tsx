@@ -17,6 +17,9 @@ export default async function HelpPage() {
 
 	const helpConversation = await getHelpConversation();
 
+	if (!helpConversation.success)
+		return <div>Failed to load help conversation.</div>;
+
 	return (
 		<>
 			<Heading subtitle="Ask our automated AI assistant to help you navigate our website">
