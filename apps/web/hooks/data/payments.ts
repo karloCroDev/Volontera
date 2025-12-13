@@ -30,22 +30,3 @@ export const useCheckout = (
 		...options,
 	});
 };
-
-export const useUpgradeSubscription = (
-	options?: UseMutationOptions<
-		GeneratePaymentLinkResponse,
-		ErrorToastResponse,
-		string
-	>
-) => {
-	const queryClient = useQueryClient();
-	return useMutation({
-		mutationKey: ['skip-additional-information'],
-		mutationFn: (priceId: string) => checkout(priceId),
-		onSuccess: async (...args) => {
-			await queryClient.invalidateQueries({ queryKey: ['payments'] });
-			await options?.onSuccess?.(...args);
-		},
-		...options,
-	});
-};

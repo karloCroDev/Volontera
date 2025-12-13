@@ -3,7 +3,6 @@ import { twMerge } from 'tailwind-merge';
 
 // Components
 import { Tag } from '@/components/ui/tag';
-import { AnchorAsButton } from '@/components/ui/anchor-as-button';
 
 export const PaymentPlanCard: React.FC<
 	React.ComponentPropsWithoutRef<'div'> & {
@@ -30,14 +29,14 @@ export const PaymentPlanCard: React.FC<
 		<div
 			{...rest}
 			className={twMerge(
-				'flex flex-1 flex-col rounded-lg border px-5 py-7',
+				'flex h-full flex-1 flex-col rounded-lg border px-5 py-7',
 				variant === 'primary' && 'border-input-border bg-muted',
 				variant === 'secondary' && 'bg-accent border-accent-foreground'
 			)}
 		>
 			<div className="flex justify-between">
 				<div>
-					<p className="lg:text-lg">{title}</p>
+					<p className="text-lg">{title}</p>
 
 					{duration && (
 						<p

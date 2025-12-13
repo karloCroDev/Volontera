@@ -2,69 +2,58 @@
 
 // External packages
 import * as React from 'react';
+import { SessionSuccessResponse } from '@repo/types/auth';
+
+// Components
 import { AnchorAsButton } from '@/components/ui/anchor-as-button';
 import { Carousel } from '@/components/ui/carousel';
-import { PaymentPlanCard } from '@/modules/main/select-plan/payment-plan-card';
-import { useSession } from '@/hooks/data/auth';
-import { SessionSuccessResponse } from '@repo/types/auth';
+
+// Hooks
 import { useCheckout } from '@/hooks/data/payments';
-import { toast } from '@/lib/utils/toast';
+
+// Components
 import { Button } from '@/components/ui/button';
+import { PaymentPlanCard } from '@/modules/main/select-plan/payment-plan-card';
+
+// Lib
+import { toast } from '@/lib/utils/toast';
 import { withReactQueryProvider } from '@/lib/utils/react-query';
 
-const stripeLinks = {
-	links: {
-		customerPortalLink:
-			process.env.NODE_ENV === 'development'
-				? 'https://billing.stripe.com/p/login/test_3cI7sMb8p0ma5dxbMt9ws00'
-				: '',
-		monthlyLink:
-			process.env.NODE_ENV === 'development'
-				? 'https://buy.stripe.com/test_8x2fZi1xPfh48pJeYF9ws04'
-				: '',
-		yearlyLink:
-			process.env.NODE_ENV === 'development'
-				? 'https://buy.stripe.com/test_00w28sekBgl87lF8Ah9ws05'
-				: '',
-	},
-
-	// These price IDs don't need to be hidden as env variables since they don't have to be secret
-	priceIds: {
-		yearlyPriceId: 'price_1ScvyFKRaMWWrCqzuBTTFbTI',
-		monthlyPriceId: 'price_1ScvxLKRaMWWrCqz6lKILtoL',
-	},
+const stripePriceIds = {
+	yearlyPriceId: 'price_1ScvyFKRaMWWrCqzuBTTFbTI',
+	monthlyPriceId: 'price_1ScvxLKRaMWWrCqz6lKILtoL',
 };
 
-export const Plans: React.FC<{
+type PlansProps = {
 	user: SessionSuccessResponse;
-}> = withReactQueryProvider(({ user }) => {
-	const prefilledStripeLink = (link: string) =>
-		link + `?prefilled_email=${user.email}`;
+	billingLink: string;
+};
 
-	const { mutate, isPending } = useCheckout();
+export const Plans: React.FC<PlansProps> = withReactQueryProvider(
+	({ user, billingLink }) => {
+		const { mutate, isPending: isCheckoutPending } = useCheckout();
 
-	const [pendingPriceId, setPendingPriceId] = React.useState<string | null>(
-		null
-	);
-	const generateLink = (priceId: string) => {
-		console.log(priceId);
+		const [pendingPriceId, setPendingPriceId] = React.useState<string | null>(
+			null
+		);
+		const generateLink = ({ priceId }: { priceId: string }) => {
+			setPendingPriceId(priceId);
 
-		setPendingPriceId(priceId);
-		mutate(priceId, {
-			onSuccess: ({ url, message, title }) => {
-				toast({
-					title,
-					content: message,
-					variant: 'success',
-				});
-				window.location.href = url;
-			},
-		});
-	};
+			mutate(priceId, {
+				onSuccess: ({ url, message, title }) => {
+					toast({
+						title,
+						content: message,
+						variant: 'success',
+					});
+					window.location.href = url;
+				},
+			});
+		};
 
-	return (
-		<div className="hidden gap-5 xl:flex">
+		const slides = [
 			<PaymentPlanCard
+				key={1}
 				title="Beginner's Kit"
 				price="0"
 				duration="(All time)"
@@ -79,14 +68,15 @@ export const Plans: React.FC<{
 						className="mt-auto w-full"
 						size="md"
 						variant={!user.pricingId ? 'outline' : 'primary'}
-						href={prefilledStripeLink(stripeLinks.links.customerPortalLink)}
+						href={billingLink}
 					>
 						{!user.pricingId ? 'Current plan' : 'Select plan'}
 					</AnchorAsButton>
 				}
-			/>
+			/>,
 
 			<PaymentPlanCard
+				key={2}
 				title="Starter Pass"
 				price="4.99"
 				tag="Popular"
@@ -107,23 +97,30 @@ export const Plans: React.FC<{
 						className="mt-6 w-full"
 						size="md"
 						variant={
-							user.pricingId === stripeLinks.priceIds.monthlyPriceId
+							user.pricingId === stripePriceIds.monthlyPriceId
 								? 'outline'
 								: 'primary'
 						}
-						onClick={() => generateLink(stripeLinks.priceIds.monthlyPriceId)}
+						onClick={() =>
+							user.pricingId
+								? (window.location.href = billingLink)
+								: generateLink({
+										priceId: stripePriceIds.monthlyPriceId,
+									})
+						}
 						isLoading={
-							isPending &&
-							pendingPriceId === stripeLinks.priceIds.monthlyPriceId
+							isCheckoutPending &&
+							pendingPriceId === stripePriceIds.monthlyPriceId
 						}
 					>
-						{user.pricingId === stripeLinks.priceIds.monthlyPriceId
+						{user.pricingId === stripePriceIds.monthlyPriceId
 							? 'Current plan'
 							: 'Select plan'}
 					</Button>
 				}
-			/>
+			/>,
 			<PaymentPlanCard
+				key={3}
 				title="Elite Suite"
 				price="49.99"
 				tag="Best value"
@@ -145,64 +142,35 @@ export const Plans: React.FC<{
 						size="md"
 						colorScheme="yellow"
 						variant={
-							user.pricingId === stripeLinks.priceIds.yearlyPriceId
+							user.pricingId === stripePriceIds.yearlyPriceId
 								? 'outline'
 								: 'primary'
 						}
-						onClick={() => generateLink(stripeLinks.priceIds.yearlyPriceId)}
+						onClick={() =>
+							user.pricingId
+								? (window.location.href = billingLink)
+								: generateLink({
+										priceId: stripePriceIds.yearlyPriceId,
+									})
+						}
 						isLoading={
-							isPending && pendingPriceId === stripeLinks.priceIds.yearlyPriceId
+							isCheckoutPending &&
+							pendingPriceId === stripePriceIds.yearlyPriceId
 						}
 					>
-						{user.pricingId === stripeLinks.priceIds.yearlyPriceId
+						{user.pricingId === stripePriceIds.yearlyPriceId
 							? 'Current plan'
 							: 'Select plan'}
 					</Button>
 				}
-			/>
-		</div>
-	);
-});
-
-export const PlansCarousel: React.FC<{
-	user: SessionSuccessResponse;
-}> = ({ user }) => {
-	return (
-		<Carousel
-			slides={[...Array(3)].map((_, i) => (
-				<PaymentPlanCard
-					price="0"
-					key={i}
-					title="Free"
-					duration="(All time)"
-					variant={i % 2 == 0 ? 'primary' : 'secondary'}
-					reasons={
-						<>
-							<li>Hello world</li>
-							<li>Hello world</li>
-							<li>Hello world</li>
-							<li>Hello world</li>
-							<li>Hello world</li>
-							<li>Hello world</li>
-						</>
-					}
-					link={
-						<AnchorAsButton
-							className="mt-6 w-full"
-							size="md"
-							variant="outline"
-							colorScheme="orange"
-							href={
-								(process.env.NODE_ENV === 'development'
-									? 'https://buy.stripe.com/test_8x2fZi1xPfh48pJeYF9ws04'
-									: '') + `?prefilled_email=${user.email}`
-							}
-						>
-							Current plan
-						</AnchorAsButton>
-					}
-				/>
-			))}
-		/>
-	);
-};
+			/>,
+		];
+		console.log(slides);
+		return (
+			<>
+				<div className="hidden gap-5 xl:flex">{slides}</div>
+				<Carousel slides={slides} />
+			</>
+		);
+	}
+);

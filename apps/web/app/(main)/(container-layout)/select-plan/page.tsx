@@ -8,14 +8,8 @@ import { Heading } from '@/components/ui/heading';
 
 // Lib
 import { getSession } from '@/lib/server/auth';
-
-// Modules
-import { PaymentPlanCard } from '@/modules/main/select-plan/payment-plan-card';
-
-// Hooks
-import { useCheckout } from '@/hooks/data/payments';
-import { Plans } from '@/modules/main/select-plan/plans';
 import { getBillingLink } from '@/lib/server/payment';
+import { Plans } from '@/modules/main/select-plan/plans';
 
 const stripeLinks = {
 	links: {
@@ -46,7 +40,6 @@ export default async function SelectPlan() {
 	if (!user.success) redirect('/auth/login');
 
 	const billingLink = await getBillingLink();
-	console.log(billingLink.success);
 	return (
 		<>
 			<div className="flex items-center justify-between">
@@ -64,45 +57,10 @@ export default async function SelectPlan() {
 					</AnchorAsButton>
 				)}
 			</div>
-
-			<Plans user={user} />
-			<Carousel
-				slides={[...Array(3)].map((_, i) => (
-					<PaymentPlanCard
-						price="0"
-						key={i}
-						title="Free"
-						duration="(All time)"
-						variant={i % 2 == 0 ? 'primary' : 'secondary'}
-						reasons={
-							<>
-								<li>Hello world</li>
-								<li>Hello world</li>
-								<li>Hello world</li>
-								<li>Hello world</li>
-								<li>Hello world</li>
-								<li>Hello world</li>
-							</>
-						}
-						link={
-							<AnchorAsButton
-								className="mt-6 w-full"
-								size="md"
-								variant="outline"
-								colorScheme="orange"
-								href={
-									(process.env.NODE_ENV === 'development'
-										? 'https://buy.stripe.com/test_8x2fZi1xPfh48pJeYF9ws04'
-										: '') + `?prefilled_email=${user.email}`
-								}
-							>
-								Current plan
-							</AnchorAsButton>
-						}
-					/>
-				))}
+			<Plans
+				user={user}
+				billingLink={billingLink.success ? billingLink.url : ''}
 			/>
-
 			<p className="text-muted-foreground mt-7 text-center lg:mt-10">
 				Your plan will be automatically renewed at the month&apos;s end
 			</p>

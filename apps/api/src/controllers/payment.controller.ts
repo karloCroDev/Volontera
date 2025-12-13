@@ -6,7 +6,6 @@ import {
   checkoutService,
   webhookService,
   billingService,
-  upgradeSubscriptionService,
 } from "@/services/payment.service";
 
 export async function stripePayment(req: Request, res: Response) {
@@ -52,22 +51,6 @@ export async function billing(req: Request, res: Response) {
   try {
     const { userId } = req.user;
     const result = await billingService({ userId });
-    return res.status(result.status).json(result.body);
-  } catch (err) {
-    console.error(err);
-    return res.status(500).json({
-      message: err instanceof Error ? err.message : "Internal Server Error",
-    });
-  }
-}
-
-export async function upgradeSubscription(req: Request, res: Response) {
-  try {
-    const { userId } = req.user;
-    const result = await upgradeSubscriptionService({
-      userId,
-      priceId: req.body,
-    });
     return res.status(result.status).json(result.body);
   } catch (err) {
     console.error(err);

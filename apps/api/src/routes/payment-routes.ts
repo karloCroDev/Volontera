@@ -8,7 +8,6 @@ import {
   stripePayment,
   stripeCheckout,
   billing,
-  upgradeSubscription,
 } from "@/controllers/payment.controller";
 
 // Middleware
@@ -33,10 +32,3 @@ paymentRoutes.post(
 );
 
 paymentRoutes.get("/billing", authMiddleware, hasRoleMiddleware, billing);
-
-paymentRoutes.post(
-  "/upgrade-subscription",
-  authMiddleware,
-  hasRoleMiddleware,
-  upgradeSubscription
-);

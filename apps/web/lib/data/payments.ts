@@ -26,16 +26,3 @@ export async function billing() {
 		catchError(err);
 	}
 }
-
-export async function upgradeSubscription(priceId: string) {
-	try {
-		const res = await API({
-			headers: {
-				'Content-Type': 'text/plain',
-			},
-		}).post('payment/upgrade-subscription', priceId);
-		return res.data;
-	} catch (err) {
-		catchError(err);
-	}
-}
