@@ -26,6 +26,27 @@ export async function assignSubscription({
   });
 }
 
+export async function updateSubscription({
+  subscriptionTier,
+  subscriptionType,
+  customerId,
+  pricingId,
+}: {
+  customerId: string; // 100% getting the string
+  pricingId: User["pricingId"];
+  subscriptionType: User["subscriptionType"];
+  subscriptionTier: User["subscriptionTier"];
+}) {
+  return await prisma.user.update({
+    where: { customerId },
+    data: {
+      subscriptionType,
+      subscriptionTier,
+      pricingId,
+    },
+  });
+}
+
 export async function removeSubscription({
   customerId,
   pricingId,
@@ -36,7 +57,6 @@ export async function removeSubscription({
   return await prisma.user.update({
     where: { customerId },
     data: {
-      customerId,
       subscriptionTier: "BASIC",
       subscriptionType: "NONE", // Need to set subscription
       pricingId,

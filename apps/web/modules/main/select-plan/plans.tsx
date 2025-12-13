@@ -20,8 +20,8 @@ import { toast } from '@/lib/utils/toast';
 import { withReactQueryProvider } from '@/lib/utils/react-query';
 
 const stripePriceIds = {
-	yearlyPriceId: 'price_1ScvyFKRaMWWrCqzuBTTFbTI',
-	monthlyPriceId: 'price_1ScvxLKRaMWWrCqz6lKILtoL',
+	yearlyPriceId: 'price_1S3ysJKRaMWWrCqznIxUk44x',
+	monthlyPriceId: 'price_1S3yn2KRaMWWrCqzVwrGRwbI',
 };
 
 type PlansProps = {
@@ -60,6 +60,11 @@ export const Plans: React.FC<PlansProps> = withReactQueryProvider(
 				variant="primary"
 				reasons={
 					<>
+						<li>Hello world</li>
+						<li>Hello world</li>
+						<li>Hello world</li>
+						<li>Hello world</li>
+						<li>Hello world</li>
 						<li>Hello world</li>
 					</>
 				}
@@ -165,7 +170,6 @@ export const Plans: React.FC<PlansProps> = withReactQueryProvider(
 				}
 			/>,
 		];
-		console.log(slides);
 		return (
 			<>
 				<div className="hidden gap-5 xl:flex">{slides}</div>

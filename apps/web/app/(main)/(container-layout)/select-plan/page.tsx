@@ -3,40 +3,18 @@ import { redirect } from 'next/navigation';
 
 // Components
 import { AnchorAsButton } from '@/components/ui/anchor-as-button';
-import { Carousel } from '@/components/ui/carousel';
 import { Heading } from '@/components/ui/heading';
+
+// Modules
+import { Plans } from '@/modules/main/select-plan/plans';
 
 // Lib
 import { getSession } from '@/lib/server/auth';
 import { getBillingLink } from '@/lib/server/payment';
-import { Plans } from '@/modules/main/select-plan/plans';
-
-const stripeLinks = {
-	links: {
-		customerPortalLink:
-			process.env.NODE_ENV === 'development'
-				? 'https://billing.stripe.com/p/login/test_3cI7sMb8p0ma5dxbMt9ws00'
-				: '',
-		monthlyLink:
-			process.env.NODE_ENV === 'development'
-				? 'https://buy.stripe.com/test_8x2fZi1xPfh48pJeYF9ws04'
-				: '',
-		yearlyLink:
-			process.env.NODE_ENV === 'development'
-				? 'https://buy.stripe.com/test_00w28sekBgl87lF8Ah9ws05'
-				: '',
-	},
-
-	// These price IDs don't need to be hidden as env variables since they don't have to be secret
-	priceIds: {
-		monthlyPriceId: 'price_1ScvyFKRaMWWrCqzuBTTFbTI',
-		yearlyPriceId: 'price_1ScvxLKRaMWWrCqz6lKILtoL',
-	},
-};
 
 export default async function SelectPlan() {
 	const user = await getSession();
-	// TODO: Look if I need to write once again if I am running this code in layout or not
+
 	if (!user.success) redirect('/auth/login');
 
 	const billingLink = await getBillingLink();

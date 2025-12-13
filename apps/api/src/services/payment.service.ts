@@ -7,6 +7,7 @@ import {
   assignSubscription,
   getCustomerId,
   removeSubscription,
+  updateSubscription,
 } from "@/models/payment-model";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
@@ -38,14 +39,14 @@ export async function webhookService({
         { expand: ["line_items"] }
       );
 
+      console.log("Completed");
       const customerId = session.customer as string;
 
       const priceId = session.line_items?.data[0]?.price?.id ?? null;
       const interval = session.line_items?.data[0]?.price?.recurring?.interval;
 
       const userId = session.client_reference_id;
-      console.log("User id:", userId);
-      console.log("Price id:", priceId);
+
       if (!userId) throw new Error("Missing client_reference_id");
 
       let subscriptionType: User["subscriptionType"];
@@ -84,7 +85,46 @@ export async function webhookService({
 
       break;
     }
+    case "customer.subscription.updated": {
+      const subscription = event.data.object as Stripe.Subscription;
+      const customerId = subscription.customer as string;
 
+      const pricingId = subscription.items.data[0]?.price?.id;
+      if (!pricingId) throw new Error("Missing customerId in subscription");
+
+      const interval = subscription.items.data[0]?.price?.recurring?.interval;
+
+      let subscriptionType: User["subscriptionType"];
+      switch (interval) {
+        case "year":
+          subscriptionType = "YEARLY";
+          break;
+        case "month":
+          subscriptionType = "MONTHLY";
+          break;
+        default:
+          subscriptionType = "NONE";
+      }
+
+      const status = subscription.status;
+
+      if (status === "active" || status === "trialing") {
+        await updateSubscription({
+          customerId,
+          pricingId,
+          subscriptionType,
+          subscriptionTier: "PRO",
+        });
+      }
+
+      if (status === "canceled" || status === "incomplete_expired") {
+        await removeSubscription({
+          customerId,
+          pricingId: null,
+        });
+      }
+      break;
+    }
     default:
       console.log(`Unhandled event type: ${event.type}`);
   }
