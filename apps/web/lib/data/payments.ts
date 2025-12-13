@@ -16,11 +16,7 @@ export async function checkout(priceId: string) {
 }
 export async function billing() {
 	try {
-		const res = await API({
-			headers: {
-				'Content-Type': 'text/plain',
-			},
-		}).get('payment/billing');
+		const res = await API().get('payment/billing');
 		return res.data;
 	} catch (err) {
 		catchError(err);

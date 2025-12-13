@@ -2,9 +2,6 @@
 import express from "express";
 import { Router } from "express";
 
-// Middleware
-import { hasRoleMiddleware } from "@/middleware/role-middleware";
-
 // Controllers
 import {
   createNotification,
@@ -24,7 +21,5 @@ notificationRoutes
   .post(createNotification)
   .delete(deleteNotifications);
 
-notificationRoutes
-  .route("/unread")
-  .get(hasUnreadNotifications)
-  .post(markAllNotificationsAsRead);
+notificationRoutes.route("/unread").get(hasUnreadNotifications);
+notificationRoutes.get("/read", markAllNotificationsAsRead);
