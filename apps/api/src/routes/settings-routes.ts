@@ -5,6 +5,7 @@ import { Router } from "express";
 // Controllers
 import {
   changeProfileInfo,
+  deleteAccount,
   resetPasswordInApp,
 } from "@/controllers/settings.controller";
 
@@ -14,3 +15,4 @@ settingsRoutes.use(express.json());
 
 settingsRoutes.patch("/change-profile-info", changeProfileInfo);
 settingsRoutes.post("/reset-password-in-app", resetPasswordInApp);
+settingsRoutes.delete("/delete-account", deleteAccount);

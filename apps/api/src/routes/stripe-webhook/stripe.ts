@@ -15,7 +15,7 @@ export async function stripeWebhook(req: Request, res: Response) {
 
   if (!sig) {
     return res
-      .status(4023)
+      .status(402)
       .send({ success: false, message: "Missing signature" });
   }
 
@@ -37,12 +37,13 @@ export async function stripeWebhook(req: Request, res: Response) {
           event.data.object.id,
           { expand: ["line_items"] }
         );
+        const appUserId = session.client_reference_id;
 
+        if (!appUserId) throw new Error("Missing client reference id");
         const customerId = session.customer as string;
         const customer = await stripe.customers.retrieve(customerId);
-        // If I am going to make different payment plans
-        // const priceId = session.line_items?.data[0]?.price?.id ?? null
-        //
+
+        const priceId = session.line_items?.data[0]?.price?.id ?? null;
 
         const stripeTypes =
           session.line_items?.data[0]?.price?.recurring?.interval;
@@ -64,11 +65,12 @@ export async function stripeWebhook(req: Request, res: Response) {
         }
 
         await prisma.user.update({
-          where: { email: customer.email },
+          where: { id: appUserId },
           data: {
             customerId,
             subscriptionTier: "PRO",
             subscriptionType, // Need to set subscription
+            pricingId: priceId,
           },
         });
 
@@ -82,7 +84,11 @@ export async function stripeWebhook(req: Request, res: Response) {
 
         await prisma.user.update({
           where: { customerId: subscription.customer as string },
-          data: { subscriptionTier: "BASIC", subscriptionType: "NONE" },
+          data: {
+            subscriptionTier: "BASIC",
+            subscriptionType: "NONE",
+            pricingId: null,
+          },
         });
         break;
       }

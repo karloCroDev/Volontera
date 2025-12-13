@@ -16,7 +16,8 @@ export type User = {
   createdAt: Date;
   updatedAt: Date;
   onboardingFinished: boolean;
-  subscriptionTier: "BASIC" | "PREMIUM";
+  pricingId?: string;
+  subscriptionTier: "BASIC" | "PRO";
   subscriptionType: "NONE" | "MONTHLY" | "YEARLY";
 };
 

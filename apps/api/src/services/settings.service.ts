@@ -11,10 +11,12 @@ import {
   settingsSchema,
 } from "@repo/schemas/settings";
 import {
+  deleteUserAccount,
   getUsersOldPassword,
   updateUsersInformation,
   updateUsersPassword,
 } from "@/models/settings.model";
+import { logout } from "@/controllers/auth.controller";
 
 export async function changeProfileInfoService({
   rawData,
@@ -133,6 +135,26 @@ export async function resetPasswordInAppService({
     body: {
       title: "Password changed successfully",
       message: "You have successfully changed your password",
+    },
+  };
+}
+
+export async function deleteAccountService({ userId }: { userId: User["id"] }) {
+  const deletedAccount = await deleteUserAccount(userId);
+  if (!deletedAccount) {
+    return {
+      status: 400,
+      body: {
+        message: "Failed to delete account",
+      },
+    };
+  }
+
+  return {
+    status: 200,
+    body: {
+      title: "Account deleted",
+      message: "Your account has been deleted successfully",
     },
   };
 }

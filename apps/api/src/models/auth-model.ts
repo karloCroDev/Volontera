@@ -138,6 +138,7 @@ export async function findUserById(userId: User["id"]) {
       bio: true,
       address: true,
       workOrSchool: true,
+      pricingId: true,
       image: true,
       DOB: true,
       role: true,

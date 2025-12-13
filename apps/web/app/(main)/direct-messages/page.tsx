@@ -1,19 +1,23 @@
+// External packages
+import { redirect } from 'next/navigation';
+
+// Components
 import { Avatar } from '@/components/ui/avatar';
-import { DotWithLabel } from '@/components/ui/dot';
 import { Message } from '@/components/ui/message';
-import { ResizableTextArea } from '@/components/ui/resizable-input';
+
+// Lib
 import { getSession } from '@/lib/server/auth';
+
+// Modules
 import { ListUsers } from '@/modules/main/direct-messages/list-users';
 import { MessageForm } from '@/modules/main/direct-messages/message-form';
 import { MessageWrapper } from '@/modules/main/direct-messages/message-wrapper';
 import { UsersInfoHeader } from '@/modules/main/direct-messages/users-info-header';
-import { UsersSearch } from '@/modules/main/direct-messages/users-search';
-import { UsersSidebar } from '@/modules/main/direct-messages/users-sidebar';
-import { SessionSuccessResponse } from '@repo/types/auth';
 
 export default async function DirectMessagesPage() {
-	const user = (await getSession()) as SessionSuccessResponse;
-
+	const user = await getSession();
+	// TODO: Look if I need to write once again if I am already running this code in layout or not
+	if (!user.success) redirect('/auth/login');
 	return (
 		<div className="flex h-full">
 			<ListUsers />
@@ -27,7 +31,7 @@ export default async function DirectMessagesPage() {
 						avatar={
 							<Avatar
 								imageProps={{
-									src: user.image,
+									src: user?.image || '',
 								}}
 							>
 								{user.fullname}

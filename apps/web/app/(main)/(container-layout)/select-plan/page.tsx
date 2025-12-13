@@ -1,56 +1,45 @@
+// External packages
+import { redirect } from 'next/navigation';
+
 // Components
-import { Carousel } from '@/components/ui/carousel';
+import { AnchorAsButton } from '@/components/ui/anchor-as-button';
 import { Heading } from '@/components/ui/heading';
 
 // Modules
-import { PaymentPlanCard } from '@/modules/main/select-plan/payment-plan-card';
+import { Plans } from '@/modules/main/select-plan/plans';
+
+// Lib
+import { getSession } from '@/lib/server/auth';
+import { getBillingLink } from '@/lib/server/payment';
 
 export default async function SelectPlan() {
+	const user = await getSession();
+
+	if (!user.success) redirect('/auth/login');
+
+	const billingLink = await getBillingLink();
 	return (
 		<>
-			<Heading subtitle="Choose the additional features that you can use with [app]">
-				Select plan
-			</Heading>
+			<div className="flex items-center justify-between">
+				<Heading subtitle="Choose the additional features that you can use with [app]">
+					Select plan
+				</Heading>
 
-			<div className="hidden gap-5 xl:flex">
-				{[...Array(3)].map((_, i) => (
-					<PaymentPlanCard
-						key={i}
-						title="Free"
-						duration="(All time)"
-						variant={i % 2 == 0 ? 'primary' : 'secondary'}
-						reasons={
-							<>
-								<li>Hello world</li>
-							</>
-						}
-					/>
-				))}
+				{billingLink.success && (
+					<AnchorAsButton
+						colorScheme="yellow"
+						variant="outline"
+						href={billingLink.url}
+					>
+						Billing
+					</AnchorAsButton>
+				)}
 			</div>
-
-			<Carousel
-				slides={[...Array(3)].map((_, i) => (
-					<PaymentPlanCard
-						key={i}
-						title="Free"
-						duration="(All time)"
-						variant={i % 2 == 0 ? 'primary' : 'secondary'}
-						reasons={
-							<>
-								<li>Hello world</li>
-								<li>Hello world</li>
-								<li>Hello world</li>
-								<li>Hello world</li>
-								<li>Hello world</li>
-								<li>Hello world</li>
-								<li>Hello world</li>
-							</>
-						}
-					/>
-				))}
+			<Plans
+				user={user}
+				billingLink={billingLink.success ? billingLink.url : ''}
 			/>
-
-			<p className="text-muted-foreground lg:text-md mt-7 text-center lg:mt-10">
+			<p className="text-muted-foreground mt-7 text-center lg:mt-10">
 				Your plan will be automatically renewed at the month&apos;s end
 			</p>
 		</>

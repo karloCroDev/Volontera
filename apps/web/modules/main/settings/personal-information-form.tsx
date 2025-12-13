@@ -10,14 +10,19 @@ import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { DatePicker } from '@/components/ui/date-picker';
+import { FilledInput } from '@/components/ui/filled-input';
 
 // Schemas
 import { SettingsArgs } from '@repo/schemas/settings';
 
 // Lib
 import { withReactQueryProvider } from '@/lib/utils/react-query';
-import { FilledInput } from '@/components/ui/filled-input';
+
+// Hpoks
 import { useSession } from '@/hooks/data/auth';
+
+// Modules
+import { DeleteAccountDialog } from '@/modules/main/settings/delete-account-dialog';
 
 export const PersonalInformationForm = withReactQueryProvider(() => {
 	// Pull formState.errors from useFormContext to access all validation errors,
@@ -32,11 +37,14 @@ export const PersonalInformationForm = withReactQueryProvider(() => {
 	console.log(user?.address);
 	return (
 		<div className="border-input-border mt-10 flex flex-col justify-between gap-8 rounded-md border p-6 lg:p-8 xl:flex-row 2xl:p-10">
-			<div>
-				<h4 className="text-lg font-semibold">Personal information</h4>
-				<p className="text-muted-foreground mt-2">
-					More information about you to others
-				</p>
+			<div className="flex justify-between xl:flex-col">
+				<div>
+					<h4 className="text-lg font-semibold">Personal information</h4>
+					<p className="text-muted-foreground mt-2">
+						More information about you to others
+					</p>
+				</div>
+				<DeleteAccountDialog />
 			</div>
 
 			<div className="flex flex-1 flex-col items-center justify-end gap-12 xl:flex-row xl:items-center">

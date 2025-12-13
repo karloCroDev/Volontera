@@ -55,6 +55,7 @@ model User {
 
   // Stripe
   customerId       String?          @unique
+  pricingId        String?
   subscriptionTier SubscriptionTier @default(BASIC)
   subscriptionType SubscriptionType @default(NONE)
 
@@ -75,14 +76,14 @@ model Accounts {
   accessToken  String?
   refreshToken String?
   userId       String
-  user         User    @relation(fields: [userId], references: [id])
+  user         User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerId])
 }
 
 model Help {
   id     String @id @default(cuid())
-  user   User   @relation(fields: [userId], references: [id])
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId String
 
   senderType SenderType

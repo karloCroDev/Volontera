@@ -2,7 +2,6 @@
 import * as RadixAvatar from '@radix-ui/react-avatar';
 import { twJoin, twMerge } from 'tailwind-merge';
 import { Pen } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 
 export const Avatar: React.FC<
 	React.ComponentPropsWithoutRef<'div'> & {

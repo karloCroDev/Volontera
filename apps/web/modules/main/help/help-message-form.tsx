@@ -71,7 +71,7 @@ export const HelpMessageForm: React.FC<{
 			return { previous };
 		},
 
-		onError: (error, _newMessage, context) => {
+		onError: (error, _, context) => {
 			if (context?.previous) {
 				queryClient.setQueryData(['help'], context.previous);
 			}
@@ -106,7 +106,7 @@ export const HelpMessageForm: React.FC<{
 						label="Enter your question for AI"
 						textAreaProps={field}
 						iconsRight={
-							<Button type="submit" className="p-2">
+							<Button type="submit" className="p-2" isDisabled={isPending}>
 								<Send />
 							</Button>
 						}

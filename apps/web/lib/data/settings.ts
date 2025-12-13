@@ -31,3 +31,12 @@ export async function resetPasswordInApp(data: ResetPasswordSettingsArgs) {
 		catchError(err);
 	}
 }
+
+export async function deleteAccount() {
+	try {
+		const res = await API().delete('settings/delete-account');
+		return res.data;
+	} catch (err) {
+		catchError(err);
+	}
+}

@@ -31,6 +31,8 @@ import {
 	useAdditionalInformation,
 	useSkipAdditionalInformation,
 } from '@/hooks/data/onboarding';
+
+// Lib
 import { toast } from '@/lib/utils/toast';
 
 export const AdditionalInformationForm = withReactQueryProvider(() => {
@@ -168,7 +170,7 @@ export const AdditionalInformationForm = withReactQueryProvider(() => {
 						<DatePicker
 							onChange={(val) => {
 								if (!val) return;
-								const formatted = `${String(val.month).padStart(2, '0')}-${String(val.day).padStart(2, '0')}-${val.year}`;
+								const formatted = `${String(val.year).padStart(2, '0')}-${String(val.month).padStart(2, '0')}-${val.day}`;
 								onChange(formatted);
 							}}
 						/>

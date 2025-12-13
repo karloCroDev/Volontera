@@ -1,4 +1,4 @@
-import { SuccessfulResponse } from "./general";
+import { ServerHandleResponse, SuccessfulResponse } from "./general";
 
 export type HelpConversationSuccess = {
   messages: {
@@ -8,7 +8,8 @@ export type HelpConversationSuccess = {
     senderType: "USER" | "AI";
     content: string;
   }[];
-} & SuccessfulResponse;
+} & SuccessfulResponse &
+  ServerHandleResponse<true>;
 
 export type RetrieveAIResponse = SuccessfulResponse & {
   llmResponse: string;

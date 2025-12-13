@@ -44,6 +44,7 @@ export const UserInformation: React.FC<{
 		user.subscriptionTier[0]?.toUpperCase() +
 		user.subscriptionTier.slice(1).toLowerCase();
 
+	console.log(user.subscriptionTier);
 	return (
 		<>
 			<p className="text-muted-foreground mb-3 mt-auto text-start">
@@ -54,7 +55,7 @@ export const UserInformation: React.FC<{
 					<AriaButton className="border-input-border bg-muted hover:bg-muted/80 flex h-fit w-full cursor-pointer items-center gap-4 rounded-lg border p-3 outline-none sm:w-3/4 md:w-3/5 lg:w-full">
 						<Avatar
 							imageProps={{
-								src: user.image,
+								src: user?.image || '',
 							}}
 							variant="secondary"
 							size="md"
@@ -74,7 +75,7 @@ export const UserInformation: React.FC<{
 					<AriaButton>
 						<Avatar
 							imageProps={{
-								src: user.image,
+								src: user?.image || '',
 							}}
 							variant="secondary"
 							size="xl"
@@ -95,7 +96,7 @@ export const UserInformation: React.FC<{
 							<div className="flex items-center gap-4">
 								<Avatar
 									imageProps={{
-										src: user.image,
+										src: user?.image || '',
 									}}
 									variant="secondary"
 									size="md"
@@ -133,7 +134,9 @@ export const UserInformation: React.FC<{
 										>
 											Manage plans
 										</LinkAsButton>
-										<p className="text-muted-foreground text-xs">Free</p>
+										<p className="text-muted-foreground text-xs">
+											{user.subscriptionTier === 'PRO' ? 'Premium' : 'Free'}
+										</p>
 									</div>
 								</li>
 							</ul>
