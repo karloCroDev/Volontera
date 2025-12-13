@@ -4,36 +4,87 @@
 import * as React from 'react';
 import { Checkbox, Form } from 'react-aria-components';
 import { ChevronDown } from 'lucide-react';
+import Link from 'next/link';
 
 // Components
 import { Button } from '@/components/ui/button';
 import { CheckboxVisually, CheckboxWithLabel } from '@/components/ui/checkbox';
 import { Avatar } from '@/components/ui/avatar';
-import Link from 'next/link';
 import { Accordion } from '@/components/ui/accordion';
 
 // Types
 import { NotificationResponse } from '@repo/types/notification';
+
+// Schemas
 import { NotificationIdsArgs } from '@repo/schemas/notification';
+
+// Hokks
+import { useDeleteNotifications } from '@/hooks/data/notification';
+
+// Lib
+import { toast } from '@/lib/utils/toast';
+import { withReactQueryProvider } from '@/lib/utils/react-query';
+import { IRevalidateTag } from '@/lib/server/revalidation';
 
 export const NotificationSandbox: React.FC<{
 	notifications: NotificationResponse['notifications'];
-}> = ({ notifications }) => {
+}> = withReactQueryProvider(({ notifications }) => {
 	const [ids, setIds] = React.useState<NotificationIdsArgs['notificationIds']>(
 		[]
 	);
 
+	console.log(ids);
+	const { mutate, isPending } = useDeleteNotifications();
+
+	const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+		e.preventDefault();
+		mutate(
+			{
+				notificationIds: ids,
+			},
+			{
+				onSuccess: () => {
+					setIds([]);
+					toast({
+						title: 'Notifications deleted',
+						content: 'Selected notifications have been deleted successfully',
+						variant: 'success',
+					});
+					IRevalidateTag('notification-user');
+				},
+				onError: ({ message, title }) => {
+					toast({
+						title,
+						content: message,
+						variant: 'error',
+					});
+				},
+			}
+		);
+	};
 	return (
-		<Form className="border-input-border min-h-1/2 max-h-3/4 overflow-scroll rounded-xl border py-4">
+		<Form
+			className="border-input-border min-h-1/2 max-h-3/4 overflow-scroll rounded-xl border py-4"
+			onSubmit={onSubmit}
+		>
 			<div className="mb-4 flex items-center justify-between px-6">
 				<CheckboxWithLabel
 					checkboxVisuallyProps={{
 						size: 'lg',
 					}}
+					onChange={(val) => {
+						return val ? setIds(notifications.map((n) => n.id)) : setIds([]);
+					}}
 				>
 					Select all
 				</CheckboxWithLabel>
-				<Button colorScheme="destructive" size="sm" isFullyRounded>
+				<Button
+					colorScheme="destructive"
+					size="sm"
+					isFullyRounded
+					isLoading={isPending}
+					type="submit"
+				>
 					Delete
 				</Button>
 			</div>
@@ -47,8 +98,8 @@ export const NotificationSandbox: React.FC<{
 						<div className="border-input-border flex w-full items-center gap-4 border-t px-6 py-3 lg:gap-6">
 							<Checkbox
 								className="group"
+								isSelected={ids.includes(notification.id)}
 								onChange={(val) => {
-									console.log(val);
 									if (val) {
 										setIds((prev) => [...prev, notification.id]);
 									} else {
@@ -96,4 +147,4 @@ export const NotificationSandbox: React.FC<{
 			/>
 		</Form>
 	);
-};
+});

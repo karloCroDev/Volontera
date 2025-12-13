@@ -55,10 +55,7 @@ export async function createNotification(req: Request, res: Response) {
 
 export async function deleteNotifications(req: Request, res: Response) {
   try {
-    const result = await deleteNotificationsService({
-      userId: req.user.userId,
-      rawData: req.body,
-    });
+    const result = await deleteNotificationsService(req.body);
     return res.status(result.status).json(result.body);
   } catch (err) {
     console.error(err);

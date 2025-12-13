@@ -88,6 +88,7 @@ export async function createNotificationService({
 }
 
 export async function deleteNotificationsService(rawData: unknown) {
+  console.log(rawData);
   const { success, data } = notificationIdsSchema.safeParse(rawData);
   if (!success) {
     return {

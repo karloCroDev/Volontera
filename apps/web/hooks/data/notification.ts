@@ -7,6 +7,7 @@ import {
 import {
 	useMutation,
 	UseMutationOptions,
+	useQuery,
 	useQueryClient,
 	useSuspenseQuery,
 	UseSuspenseQueryOptions,
@@ -26,6 +27,7 @@ import {
 	NotificationIdsArgs,
 } from '@repo/schemas/notification';
 
+// See if I am going to handle this optimistically (probably not)
 export const useGetUsersNotifications = (
 	options?: Omit<UseSuspenseQueryOptions<boolean>, 'queryKey' | 'queryFn'>
 ) => {
@@ -36,7 +38,11 @@ export const useGetUsersNotifications = (
 	});
 };
 export const useHasUnreadMessages = () => {
-	return useSuspenseQuery({
+	return useQuery<
+		SuccessfulResponse & {
+			hasUnread: boolean;
+		}
+	>({
 		queryKey: ['has-unread-notifications'],
 		queryFn: hasUnreadMessages,
 	});
@@ -61,10 +67,10 @@ export const useCreateNotification = (
 	});
 };
 
-export const useDeleteHelpConversation = (
+export const useDeleteNotifications = (
 	options?: UseMutationOptions<
 		SuccessfulResponse,
-		ErrorFormResponse,
+		ErrorToastResponse,
 		NotificationIdsArgs
 	>
 ) => {
