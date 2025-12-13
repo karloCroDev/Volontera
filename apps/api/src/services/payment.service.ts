@@ -154,8 +154,8 @@ export async function checkoutService({
   }
   const session = await stripe.checkout.sessions.create({
     mode: "subscription",
-    success_url: `${process.env.NEXT_PORT}/success`,
-    cancel_url: `${process.env.NEXT_PORT}/cancel`,
+    success_url: `${process.env.NEXT_PORT}/select-plan/success`,
+    cancel_url: `${process.env.NEXT_PORT}/select-plan/cancel`,
     line_items: [
       {
         price: priceId,

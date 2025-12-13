@@ -44,7 +44,7 @@ export const UserInformation: React.FC<{
 		user.subscriptionTier[0]?.toUpperCase() +
 		user.subscriptionTier.slice(1).toLowerCase();
 
-	console.log(user.image);
+	console.log(user.subscriptionTier);
 	return (
 		<>
 			<p className="text-muted-foreground mb-3 mt-auto text-start">
@@ -134,7 +134,9 @@ export const UserInformation: React.FC<{
 										>
 											Manage plans
 										</LinkAsButton>
-										<p className="text-muted-foreground text-xs">Free</p>
+										<p className="text-muted-foreground text-xs">
+											{user.subscriptionTier === 'PRO' ? 'Premium' : 'Free'}
+										</p>
 									</div>
 								</li>
 							</ul>
