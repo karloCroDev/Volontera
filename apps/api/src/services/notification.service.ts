@@ -1,17 +1,117 @@
 // External packages
-import { Notification, User } from "@prisma/client";
+import { User } from "@prisma/client";
 
-export async function retrieveUserNotificationsService({}: {
+// Models
+import {
+  createNotification,
+  deleteOneNotification,
+  retrieveUserNotifications,
+  deleteNotifications,
+  hasUnreadNotifications,
+  markNotificationAsRead,
+} from "@/models/notification-model";
+
+// Schemas
+import {
+  createNotificationSchema,
+  notificationIdsSchema,
+} from "@repo/schemas/notification";
+
+export async function getUserNotificationsService(userId: User["id"]) {
+  const notifications = await retrieveUserNotifications(userId);
+  return {
+    status: 200,
+    body: {
+      title: "Notifications retrieved",
+      message: "User notifications retrieved successfully",
+      success: true,
+      notifications,
+    },
+  };
+}
+
+export async function hasUnreadNotificationsService(userId: User["id"]) {
+  const hasUnread = await hasUnreadNotifications({ userId });
+  return {
+    status: 200,
+    body: {
+      title: "Unread notifications status retrieved",
+      message: "Unread notifications status retrieved successfully",
+      hasUnread,
+    },
+  };
+}
+
+export async function markNotificationAsReadService(userId: User["id"]) {
+  await markNotificationAsRead(userId);
+
+  return {
+    status: 200,
+    body: {
+      title: "Notifications marked as read",
+      message: "All notifications have been marked as read",
+    },
+  };
+}
+
+export async function createNotificationService({
+  rawData,
+  userId,
+}: {
   userId: User["id"];
-}) {}
+  rawData: unknown;
+}) {
+  const { success, data } = createNotificationSchema.safeParse(rawData);
 
-export async function createNotificationService({}: {
-  userId: User["id"];
-  notificationId: Notification["id"];
-}) {}
+  if (!success) {
+    return {
+      status: 400,
+      body: {
+        title: "Invalid data, cannot create notification",
+        message: "Invalid data",
+      },
+    };
+  }
 
-export async function deleteNotificationsService() {}
+  await createNotification({
+    userId,
+    content: data.content,
+  });
 
-export async function deleteOneNotificationService() {}
+  return {
+    status: 200,
+    body: {
+      title: "Notification created",
+      message: "Notification created successfully",
+    },
+  };
+}
 
-export async function markNotificationAsReadService() {}
+export async function deleteNotificationsService(rawData: unknown) {
+  const { success, data } = notificationIdsSchema.safeParse(rawData);
+  if (!success) {
+    return {
+      status: 400,
+      body: {
+        title: "Invalid data, cannot delete notification",
+        message: "Invalid data",
+      },
+    };
+  }
+
+  if (data.notificationIds.length === 1) {
+    await deleteOneNotification({ notificationId: data.notificationIds[0]! });
+  } else {
+    await deleteNotifications({
+      notificationsIds: data.notificationIds,
+    });
+  }
+
+  return {
+    status: 200,
+    body: {
+      title: "Notifications deleted",
+      message: "Notifications deleted successfully",
+    },
+  };
+}

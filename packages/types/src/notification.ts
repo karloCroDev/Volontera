@@ -1,4 +1,5 @@
 import { ServerHandleResponse, SuccessfulResponse } from "./general";
+import { User } from "./auth";
 
 export type NotificationResponse = {
   id: string;
@@ -7,6 +8,7 @@ export type NotificationResponse = {
   isRead: boolean;
   createdAt: Date;
   updatedAt: Date;
+  user: User;
 }[] &
   SuccessfulResponse &
   ServerHandleResponse<true>;
