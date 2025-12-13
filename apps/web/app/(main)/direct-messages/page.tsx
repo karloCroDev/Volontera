@@ -31,7 +31,7 @@ export default async function DirectMessagesPage() {
 						avatar={
 							<Avatar
 								imageProps={{
-									src: user.image,
+									src: user?.image || '',
 								}}
 							>
 								{user.fullname}
