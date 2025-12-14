@@ -18,7 +18,7 @@ import {
 
 export const WelcomeEmail: React.FC<{
 	firstName: string;
-}> = ({ firstName = 'Karlo' }) => {
+}> = ({ firstName }) => {
 	return (
 		<Html>
 			<Tailwind>

@@ -18,7 +18,8 @@ import {
 
 export const Notification: React.FC<{
 	firstName: string;
-}> = ({ firstName = 'Karlo' }) => {
+	notificationsCount: number;
+}> = ({ firstName, notificationsCount }) => {
 	console.log(process.env.NEXT_PUBLIC_URL);
 	return (
 		<Html>
@@ -30,7 +31,7 @@ export const Notification: React.FC<{
 							<Row>
 								<Column>
 									<Heading className="text-2xl font-semibold italic underline underline-offset-4">
-										New notifications
+										{notificationsCount} New notifications
 									</Heading>
 								</Column>
 								<Column>

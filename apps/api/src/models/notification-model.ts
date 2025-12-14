@@ -49,7 +49,7 @@ export async function hasUnreadNotifications({
       isRead: false,
     },
   });
-  return count > 0;
+  return count;
 }
 
 export async function deleteNotifications({

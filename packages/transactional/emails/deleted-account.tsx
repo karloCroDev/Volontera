@@ -51,7 +51,7 @@ export const DeletedAccount: React.FC<{
 						/>
 						<Section className="text-center">
 							<Text className="text-2xl font-semibold">
-								You have successfully deleted your account, {firstName} Karlo
+								You have successfully deleted your account, {firstName}
 							</Text>
 							<Text className="text-base">
 								We're sorry to see you go. If you change your mind, you're

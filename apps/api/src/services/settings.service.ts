@@ -1,6 +1,7 @@
 // External packages
 import { User } from "@prisma/client";
 import bcrypt from "bcrypt";
+import { createElement } from "react";
 
 // Services
 import { createUploadUrl, deleteImage } from "@/models/image.model";
@@ -16,7 +17,13 @@ import {
   updateUsersInformation,
   updateUsersPassword,
 } from "@/models/settings.model";
-import { logout } from "@/controllers/auth.controller";
+import { findUserById } from "@/models/auth-model";
+
+// Config
+import { resend } from "@/config/resend";
+
+// Transactional emails
+import { DeletedAccount } from "@repo/transactional/deleted-account";
 
 export async function changeProfileInfoService({
   rawData,
@@ -141,6 +148,20 @@ export async function resetPasswordInAppService({
 
 export async function deleteAccountService({ userId }: { userId: User["id"] }) {
   const deletedAccount = await deleteUserAccount(userId);
+
+  const user = await findUserById(userId);
+
+  if (user) {
+    await resend.emails.send({
+      from: process.env.RESEND_FROM!,
+      to: user.email,
+      subject: "Account successfuly deleted from [app]",
+      react: createElement(DeletedAccount, {
+        firstName: user.firstName,
+      }),
+    });
+  }
+
   if (!deletedAccount) {
     return {
       status: 400,

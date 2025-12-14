@@ -1,5 +1,6 @@
 // External packages
 import { User } from "@prisma/client";
+import { createElement } from "react";
 
 // Models
 import {
@@ -10,12 +11,19 @@ import {
   hasUnreadNotifications,
   markNotificationAsRead,
 } from "@/models/notification-model";
+import { findUserById } from "@/models/auth-model";
 
 // Schemas
 import {
   createNotificationSchema,
   notificationIdsSchema,
 } from "@repo/schemas/notification";
+
+// Config
+import { resend } from "@/config/resend";
+
+// Transactionl emails
+import { Notification } from "@repo/transactional/notification";
 
 export async function getUserNotificationsService(userId: User["id"]) {
   const notifications = await retrieveUserNotifications(userId);
@@ -31,15 +39,34 @@ export async function getUserNotificationsService(userId: User["id"]) {
 }
 
 export async function hasUnreadNotificationsService(userId: User["id"]) {
-  const hasUnread = await hasUnreadNotifications({ userId });
-  return {
-    status: 200,
-    body: {
-      title: "Unread notifications status retrieved",
-      message: "Unread notifications status retrieved successfully",
-      hasUnread,
-    },
-  };
+  const unreadCount = await hasUnreadNotifications({ userId });
+
+  if (unreadCount > 0) {
+    return {
+      status: 200,
+      body: {
+        title: "Unread notifications status retrieved",
+        message: "Unread notifications status retrieved successfully",
+        hasUnread: !!unreadCount,
+      },
+    };
+  }
+
+  if (unreadCount > 2) {
+    const user = await findUserById(userId);
+
+    if (user) {
+      await resend.emails.send({
+        from: process.env.RESEND_FROM!,
+        to: user.email,
+        subject: "You have new notifications",
+        react: createElement(Notification, {
+          firstName: user.firstName,
+          notificationsCount: unreadCount,
+        }),
+      });
+    }
+  }
 }
 
 export async function markNotificationAsReadService(userId: User["id"]) {

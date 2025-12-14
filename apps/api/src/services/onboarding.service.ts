@@ -1,4 +1,6 @@
 // Models
+import { resend } from "@/config/resend";
+import { findUserById } from "@/models/auth-model";
 import { createUploadUrl, deleteImage } from "@/models/image.model";
 import {
   finishOnboarding,
@@ -10,7 +12,9 @@ import { User } from "@prisma/client";
 // Schemas
 import { additionalInformationSchema } from "@repo/schemas/onboarding";
 
-// Simmilar logic as settings.service.ts keeping separated because of additional options when user onboards (that are only available to onboading)
+// Transactional emails
+import { WelcomeEmail } from "@repo/transactional/welcome-email";
+
 export async function additionalInformationService(
   rawData: unknown,
   userId: string
@@ -46,6 +50,19 @@ export async function additionalInformationService(
 
   await updateUserOnboarding({ data: payload, userId });
 
+  const user = await findUserById(userId);
+
+  if (user) {
+    await resend.emails.send({
+      from: process.env.RESEND_FROM!,
+      to: user.email,
+      subject: "Welcome to the [app]",
+      react: createElement(WelcomeEmail, {
+        firstName: user.firstName,
+      }),
+    });
+  }
+
   return {
     status: 200,
     body: {
@@ -59,6 +76,19 @@ export async function additionalInformationService(
 export async function skipAdditionalInformationService(userId: string) {
   await finishOnboarding(userId);
 
+  const user = await findUserById(userId);
+
+  if (user) {
+    await resend.emails.send({
+      from: process.env.RESEND_FROM!,
+      to: user.email,
+      subject: "Welcome to the [app]",
+      react: createElement(WelcomeEmail, {
+        firstName: user.firstName,
+      }),
+    });
+  }
+
   return {
     status: 200,
     body: {
@@ -71,6 +101,7 @@ export async function skipAdditionalInformationService(userId: string) {
 // app-type.service.ts
 
 import { AppType } from "@repo/types/onboarding";
+import { createElement } from "react";
 
 export async function appTypeService(rawType: unknown, userId: string) {
   const type = rawType as AppType;

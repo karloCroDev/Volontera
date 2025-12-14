@@ -2,6 +2,7 @@
 import bcrypt from "bcrypt";
 import crypto from "crypto";
 import jwt from "jsonwebtoken";
+import { createElement } from "react";
 
 // Lib
 import { sendEmail } from "@/config/nodemailer";
@@ -37,7 +38,7 @@ import { getImagePresignedUrls } from "@/lib/aws-s3-functions";
 
 // Transactional emails
 import { ForgotPassword } from "@repo/transactional/forgot-password";
-import { createElement } from "react";
+import { RecentLogin } from "@repo/transactional/recent-login";
 
 export async function loginService(rawData: LoginArgs) {
   const { data, success } = loginSchema.safeParse(rawData);
@@ -221,6 +222,16 @@ export async function verifyOtpService(rawData: unknown) {
   }
 
   await clearOtpVerification(user.id);
+
+  await resend.emails.send({
+    from: process.env.RESEND_FROM!,
+    to: data.email,
+    subject: "Recent login notification",
+    react: createElement(RecentLogin, {
+      firstName: user.firstName,
+      lastTimeLoggedIn: new Date(),
+    }),
+  });
 
   return {
     status: 200,
