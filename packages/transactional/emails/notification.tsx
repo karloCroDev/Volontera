@@ -18,7 +18,7 @@ import {
 
 const Notification: React.FC<{
 	firstName: string;
-}> = ({ firstName }) => {
+}> = ({ firstName = 'Karlo' }) => {
 	console.log(process.env.NEXT_PUBLIC_URL);
 	return (
 		<Html>
@@ -52,9 +52,7 @@ const Notification: React.FC<{
 							className="aspect-[4/3] w-full rounded object-cover"
 						/>
 						<Section className="text-center">
-							<Text className="text-3xl font-semibold">
-								Hi Karlo{firstName}{' '}
-							</Text>
+							<Text className="text-3xl font-semibold">Hi {firstName} </Text>
 							<Text className="text-base">
 								We wanted to let you know that you have new notifications in
 								your [app name] account.
