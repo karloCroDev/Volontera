@@ -16,9 +16,10 @@ import {
 	Button,
 } from '@react-email/components';
 
-const WelcomeEmail: React.FC<{
+const Notification: React.FC<{
 	firstName: string;
-}> = ({ firstName = 'Karlo' }) => {
+}> = ({ firstName }) => {
+	console.log(process.env.NEXT_PUBLIC_URL);
 	return (
 		<Html>
 			<Tailwind>
@@ -29,7 +30,7 @@ const WelcomeEmail: React.FC<{
 							<Row>
 								<Column>
 									<Heading className="text-2xl font-semibold italic underline underline-offset-4">
-										Let&apos;s get started
+										New notifications
 									</Heading>
 								</Column>
 								<Column>
@@ -47,29 +48,27 @@ const WelcomeEmail: React.FC<{
 						</Section>
 						<Hr className="!border-[#91400d]" />
 						<Img
-							src="https://img.freepik.com/free-vector/set-people-welcoming-illustrated_52683-36326.jpg?semt=ais_hybrid&w=740&q=80"
-							className="mt-5 aspect-[4/3] w-full rounded object-cover"
+							src="https://img.freepik.com/premium-vector/notification-bell-illustration_525134-59.jpg"
+							className="aspect-[4/3] w-full rounded object-cover"
 						/>
 						<Section className="text-center">
-							<Text className="text-3xl font-semibold">Hi, {firstName}</Text>
-							<Text className="text-lg">
-								Let&apos; get started with [app name]
+							<Text className="text-3xl font-semibold">
+								Hi Karlo{firstName}{' '}
+							</Text>
+							<Text className="text-base">
+								We wanted to let you know that you have new notifications in
+								your [app name] account.
 							</Text>
 						</Section>
 
 						<Section className="text-center">
 							{/* TODO: Karlo add app name! */}
 							<Button
-								href={`${process.env.NEXT_PUBLIC_URL}/home`}
+								href={`${process.env.NEXT_PUBLIC_URL}/notifications`}
 								className="mx-auto w-[calc(100%-32px)] cursor-pointer rounded bg-[#91400d] text-center leading-10 text-white"
 							>
-								Get started
+								Check out now
 							</Button>
-						</Section>
-						<Section>
-							<Text className="text-base">
-								Best <br /> The [app name] team
-							</Text>
 						</Section>
 					</Container>
 				</Body>
@@ -77,5 +76,4 @@ const WelcomeEmail: React.FC<{
 		</Html>
 	);
 };
-
-export default WelcomeEmail;
+export default Notification;
