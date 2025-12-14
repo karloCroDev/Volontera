@@ -15,7 +15,7 @@ import {
 	Button,
 } from '@react-email/components';
 
-const ForgotPassword: React.FC<{
+export const ForgotPassword: React.FC<{
 	link: string;
 }> = ({ link }) => {
 	return (

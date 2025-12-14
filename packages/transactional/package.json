@@ -7,7 +7,7 @@
 		"export": "email export"
 	},
 	"exports": {
-		"./*": "./emails/*.ts"
+		"./*": "./emails/*.tsx"
 	},
 	"dependencies": {
 		"@react-email/components": "^0.5.5",

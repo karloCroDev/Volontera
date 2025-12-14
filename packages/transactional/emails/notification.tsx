@@ -16,7 +16,7 @@ import {
 	Button,
 } from '@react-email/components';
 
-const Notification: React.FC<{
+export const Notification: React.FC<{
 	firstName: string;
 }> = ({ firstName = 'Karlo' }) => {
 	console.log(process.env.NEXT_PUBLIC_URL);

@@ -14,10 +14,9 @@ import {
 	Column,
 } from '@react-email/components';
 
-const VerificationCode: React.FC<{
-	name: string;
+export const VerificationCode: React.FC<{
 	verificationCode: string;
-}> = ({ name, verificationCode }) => {
+}> = ({ verificationCode }) => {
 	return (
 		<Html>
 			<Tailwind>
@@ -47,9 +46,9 @@ const VerificationCode: React.FC<{
 
 						<Hr className="!border-[#91400d]" />
 						<Text className="mt-6 text-base">
-							Thank you {name} for logging in again on [app nane]. We want to
-							make sure it&apos;s really you. Please enter the following
-							verification code when prompted.
+							Thank you for logging in again on [app nane]. We want to make sure
+							it&apos;s really you. Please enter the following verification code
+							when prompted.
 						</Text>
 
 						<Section>

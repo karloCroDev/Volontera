@@ -16,7 +16,7 @@ import {
 	Button,
 } from '@react-email/components';
 
-const WelcomeEmail: React.FC<{
+export const WelcomeEmail: React.FC<{
 	firstName: string;
 }> = ({ firstName = 'Karlo' }) => {
 	return (

@@ -55,8 +55,8 @@ export async function loginService(rawData: LoginArgs) {
 
   const updatedUser = await updateVerificationData({
     email: data.email,
-    verificationToken: hashedOtp,
-    verificationTokenExpiresAt: expireDate,
+    verificationToken: hashedOtp ?? null,
+    verificationTokenExpiresAt: expireDate ?? null,
   });
   if (!updatedUser) {
     return { status: 400, body: { message: "Error with email" } };
@@ -98,8 +98,8 @@ export async function registerService(rawData: unknown) {
     lastName: data.lastName,
     email: data.email,
     password: hashedPassword,
-    verificationToken: hashedOtp,
-    verificationTokenExpiresAt: expireDate,
+    verificationToken: hashedOtp ?? null,
+    verificationTokenExpiresAt: expireDate ?? null,
   });
 
   return {
@@ -235,8 +235,8 @@ export async function resetVerifyTokenService(rawData: unknown) {
 
   const { count } = await updateVerificationToken({
     email: data.email,
-    hashedOtp,
-    expireDate,
+    hashedOtp: hashedOtp ?? null,
+    expireDate: expireDate ?? null,
   });
 
   if (count === 0) {

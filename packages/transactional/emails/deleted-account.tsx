@@ -15,7 +15,7 @@ import {
 	Button,
 } from '@react-email/components';
 
-const DeletedAccount: React.FC<{
+export const DeletedAccount: React.FC<{
 	firstName: string;
 }> = ({ firstName }) => {
 	return (

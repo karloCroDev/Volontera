@@ -2448,6 +2448,14 @@
     prettier "^3.5.3"
     react-promise-suspense "^0.3.4"
 
+"@react-email/render@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@react-email/render/-/render-2.0.0.tgz#65b579302f1ae5496a28106c98102d03a384b66f"
+  integrity sha512-rdjNj6iVzv8kRKDPFas+47nnoe6B40+nwukuXwY4FCwM7XBg6tmYr+chQryCuavUj2J65MMf6fztk1bxOUiSVA==
+  dependencies:
+    html-to-text "^9.0.5"
+    prettier "^3.5.3"
+
 "@react-email/row@0.0.12":
   version "0.0.12"
   resolved "https://registry.yarnpkg.com/@react-email/row/-/row-0.0.12.tgz#c9d18f6d4b173e95787949909a48ad5a5633bbf2"

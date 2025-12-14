@@ -14,7 +14,7 @@ import {
 	Column,
 } from '@react-email/components';
 
-const RecentLogin: React.FC<{
+export const RecentLogin: React.FC<{
 	firstName: string;
 	lastTimeLoggedIn: Date;
 }> = ({ firstName = 'Karlo', lastTimeLoggedIn = new Date() }) => {
