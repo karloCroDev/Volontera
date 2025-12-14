@@ -1,17 +1,15 @@
 import { ServerHandleResponse, SuccessfulResponse } from "./general";
+import { User } from "./auth";
 
-export type HelpConversationSuccess = {
-  messages: {
+export type NotificationResponse = {
+  notifications: {
     id: string;
     userId: string;
-    senderType: "USER" | "AI";
     content: string;
+    isRead: boolean;
     createdAt: Date;
     updatedAt: Date;
+    user: User;
   }[];
 } & SuccessfulResponse &
   ServerHandleResponse<true>;
-
-export type RetrieveAIResponse = SuccessfulResponse & {
-  llmResponse: string;
-};

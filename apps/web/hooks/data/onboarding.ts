@@ -15,6 +15,7 @@ import {
 // Repo
 import { ErrorFormResponse, SuccessfulResponse } from '@repo/types/general';
 import { AppType } from '@repo/types/onboarding';
+import { DataWithFile } from '@repo/types/upload';
 import { AdditionalFormArgs } from '@repo/schemas/onboarding';
 
 export const useAppType = (
@@ -36,13 +37,14 @@ export const useAdditionalInformation = (
 	options?: UseMutationOptions<
 		SuccessfulResponse,
 		ErrorFormResponse,
-		AdditionalFormArgs
+		DataWithFile<AdditionalFormArgs>
 	>
 ) => {
 	const queryClient = useQueryClient();
 	return useMutation({
 		mutationKey: ['additional-information'],
-		mutationFn: (values: AdditionalFormArgs) => additionalInformation(values),
+		mutationFn: (values: DataWithFile<AdditionalFormArgs>) =>
+			additionalInformation(values),
 		onSuccess: async (...args) => {
 			await queryClient.invalidateQueries({ queryKey: ['onboarding'] });
 			await options?.onSuccess?.(...args);

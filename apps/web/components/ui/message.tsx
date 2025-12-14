@@ -21,7 +21,8 @@ export const Message: React.FC<
 		>
 			{avatar}
 			<div className="md:max-w-3/5 mt-6 w-4/5">
-				<p
+				{/* Must be a (in some places I am handling markdown) */}
+				<div
 					className={twJoin(
 						'items-end rounded-lg border px-5 py-3 text-sm md:text-base',
 						variant === 'primary' &&
@@ -31,7 +32,7 @@ export const Message: React.FC<
 					)}
 				>
 					{children}
-				</p>
+				</div>
 				<div className="mt-2 flex items-center justify-between">
 					<p className="text-muted-foreground text-xs lg:text-sm">{date}</p>
 					<CheckCheck className="text-muted-foreground size-4" />

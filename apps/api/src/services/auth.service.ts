@@ -2,6 +2,7 @@
 import bcrypt from "bcrypt";
 import crypto from "crypto";
 import jwt from "jsonwebtoken";
+import { createElement } from "react";
 
 // Lib
 import { sendEmail } from "@/config/nodemailer";
@@ -35,6 +36,10 @@ import {
 import { verifyUser } from "@/lib/verify-user";
 import { getImagePresignedUrls } from "@/lib/aws-s3-functions";
 
+// Transactional emails
+import { ForgotPassword } from "@repo/transactional/forgot-password";
+import { RecentLogin } from "@repo/transactional/recent-login";
+
 export async function loginService(rawData: LoginArgs) {
   const { data, success } = loginSchema.safeParse(rawData);
   if (!success) {
@@ -55,8 +60,8 @@ export async function loginService(rawData: LoginArgs) {
 
   const updatedUser = await updateVerificationData({
     email: data.email,
-    verificationToken: hashedOtp,
-    verificationTokenExpiresAt: expireDate,
+    verificationToken: hashedOtp ?? null,
+    verificationTokenExpiresAt: expireDate ?? null,
   });
   if (!updatedUser) {
     return { status: 400, body: { message: "Error with email" } };
@@ -98,8 +103,8 @@ export async function registerService(rawData: unknown) {
     lastName: data.lastName,
     email: data.email,
     password: hashedPassword,
-    verificationToken: hashedOtp,
-    verificationTokenExpiresAt: expireDate,
+    verificationToken: hashedOtp ?? null,
+    verificationTokenExpiresAt: expireDate ?? null,
   });
 
   return {
@@ -137,30 +142,27 @@ export async function forgotPasswordService(rawData: unknown) {
     };
   }
 
-  const resetLink = `http://localhost:${process.env.NEXT_PORT}/auth/forgot-password/reset-password?token=${resetToken}`;
+  const resetLink = `${process.env.NEXT_PORT}/auth/login/forgot-password/reset-password?token=${resetToken}`;
 
-  if (process.env.NODE_ENV === "production") {
-    const { error } = await resend.emails.send({
-      from: process.env.RESEND_FROM!,
-      to: data.email,
-      subject: "Reset your password",
-      html: `<p>${resetLink}</p>`,
-    });
-
-    if (error) {
-      return { status: 400, body: { message: "Error with email" } };
-    }
-  } else {
-    await sendEmail({
-      to: data.email,
-      subject: "Reset your password",
-      html: `<p>${resetLink}</p>`,
-    });
+  const { error } = await resend.emails.send({
+    from: process.env.RESEND_FROM!,
+    to: data.email,
+    subject: "Reset your password",
+    react: createElement(ForgotPassword, { link: resetLink }),
+  });
+  if (error) {
+    return {
+      status: 400,
+      body: { message: "Error sending email" },
+    };
   }
 
   return {
     status: 200,
-    body: { message: "Email sent" },
+    body: {
+      title: "Forgot password link is sent",
+      message: "Forgot password link is sent",
+    },
   };
 }
 
@@ -193,7 +195,10 @@ export async function resetPasswordService(rawData: unknown) {
 
   return {
     status: 200,
-    body: { message: "Your password is successfully updated!" },
+    body: {
+      title: "Success",
+      message: "Your password is successfully updated!",
+    },
   };
 }
 
@@ -218,6 +223,16 @@ export async function verifyOtpService(rawData: unknown) {
 
   await clearOtpVerification(user.id);
 
+  await resend.emails.send({
+    from: process.env.RESEND_FROM!,
+    to: data.email,
+    subject: "Recent login notification",
+    react: createElement(RecentLogin, {
+      firstName: user.firstName,
+      lastTimeLoggedIn: new Date(),
+    }),
+  });
+
   return {
     status: 200,
     body: { message: "User verified successfully", user },
@@ -235,8 +250,8 @@ export async function resetVerifyTokenService(rawData: unknown) {
 
   const { count } = await updateVerificationToken({
     email: data.email,
-    hashedOtp,
-    expireDate,
+    hashedOtp: hashedOtp ?? null,
+    expireDate: expireDate ?? null,
   });
 
   if (count === 0) {
@@ -264,9 +279,11 @@ export async function getSessionUser(userId: string) {
   let userData = user;
 
   if (user.image) {
-    const image = !user.image.includes("lh3.googleusercontent.com")
-      ? await getImagePresignedUrls(user.image)
-      : user.image;
+    // const image = !user.image.includes("lh3.googleusercontent.com")
+    //   ? await getImagePresignedUrls(user.image)
+    //   : user.image;
+
+    const image = await getImagePresignedUrls(user.image);
     userData = { ...user, image };
   }
   return {

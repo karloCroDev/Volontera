@@ -21,6 +21,7 @@ import { SettingsArgs } from '@repo/schemas/settings';
 
 // Lib
 import { withReactQueryProvider } from '@/lib/utils/react-query';
+import { Input } from '@/components/ui/input';
 
 export const ProfileForm: React.FC<{
 	currentImage: File | undefined;
@@ -29,7 +30,6 @@ export const ProfileForm: React.FC<{
 	const { data: user } = useSession();
 	const {
 		control,
-		watch,
 		formState: { errors },
 	} = useFormContext<SettingsArgs>();
 
@@ -64,11 +64,12 @@ export const ProfileForm: React.FC<{
 						</div>
 						<div className="flex-1">
 							<Label isOptional>Last name</Label>
-							{user?.lastName && (
-								<Controller
-									control={control}
-									name="lastName"
-									render={({ field }) => (
+
+							<Controller
+								control={control}
+								name="lastName"
+								render={({ field }) =>
+									user?.lastName ? (
 										<FilledInput
 											placeholderValue="Last name"
 											label={user.lastName}
@@ -76,9 +77,16 @@ export const ProfileForm: React.FC<{
 											inputProps={field}
 											error={errors.lastName?.message}
 										/>
-									)}
-								/>
-							)}
+									) : (
+										<Input
+											label="Last name"
+											className="mt-2"
+											{...field}
+											error={errors.lastName?.message}
+										/>
+									)
+								}
+							/>
 						</div>
 					</div>
 					<div>
@@ -140,7 +148,7 @@ export const ProfileForm: React.FC<{
 											filename: file.name,
 											contentType: file.type,
 											size: file.size,
-											deleteImage: user?.image,
+											deleteImage: user?.image || '',
 										});
 										setCurrentImage(file);
 									}}

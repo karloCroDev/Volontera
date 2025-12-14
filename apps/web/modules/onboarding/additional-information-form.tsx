@@ -17,38 +17,36 @@ import { DatePicker } from '@/components/ui/date-picker';
 import { Error } from '@/components/ui/error';
 
 // Schemas
-import {
-	AdditionalFormArgs,
-	additionalInformationSchema,
-} from '@repo/schemas/onboarding';
+import { SettingsArgs } from '@repo/schemas/settings';
 
 // Hooks
 import { useSession } from '@/hooks/data/auth';
-
-// Lib
-import { withReactQueryProvider } from '@/lib/utils/react-query';
 import {
 	useAdditionalInformation,
 	useSkipAdditionalInformation,
 } from '@/hooks/data/onboarding';
 
 // Lib
+import { withReactQueryProvider } from '@/lib/utils/react-query';
 import { toast } from '@/lib/utils/toast';
+import {
+	AdditionalFormArgs,
+	additionalInformationSchema,
+} from '@repo/schemas/onboarding';
 
 export const AdditionalInformationForm = withReactQueryProvider(() => {
+	// Same handling as settings form with addition of skip functionality
 	const {
 		control,
 		handleSubmit,
-		formState: { errors },
+		formState: { errors, isDirty },
 		setError,
-		watch,
 	} = useForm<AdditionalFormArgs>({
 		resolver: zodResolver(additionalInformationSchema),
 	});
 
 	const router = useRouter();
 
-	const hasUserInput = watch().DOB || watch().bio || watch().image;
 	const [currentImage, setCurrentImage] = React.useState<File | undefined>(
 		undefined
 	);
@@ -57,12 +55,11 @@ export const AdditionalInformationForm = withReactQueryProvider(() => {
 	const { mutate, isPending } = useAdditionalInformation();
 	const { mutate: skipAdditionalInformation } = useSkipAdditionalInformation();
 
-	console.log(user?.firstName);
-	const onSubmit = async (data: AdditionalFormArgs) => {
+	const onSubmit = async (data: SettingsArgs) => {
 		const hasUserInput = data.DOB || data.bio || data.image;
 
 		if (!hasUserInput) {
-			skipAdditionalInformation(undefined, {
+			return skipAdditionalInformation(undefined, {
 				onSuccess({ title, message }) {
 					router.push('/home');
 					toast({
@@ -77,20 +74,22 @@ export const AdditionalInformationForm = withReactQueryProvider(() => {
 			});
 		}
 
-		// User filled at least one field, process normally
-		mutate(data, {
-			onSuccess({ message }) {
-				router.push('/home');
-				toast({
-					title: 'Welcome to [app]',
-					content: message,
-					variant: 'success',
-				});
-			},
-			onError(err) {
-				setError('root', err);
-			},
-		});
+		mutate(
+			{ data, file: currentImage },
+			{
+				onSuccess({ message }) {
+					router.push('/home');
+					toast({
+						title: 'Welcome to [app]',
+						content: message,
+						variant: 'success',
+					});
+				},
+				onError(err) {
+					setError('root', err);
+				},
+			}
+		);
 	};
 
 	return (
@@ -107,13 +106,15 @@ export const AdditionalInformationForm = withReactQueryProvider(() => {
 							<AriaLabel htmlFor="image">
 								<Avatar
 									imageProps={{
-										src: currentImage && URL.createObjectURL(currentImage),
+										src:
+											(currentImage && URL.createObjectURL(currentImage)) ||
+											user?.image,
 										alt: 'Avatar',
 									}}
 									size="full"
 									isInput
 									deleteButton={
-										watch().image && (
+										currentImage && (
 											<Button
 												className="p-3"
 												isFullyRounded
@@ -153,11 +154,10 @@ export const AdditionalInformationForm = withReactQueryProvider(() => {
 						</>
 					)}
 				/>
-
-				{errors.image?.message && (
-					<Error className="mt-2">{errors.image.message}</Error>
-				)}
 			</div>
+			{errors.image?.message && (
+				<Error className="mt-2">{errors.image.message}</Error>
+			)}
 
 			<div className="w-full">
 				<Label isOptional className="mb-2">
@@ -188,7 +188,7 @@ export const AdditionalInformationForm = withReactQueryProvider(() => {
 
 				<Controller
 					control={control}
-					name="bio" // TODO: Handle on how am I passing the image data!
+					name="bio"
 					render={({ field }) => (
 						<Textarea
 							id="bio"
@@ -207,13 +207,13 @@ export const AdditionalInformationForm = withReactQueryProvider(() => {
 			<Button
 				className="w-full"
 				size="lg"
-				iconRight={!hasUserInput && <ArrowRight />}
-				colorScheme={hasUserInput ? 'orange' : 'bland'}
+				iconRight={!isDirty && <ArrowRight />}
+				colorScheme={isDirty ? 'orange' : 'bland'}
 				type="submit"
 				isLoading={isPending}
 				isDisabled={isPending}
 			>
-				{!hasUserInput ? 'Skip' : 'Save'}
+				{!isDirty ? 'Skip' : 'Save'}
 			</Button>
 		</Form>
 	);

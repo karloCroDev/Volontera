@@ -66,7 +66,8 @@ model User {
   accounts Accounts[]
 
   // Help relation
-  help Help[]
+  help          Help[]
+  notifications Notification[]
 }
 
 model Accounts {
@@ -81,6 +82,11 @@ model Accounts {
   @@unique([provider, providerId])
 }
 
+enum SenderType {
+  USER
+  AI
+}
+
 model Help {
   id     String @id @default(cuid())
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -89,9 +95,16 @@ model Help {
   senderType SenderType
   content    String
   createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
 }
 
-enum SenderType {
-  USER
-  AI
+model Notification {
+  id     String @id @default(cuid())
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
+
+  content   String
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

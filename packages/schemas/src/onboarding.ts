@@ -7,6 +7,7 @@ export const additionalInformationSchema = z
       filename: z.string(),
       contentType: z.string(),
       size: z.number(),
+      deleteImage: z.url().or(z.literal("")).optional(),
     }),
     DOB: z.string().length(10).or(z.literal("")),
     bio: z

@@ -2,6 +2,7 @@
 
 // External packages
 import * as React from 'react';
+import Markdown from 'react-markdown';
 
 // Components
 import { Avatar } from '@/components/ui/avatar';
@@ -63,7 +64,7 @@ export const MessagesMapping: React.FC<{
 									</Avatar>
 								}
 							>
-								{message.content}
+								{<Markdown>{message.content}</Markdown>}
 							</Message>
 						);
 					})

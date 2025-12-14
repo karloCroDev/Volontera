@@ -54,7 +54,7 @@ export const oAuthGoogleHandle = passport.use(
               email: profile.emails[0].value,
               firstName: profile.displayName,
               lastName: "",
-              image: profile.photos?.[0].value,
+              // image: profile.photos?.[0].value, // See if I want to store this locally (probably not)
               password: "", // or generate a random string if needed
             },
           });

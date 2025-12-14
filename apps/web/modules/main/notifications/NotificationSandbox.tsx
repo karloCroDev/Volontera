@@ -3,27 +3,88 @@
 // External pakcages
 import * as React from 'react';
 import { Checkbox, Form } from 'react-aria-components';
+import { ChevronDown } from 'lucide-react';
+import Link from 'next/link';
 
 // Components
 import { Button } from '@/components/ui/button';
 import { CheckboxVisually, CheckboxWithLabel } from '@/components/ui/checkbox';
 import { Avatar } from '@/components/ui/avatar';
-import Link from 'next/link';
 import { Accordion } from '@/components/ui/accordion';
-import { ChevronDown } from 'lucide-react';
 
-export const NotificationSandbox = () => {
+// Types
+import { NotificationResponse } from '@repo/types/notification';
+
+// Schemas
+import { NotificationIdsArgs } from '@repo/schemas/notification';
+
+// Hokks
+import { useDeleteNotifications } from '@/hooks/data/notification';
+
+// Lib
+import { toast } from '@/lib/utils/toast';
+import { withReactQueryProvider } from '@/lib/utils/react-query';
+import { IRevalidateTag } from '@/lib/server/revalidation';
+
+export const NotificationSandbox: React.FC<{
+	notifications: NotificationResponse['notifications'];
+}> = withReactQueryProvider(({ notifications }) => {
+	const [ids, setIds] = React.useState<NotificationIdsArgs['notificationIds']>(
+		[]
+	);
+
+	console.log(ids);
+	const { mutate, isPending } = useDeleteNotifications();
+
+	const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+		e.preventDefault();
+		mutate(
+			{
+				notificationIds: ids,
+			},
+			{
+				onSuccess: () => {
+					setIds([]);
+					toast({
+						title: 'Notifications deleted',
+						content: 'Selected notifications have been deleted successfully',
+						variant: 'success',
+					});
+					IRevalidateTag('notification-user');
+				},
+				onError: ({ message, title }) => {
+					toast({
+						title,
+						content: message,
+						variant: 'error',
+					});
+				},
+			}
+		);
+	};
 	return (
-		<Form className="border-input-border min-h-1/2 max-h-3/4 overflow-scroll rounded-xl border py-4">
+		<Form
+			className="border-input-border min-h-1/2 max-h-3/4 overflow-scroll rounded-xl border py-4"
+			onSubmit={onSubmit}
+		>
 			<div className="mb-4 flex items-center justify-between px-6">
 				<CheckboxWithLabel
 					checkboxVisuallyProps={{
 						size: 'lg',
 					}}
+					onChange={(val) => {
+						return val ? setIds(notifications.map((n) => n.id)) : setIds([]);
+					}}
 				>
 					Select all
 				</CheckboxWithLabel>
-				<Button colorScheme="destructive" size="sm" isFullyRounded>
+				<Button
+					colorScheme="destructive"
+					size="sm"
+					isFullyRounded
+					isLoading={isPending}
+					type="submit"
+				>
 					Delete
 				</Button>
 			</div>
@@ -31,26 +92,44 @@ export const NotificationSandbox = () => {
 			<Accordion
 				defaultValue="item-0"
 				type="single"
-				items={Array.from({ length: 10 }, (_, i) => ({
-					value: `item-${i}`,
+				items={notifications.map((notification) => ({
+					value: `item-${notification.id}`,
 					trigger: (
 						<div className="border-input-border flex w-full items-center gap-4 border-t px-6 py-3 lg:gap-6">
-							<Checkbox className="group">
-								<CheckboxVisually variant="secondary" />
+							<Checkbox
+								className="group"
+								isSelected={ids.includes(notification.id)}
+								onChange={(val) => {
+									if (val) {
+										setIds((prev) => [...prev, notification.id]);
+									} else {
+										setIds((prev) =>
+											prev.filter((id) => id !== notification.id)
+										);
+									}
+								}}
+							>
+								<CheckboxVisually
+									variant={notification.isRead ? 'suiccess' : 'secondary'}
+								/>
 							</Checkbox>
 
 							<Link href="/" className="flex items-center gap-4">
 								<Avatar
 									size="sm"
 									imageProps={{
-										src: '',
+										src: notification.user.image,
 									}}
 								>
-									Ivan Horvat
+									{notification.user.firstName +
+										' ' +
+										notification.user.lastName}
 								</Avatar>
 
 								<p className="text-muted-foreground text-sm underline-offset-2 hover:underline">
-									Ivan Horvat
+									{notification.user.firstName +
+										' ' +
+										notification.user.lastName}
 								</p>
 							</Link>
 
@@ -60,12 +139,7 @@ export const NotificationSandbox = () => {
 					contentProps: {
 						children: (
 							<div className="p-4">
-								<p>
-									Lorem ipsum dolor sit amet consectetur adipisicing elit. Harum
-									culpa consectetur atque vero laboriosam, dolore, alias
-									doloremque laudantium eos illo ex, ab consequuntur nesciunt
-									voluptas. Similique ducimus vero temporibus amet?
-								</p>
+								<p>{notification.content}</p>
 							</div>
 						),
 					},
@@ -73,4 +147,4 @@ export const NotificationSandbox = () => {
 			/>
 		</Form>
 	);
-};
+});

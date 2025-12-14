@@ -12,11 +12,12 @@ import {
 	Img,
 	Row,
 	Column,
+	Button,
 } from '@react-email/components';
 
-export const VerificationCode: React.FC<{
-	verificationCode: string;
-}> = ({ verificationCode }) => {
+export const ForgotPassword: React.FC<{
+	link: string;
+}> = ({ link }) => {
 	return (
 		<Html>
 			<Tailwind>
@@ -27,7 +28,7 @@ export const VerificationCode: React.FC<{
 							<Row>
 								<Column>
 									<Heading className="text-2xl font-semibold italic underline underline-offset-4">
-										Verification code
+										New notifications
 									</Heading>
 								</Column>
 								<Column>
@@ -43,31 +44,31 @@ export const VerificationCode: React.FC<{
 								</Column>
 							</Row>
 						</Section>
-
 						<Hr className="!border-[#91400d]" />
-						<Text className="mt-6 text-base">
-							Thank you for logging in again on [app nane]. We want to make sure
-							it&apos;s really you. Please enter the following verification code
-							when prompted.
-						</Text>
-
-						<Section>
-							<Text className="text-center text-base font-semibold">
-								Your verification code is:
-							</Text>
-							<Text className="text-center text-3xl font-semibold text-[#91400d]">
-								{verificationCode}
-							</Text>
-							<Text className="text-center text-sm">
-								(After 10 minutes the code will expire)
+						<Img
+							src="https://cdn.vectorstock.com/i/500p/24/67/reset-password-concept-man-holding-keys-forgot-vector-37352467.jpg"
+							className="aspect-[4/3] w-full rounded object-cover"
+						/>
+						<Section className="text-center">
+							<Text className="text-3xl font-semibold">Reset password</Text>
+							<Text className="text-base">
+								Don't worry! It happens to the best of us. Click the button
+								below to reset your password and regain access to your account.
 							</Text>
 						</Section>
-						<Text></Text>
+
+						<Section className="text-center">
+							<Button
+								href={link}
+								className="mx-auto w-[calc(100%-32px)] cursor-pointer rounded bg-[#91400d] text-center leading-10 text-white"
+							>
+								Reset password
+							</Button>
+						</Section>
 					</Container>
 				</Body>
 			</Tailwind>
 		</Html>
 	);
 };
-
-export default VerificationCode;
+export default ForgotPassword;

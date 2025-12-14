@@ -23,6 +23,7 @@ import { onboardingRoutes } from "@/routes/onboarding-routes";
 import { settingsRoutes } from "@/routes/settings-routes";
 import { helpRoutes } from "@/routes/help-routes";
 import { paymentRoutes } from "@/routes/payment-routes";
+import { notificationRoutes } from "@/routes/notification-routes";
 
 app.use(
   cors({
@@ -45,7 +46,12 @@ app.use(
 );
 app.use("/settings", authMiddleware, hasRoleMiddleware, settingsRoutes);
 app.use("/help", authMiddleware, hasRoleMiddleware, helpRoutes);
-
+app.use(
+  "/notifications",
+  authMiddleware,
+  hasRoleMiddleware,
+  notificationRoutes
+);
 // Test
 app.get("/protected-user", authMiddleware, userMiddleware, (req, res) => {
   res.json({ message: "Awesome you accessed the proteced route" });

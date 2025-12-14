@@ -1,15 +1,19 @@
 // Models
+import { resend } from "@/config/resend";
+import { findUserById } from "@/models/auth-model";
+import { createUploadUrl, deleteImage } from "@/models/image.model";
 import {
   finishOnboarding,
   updateUserAppType,
   updateUserOnboarding,
 } from "@/models/onboarding.model";
+import { User } from "@prisma/client";
 
-// Local packaes
-import {
-  AdditionalFormArgs,
-  additionalInformationSchema,
-} from "@repo/schemas/onboarding";
+// Schemas
+import { additionalInformationSchema } from "@repo/schemas/onboarding";
+
+// Transactional emails
+import { WelcomeEmail } from "@repo/transactional/welcome-email";
 
 export async function additionalInformationService(
   rawData: unknown,
@@ -27,38 +31,62 @@ export async function additionalInformationService(
     };
   }
 
-  const payload: Partial<Omit<AdditionalFormArgs, "image">> = {};
-
-  if (data.image) {
-    // S3 logic here in future
-  }
+  const payload: Partial<User> = {};
 
   if (data.bio) payload.bio = data.bio;
   if (data.DOB) payload.DOB = data.DOB;
 
-  const user = await updateUserOnboarding({ data: payload, userId });
+  if (data.image?.deleteImage) {
+    await deleteImage(data.image.deleteImage);
+
+    payload.image = "";
+  }
+  let presignedURL = "";
+  if (data.image) {
+    const imageURL = await createUploadUrl(data.image);
+    payload.image = imageURL.key;
+    presignedURL = imageURL.url;
+  }
+
+  await updateUserOnboarding({ data: payload, userId });
+
+  const user = await findUserById(userId);
+
+  if (user) {
+    await resend.emails.send({
+      from: process.env.RESEND_FROM!,
+      to: user.email,
+      subject: "Welcome to the [app]",
+      react: createElement(WelcomeEmail, {
+        firstName: user.firstName,
+      }),
+    });
+  }
 
   return {
     status: 200,
     body: {
       title: "Account created",
       message: "Additional information saved successfully",
-      user,
+      presignedURL,
     },
   };
 }
 
 export async function skipAdditionalInformationService(userId: string) {
-  const user = await finishOnboarding(userId);
+  await finishOnboarding(userId);
 
-  if (!user) {
-    return {
-      status: 400,
-      body: {
-        title: "Account creation failed",
-        message: "Could not finish onboarding for the user",
-      },
-    };
+  const user = await findUserById(userId);
+
+  if (user) {
+    await resend.emails.send({
+      from: process.env.RESEND_FROM!,
+      to: user.email,
+      subject: "Welcome to the [app]",
+      react: createElement(WelcomeEmail, {
+        firstName: user.firstName,
+      }),
+    });
   }
 
   return {
@@ -66,7 +94,6 @@ export async function skipAdditionalInformationService(userId: string) {
     body: {
       title: "Account created",
       message: "Onboarding finished successfully",
-      user,
     },
   };
 }
@@ -74,6 +101,7 @@ export async function skipAdditionalInformationService(userId: string) {
 // app-type.service.ts
 
 import { AppType } from "@repo/types/onboarding";
+import { createElement } from "react";
 
 export async function appTypeService(rawType: unknown, userId: string) {
   const type = rawType as AppType;
@@ -85,16 +113,7 @@ export async function appTypeService(rawType: unknown, userId: string) {
     };
   }
 
-  const updated = await updateUserAppType({ type, userId });
-
-  if (!updated) {
-    return {
-      status: 400,
-      body: {
-        message: "There was an error choosing the app type (user not found)",
-      },
-    };
-  }
+  await updateUserAppType({ type, userId });
 
   return {
     status: 200,

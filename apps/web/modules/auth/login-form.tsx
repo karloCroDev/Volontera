@@ -36,6 +36,10 @@ export const LoginForm = withReactQueryProvider(() => {
 		setError,
 	} = useForm<LoginArgs>({
 		resolver: zodResolver(loginSchema),
+		defaultValues: {
+			email: '',
+			password: '',
+		},
 	});
 
 	const router = useRouter();
@@ -70,7 +74,7 @@ export const LoginForm = withReactQueryProvider(() => {
 							label="Enter your email..."
 							className="mt-2"
 							error={errors.email?.message}
-							{...field}
+							inputProps={field}
 						/>
 					)}
 				/>
@@ -94,11 +98,11 @@ export const LoginForm = withReactQueryProvider(() => {
 							id="password"
 							label="Enter your password..."
 							inputProps={{
+								...field,
 								type: 'password',
 							}}
 							className="mt-2"
 							error={errors.password?.message}
-							{...field}
 						/>
 					)}
 				/>

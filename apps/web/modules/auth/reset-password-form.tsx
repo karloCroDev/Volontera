@@ -5,6 +5,7 @@ import * as React from 'react';
 import { Form } from 'react-aria-components';
 import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 // Components
 import { Input } from '@/components/ui/input';
@@ -20,8 +21,12 @@ import { ResetPasswordArgs, resetPasswordSchema } from '@repo/schemas/auth';
 
 // Lib
 import { toast } from '@/lib/utils/toast';
+import { withReactQueryProvider } from '@/lib/utils/react-query';
 
-export const ResetPasswordForm = () => {
+export const ResetPasswordForm = withReactQueryProvider(() => {
+	const searchParams = useSearchParams();
+	const router = useRouter();
+
 	const { isPending, mutate } = useResetPassword();
 	const {
 		control,
@@ -30,16 +35,22 @@ export const ResetPasswordForm = () => {
 		setError,
 	} = useForm<ResetPasswordArgs>({
 		resolver: zodResolver(resetPasswordSchema),
+		defaultValues: {
+			password: '',
+			repeatPassword: '',
+			token: searchParams.get('token') || '',
+		},
 	});
 
 	const onSubmit = async (data: ResetPasswordArgs) => {
 		mutate(data, {
-			onSuccess({ message }) {
+			onSuccess({ message, title }) {
 				toast({
-					title: 'Success',
+					title,
 					content: message,
 					variant: 'success',
 				});
+				router.push('/auth/login');
 			},
 			onError({ message }) {
 				setError('root', {
@@ -64,8 +75,11 @@ export const ResetPasswordForm = () => {
 							id="password"
 							label="Enter your new password..."
 							className="mt-2"
+							inputProps={{
+								...field,
+								type: 'password',
+							}}
 							error={errors.password?.message}
-							{...field}
 						/>
 					)}
 				/>
@@ -80,9 +94,12 @@ export const ResetPasswordForm = () => {
 						<Input
 							id="repeat-password"
 							label="Repeat your new password..."
+							inputProps={{
+								...field,
+								type: 'password',
+							}}
 							className="mt-2"
 							error={errors.repeatPassword?.message}
-							{...field}
 						/>
 					)}
 				/>
@@ -95,10 +112,11 @@ export const ResetPasswordForm = () => {
 				size="lg"
 				colorScheme="orange"
 				isDisabled={isPending}
+				isLoading={isPending}
 				type="submit"
 			>
 				Reset password
 			</Button>
 		</Form>
 	);
-};
+});
