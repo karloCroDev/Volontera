@@ -12,21 +12,19 @@ import {
 	resetPasswordInApp,
 } from '@/lib/data/settings';
 
-//
+// Repo
 import { ErrorFormResponse, SuccessfulResponse } from '@repo/types/general';
 import {
 	SettingsArgs,
 	ResetPasswordSettingsArgs,
 } from '@repo/schemas/settings';
-
-// Add a small local type so mutation can receive both data and an optional file
-export type ChangeProfileArgs = { data: SettingsArgs; file?: File };
+import { DataWithFile } from '@repo/types/upload';
 
 export const useChangeProfileInfo = (
 	options?: UseMutationOptions<
 		SuccessfulResponse,
 		ErrorFormResponse,
-		ChangeProfileArgs
+		DataWithFile<SettingsArgs>
 	>
 ) => {
 	const queryClient = useQueryClient();
@@ -34,7 +32,7 @@ export const useChangeProfileInfo = (
 		// use a distinct key for this mutation
 		mutationKey: ['settings', 'changeProfile'],
 		// mutation receives a single variable object { data, file }
-		mutationFn: (vars: ChangeProfileArgs) =>
+		mutationFn: (vars: DataWithFile<SettingsArgs>) =>
 			changeProfileInfo({ data: vars.data, file: vars.file }),
 		onSuccess: async (...args) => {
 			await queryClient.invalidateQueries({ queryKey: ['session'] });

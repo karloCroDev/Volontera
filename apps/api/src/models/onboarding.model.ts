@@ -13,7 +13,7 @@ export async function updateUserOnboarding({
   userId,
 }: {
   userId: User["id"];
-  data: Partial<Omit<AdditionalFormArgs, "image">>;
+  data: Partial<User>;
 }) {
   return prisma.user.update({
     where: { id: userId },

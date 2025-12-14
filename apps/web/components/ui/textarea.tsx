@@ -30,32 +30,34 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextAreaProps>(
 		ref
 	) => {
 		return (
-			<div
-				{...rest}
-				className={twMerge(
-					'border-input-border flex items-end rounded-md border px-4 pb-4',
-					className
-				)}
-			>
-				{iconsLeft}
-				<div className="relative flex-1">
-					<AriaTextarea
-						{...textAreaProps}
-						ref={ref}
-						className={twJoin(
-							getTextFieldBasicStyles,
-							'h-auto min-h-36 resize-none border-0 !py-5 transition-[height]',
-							textAreaProps?.className
-						)}
-						placeholder=""
-					/>
-					<Label className="text-muted-foreground absolute left-0 top-6 origin-left -translate-y-[24px] scale-75 transition-transform peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100">
-						{label}
-					</Label>
+			<>
+				<div
+					{...rest}
+					className={twMerge(
+						'border-input-border flex items-end rounded-md border px-4 pb-4',
+						className
+					)}
+				>
+					{iconsLeft}
+					<div className="relative flex-1">
+						<AriaTextarea
+							{...textAreaProps}
+							ref={ref}
+							className={twJoin(
+								getTextFieldBasicStyles,
+								'h-auto min-h-36 resize-none border-0 !py-5 transition-[height]',
+								textAreaProps?.className
+							)}
+							placeholder=""
+						/>
+						<Label className="text-muted-foreground absolute left-0 top-6 origin-left -translate-y-[24px] scale-75 transition-transform peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100">
+							{label}
+						</Label>
+					</div>
+					{iconsRight}
 				</div>
-				{iconsRight}
 				{error && <Error>{error}</Error>}
-			</div>
+			</>
 		);
 	}
 );

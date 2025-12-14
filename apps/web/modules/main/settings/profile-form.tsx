@@ -30,7 +30,6 @@ export const ProfileForm: React.FC<{
 	const { data: user } = useSession();
 	const {
 		control,
-		watch,
 		formState: { errors },
 	} = useFormContext<SettingsArgs>();
 
@@ -149,7 +148,7 @@ export const ProfileForm: React.FC<{
 											filename: file.name,
 											contentType: file.type,
 											size: file.size,
-											deleteImage: user?.image,
+											deleteImage: user?.image || '',
 										});
 										setCurrentImage(file);
 									}}
