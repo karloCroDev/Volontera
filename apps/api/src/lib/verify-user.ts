@@ -13,7 +13,7 @@ export async function verifyUser(email: string) {
     100000 + Math.random() * 900000
   ).toString();
 
-  const { error } = await resend.emails.send({
+  await resend.emails.send({
     from: process.env.RESEND_FROM!,
     to: email,
     subject: "Confirm your email address",
@@ -21,7 +21,6 @@ export async function verifyUser(email: string) {
       verificationCode: verificationToken,
     }),
   });
-  console.log(error);
   const hashedOtp = bcrypt.hashSync(verificationToken, 10);
 
   const expireDate: bigint = BigInt(Date.now() + 1 * 60 * 60 * 1000); // 1 hour

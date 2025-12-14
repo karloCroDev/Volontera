@@ -35,6 +35,12 @@ export const RegisterForm = withReactQueryProvider(() => {
 		setError,
 	} = useForm<RegisterArgs>({
 		resolver: zodResolver(registerSchema),
+		defaultValues: {
+			firstName: '',
+			lastName: '',
+			email: '',
+			password: '',
+		},
 	});
 
 	const router = useRouter();
@@ -70,11 +76,11 @@ export const RegisterForm = withReactQueryProvider(() => {
 							name="firstName"
 							render={({ field }) => (
 								<Input
+									inputProps={field}
 									id="firstName"
 									label="Enter your first name..."
 									className="mt-2"
 									error={errors.firstName?.message}
-									{...field}
 								/>
 							)}
 						/>
@@ -86,11 +92,11 @@ export const RegisterForm = withReactQueryProvider(() => {
 							name="lastName"
 							render={({ field }) => (
 								<Input
+									inputProps={field}
 									id="lastName"
 									label="Enter your last name..."
 									className="mt-2"
 									error={errors.lastName?.message}
-									{...field}
 								/>
 							)}
 						/>
@@ -103,11 +109,11 @@ export const RegisterForm = withReactQueryProvider(() => {
 						name="email"
 						render={({ field }) => (
 							<Input
+								inputProps={field}
 								id="email"
 								label="Enter your email..."
 								className="mt-2"
 								error={errors.email?.message}
-								{...field}
 							/>
 						)}
 					/>
@@ -121,12 +127,12 @@ export const RegisterForm = withReactQueryProvider(() => {
 							<Input
 								id="password"
 								inputProps={{
+									...field,
 									type: 'password',
 								}}
 								label="Enter your password..."
 								className="mt-2"
 								error={errors.password?.message}
-								{...field}
 							/>
 						)}
 					/>

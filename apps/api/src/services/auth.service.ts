@@ -35,6 +35,10 @@ import {
 import { verifyUser } from "@/lib/verify-user";
 import { getImagePresignedUrls } from "@/lib/aws-s3-functions";
 
+// Transactional emails
+import { ForgotPassword } from "@repo/transactional/forgot-password";
+import { createElement } from "react";
+
 export async function loginService(rawData: LoginArgs) {
   const { data, success } = loginSchema.safeParse(rawData);
   if (!success) {
@@ -137,30 +141,27 @@ export async function forgotPasswordService(rawData: unknown) {
     };
   }
 
-  const resetLink = `http://localhost:${process.env.NEXT_PORT}/auth/forgot-password/reset-password?token=${resetToken}`;
+  const resetLink = `${process.env.NEXT_PORT}/auth/login/forgot-password/reset-password?token=${resetToken}`;
 
-  if (process.env.NODE_ENV === "production") {
-    const { error } = await resend.emails.send({
-      from: process.env.RESEND_FROM!,
-      to: data.email,
-      subject: "Reset your password",
-      html: `<p>${resetLink}</p>`,
-    });
-
-    if (error) {
-      return { status: 400, body: { message: "Error with email" } };
-    }
-  } else {
-    await sendEmail({
-      to: data.email,
-      subject: "Reset your password",
-      html: `<p>${resetLink}</p>`,
-    });
+  const { error } = await resend.emails.send({
+    from: process.env.RESEND_FROM!,
+    to: data.email,
+    subject: "Reset your password",
+    react: createElement(ForgotPassword, { link: resetLink }),
+  });
+  if (error) {
+    return {
+      status: 400,
+      body: { message: "Error sending email" },
+    };
   }
 
   return {
     status: 200,
-    body: { message: "Email sent" },
+    body: {
+      title: "Forgot password link is sent",
+      message: "Forgot password link is sent",
+    },
   };
 }
 
@@ -193,7 +194,10 @@ export async function resetPasswordService(rawData: unknown) {
 
   return {
     status: 200,
-    body: { message: "Your password is successfully updated!" },
+    body: {
+      title: "Success",
+      message: "Your password is successfully updated!",
+    },
   };
 }
 

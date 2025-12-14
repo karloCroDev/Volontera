@@ -20,6 +20,7 @@ import { ForgotPasswordArgs, forgotPasswordSchema } from '@repo/schemas/auth';
 
 // Lib
 import { withReactQueryProvider } from '@/lib/utils/react-query';
+import { toast } from '@/lib/utils/toast';
 
 export const ForgotPasswordForm = withReactQueryProvider(() => {
 	const { isPending, mutate } = useForgotPassword();
@@ -30,11 +31,20 @@ export const ForgotPasswordForm = withReactQueryProvider(() => {
 		setError,
 	} = useForm<ForgotPasswordArgs>({
 		resolver: zodResolver(forgotPasswordSchema),
+		defaultValues: {
+			email: '',
+		},
 	});
 
 	const onSubmit = async (data: ForgotPasswordArgs) => {
 		mutate(data, {
-			onSuccess({ message }) {},
+			onSuccess({ message, title }) {
+				toast({
+					title,
+					content: message,
+					variant: 'success',
+				});
+			},
 			onError(err) {
 				setError('root', err);
 			},
@@ -56,7 +66,7 @@ export const ForgotPasswordForm = withReactQueryProvider(() => {
 							label="Enter your email..."
 							className="mt-2"
 							error={errors.email?.message}
-							{...field}
+							inputProps={field}
 						/>
 					)}
 				/>
@@ -68,7 +78,7 @@ export const ForgotPasswordForm = withReactQueryProvider(() => {
 				isDisabled={isPending}
 				isLoading={isPending}
 			>
-				Send verification code
+				Send reset link
 			</Button>
 		</Form>
 	);
