@@ -118,7 +118,7 @@ export const Sidebar: React.FC<{
 					<Modal
 						className={({ isEntering, isExiting }) =>
 							twJoin(
-								'bg-muted !z-max absolute left-0 top-0 h-screen w-3/4 rounded-r-2xl px-2 py-4 duration-300 md:lg:w-1/4',
+								'bg-muted !z-max border-input-border absolute left-0 top-0 m-2 h-[calc(100%-16px)] w-3/4 rounded-xl border px-2 py-4 duration-300 md:lg:w-1/4',
 								isEntering && 'animate-in slide-in-from-left',
 								isExiting && 'animate-out slide-out-to-left'
 							)
