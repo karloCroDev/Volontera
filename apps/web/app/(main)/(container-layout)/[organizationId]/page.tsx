@@ -15,7 +15,7 @@ import { Plus } from 'lucide-react';
 
 export default function OrganizationId() {
 	return (
-		<div>
+		<>
 			<div className="border-input-border relative rounded-xl border px-5 py-4">
 				<div className="flex justify-between">
 					<Tag colorScheme="gray">Nature</Tag>
@@ -135,6 +135,6 @@ export default function OrganizationId() {
 				title="Example title"
 				content="Lorem ipsum dolorem et imet sssswqdd po qkwd kqwdkpoqwpodk qk. What is going on in this world. Hello w"
 			/>
-		</div>
+		</>
 	);
 }
