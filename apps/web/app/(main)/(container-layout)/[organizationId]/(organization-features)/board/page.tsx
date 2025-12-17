@@ -1,21 +1,10 @@
-// Components
-import { Tag } from '@/components/ui/tag';
-import { SharePost } from '@/components/ui/post/share-post';
 import { Avatar } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
-import Link from 'next/link';
-import { Layout, LayoutColumn } from '@/components/ui/layout-grid';
-import { Dot } from '@/components/ui/dot';
-import { OrganizationRoutingHeader } from '@/modules/main/organization/organization-routing-header';
 
-export default async function OrganizationFeaturesLayout({
-	children,
-}: {
-	children: React.ReactNode;
-}) {
+export default async function BoardPage() {
 	return (
 		<>
-			<div className="border-input-border bg-muted flex h-40 flex-shrink-0 items-center gap-6 rounded-xl px-6">
+			<div className="border-input-border bg-muted flex h-64 items-center gap-6 rounded-xl px-6">
 				<Avatar
 					imageProps={{
 						src: '',
@@ -43,10 +32,6 @@ export default async function OrganizationFeaturesLayout({
 					</Button>
 				</div>
 			</div>
-
-			<OrganizationRoutingHeader />
-
-			{children}
 		</>
 	);
 }
