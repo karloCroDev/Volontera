@@ -13,7 +13,7 @@ export const MessageForm = () => {
 	const [value, setValue] = React.useState('');
 	console.log(value);
 	return (
-		<Form className="lg:max-w-3/4 mx-auto mt-auto w-full">
+		<Form className="lg:max-w-3/4 mx-auto mt-auto w-full flex-none">
 			<TextEditor
 				setValue={setValue}
 				hasAnImage

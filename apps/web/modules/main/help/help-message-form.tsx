@@ -57,6 +57,7 @@ export const HelpMessageForm: React.FC<{
 				userId: 'current-user',
 				senderType: 'USER',
 				content: newMessage.message,
+				updatedAt: new Date(),
 			};
 
 			queryClient.setQueryData<HelpConversationSuccess>(['help'], (old) =>

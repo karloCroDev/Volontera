@@ -43,25 +43,6 @@ export const CurrentUsersForm = () => {
 					className="border-input-border flex w-full items-center gap-4 border-b px-6 py-3 lg:gap-6"
 					key={indx}
 				>
-					<Checkbox
-						className="group"
-						// isSelected={ids.includes(notification.id)}
-						onChange={(val) => {
-							// if (val) {
-							// 	setIds((prev) => [...prev, notification.id]);
-							// } else {
-							// 	setIds((prev) =>
-							// 		prev.filter((id) => id !== notification.id)
-							// 	);
-							// }
-						}}
-					>
-						<CheckboxVisually
-							// variant={notification.isRead ? 'suiccess' : 'secondary'}
-							variant="secondary"
-						/>
-					</Checkbox>
-
 					<Link href="/" className="flex items-center gap-4">
 						<Avatar
 							size="sm"
@@ -72,10 +53,9 @@ export const CurrentUsersForm = () => {
 							AAA
 						</Avatar>
 
-						<p className="text-muted-foreground text-sm underline-offset-2 hover:underline">
-							AAA
-						</p>
+						<p className="underline-offset-2 hover:underline">AAA</p>
 					</Link>
+					<p className="text-muted-foreground text-sm">Admin</p>
 
 					<div className="ml-auto flex gap-3">
 						<Button isFullyRounded colorScheme="success">

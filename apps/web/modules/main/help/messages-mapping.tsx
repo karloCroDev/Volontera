@@ -31,7 +31,7 @@ export const MessagesMapping: React.FC<{
 
 	return (
 		<>
-			<div className="flex flex-1 flex-col gap-4 pb-8">
+			<div className="no-scrollbar flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto">
 				{helpConversation.messages.length > 0 ? (
 					helpConversation.messages.map((message) => {
 						const hours = new Date(message.createdAt)
@@ -75,7 +75,6 @@ export const MessagesMapping: React.FC<{
 				)}
 				{mutating && <MessageSkeleton variant="secondary" />}
 			</div>
-
 			<HelpMessageForm setMutating={setMutating} />
 		</>
 	);
