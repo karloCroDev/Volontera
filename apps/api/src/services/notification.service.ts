@@ -41,17 +41,6 @@ export async function getUserNotificationsService(userId: User["id"]) {
 export async function hasUnreadNotificationsService(userId: User["id"]) {
   const unreadCount = await hasUnreadNotifications({ userId });
 
-  if (unreadCount > 0) {
-    return {
-      status: 200,
-      body: {
-        title: "Unread notifications status retrieved",
-        message: "Unread notifications status retrieved successfully",
-        hasUnread: !!unreadCount,
-      },
-    };
-  }
-
   if (unreadCount > 2) {
     const user = await findUserById(userId);
 
@@ -67,6 +56,26 @@ export async function hasUnreadNotificationsService(userId: User["id"]) {
       });
     }
   }
+
+  if (unreadCount > 0) {
+    return {
+      status: 200,
+      body: {
+        title: "Unread notifications status retrieved",
+        message: "Unread notifications status retrieved successfully",
+        hasUnread: !!unreadCount,
+      },
+    };
+  }
+
+  return {
+    status: 200,
+    body: {
+      title: "Unread notifications status retrieved",
+      message: "Unread notifications status retrieved successfully",
+      hasUnread: !!unreadCount,
+    },
+  };
 }
 
 export async function markNotificationAsReadService(userId: User["id"]) {

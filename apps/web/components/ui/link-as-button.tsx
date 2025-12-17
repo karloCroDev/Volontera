@@ -4,7 +4,7 @@ import { twJoin, twMerge } from 'tailwind-merge';
 
 export interface AdditionalButtonProps {
 	variant?: 'primary' | 'outline' | 'blank';
-	colorScheme?: 'orange' | 'yellow' | 'bland' | 'destructive';
+	colorScheme?: 'orange' | 'yellow' | 'bland' | 'destructive' | 'success';
 	size?: 'sm' | 'md' | 'lg';
 	iconLeft?: React.ReactNode;
 	iconRight?: React.ReactNode;
@@ -37,7 +37,6 @@ export const getButtonClassNames = ({
 
 		// Blank variant styles
 		variant === 'blank' && 'bg-transparent hover:backdrop-blur-2xl',
-
 		// Primary varaiant styles
 		variant === 'primary' &&
 			colorScheme === 'orange' &&
@@ -50,7 +49,10 @@ export const getButtonClassNames = ({
 			'bg-background-foreground text-background hover:bg-gray-foreground/90',
 		variant === 'primary' &&
 			colorScheme === 'destructive' &&
-			'bg-destructive/90 text-background-foreground hover:bg-destructive/80',
+			'bg-destructive/90 text-white hover:bg-destructive/80',
+		variant === 'primary' &&
+			colorScheme === 'success' &&
+			'bg-success/90 text-white hover:bg-success/80',
 
 		// Outline styles
 		variant === 'outline' && 'bg-transparent border',
@@ -65,7 +67,10 @@ export const getButtonClassNames = ({
 			'text-muted-foreground border-muted-foreground',
 		variant === 'outline' &&
 			colorScheme === 'destructive' &&
-			'text-destructive border-destructive'
+			'text-destructive border-destructive',
+		variant === 'outline' &&
+			colorScheme === 'success' &&
+			'text-success border-success'
 	);
 
 export const LinkAsButton: React.FC<

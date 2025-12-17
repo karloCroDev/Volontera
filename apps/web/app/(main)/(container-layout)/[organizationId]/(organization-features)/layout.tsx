@@ -1,19 +1,17 @@
-'use client';
-
 // Components
 import { Tag } from '@/components/ui/tag';
 import { SharePost } from '@/components/ui/post/share-post';
 import { Avatar } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
-import { LinkAsButton } from '@/components/ui/link-as-button';
 import Link from 'next/link';
 import { Layout, LayoutColumn } from '@/components/ui/layout-grid';
 import { Dot } from '@/components/ui/dot';
-import { Dialog } from '@/components/ui/dialog';
-import { Post } from '@/components/ui/post/post';
-import { Plus } from 'lucide-react';
 
-export default function OrganizationId() {
+export default async function OrganizationFeaturesLayout({
+	children,
+}: {
+	children: React.ReactNode;
+}) {
 	return (
 		<>
 			<div className="border-input-border relative rounded-xl border px-5 py-4">
@@ -109,32 +107,9 @@ export default function OrganizationId() {
 				<Link href="">Manage attendees</Link>
 			</div>
 
-			<hr className="bg-input-border mb-6 mt-4 h-px w-full border-0" />
+			<hr className="bg-input-border mb-6 mt-4 h-px w-full flex-shrink-0 border-0" />
 
-			{/* Admins */}
-			<Link href="">
-				<div className="border-input-border mb-6 flex items-center gap-4 rounded-2xl border p-5">
-					<Avatar
-						imageProps={{
-							src: '',
-						}}
-						variant="secondary"
-						size="md"
-					>
-						Admin Name
-					</Avatar>
-					<p className="text-md text-muted-foreground font-medium">
-						Add new post
-					</p>
-
-					<Plus className="text-muted-foreground ml-auto size-8" />
-				</div>
-			</Link>
-
-			<Post
-				title="Example title"
-				content="Lorem ipsum dolorem et imet sssswqdd po qkwd kqwdkpoqwpodk qk. What is going on in this world. Hello w"
-			/>
+			{children}
 		</>
 	);
 }
