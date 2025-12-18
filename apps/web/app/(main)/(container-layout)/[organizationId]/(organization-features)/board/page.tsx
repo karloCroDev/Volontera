@@ -1,35 +1,93 @@
+// Components
 import { Avatar } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
+import { Dot } from '@/components/ui/dot';
+import { Ellipsis, Plus } from 'lucide-react';
 
 export default async function BoardPage() {
 	return (
 		<>
-			<div className="border-input-border bg-muted flex h-64 items-center gap-6 rounded-xl px-6">
-				<Avatar
-					imageProps={{
-						src: '',
-					}}
-					size="xl"
-					variant="secondary"
+			<div className="mb-6 flex items-center justify-between">
+				<div>
+					<h4 className="text-xl lg:text-2xl">Tasks</h4>
+					<p className="text-muted-foreground">
+						All tasks that are assigned inside this organization
+					</p>
+				</div>
+				<Button
+					colorScheme="yellow"
+					variant="outline"
+					isFullyRounded
+					iconRight={<Plus />}
 				>
-					Organization
-				</Avatar>
+					Add Board
+				</Button>
+			</div>
+			<div className="flex min-h-0 flex-1 gap-4 overflow-y-scroll">
+				<div className="border-input-border bg-muted flex flex-1 flex-col gap-5 rounded-xl border p-4">
+					<div className="flex items-center justify-between">
+						<h4 className="text-lg underline underline-offset-4">
+							Clean the beach
+						</h4>
+						<Button variant="blank">
+							<Ellipsis className="text-muted-foreground" />
+						</Button>
+					</div>
 
-				<div className="flex flex-col">
-					<h1 className="text-xl font-medium md:text-2xl lg:text-3xl">
-						Organization #1
-					</h1>
+					<div className="no-scrollbar flex min-h-0 flex-1 flex-col gap-4 overflow-y-scroll">
+						<div className="border-input-border rounded-2xl border p-4">
+							<div className="flex items-center gap-4">
+								<Dot state="success" />
+								<p className="text-md">Save the earth</p>
+							</div>
 
-					<p className="text-muted-foreground">30 attendees | 300 followers </p>
+							<div className="mt-3 flex items-center justify-between">
+								<p className="text-muted-foreground">Jan 22 | including you</p>
+
+								{/* Add different background colors */}
+
+								<div className="relative">
+									<Avatar
+										size="sm"
+										imageProps={{
+											src: '',
+										}}
+										variant="secondary"
+									>
+										Orrr
+									</Avatar>
+									<Avatar
+										size="sm"
+										imageProps={{
+											src: '',
+										}}
+										variant="secondary"
+										className="absolute -left-4 top-0"
+									>
+										Orrr
+									</Avatar>
+									<Avatar
+										size="sm"
+										imageProps={{
+											src: '',
+										}}
+										variant="secondary"
+										className="absolute -left-8 top-0 !bg-blue-400"
+									>
+										Orrr
+									</Avatar>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<Button isFullyRounded variant="outline" iconRight={<Plus />}>
+						Add Card
+					</Button>
 				</div>
 
-				<div className="ml-auto flex gap-4">
-					<Button colorScheme="yellow" size="md">
-						Follow
-					</Button>
-					<Button colorScheme="orange" size="md">
-						Join
-					</Button>
+				<div className="border-input-border bg-muted flex-1 rounded-xl border p-4">
+					<h4 className="text-lg">Clean the beach</h4>
 				</div>
 			</div>
 		</>
