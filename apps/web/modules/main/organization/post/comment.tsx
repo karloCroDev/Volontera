@@ -34,7 +34,7 @@ export const Comment: React.FC<
 					imageProps={{
 						src: '',
 					}}
-					variant="secondary"
+					colorScheme="gray"
 				>
 					Ana Horvat
 				</Avatar>
@@ -104,7 +104,7 @@ export const Reply: React.FC<CommentOrReplyProps> = ({
 					imageProps={{
 						src: '',
 					}}
-					variant="secondary"
+					colorScheme="gray"
 				>
 					Ana Horvat
 				</Avatar>

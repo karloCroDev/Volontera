@@ -9,10 +9,10 @@ export const Avatar: React.FC<
 		size?: 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '4xl' | 'full';
 		isInput?: boolean;
 		deleteButton?: React.ReactNode;
-		variant?: 'primary' | 'secondary';
+		colorScheme?: 'black' | 'gray' | 'orange' | 'yellow';
 	}
 > = ({
-	variant = 'primary',
+	colorScheme = 'gray',
 	imageProps,
 	size = 'md',
 	isInput = false,
@@ -48,9 +48,10 @@ export const Avatar: React.FC<
 			<RadixAvatar.Fallback
 				className={twJoin(
 					'flex size-full items-center justify-center rounded-full',
-					variant === 'secondary'
-						? 'text-background bg-secondary-background'
-						: 'bg-muted text-background-foreground'
+					colorScheme === 'gray' && 'text-background bg-secondary-background',
+					colorScheme === 'black' && 'bg-muted text-background-foreground',
+					colorScheme === 'orange' && 'bg-primary text-background',
+					colorScheme === 'yellow' && 'bg-accent text-background-foreground'
 				)}
 			>
 				{children

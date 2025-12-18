@@ -19,13 +19,13 @@ export const SidebarItem: React.FC<
 	React.ComponentPropsWithoutRef<'button'> &
 		ButtonProps &
 		AdditionalButtonProps & { isSelected?: boolean }
-> = ({ isSelected = false, className, ...rest }) => {
+> = ({ isSelected = false, className, isFullyRounded, ...rest }) => {
 	return (
 		<Button
 			{...rest}
-			isFullyRounded={isSelected}
-			variant={isSelected ? 'primary' : 'blank'}
+			variant={isSelected ? 'primary' : 'ghost'}
 			colorScheme={isSelected ? 'orange' : 'bland'}
+			isFullyRounded={isSelected || isFullyRounded}
 			className={twMerge(
 				'w-full justify-start',
 				isSelected &&
@@ -54,21 +54,23 @@ export const Organizations = () => {
 				setOpen(val);
 			}}
 			trigger={
-				<SidebarItem
-					className="group"
-					iconLeft={(desktopOpen || isMobile) && <Building2 />}
-					iconRight={
-						(desktopOpen || isMobile) && (
-							<ChevronDown className="ml-auto transition-transform group-data-[state=closed]:rotate-0 group-data-[state=open]:rotate-180" />
-						)
-					}
-				>
-					{desktopOpen || isMobile ? (
-						'Orgnanizations'
-					) : (
-						<Building2 className="mx-auto" />
-					)}
-				</SidebarItem>
+				desktopOpen ? (
+					<SidebarItem
+						className="group"
+						iconLeft={(desktopOpen || isMobile) && <Building2 />}
+						iconRight={
+							(desktopOpen || isMobile) && (
+								<ChevronDown className="ml-auto transition-transform group-data-[state=closed]:rotate-0 group-data-[state=open]:rotate-180" />
+							)
+						}
+					>
+						Organizations
+					</SidebarItem>
+				) : (
+					<SidebarItem size="lg" isFullyRounded className="p-4">
+						<Building2 className="size-8" />
+					</SidebarItem>
+				)
 			}
 			contentProps={{
 				children: (
@@ -91,7 +93,7 @@ export const Organizations = () => {
 											src: '',
 										}}
 										size={isMobile ? 'sm' : 'md'}
-										variant={!isMobile ? 'primary' : 'secondary'}
+										colorScheme={!isMobile ? 'black' : 'gray'}
 									>
 										Organization
 									</Avatar>

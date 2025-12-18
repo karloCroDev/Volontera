@@ -67,7 +67,7 @@ const SearchOutput: React.FC<{
 					src: '',
 				}}
 				size="lg"
-				variant="secondary"
+				colorScheme="gray"
 			>
 				Ante Horvat
 			</Avatar>

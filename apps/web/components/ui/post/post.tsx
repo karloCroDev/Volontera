@@ -22,7 +22,7 @@ export const Post: React.FC<{
 			<div className="mb-8 flex justify-between">
 				<div className="flex items-center gap-4">
 					<Avatar
-						variant="secondary"
+						colorScheme="gray"
 						imageProps={{
 							src: '',
 						}}

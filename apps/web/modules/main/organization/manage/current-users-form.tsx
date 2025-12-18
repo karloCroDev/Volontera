@@ -58,13 +58,13 @@ export const CurrentUsersForm = () => {
 					<p className="text-muted-foreground text-sm">Admin</p>
 
 					<div className="ml-auto flex gap-3">
-						<Button isFullyRounded colorScheme="success">
+						<Button isFullyRounded colorScheme="success" size="xs">
 							Set to admin
 						</Button>
-						<Button isFullyRounded colorScheme="yellow">
+						<Button isFullyRounded colorScheme="yellow" size="xs">
 							Remove admin role
 						</Button>
-						<Button isFullyRounded colorScheme="destructive">
+						<Button isFullyRounded colorScheme="destructive" size="xs">
 							Banned
 						</Button>
 					</div>

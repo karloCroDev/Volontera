@@ -52,7 +52,7 @@ export default async function BoardPage() {
 										imageProps={{
 											src: '',
 										}}
-										variant="secondary"
+										colorScheme="yellow"
 									>
 										Orrr
 									</Avatar>
@@ -61,7 +61,7 @@ export default async function BoardPage() {
 										imageProps={{
 											src: '',
 										}}
-										variant="secondary"
+										colorScheme="gray"
 										className="absolute -left-4 top-0"
 									>
 										Orrr
@@ -71,7 +71,7 @@ export default async function BoardPage() {
 										imageProps={{
 											src: '',
 										}}
-										variant="secondary"
+										colorScheme="orange"
 										className="absolute -left-8 top-0 !bg-blue-400"
 									>
 										Orrr

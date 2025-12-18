@@ -21,7 +21,7 @@ export default async function OrganizationFeaturesLayout({
 						src: '',
 					}}
 					size="xl"
-					variant="secondary"
+					colorScheme="gray"
 				>
 					Organization
 				</Avatar>

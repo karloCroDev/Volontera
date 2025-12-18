@@ -3,9 +3,9 @@ import Link, { LinkProps } from 'next/link';
 import { twJoin, twMerge } from 'tailwind-merge';
 
 export interface AdditionalButtonProps {
-	variant?: 'primary' | 'outline' | 'blank';
+	variant?: 'primary' | 'outline' | 'blank' | 'ghost';
 	colorScheme?: 'orange' | 'yellow' | 'bland' | 'destructive' | 'success';
-	size?: 'sm' | 'md' | 'lg';
+	size?: 'xs' | 'sm' | 'md' | 'lg';
 	iconLeft?: React.ReactNode;
 	iconRight?: React.ReactNode;
 	isFullyRounded?: boolean;
@@ -28,19 +28,17 @@ export const getButtonClassNames = ({
 		'flex w-fit items-center justify-center text-center outline-none transition-[opacity] duration-200 hover:opacity-70 disabled:cursor-not-allowed disabled:opacity-50 cursor-pointer rounded-lg gap-3',
 
 		// Size
+		size === 'xs' && 'text-sm px-3 py-1.5',
 		size === 'sm' && 'px-4 py-2',
 		size === 'md' && 'px-6 py-3',
 		size === 'lg' && 'text-md px-8 py-5',
 
-		// Option to round maximally
 		isFullyRounded && 'rounded-full',
 
-		// Blank variant styles
-		variant === 'blank' && 'bg-transparent hover:backdrop-blur-2xl',
 		// Primary varaiant styles
 		variant === 'primary' &&
 			colorScheme === 'orange' &&
-			'bg-primary hover:bg-primary/90 -background text-background',
+			'bg-primary hover:bg-primary/90 text-background',
 		variant === 'primary' &&
 			colorScheme === 'yellow' &&
 			'bg-accent-foreground hover:bg-accent-foreground/90 text-background',
@@ -70,7 +68,14 @@ export const getButtonClassNames = ({
 			'text-destructive border-destructive',
 		variant === 'outline' &&
 			colorScheme === 'success' &&
-			'text-success border-success'
+			'text-success border-success',
+
+		// Ghost variant styles
+		variant === 'ghost' &&
+			'backdrop-blur-md transition hover:bg-white/20 hover:opacity-100 bg-transparent',
+
+		// Blank variant styles
+		variant === 'blank' && 'bg-transparent hover:backdrop-blur-2xl px-0 mx-0'
 	);
 
 export const LinkAsButton: React.FC<
@@ -90,7 +95,6 @@ export const LinkAsButton: React.FC<
 		{...rest}
 		className={twMerge(
 			getButtonClassNames({ colorScheme, size, isFullyRounded, variant }),
-
 			className
 		)}
 	>

@@ -27,7 +27,7 @@ export default function OrganizationId() {
 								imageProps={{
 									src: '',
 								}}
-								variant="secondary"
+								colorScheme="gray"
 								size="2xl"
 							>
 								Organization
@@ -99,7 +99,7 @@ export default function OrganizationId() {
 						imageProps={{
 							src: '',
 						}}
-						variant="secondary"
+						colorScheme="gray"
 						size="md"
 					>
 						Admin Name

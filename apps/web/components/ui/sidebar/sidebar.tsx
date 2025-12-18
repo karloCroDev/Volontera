@@ -47,7 +47,7 @@ export const Sidebar: React.FC<{
 					colorScheme="bland"
 					isFullyRounded
 					onClick={() => setDesktopOpen((prev) => !prev)}
-					className="bg-background absolute -right-6 top-20 p-2"
+					className="bg-background absolute -right-6 top-20 z-[1] p-2"
 				>
 					<ChevronLast
 						className={twJoin(
