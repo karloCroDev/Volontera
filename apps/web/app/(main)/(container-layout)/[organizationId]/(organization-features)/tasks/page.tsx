@@ -2,6 +2,8 @@
 import { Avatar } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Dot } from '@/components/ui/dot';
+import { TaskCard } from '@/modules/main/organization/tasks/task-card';
+import { TaskModal } from '@/modules/main/organization/tasks/task-modal';
 import { Ellipsis, Plus } from 'lucide-react';
 
 export default async function BoardPage() {
@@ -35,50 +37,16 @@ export default async function BoardPage() {
 					</div>
 
 					<div className="no-scrollbar flex min-h-0 flex-1 flex-col gap-4 overflow-y-scroll">
-						<div className="border-input-border rounded-2xl border p-4">
-							<div className="flex items-center gap-4">
-								<Dot state="success" />
-								<p className="text-md">Save the earth</p>
-							</div>
-
-							<div className="mt-3 flex items-center justify-between">
-								<p className="text-muted-foreground">Jan 22 | including you</p>
-
-								{/* Add different background colors */}
-
-								<div className="relative">
-									<Avatar
-										size="sm"
-										imageProps={{
-											src: '',
-										}}
-										colorScheme="yellow"
-									>
-										Orrr
-									</Avatar>
-									<Avatar
-										size="sm"
-										imageProps={{
-											src: '',
-										}}
-										colorScheme="gray"
-										className="absolute -left-4 top-0"
-									>
-										Orrr
-									</Avatar>
-									<Avatar
-										size="sm"
-										imageProps={{
-											src: '',
-										}}
-										colorScheme="orange"
-										className="absolute -left-8 top-0 !bg-blue-400"
-									>
-										Orrr
-									</Avatar>
-								</div>
-							</div>
-						</div>
+						<TaskModal
+							cardProps={{
+								title: 'Save the earth',
+								description: 'Save the earth from xxxxxx',
+								date: new Date(),
+								isUserIncluded: true,
+								otherUsersCount: 3,
+								state: 'success',
+							}}
+						/>
 					</div>
 
 					<Button isFullyRounded variant="outline" iconRight={<Plus />}>

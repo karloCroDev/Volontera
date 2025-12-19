@@ -40,7 +40,9 @@ export const Dialog: React.FC<
 						className={({ isEntering, isExiting }) =>
 							twJoin(
 								'bg-muted border-primary relative z-20 overflow-hidden rounded-2xl border px-6 py-6 text-left lg:px-8',
-								isEntering && 'animate-in fade-in slide-in-from-bottom',
+								isEntering && 'animate-in fade-in',
+								// TODO: See how to handle the animation
+								// slide-in-from-bottom
 								isExiting && 'animate-out fade-out'
 							)
 						}

@@ -1,7 +1,7 @@
 // External packages
 import { twMerge } from 'tailwind-merge';
 
-type DotProps = React.ComponentPropsWithoutRef<'div'> & {
+export type DotProps = React.ComponentPropsWithoutRef<'div'> & {
 	state?: 'success' | 'pending' | 'destructive';
 	size?: 'sm' | 'md' | 'lg';
 };
