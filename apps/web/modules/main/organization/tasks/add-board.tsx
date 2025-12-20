@@ -9,21 +9,23 @@ import { Button } from '@/components/ui/button';
 import { Dialog } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
-import { Form } from 'react-aria-components';
+import {
+	Checkbox,
+	CheckboxGroup,
+	Form,
+	Radio,
+	RadioGroup,
+} from 'react-aria-components';
 import { DatePicker } from '@/components/ui/date-picker';
-import { ComboBoxItems, ComboBoxWrapper } from '@/components/ui/combo-box';
+import { Tag } from '@/components/ui/tag';
+import { Avatar } from '@/components/ui/avatar';
+import { CheckboxVisually } from '@/components/ui/checkbox';
 
 export const AddBoard = () => {
-	const [addedMembers, setAddedMembers] = React.useState<string[]>([]);
+	const [assignedMemberIds, setAssignedMemberIds] = React.useState<string[]>([
+		'0',
+	]);
 
-	const [currentMember, setCurrentMember] = React.useState<{
-		id: string;
-		name: string;
-	}>({
-		id: '',
-		name: '',
-	});
-	console.log(currentMember);
 	return (
 		<Dialog
 			title="Add new board"
@@ -54,33 +56,37 @@ export const AddBoard = () => {
 						}}
 					/>
 				</div>
-				<div>
+				<div className="w-full">
 					<Label className="mb-2">Assgin members</Label>
 
-					<div className="flex justify-between gap-4">
-						<ComboBoxWrapper
-							className="w-full"
-							inputProps={{
-								label: 'Enter members names to assign them',
-								onChange: (e) =>
-									setCurrentMember({ id: '', name: e.target.value }),
-								value: currentMember.name,
-							}}
-						>
-							<ComboBoxItems>Hello world</ComboBoxItems>
-							<ComboBoxItems>Ana</ComboBoxItems>
-							<ComboBoxItems>Aaa</ComboBoxItems>
-							<ComboBoxItems removeUnderline>Hello world</ComboBoxItems>
-						</ComboBoxWrapper>
+					<CheckboxGroup
+						value={assignedMemberIds}
+						onChange={setAssignedMemberIds}
+						className="mx-auto flex w-fit flex-wrap gap-3"
+					>
+						{[...Array(4)].map((_, indx) => {
+							return (
+								<Checkbox className="group" key={indx} value={indx.toString()}>
+									<Tag className="flex items-center gap-4">
+										<Avatar
+											imageProps={{
+												src: '',
+											}}
+											size="xs"
+										>
+											Ante
+										</Avatar>
+										<p>Ante</p>
 
-						<Button
-							className="aspect-square"
-							variant="outline"
-							colorScheme="yellow"
-						>
-							<Plus className="size-5" />
-						</Button>
-					</div>
+										<CheckboxVisually
+											className="rounded-full"
+											variant="secondary"
+										/>
+									</Tag>
+								</Checkbox>
+							);
+						})}
+					</CheckboxGroup>
 				</div>
 
 				<Button type="submit" className="self-end" size="md">
