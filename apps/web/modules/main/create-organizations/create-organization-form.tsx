@@ -58,6 +58,8 @@ export const CreateOrganizationForm = () => {
 									className="mt-2"
 								/>
 							</div>
+
+							{/* TODO: Probabbly new separate component */}
 							<div>
 								<Label isOptional>Additional Links</Label>
 								<Input label="Enter your additional links" className="mt-2" />

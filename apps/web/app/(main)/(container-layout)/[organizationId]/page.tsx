@@ -9,7 +9,8 @@ import { Tag } from '@/components/ui/tag';
 import { SharePost } from '@/components/ui/post/share-post';
 import { Button } from '@/components/ui/button';
 import { Layout, LayoutColumn } from '@/components/ui/layout-grid';
-import { OrganizationRoutingHeader } from '@/modules/main/organization/organization-routing-header';
+import { OrganizationRoutingHeader } from '@/modules/main/organization/common/organization-routing-header';
+import { NewPostDialog } from '@/modules/main/organization/home/new-post-dialog';
 
 export default function OrganizationId() {
 	return (
@@ -93,25 +94,7 @@ export default function OrganizationId() {
 			</div>
 
 			<OrganizationRoutingHeader />
-			<Link href="">
-				<div className="border-input-border mb-6 flex items-center gap-4 rounded-2xl border p-5">
-					<Avatar
-						imageProps={{
-							src: '',
-						}}
-						colorScheme="gray"
-						size="md"
-					>
-						Admin Name
-					</Avatar>
-					<p className="text-md text-muted-foreground font-medium">
-						Add new post
-					</p>
-
-					<Plus className="text-muted-foreground ml-auto size-8" />
-				</div>
-			</Link>
-
+			<NewPostDialog />
 			<Post
 				title="Example title"
 				content="Lorem ipsum dolorem et imet sssswqdd po qkwd kqwdkpoqwpodk qk. What is going on in this world. Hello w"

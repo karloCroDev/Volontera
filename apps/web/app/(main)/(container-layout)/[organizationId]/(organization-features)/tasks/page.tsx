@@ -47,7 +47,9 @@ export default async function BoardPage() {
 								otherUsersCount: 3,
 								state: 'success',
 							}}
-							specificDate={`${new Date().toLocaleString('default', { month: 'long' }).slice(0, 3)} ${new Date().getDate()}`}
+							specificDate={new Date()
+								.toLocaleDateString()
+								.replaceAll('/', '. ')}
 						/>
 					</div>
 

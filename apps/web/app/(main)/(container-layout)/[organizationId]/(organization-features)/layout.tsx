@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { Layout, LayoutColumn } from '@/components/ui/layout-grid';
 import { Dot } from '@/components/ui/dot';
-import { OrganizationRoutingHeader } from '@/modules/main/organization/organization-routing-header';
+import { OrganizationRoutingHeader } from '@/modules/main/organization/common/organization-routing-header';
 
 export default async function OrganizationFeaturesLayout({
 	children,
