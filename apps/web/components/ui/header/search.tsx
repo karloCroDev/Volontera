@@ -33,23 +33,27 @@ export const Search = () => {
 					</Button>
 				}
 			>
-				<Input iconLeft={<SearchIcon className="size-4" />} label="Search" />
-				<hr className="bg-accent-foreground my-6 h-px border-0" />
+				<div className="no-scrollbar aspect-[4/3] overflow-y-scroll">
+					<Input iconLeft={<SearchIcon className="size-4" />} label="Search" />
+					<hr className="bg-accent-foreground my-6 h-px border-0" />
 
-				<h4 className="text-md underline underline-offset-4">Organizations</h4>
+					<h4 className="text-md underline underline-offset-4">
+						Organizations
+					</h4>
 
-				<div className="mt-4 flex flex-col gap-4">
-					{[...Array(3)].map((_, indx) => (
-						<SearchOutput key={indx} typeHref="/home" />
-					))}
-				</div>
+					<div className="mt-4 flex flex-col gap-4">
+						{[...Array(3)].map((_, indx) => (
+							<SearchOutput key={indx} typeHref="/home" />
+						))}
+					</div>
 
-				<h4 className="text-md mt-6 underline underline-offset-4">People</h4>
-				<div className="mt-4 flex flex-col gap-4">
-					{[...Array(3)].map((_, indx) => (
-						<SearchOutputSkeleton key={indx} />
-						// <SearchOutput key={indx} typeHref="/home" />
-					))}
+					<h4 className="text-md mt-6 underline underline-offset-4">People</h4>
+					<div className="mt-4 flex flex-col gap-4">
+						{[...Array(3)].map((_, indx) => (
+							<SearchOutputSkeleton key={indx} />
+							// <SearchOutput key={indx} typeHref="/home" />
+						))}
+					</div>
 				</div>
 			</Dialog>
 		</>

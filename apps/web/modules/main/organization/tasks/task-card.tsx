@@ -12,7 +12,7 @@ import { Button } from 'react-aria-components';
 export type TaskCardProps = {
 	title: string;
 	description: string;
-	date: Date;
+	indefiniteDate: string;
 	state: DotProps['state'];
 	isUserIncluded: boolean;
 	otherUsersCount: number;
@@ -22,7 +22,8 @@ export type TaskCardProps = {
 export const TaskCard: React.FC<TaskCardProps> = ({
 	title,
 	description,
-	date,
+	indefiniteDate,
+
 	state,
 	isUserIncluded,
 	otherUsersCount,
@@ -42,10 +43,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({
 
 			<div className="mt-3 flex items-center justify-between">
 				<p className="text-muted-foreground text-sm">
-					Deadline:{' '}
-					{date.toLocaleString('default', { month: 'long' }).slice(0, 3) +
-						' ' +
-						date.getDate()}
+					Deadline: {indefiniteDate}
 				</p>
 				{/* Add different background colors */}
 

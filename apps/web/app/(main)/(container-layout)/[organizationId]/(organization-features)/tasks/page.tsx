@@ -41,11 +41,13 @@ export default async function BoardPage() {
 							cardProps={{
 								title: 'Save the earth',
 								description: 'Save the earth from xxxxxx',
-								date: new Date(),
+								indefiniteDate: `${new Date().toLocaleString('default', { month: 'long' }).slice(0, 3)} ${new Date().getDate()}`,
+
 								isUserIncluded: true,
 								otherUsersCount: 3,
 								state: 'success',
 							}}
+							specificDate={`${new Date().toLocaleString('default', { month: 'long' }).slice(0, 3)} ${new Date().getDate()}`}
 						/>
 					</div>
 
