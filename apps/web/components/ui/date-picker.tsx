@@ -47,7 +47,7 @@ export const DatePicker = <T extends DateValue>({
 			</Group>
 			<Popover>
 				<Dialog>
-					<Calendar className="bg-muted flex flex-col items-center justify-center rounded p-4">
+					<Calendar className="bg-muted border-input-border flex flex-col items-center justify-center rounded border p-4">
 						<header className="flex items-center gap-4">
 							<Button slot="previous" isFullyRounded>
 								<ChevronLeft className="size-4" />

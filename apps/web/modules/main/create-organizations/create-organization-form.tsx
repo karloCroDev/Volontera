@@ -74,7 +74,7 @@ export const CreateOrganizationForm = () => {
 
 								<iframe
 									src="https://docs.google.com/forms/d/e/1FAIpQLSeJ_PbnTvmK3edUaCQl6QFL7N86EZXnIhCgKEMMRObrbrMxdg/viewform?embedded=true"
-									className="border-input-border h-[400px] w-full rounded-lg border"
+									className="border-input-border aspect-[4/3] w-full rounded-lg border"
 								/>
 							</div>
 

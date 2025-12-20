@@ -1,10 +1,10 @@
-// Components
-import { Avatar } from '@/components/ui/avatar';
-import { Button } from '@/components/ui/button';
-import { Dot } from '@/components/ui/dot';
-import { TaskCard } from '@/modules/main/organization/tasks/task-card';
-import { TaskModal } from '@/modules/main/organization/tasks/task-modal';
+// External packages
 import { Ellipsis, Plus } from 'lucide-react';
+
+// Components
+import { Button } from '@/components/ui/button';
+import { AddBoard } from '@/modules/main/organization/tasks/add-board';
+import { TaskModal } from '@/modules/main/organization/tasks/task-modal';
 
 export default async function BoardPage() {
 	return (
@@ -16,14 +16,7 @@ export default async function BoardPage() {
 						All tasks that are assigned inside this organization
 					</p>
 				</div>
-				<Button
-					colorScheme="yellow"
-					variant="outline"
-					isFullyRounded
-					iconRight={<Plus />}
-				>
-					Add Board
-				</Button>
+				<AddBoard />
 			</div>
 			<div className="flex min-h-0 flex-1 gap-4 overflow-y-scroll">
 				<div className="border-input-border bg-muted flex flex-1 flex-col gap-5 rounded-xl border p-4">
