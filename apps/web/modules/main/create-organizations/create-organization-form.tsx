@@ -13,6 +13,7 @@ import { Layout, LayoutColumn } from '@/components/ui/layout-grid';
 import { RadioIconVisual } from '@/components/ui/radio';
 
 export const CreateOrganizationForm = () => {
+	// TODO: Decide where to put this, under the creation of new board or here
 	const [assignTasks, setAssignTasks] = React.useState(false);
 	return (
 		<>

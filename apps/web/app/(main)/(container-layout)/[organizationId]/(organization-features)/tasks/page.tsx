@@ -1,10 +1,13 @@
 // External packages
-import { Ellipsis, Plus } from 'lucide-react';
+import { Ellipsis } from 'lucide-react';
 
 // Components
 import { Button } from '@/components/ui/button';
+
+// Modules
 import { AddBoard } from '@/modules/main/organization/tasks/add-board';
 import { TaskModal } from '@/modules/main/organization/tasks/task-modal';
+import { AddTask } from '@/modules/main/organization/tasks/add-task';
 
 export default async function BoardPage() {
 	return (
@@ -46,9 +49,7 @@ export default async function BoardPage() {
 						/>
 					</div>
 
-					<Button isFullyRounded variant="outline" iconRight={<Plus />}>
-						Add Card
-					</Button>
+					<AddTask />
 				</div>
 
 				<div className="border-input-border bg-muted flex-1 rounded-xl border p-4">
