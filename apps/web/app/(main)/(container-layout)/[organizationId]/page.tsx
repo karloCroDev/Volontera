@@ -11,6 +11,7 @@ import { Button } from '@/components/ui/button';
 import { Layout, LayoutColumn } from '@/components/ui/layout-grid';
 import { OrganizationRoutingHeader } from '@/modules/main/organization/common/organization-routing-header';
 import { NewPostDialog } from '@/modules/main/organization/home/new-post-dialog';
+import { JoinDialog } from '@/modules/main/organization/common/join-dialog';
 
 export default function OrganizationId() {
 	return (
@@ -39,9 +40,7 @@ export default function OrganizationId() {
 							<Button colorScheme="yellow" size="md">
 								Follow
 							</Button>
-							<Button colorScheme="orange" size="md">
-								Join
-							</Button>
+							<JoinDialog />
 						</div>
 					</div>
 					<h1 className="mt-4 text-xl font-medium md:text-2xl lg:text-3xl">

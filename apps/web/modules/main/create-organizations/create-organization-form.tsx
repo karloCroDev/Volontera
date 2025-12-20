@@ -61,6 +61,24 @@ export const CreateOrganizationForm = () => {
 
 							{/* TODO: Probabbly new separate component */}
 							<div>
+								<Label isOptional>Embbedd the form link</Label>
+								<Input label="Enter your form link" className="mt-2" />
+							</div>
+
+							{/* If there is a link that I can embedd then display preview immeditelly */}
+
+							<div>
+								<p className="lg:text-md text-muted-foreground mb-2">
+									(Preview)
+								</p>
+
+								<iframe
+									src="https://docs.google.com/forms/d/e/1FAIpQLSeJ_PbnTvmK3edUaCQl6QFL7N86EZXnIhCgKEMMRObrbrMxdg/viewform?embedded=true"
+									className="border-input-border h-[400px] w-full rounded-lg border"
+								/>
+							</div>
+
+							<div>
 								<Label isOptional>Additional Links</Label>
 								<Input label="Enter your additional links" className="mt-2" />
 							</div>

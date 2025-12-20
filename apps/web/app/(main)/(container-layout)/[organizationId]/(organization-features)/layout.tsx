@@ -7,6 +7,7 @@ import Link from 'next/link';
 import { Layout, LayoutColumn } from '@/components/ui/layout-grid';
 import { Dot } from '@/components/ui/dot';
 import { OrganizationRoutingHeader } from '@/modules/main/organization/common/organization-routing-header';
+import { JoinDialog } from '@/modules/main/organization/common/join-dialog';
 
 export default async function OrganizationFeaturesLayout({
 	children,
@@ -38,9 +39,7 @@ export default async function OrganizationFeaturesLayout({
 					<Button colorScheme="yellow" size="md">
 						Follow
 					</Button>
-					<Button colorScheme="orange" size="md">
-						Join
-					</Button>
+					<JoinDialog />
 				</div>
 			</div>
 
