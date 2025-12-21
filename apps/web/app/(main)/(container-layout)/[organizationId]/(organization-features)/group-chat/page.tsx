@@ -20,7 +20,7 @@ export default async function GroupChatPage() {
 	if (!user.success) redirect('/auth/login');
 	return (
 		<>
-			<div className="flex min-h-[75vh] flex-1 flex-col gap-4 px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
+			<div className="flex min-h-[800px] flex-1 flex-col gap-4 px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
 				<div className="no-scrollbar min-h-0 flex-1 space-y-4 overflow-y-auto">
 					<Message
 						date="16:36 | 8.4. 2024"

@@ -7,8 +7,8 @@ import { LinkAsButton } from '@/components/ui/link-as-button';
 
 export const OrganizationRoutingHeader = () => {
 	return (
-		<>
-			<div className="mt-10 flex gap-4 text-lg">
+		<div className="bg-background sticky -top-8 z-20 mb-6">
+			<div className="mt-10 flex gap-4 overflow-x-scroll whitespace-nowrap text-lg">
 				<div className="relative">
 					<LinkAsButton
 						variant="ghost"
@@ -36,7 +36,7 @@ export const OrganizationRoutingHeader = () => {
 				</LinkAsButton>
 			</div>
 
-			<hr className="bg-input-border mb-6 mt-4 h-px w-full flex-shrink-0 border-0" />
-		</>
+			<hr className="bg-input-border mt-4 h-px w-full flex-shrink-0 border-0" />
+		</div>
 	);
 };

@@ -44,7 +44,6 @@ export default async function OrganizationFeaturesLayout({
 			</div>
 
 			<OrganizationRoutingHeader />
-
 			{children}
 		</>
 	);

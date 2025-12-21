@@ -49,7 +49,7 @@ export const TaskModal: React.FC<{
 					<p className="text-md mb-3 mt-4">All members on this task</p>
 
 					<CheckboxGroup
-						className="no-scrollbar lg:max-h-auto mx-auto grid max-h-60 w-fit grid-cols-2 gap-4 self-center overflow-y-scroll lg:grid-cols-3"
+						className="no-scrollbar mx-auto grid max-h-60 w-fit grid-cols-2 gap-4 self-center overflow-y-scroll lg:max-h-full lg:grid-cols-3"
 						value={assignedMemberIds}
 						onChange={setAssignedMemberIds}
 					>
@@ -84,7 +84,7 @@ export const TaskModal: React.FC<{
 				<div className="flex h-full flex-1 flex-col gap-4">
 					<h4 className="text-lg lg:text-xl">Questions</h4>
 
-					<div className="no-scrollbar lg:max-h-auto max-h-60 flex-1 overflow-y-scroll">
+					<div className="no-scrollbar max-h-60 flex-1 overflow-y-scroll lg:max-h-full">
 						{[...Array(5)].map((_, indx) => (
 							<div key={indx} className="flex items-end gap-2">
 								<Message
