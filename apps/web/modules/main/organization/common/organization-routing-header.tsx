@@ -1,14 +1,11 @@
-// External packages
-import Link from 'next/link';
-
 // Components
 import { Dot } from '@/components/ui/dot';
 import { LinkAsButton } from '@/components/ui/link-as-button';
 
 export const OrganizationRoutingHeader = () => {
 	return (
-		<div className="bg-background sticky -top-8 z-20 mb-6">
-			<div className="mt-10 flex gap-4 overflow-x-scroll whitespace-nowrap text-lg">
+		<div className="bg-background sticky -top-8 z-20 -mx-4 mb-6 lg:m-0">
+			<div className="text-md no-scrollbar mt-10 flex gap-4 overflow-x-scroll whitespace-nowrap px-2 md:text-lg">
 				<div className="relative">
 					<LinkAsButton
 						variant="ghost"

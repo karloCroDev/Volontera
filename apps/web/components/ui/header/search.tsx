@@ -33,7 +33,7 @@ export const Search = () => {
 					</Button>
 				}
 			>
-				<div className="no-scrollbar aspect-[4/3] overflow-y-scroll">
+				<div className="aspect-[4/3] overflow-y-scroll">
 					<Input iconLeft={<SearchIcon className="size-4" />} label="Search" />
 					<hr className="bg-accent-foreground my-6 h-px border-0" />
 

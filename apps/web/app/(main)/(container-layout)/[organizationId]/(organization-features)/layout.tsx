@@ -16,7 +16,7 @@ export default async function OrganizationFeaturesLayout({
 }) {
 	return (
 		<>
-			<div className="border-input-border bg-muted flex h-40 flex-shrink-0 items-center gap-6 rounded-xl px-6">
+			<div className="border-input-border bg-muted flex flex-shrink-0 flex-col items-center gap-6 rounded-xl border p-4 md:h-40 md:flex-row md:px-6">
 				<Avatar
 					imageProps={{
 						src: '',
@@ -28,14 +28,14 @@ export default async function OrganizationFeaturesLayout({
 				</Avatar>
 
 				<div className="flex flex-col">
-					<h1 className="text-xl font-medium md:text-2xl lg:text-3xl">
+					<h1 className="text-lg font-medium md:text-2xl lg:text-3xl">
 						Organization #1
 					</h1>
 
 					<p className="text-muted-foreground">30 attendees | 300 followers </p>
 				</div>
 
-				<div className="ml-auto flex gap-4">
+				<div className="flex gap-4 md:ml-auto">
 					<Button colorScheme="yellow" size="md">
 						Follow
 					</Button>

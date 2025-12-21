@@ -9,7 +9,7 @@ export const Layout = React.forwardRef<
 	<div
 		{...rest}
 		ref={ref}
-		className={twMerge('container mx-auto grid grid-cols-12 px-4', className)}
+		className={twMerge('container mx-auto grid grid-cols-12', className)}
 	/>
 ));
 

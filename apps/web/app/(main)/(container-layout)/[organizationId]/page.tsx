@@ -14,14 +14,14 @@ import { JoinDialog } from '@/modules/main/organization/common/join-dialog';
 export default function OrganizationId() {
 	return (
 		<>
-			<div className="border-input-border relative rounded-xl border px-5 py-4">
+			<div className="border-input-border relative -mx-4 -my-6 rounded-xl px-5 py-4 md:m-0 md:border">
 				<div className="flex justify-between">
 					<Tag colorScheme="gray">Nature</Tag>
 					<SharePost link="" />
 				</div>
 
-				<div className="ml-10 pt-36">
-					<div className="flex items-end justify-between">
+				<div className="pt-36 md:ml-10">
+					<div className="no-scrollbar flex items-end justify-between gap-8 overflow-scroll lg:gap-0">
 						<div className="flex w-fit flex-col items-center">
 							<Avatar
 								imageProps={{
@@ -55,8 +55,14 @@ export default function OrganizationId() {
 					</div>
 					<hr className="bg-input-border my-6 h-px w-full border-0" />
 
-					<Layout>
-						<LayoutColumn start={1} end={8}>
+					<Layout className="gap-y-6 lg:gap-y-0">
+						<LayoutColumn
+							start={1}
+							end={{
+								base: 13,
+								lg: 8,
+							}}
+						>
 							<h4 className="text-lg underline underline-offset-4 lg:text-xl">
 								Additional links
 							</h4>
@@ -80,14 +86,21 @@ export default function OrganizationId() {
 							</p>
 						</LayoutColumn>
 
-						<LayoutColumn start={10} end={13} className="flex flex-col gap-3">
+						<LayoutColumn
+							start={{
+								base: 1,
+								lg: 10,
+							}}
+							end={13}
+							className="flex flex-col gap-3"
+						>
 							<p className="text-muted-foreground">21 street, New York, USA</p>
 							<div className="border-input-border h-full min-h-80 flex-1 rounded-lg border"></div>
 						</LayoutColumn>
 					</Layout>
 				</div>
 
-				<div className="bg-input-border absolute left-0 top-0 -z-[1] h-64 w-full rounded-t-xl" />
+				<div className="bg-input-border absolute left-0 top-0 -z-[1] h-64 w-full md:rounded-t-xl" />
 			</div>
 
 			<OrganizationRoutingHeader />
