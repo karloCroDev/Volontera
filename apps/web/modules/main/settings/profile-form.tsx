@@ -152,7 +152,7 @@ export const ProfileForm: React.FC<{
 										});
 										setCurrentImage(file);
 									}}
-									className="absolute cursor-pointer opacity-0"
+									className="sr-only"
 								/>
 							</>
 						)}
