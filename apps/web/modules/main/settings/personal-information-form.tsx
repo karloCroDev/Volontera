@@ -98,7 +98,6 @@ export const PersonalInformationForm = withReactQueryProvider(() => {
 										) : (
 											<FilledInput
 												placeholderValue="Work or School"
-												label={user.workOrSchool}
 												className="mt-2"
 												inputProps={field}
 												error={errors.workOrSchool?.message}
@@ -128,7 +127,6 @@ export const PersonalInformationForm = withReactQueryProvider(() => {
 										) : (
 											<FilledInput
 												placeholderValue="Address"
-												label={user.address}
 												className="mt-2"
 												inputProps={field}
 												error={errors.address?.message}

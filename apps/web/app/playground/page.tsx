@@ -54,14 +54,9 @@ export default function PlaygroundPage() {
 				))}
 			</Layout>
 			<Input label="Enter your username..." className="w-96" />
-			<Input label="Enter your username..." className="mt-4 w-96" size="sm" />
-			<FilledInput placeholderValue="username" label="Karlo" className="w-96" />
-			<FilledInput
-				placeholderValue="surname"
-				label="Grgic"
-				className="w-96"
-				size="sm"
-			/>
+			<Input label="Enter your username..." className="mt-4 w-96" />
+			<FilledInput placeholderValue="username" className="w-96" />
+			<FilledInput placeholderValue="surname" className="w-96" size="sm" />
 			<Avatar
 				size="full"
 				isInput

@@ -10,14 +10,12 @@ import { Error } from '@/components/ui/error';
 
 export const FilledInput: React.FC<
 	React.ComponentPropsWithoutRef<'div'> & {
-		label: string;
 		placeholderValue: string;
 		inputProps?: React.ComponentPropsWithoutRef<'input'> & InputProps;
 		size?: 'sm' | 'md';
 		error?: string;
 	}
 > = ({
-	label,
 	placeholderValue,
 	size = 'md',
 	inputProps,

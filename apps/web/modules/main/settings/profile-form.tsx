@@ -53,7 +53,6 @@ export const ProfileForm: React.FC<{
 									render={({ field }) => (
 										<FilledInput
 											placeholderValue="First name"
-											label={user.firstName}
 											className="mt-2"
 											inputProps={field}
 											error={errors.firstName?.message}
@@ -72,7 +71,6 @@ export const ProfileForm: React.FC<{
 									user?.lastName ? (
 										<FilledInput
 											placeholderValue="Last name"
-											label={user.lastName}
 											className="mt-2"
 											inputProps={field}
 											error={errors.lastName?.message}
