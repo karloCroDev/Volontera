@@ -6,9 +6,8 @@ import {
 	Button as AriaButton,
 	Form,
 	Input as AriaInput,
-	Label as AriaLabel,
 } from 'react-aria-components';
-import { Camera, CircleX, Plus, X } from 'lucide-react';
+import { Plus } from 'lucide-react';
 
 // Components
 import { Avatar } from '@/components/ui/avatar';
@@ -17,20 +16,11 @@ import { Dialog } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import Image from 'next/image';
+
+// Modules
+import { DndMapppingImages } from '@/modules/main/organization/home/dnd-mapping-images';
 
 export const NewPostDialog = () => {
-	const [images, setImages] = React.useState<File[]>([]);
-
-	const moveItem = (arr: File[], from: number, to: number) => {
-		if (to < 0 || to >= arr.length) return arr;
-		const next = [...arr];
-		const [item] = next.splice(from, 1);
-
-		if (!item) return arr;
-		next.splice(to, 0, item);
-		return next;
-	};
 	return (
 		<Dialog
 			triggerChildren={
@@ -68,82 +58,11 @@ export const NewPostDialog = () => {
 				<div className="flex items-end gap-4">
 					<div className="flex-1">
 						<Label className="mb-2">Post image(s)</Label>
-						<div className="flex flex-wrap gap-4">
-							{images.map((image, index) => (
-								<div
-									key={index}
-									className="size-30 border-input-border relative overflow-hidden rounded-lg border"
-								>
-									<Image
-										src={URL.createObjectURL(image)}
-										alt="Woah awesome"
-										fill
-										className="object-cover"
-									/>
-
-									{/* Move left / right (or up / down) */}
-									<div className="absolute bottom-2 left-2 flex gap-1">
-										<Button
-											size="sm"
-											isDisabled={index === 0}
-											onPress={() =>
-												setImages((prev) => moveItem(prev, index, index - 1))
-											}
-										>
-											←
-										</Button>
-
-										<Button
-											size="sm"
-											isDisabled={index === images.length - 1}
-											onPress={() =>
-												setImages((prev) => moveItem(prev, index, index + 1))
-											}
-										>
-											→
-										</Button>
-									</div>
-
-									{/* Remove */}
-									<Button
-										className="absolute right-2 top-2 p-1"
-										isFullyRounded
-										colorScheme="destructive"
-										onPress={() => {
-											setImages((prev) => prev.filter((_, i) => i !== index));
-										}}
-									>
-										<X className="size-4" />
-									</Button>
-								</div>
-							))}
-
-							{/* Add image tile */}
-							<label
-								htmlFor="image-upload"
-								className="border-input-border hover:border-primary size-30 text-muted-foreground hover:text-primary flex cursor-pointer items-center justify-center gap-4 rounded-lg border border-dashed transition-colors"
-							>
-								<p>Image</p>
-								<Plus />
-							</label>
-
-							<AriaInput
-								type="file"
-								accept="image/*"
-								id="image-upload"
-								multiple
-								className="sr-only"
-								onChange={(e) => {
-									const files = e.target?.files;
-									if (!files) return;
-									setImages((prev) => [...prev, ...Array.from(files)]);
-									e.currentTarget.value = '';
-								}}
-							/>
-						</div>
+						<DndMapppingImages />
 					</div>
 
 					<Button type="submit" className="ml-auto">
+						{' '}
 						Submit
 					</Button>
 				</div>
