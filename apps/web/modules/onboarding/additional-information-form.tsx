@@ -149,7 +149,7 @@ export const AdditionalInformationForm = withReactQueryProvider(() => {
 									});
 									setCurrentImage(file);
 								}}
-								className="absolute cursor-pointer opacity-0"
+								className="sr-only"
 							/>
 						</>
 					)}

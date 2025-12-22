@@ -57,7 +57,7 @@ export const UserInformation: React.FC<{
 							imageProps={{
 								src: user?.image,
 							}}
-							variant="secondary"
+							colorScheme="gray"
 							size="md"
 						>
 							{user.fullname}
@@ -77,7 +77,7 @@ export const UserInformation: React.FC<{
 							imageProps={{
 								src: user?.image || '',
 							}}
-							variant="secondary"
+							colorScheme="gray"
 							size="xl"
 							className="cursor-pointer hover:opacity-65"
 						>
@@ -98,7 +98,7 @@ export const UserInformation: React.FC<{
 									imageProps={{
 										src: user?.image || '',
 									}}
-									variant="secondary"
+									colorScheme="gray"
 									size="md"
 								>
 									{user.fullname}
@@ -115,29 +115,27 @@ export const UserInformation: React.FC<{
 								<li>
 									<LinkAsButton
 										href="/public-profile"
-										variant="blank"
+										variant="ghost"
 										iconLeft={<CircleUserRound className="size-4" />}
 										size="sm"
-										className="w-full justify-start px-0"
+										className="w-full justify-start px-2"
 									>
 										Public profile
 									</LinkAsButton>
 								</li>
 								<li>
-									<div className="flex items-center justify-between">
-										<LinkAsButton
-											href="/select-plan"
-											variant="blank"
-											iconLeft={<CreditCard className="size-4" />}
-											size="sm"
-											className="w-full justify-start px-0"
-										>
-											Manage plans
-										</LinkAsButton>
-										<p className="text-muted-foreground text-xs">
+									<LinkAsButton
+										href="/select-plan"
+										variant="ghost"
+										iconLeft={<CreditCard className="size-4" />}
+										size="sm"
+										className="flex w-full items-center justify-start px-2"
+									>
+										Manage plans
+										<p className="text-muted-foreground ml-auto text-xs">
 											{user.subscriptionTier === 'PRO' ? 'Premium' : 'Free'}
 										</p>
-									</div>
+									</LinkAsButton>
 								</li>
 							</ul>
 							<hr className="bg-input-border h-px w-full border-0" />

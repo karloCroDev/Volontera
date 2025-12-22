@@ -6,7 +6,7 @@ export const Tag: React.FC<
 		colorScheme?: 'red' | 'green' | 'gray' | 'accent';
 	}
 > = ({ variant = 'primary', colorScheme = 'gray', className, ...rest }) => (
-	<p
+	<div
 		{...rest}
 		className={twMerge(
 			'w-fit rounded-full border px-3 py-1.5 text-sm',

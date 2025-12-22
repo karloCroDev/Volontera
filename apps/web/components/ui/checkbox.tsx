@@ -1,10 +1,11 @@
 //External packages
+import * as React from 'react';
 import { Check } from 'lucide-react';
 import { Checkbox as AriaCheckbox, CheckboxProps } from 'react-aria-components';
 import { twJoin, twMerge } from 'tailwind-merge';
 
 type CheckboxVisuallyProps = React.ComponentPropsWithoutRef<'div'> & {
-	variant?: 'primary' | 'secondary' | 'suiccess' | 'destructive';
+	variant?: 'primary' | 'secondary' | 'success' | 'suiccess' | 'destructive';
 	size?: 'sm' | 'lg';
 };
 
@@ -25,7 +26,7 @@ export const CheckboxVisually: React.FC<CheckboxVisuallyProps> = ({
 					'group-data-[selected]:bg-accent border-accent hover:group-data-[selected]:bg-accent/80 hover:border-accent/80 group-data-[selected]:text-background-foreground',
 				variant === 'secondary' &&
 					'group-data-[selected]:bg-accent-foreground border-accent-foreground hover:group-data-[selected]:bg-accent-foreground/80 hover:border-accent-foreground/80 group-data-[selected]:text-background',
-				variant === 'suiccess' &&
+				(variant === 'success' || variant === 'suiccess') &&
 					'group-data-[selected]:bg-success border-success hover:group-data-[selected]:bg-success/80 hover:border-success/80 group-data-[selected]:text-background-foreground',
 				variant === 'destructive' &&
 					'group-data-[selected]:bg-destructive border-destructive hover:group-data-[selected]:bg-destructive/80 hover:border-destructive/80 group-data-[selected]:text-background-foreground',
@@ -51,7 +52,6 @@ export const CheckboxWithLabel: React.FC<
 > = ({ checkboxVisuallyProps, children, className, ...rest }) => {
 	const size = checkboxVisuallyProps?.size || 'sm';
 
-	console.log(size);
 	return (
 		<AriaCheckbox
 			{...rest}

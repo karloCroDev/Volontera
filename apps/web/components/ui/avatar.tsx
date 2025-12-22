@@ -6,13 +6,13 @@ import { Pen } from 'lucide-react';
 export const Avatar: React.FC<
 	React.ComponentPropsWithoutRef<'div'> & {
 		imageProps: RadixAvatar.AvatarImageProps;
-		size?: 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '4xl' | 'full';
+		size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '4xl' | 'full';
 		isInput?: boolean;
 		deleteButton?: React.ReactNode;
-		variant?: 'primary' | 'secondary';
+		colorScheme?: 'black' | 'gray' | 'orange' | 'yellow';
 	}
 > = ({
-	variant = 'primary',
+	colorScheme = 'gray',
 	imageProps,
 	size = 'md',
 	isInput = false,
@@ -26,6 +26,7 @@ export const Avatar: React.FC<
 			{...rest}
 			className={twMerge(
 				'relative rounded-full',
+				size === 'xs' && 'size-6',
 				size === 'sm' && 'size-8',
 				size === 'md' && 'size-10',
 				size === 'lg' && 'text-md size-14',
@@ -48,9 +49,10 @@ export const Avatar: React.FC<
 			<RadixAvatar.Fallback
 				className={twJoin(
 					'flex size-full items-center justify-center rounded-full',
-					variant === 'secondary'
-						? 'text-background bg-secondary-background'
-						: 'bg-muted text-background-foreground'
+					colorScheme === 'gray' && 'text-background bg-secondary-background',
+					colorScheme === 'black' && 'bg-muted text-background-foreground',
+					colorScheme === 'orange' && 'bg-primary text-background',
+					colorScheme === 'yellow' && 'bg-accent text-background-foreground'
 				)}
 			>
 				{children

@@ -1,3 +1,6 @@
+// External packages
+import { createElement } from "react";
+
 // Models
 import { resend } from "@/config/resend";
 import { findUserById } from "@/models/auth-model";
@@ -14,6 +17,9 @@ import { additionalInformationSchema } from "@repo/schemas/onboarding";
 
 // Transactional emails
 import { WelcomeEmail } from "@repo/transactional/welcome-email";
+
+// Types
+import { AppType } from "@repo/types/onboarding";
 
 export async function additionalInformationService(
   rawData: unknown,
@@ -68,6 +74,7 @@ export async function additionalInformationService(
     body: {
       title: "Account created",
       message: "Additional information saved successfully",
+      user,
       presignedURL,
     },
   };
@@ -94,14 +101,10 @@ export async function skipAdditionalInformationService(userId: string) {
     body: {
       title: "Account created",
       message: "Onboarding finished successfully",
+      user,
     },
   };
 }
-
-// app-type.service.ts
-
-import { AppType } from "@repo/types/onboarding";
-import { createElement } from "react";
 
 export async function appTypeService(rawType: unknown, userId: string) {
   const type = rawType as AppType;

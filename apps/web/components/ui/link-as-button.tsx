@@ -3,9 +3,9 @@ import Link, { LinkProps } from 'next/link';
 import { twJoin, twMerge } from 'tailwind-merge';
 
 export interface AdditionalButtonProps {
-	variant?: 'primary' | 'outline' | 'blank';
-	colorScheme?: 'orange' | 'yellow' | 'bland' | 'destructive';
-	size?: 'sm' | 'md' | 'lg';
+	variant?: 'primary' | 'outline' | 'blank' | 'ghost';
+	colorScheme?: 'orange' | 'yellow' | 'bland' | 'destructive' | 'success';
+	size?: 'xs' | 'sm' | 'md' | 'lg';
 	iconLeft?: React.ReactNode;
 	iconRight?: React.ReactNode;
 	isFullyRounded?: boolean;
@@ -28,20 +28,17 @@ export const getButtonClassNames = ({
 		'flex w-fit items-center justify-center text-center outline-none transition-[opacity] duration-200 hover:opacity-70 disabled:cursor-not-allowed disabled:opacity-50 cursor-pointer rounded-lg gap-3',
 
 		// Size
+		size === 'xs' && 'text-sm px-3 py-1.5',
 		size === 'sm' && 'px-4 py-2',
 		size === 'md' && 'px-6 py-3',
 		size === 'lg' && 'text-md px-8 py-5',
 
-		// Option to round maximally
 		isFullyRounded && 'rounded-full',
-
-		// Blank variant styles
-		variant === 'blank' && 'bg-transparent hover:backdrop-blur-2xl',
 
 		// Primary varaiant styles
 		variant === 'primary' &&
 			colorScheme === 'orange' &&
-			'bg-primary hover:bg-primary/90 -background text-background',
+			'bg-primary hover:bg-primary/90 text-background',
 		variant === 'primary' &&
 			colorScheme === 'yellow' &&
 			'bg-accent-foreground hover:bg-accent-foreground/90 text-background',
@@ -50,7 +47,10 @@ export const getButtonClassNames = ({
 			'bg-background-foreground text-background hover:bg-gray-foreground/90',
 		variant === 'primary' &&
 			colorScheme === 'destructive' &&
-			'bg-destructive/90 text-background-foreground hover:bg-destructive/80',
+			'bg-destructive/90 text-white hover:bg-destructive/80',
+		variant === 'primary' &&
+			colorScheme === 'success' &&
+			'bg-success/90 text-white hover:bg-success/80',
 
 		// Outline styles
 		variant === 'outline' && 'bg-transparent border',
@@ -65,7 +65,17 @@ export const getButtonClassNames = ({
 			'text-muted-foreground border-muted-foreground',
 		variant === 'outline' &&
 			colorScheme === 'destructive' &&
-			'text-destructive border-destructive'
+			'text-destructive border-destructive',
+		variant === 'outline' &&
+			colorScheme === 'success' &&
+			'text-success border-success',
+
+		// Ghost variant styles
+		variant === 'ghost' &&
+			'backdrop-blur-md transition hover:bg-white/20 hover:opacity-100 bg-transparent',
+
+		// Blank variant styles
+		variant === 'blank' && 'bg-transparent hover:backdrop-blur-2xl px-0 mx-0'
 	);
 
 export const LinkAsButton: React.FC<
@@ -85,7 +95,6 @@ export const LinkAsButton: React.FC<
 		{...rest}
 		className={twMerge(
 			getButtonClassNames({ colorScheme, size, isFullyRounded, variant }),
-
 			className
 		)}
 	>

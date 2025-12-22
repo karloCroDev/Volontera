@@ -1,7 +1,7 @@
 // External packages
 import { twMerge } from 'tailwind-merge';
 
-type DotProps = React.ComponentPropsWithoutRef<'div'> & {
+export type DotProps = React.ComponentPropsWithoutRef<'div'> & {
 	state?: 'success' | 'pending' | 'destructive';
 	size?: 'sm' | 'md' | 'lg';
 };
@@ -17,7 +17,7 @@ export const Dot: React.FC<DotProps> = ({
 		className={twMerge(
 			'rounded-full',
 			size === 'sm' && 'size-2',
-			size === 'md' && 'size-4',
+			size === 'md' && 'size-3',
 			size === 'lg' && 'size-6',
 			state === 'success' && 'bg-success',
 			state === 'pending' && 'bg-pending',

@@ -20,10 +20,14 @@ export default function PlaygroundPage() {
 	return (
 		<div>
 			<p>Hello world</p>
-
 			<LinkAsButton href="/playground" colorScheme="bland" variant="blank">
 				Button
 			</LinkAsButton>
+			<Button variant="blank">ss</Button>
+			<Button variant="ghost">ss</Button>
+			<button className="rounded-md px-4 py-2 text-white backdrop-blur-md transition hover:bg-white/20">
+				Ghost Button
+			</button>
 
 			<Layout className="gap-4">
 				{[...Array(6)].map((_, indx) => (
@@ -49,17 +53,10 @@ export default function PlaygroundPage() {
 					</LayoutColumn>
 				))}
 			</Layout>
-
 			<Input label="Enter your username..." className="w-96" />
-			<Input label="Enter your username..." className="mt-4 w-96" size="sm" />
-			<FilledInput placeholderValue="username" label="Karlo" className="w-96" />
-			<FilledInput
-				placeholderValue="surname"
-				label="Grgic"
-				className="w-96"
-				size="sm"
-			/>
-
+			<Input label="Enter your username..." className="mt-4 w-96" />
+			<FilledInput placeholderValue="username" className="w-96" />
+			<FilledInput placeholderValue="surname" className="w-96" size="sm" />
 			<Avatar
 				size="full"
 				isInput
@@ -72,7 +69,6 @@ export default function PlaygroundPage() {
 			>
 				Ana Horvat
 			</Avatar>
-
 			<Separator />
 			<div className="animate-in fade-in">Hello </div>
 			<Button
@@ -87,7 +83,6 @@ export default function PlaygroundPage() {
 			>
 				click me{' '}
 			</Button>
-
 			<Dialog
 				triggerChildren={<Button>Open Dialog</Button>}
 				title="Hello world"
@@ -95,7 +90,6 @@ export default function PlaygroundPage() {
 			>
 				Hello world
 			</Dialog>
-
 			<Tag variant="primary" colorScheme="accent">
 				{' '}
 				Hello wolrd
@@ -103,7 +97,6 @@ export default function PlaygroundPage() {
 			<Tag> Hello wolrd</Tag>
 			<SidebarItem isSelected>Cool</SidebarItem>
 			<SidebarItem>Cool</SidebarItem>
-
 			<Textarea label="sss" />
 			<AdditionalInformationForm />
 		</div>

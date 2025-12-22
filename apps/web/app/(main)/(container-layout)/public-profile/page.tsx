@@ -74,7 +74,7 @@ export default async function PublicProfilePage() {
 						imageProps={{
 							src: '',
 						}}
-						variant="secondary"
+						colorScheme="gray"
 					>
 						Organization Example
 					</Avatar>

@@ -11,6 +11,8 @@ import { LinkAsButton } from '@/components/ui/link-as-button';
 // Modules
 import { PostLike } from '@/components/ui/post/post-like';
 import { SharePost } from '@/components/ui/post/share-post';
+import { Dialog } from '@/components/ui/dialog';
+import { EditPost } from '@/components/ui/post/edit-post';
 
 export const Post: React.FC<{
 	title: string;
@@ -19,10 +21,10 @@ export const Post: React.FC<{
 	const splittedContent = content.split('.');
 	return (
 		<div className="border-input-border bg-muted rounded-xl border px-8 py-6">
-			<div className="mb-8 flex justify-between">
-				<div className="flex items-center gap-4">
+			<div className="mb-8 flex gap-4">
+				<div className="flex items-center gap-2">
 					<Avatar
-						variant="secondary"
+						colorScheme="gray"
 						imageProps={{
 							src: '',
 						}}
@@ -36,9 +38,15 @@ export const Post: React.FC<{
 					</div>
 				</div>
 
-				<LinkAsButton href="/home/explore" colorScheme="yellow" size="sm">
+				<LinkAsButton
+					href="/home/explore"
+					colorScheme="yellow"
+					size="sm"
+					className="ml-auto"
+				>
 					Explore{' '}
 				</LinkAsButton>
+				<EditPost />
 			</div>
 			<h4 className="mb-4 text-lg font-semibold">{title}</h4>
 			<Collapsible
