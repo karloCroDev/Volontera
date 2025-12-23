@@ -1,1 +1,3 @@
-export type AppType = "USER" | "ORGANIZATION";
+import { User } from "@repo/database";
+
+export type AppType = User["role"];

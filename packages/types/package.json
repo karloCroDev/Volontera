@@ -6,5 +6,8 @@
   "description": "Shared types between backend and frontend",
   "exports": {
     "./*": "./src/*.ts"
+  },
+  "dependencies": {
+    "@repo/database": "*"
   }
 }

@@ -1,15 +1,7 @@
 import { ServerHandleResponse, SuccessfulResponse } from "./general";
-import { User } from "./auth";
+import { Notification } from "@repo/database";
 
 export type NotificationResponse = {
-  notifications: {
-    id: string;
-    userId: string;
-    content: string;
-    isRead: boolean;
-    createdAt: Date;
-    updatedAt: Date;
-    user: User;
-  }[];
+  notifications: Notification[];
 } & SuccessfulResponse &
   ServerHandleResponse<true>;

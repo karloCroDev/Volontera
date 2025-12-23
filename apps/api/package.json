@@ -7,7 +7,6 @@
     "@aws-sdk/client-s3": "^3.879.0",
     "@aws-sdk/s3-request-presigner": "^3.879.0",
     "@google/genai": "^1.31.0",
-    "@prisma/client": "^6.16.3",
     "@react-email/render": "^2.0.0",
     "@repo/transactional": "*",
     "@types/bcrypt": "^6.0.0",
@@ -41,13 +40,13 @@
     "zod": "^4.0.17"
   },
   "devDependencies": {
+    "@repo/database": "*",
     "@repo/permissons": "*",
     "@repo/schemas": "*",
     "@repo/types": "*",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.3",
     "@types/node": "^24.3.0",
-    "prisma": "^6.16.3",
     "ts-node-dev": "^2.0.0",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.9.2"
