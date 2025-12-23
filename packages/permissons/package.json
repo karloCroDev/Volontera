@@ -6,5 +6,8 @@
   "dependencies": {
     "@casl/ability": "^6.7.3",
     "@casl/prisma": "^1.5.2"
+  },
+  "devDependencies": {
+    "@repo/database": "*"
   }
 }
