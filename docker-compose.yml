@@ -2,14 +2,14 @@ services:
   db:
     image: postgres:15-alpine
     environment:
-      POSTGRES_PASSWORD: adminusr
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     ports:
-      - "5432:5432"
+      - "${POSTGRES_PORT}:5432"
 
   redis:
     image: redis:alpine
     ports:
-      - "6379:6379"
+      - "${REDIS_PORT}:6379"
 
   api:
     build:
@@ -17,7 +17,7 @@ services:
       dockerfile: apps/api/Dockerfile
     env_file: .env
     ports:
-      - "4000:4000"
+      - "${API_PORT}:4000"
     depends_on:
       - db
       - redis
@@ -27,5 +27,5 @@ services:
       context: .
       dockerfile: apps/web/Dockerfile
     ports:
-      - "3000:3000"
+      - "${WEB_PORT}:3000"
     env_file: .env

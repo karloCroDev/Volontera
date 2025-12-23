@@ -24,6 +24,7 @@ import { settingsRoutes } from "@/routes/settings-routes";
 import { helpRoutes } from "@/routes/help-routes";
 import { paymentRoutes } from "@/routes/payment-routes";
 import { notificationRoutes } from "@/routes/notification-routes";
+import { initalizeRedisClient } from "@/config/redis";
 
 app.use(
   cors({
@@ -55,6 +56,13 @@ app.use(
 // Test
 app.get("/protected-user", authMiddleware, userMiddleware, (req, res) => {
   res.json({ message: "Awesome you accessed the proteced route" });
+});
+
+app.post("/test", async (req, res) => {
+  // Redis: works fine!
+  const client = await initalizeRedisClient();
+  console.log(client);
+  res.status(200).json({ message: "Redis client initialized" });
 });
 
 app.get(
