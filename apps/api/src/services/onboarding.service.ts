@@ -1,6 +1,9 @@
 // External packages
 import { createElement } from "react";
 
+// Database
+import { User } from "@repo/database";
+
 // Models
 import { resend } from "@/config/resend";
 import { findUserById } from "@/models/auth-model";
@@ -10,7 +13,6 @@ import {
   updateUserAppType,
   updateUserOnboarding,
 } from "@/models/onboarding.model";
-import { User } from "@prisma/client";
 
 // Schemas
 import { additionalInformationSchema } from "@repo/schemas/onboarding";

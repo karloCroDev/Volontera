@@ -1,5 +1,5 @@
 // External packages
-import { User } from "@prisma/client";
+import { User } from "@repo/database";
 
 // Lib
 import { getLlmResponse, safetyCheckLlmReponse } from "@/lib/llm-response";

@@ -1,10 +1,7 @@
 // External packages
-import { User } from "@prisma/client";
+import { User, prisma } from "@repo/database";
 import { Request, Response } from "express";
 import Stripe from "stripe";
-
-// Lib
-import { prisma } from "@/config/prisma";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 

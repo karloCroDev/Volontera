@@ -1,6 +1,8 @@
 // External packages
 import Stripe from "stripe";
-import { User } from "@prisma/client";
+
+// Database
+import { User } from "@repo/database";
 
 // Models
 import {

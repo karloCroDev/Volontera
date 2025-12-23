@@ -1,8 +1,5 @@
-// External packages
-import { User, Notification } from "@prisma/client";
-
-// Config
-import { prisma } from "@/config/prisma";
+// Database
+import { prisma, User, Notification } from "@repo/database";
 
 export async function retrieveUserNotifications(userId: User["id"]) {
   return await prisma.notification.findMany({

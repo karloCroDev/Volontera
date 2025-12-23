@@ -1,6 +1,8 @@
 // External packages
-import { User } from "@prisma/client";
 import { createElement } from "react";
+
+// Database
+import { User } from "@repo/database";
 
 // Models
 import {

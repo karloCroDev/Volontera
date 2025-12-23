@@ -1,7 +1,9 @@
 // External packages
-import { User } from "@prisma/client";
 import bcrypt from "bcrypt";
 import { createElement } from "react";
+
+// Database
+import { User } from "@repo/database";
 
 // Services
 import { createUploadUrl, deleteImage } from "@/models/image.model";

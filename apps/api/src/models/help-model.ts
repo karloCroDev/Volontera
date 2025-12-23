@@ -1,8 +1,5 @@
-// Exteral packages
-import { User, Help } from "@prisma/client";
-
-// Config
-import { prisma } from "@/config/prisma";
+// Database
+import { prisma, User, Help } from "@repo/database";
 
 export async function addUsersQuestionWithLLMResponse({
   userId,
