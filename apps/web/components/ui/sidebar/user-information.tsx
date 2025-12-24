@@ -44,7 +44,7 @@ export const UserInformation: React.FC<{
 		user.subscriptionTier[0]?.toUpperCase() +
 		user.subscriptionTier.slice(1).toLowerCase();
 
-	console.log(user.image);
+	console.log(user);
 	return (
 		<>
 			<p className="text-muted-foreground mb-3 mt-auto text-start">

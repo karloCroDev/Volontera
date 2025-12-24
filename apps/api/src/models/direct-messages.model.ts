@@ -1,7 +1,7 @@
 // Database
 import { prisma, User, DirectMessagesConversations } from "@repo/database";
 
-export async function listAllDirectMessagesConversation({
+export async function listAllDirectMessagesConversationService({
   userId,
 }: {
   userId: User["id"];
@@ -24,8 +24,24 @@ export async function listAllDirectMessagesConversation({
     orderBy: [{ updatedAt: "desc" }, { createdAt: "desc" }],
   });
 }
+export async function updateDirectMessagesConversationLastMessageService({
+  conversationId,
+  lastMessage,
+}: {
+  conversationId: DirectMessagesConversations["id"];
+  lastMessage: DirectMessagesConversations["lastMessage"];
+}) {
+  return prisma.directMessagesConversations.update({
+    where: {
+      id: conversationId,
+    },
+    data: {
+      lastMessage,
+    },
+  });
+}
 
-export async function getDirectMessagesConversationById({
+export async function getDirectMessagesConversationByIdService({
   conversationId,
 }: {
   conversationId: DirectMessagesConversations["id"];
@@ -49,7 +65,7 @@ export async function getDirectMessagesConversationById({
   });
 }
 
-export async function createDirectMessagesConversation({
+export async function createDirectMessagesConversationService({
   participantIds,
 }: {
   participantIds: User["id"][];
@@ -72,24 +88,7 @@ export async function createDirectMessagesConversation({
   });
 }
 
-export async function updateDirectMessagesConversationLastMessage({
-  conversationId,
-  lastMessage,
-}: {
-  conversationId: DirectMessagesConversations["id"];
-  lastMessage: DirectMessagesConversations["lastMessage"];
-}) {
-  return prisma.directMessagesConversations.update({
-    where: {
-      id: conversationId,
-    },
-    data: {
-      lastMessage,
-    },
-  });
-}
-
-export async function createMessageInDirectMessagesConversation({
+export async function createMessageInDirectMessagesConversationService({
   conversationId,
   authorId,
   content,
@@ -103,6 +102,14 @@ export async function createMessageInDirectMessagesConversation({
       conversationId,
       authorId,
       content,
+    },
+  });
+}
+
+export async function listAllUsers() {
+  return prisma.user.findMany({
+    omit: {
+      password: true,
     },
   });
 }
