@@ -13,6 +13,6 @@
     "db-deploy": "prisma migrate deploy"
   },
   "exports": {
-    ".": "./prisma/src/index.ts"
+    ".": "./src/index.ts"
   }
 }
