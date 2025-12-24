@@ -2,6 +2,7 @@
 import cookieParser from "cookie-parser";
 import express from "express";
 import cors from "cors";
+import helmet from "helmet";
 
 // Middleware
 import { authMiddleware } from "@/middleware/auth-middleware";
@@ -19,12 +20,15 @@ import { oAuthGoogleHandle } from "@/config/oAuth-google";
 // Routes
 import { authRoutes } from "@/routes/auth-routes";
 // import { paymentRoutes } from "@/routes/payment-routes";
-import { onboardingRoutes } from "@/routes/onboarding-routes";
-import { settingsRoutes } from "@/routes/settings-routes";
-import { helpRoutes } from "@/routes/help-routes";
-import { paymentRoutes } from "@/routes/payment-routes";
-import { notificationRoutes } from "@/routes/notification-routes";
+import { onboardingRoutes } from "@/routes/onboarding.routes";
+import { settingsRoutes } from "@/routes/settings.routes";
+import { helpRoutes } from "@/routes/help.routes";
+import { paymentRoutes } from "@/routes/payment.routes";
+import { notificationRoutes } from "@/routes/notification.routes";
 import { initalizeRedisClient } from "@/config/redis";
+
+// Security middleware
+app.use(helmet());
 
 app.use(
   cors({

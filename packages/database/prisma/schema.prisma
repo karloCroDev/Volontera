@@ -5,8 +5,8 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider = "prisma-client-js"
-  output   = "./../generated/prisma"
+  provider   = "prisma-client-js"
+  output     = "./../generated/prisma"
   engineType = "binary"
 }
 
@@ -14,6 +14,7 @@ datasource db {
   provider = "postgresql"
 }
 
+// User model
 enum UserRole {
   USER
   ORGANIZATION
@@ -62,12 +63,13 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  // Providers information
+  // Providers (google, discord etc.) information
   accounts Accounts[]
 
-  // Help relation
-  help          Help[]
-  notifications Notification[]
+  //  Relations
+  help                     Help[]
+  notifications            Notification[]
+  conversationParticipants ConversationParticipants[]
 }
 
 model Accounts {
@@ -87,6 +89,7 @@ enum SenderType {
   AI
 }
 
+// Help models
 model Help {
   id     String @id @default(cuid())
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -98,6 +101,7 @@ model Help {
   updatedAt  DateTime   @updatedAt
 }
 
+// Notification models
 model Notification {
   id     String @id @default(cuid())
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -107,4 +111,38 @@ model Notification {
   isRead    Boolean  @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+// Direct messages models (1-on-1 conversations, not groups)
+model DirectMessagesConversations {
+  id           String                     @id @default(cuid())
+  lastMessage  String?
+  participants ConversationParticipants[]
+
+  directMessages DirectMessages[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// n:n explicit relation table between users included in conversation (only 2 for now)
+model ConversationParticipants {
+  id             String                      @id @default(cuid())
+  conversation   DirectMessagesConversations @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  conversationId String
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
+
+  @@unique([conversationId, userId])
+}
+
+model DirectMessages {
+  id             String                      @id @default(cuid())
+  conversation   DirectMessagesConversations @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  conversationId String
+  authorId       String
+  content        String
+  createdAt      DateTime                    @default(now())
+  updatedAt      DateTime                    @updatedAt
 }
