@@ -1,16 +1,21 @@
 services:
   db:
     image: postgres:15-alpine
+    env_file:
+      - ./apps/api/.env
     environment:
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: drzavno
     ports:
-      - "${POSTGRES_PORT}:5432"
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
 
   redis:
     image: redis:alpine
     ports:
-      - "${REDIS_PORT}:6379"
+      - "${REDIS_PORT:-6379}:6379"
+    volumes:
+      - redis_data:/data
 
   api:
     build:
@@ -19,9 +24,8 @@ services:
     env_file: ./apps/api/.env
     environment:
       REDIS_URL: redis://redis:6379
-      DATABASE_URL: postgresql://postgres:${POSTGRES_PASSWORD}@db:5432/drzavno
     ports:
-      - "${API_PORT}:4000"
+      - "${API_PORT:-4000}:4000"
     depends_on:
       - db
       - redis
@@ -32,6 +36,10 @@ services:
       dockerfile: apps/web/Dockerfile
     env_file: ./apps/web/.env.local
     ports:
-      - "${WEB_PORT}:3000"
+      - "${WEB_PORT:-3000}:3000"
     depends_on:
       - api
+
+volumes:
+  postgres_data:
+  redis_data:
