@@ -12,6 +12,7 @@ export const Avatar: React.FC<
 		colorScheme?: 'black' | 'gray' | 'orange' | 'yellow';
 	}
 > = ({
+	/* eslint react/prop-types: 0 */
 	colorScheme = 'gray',
 	imageProps,
 	size = 'md',

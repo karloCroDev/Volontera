@@ -1,4 +1,4 @@
-FROM node:20-alpine
+FROM node:22-alpine
 WORKDIR /app
 
 # Kopiram sve bitno iz web foldera
@@ -10,5 +10,6 @@ RUN yarn turbo run build --filter=web
 
 EXPOSE 3000
 
+WORKDIR /app/apps/web
 
-CMD ["yarn", "workspace", "web", "start"]
+CMD ["yarn", "start", "--", "-p", "3000"]

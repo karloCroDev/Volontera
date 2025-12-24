@@ -30,7 +30,7 @@ import { SessionSuccessResponse } from '@repo/types/auth';
 
 export const Sidebar: React.FC<{
 	user: SessionSuccessResponse;
-}> = ({ user }) => {
+}> = ({ /* eslint react/prop-types: 0 */ user }) => {
 	const { desktopOpen, mobileOpen, setMobileOpen, setDesktopOpen } =
 		useSidebarContext();
 	return (

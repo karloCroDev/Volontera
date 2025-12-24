@@ -5,7 +5,13 @@ export const Tag: React.FC<
 		variant?: 'primary' | 'outline';
 		colorScheme?: 'red' | 'green' | 'gray' | 'accent';
 	}
-> = ({ variant = 'primary', colorScheme = 'gray', className, ...rest }) => (
+> = ({
+	/* eslint react/prop-types: 0 */
+	variant = 'primary',
+	colorScheme = 'gray',
+	className,
+	...rest
+}) => (
 	<div
 		{...rest}
 		className={twMerge(

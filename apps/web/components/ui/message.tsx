@@ -8,7 +8,15 @@ export const Message: React.FC<
 		date: string;
 		variant?: 'primary' | 'secondary';
 	}
-> = ({ avatar, date, children, variant = 'primary', className, ...rest }) => (
+> = ({
+	/* eslint react/prop-types: 0 */
+	avatar,
+	date,
+	children,
+	variant = 'primary',
+	className,
+	...rest
+}) => (
 	<>
 		<div
 			{...rest}

@@ -3,7 +3,11 @@ import { twMerge } from 'tailwind-merge';
 
 export const RadioIconVisual: React.FC<
 	React.ComponentPropsWithoutRef<'div'>
-> = ({ className, ...rest }) => {
+> = ({
+	/* eslint react/prop-types: 0 */
+	className,
+	...rest
+}) => {
 	return (
 		<div
 			{...rest}

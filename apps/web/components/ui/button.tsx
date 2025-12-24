@@ -14,6 +14,7 @@ import { Spinner } from '@/components/ui/spinner';
 export const Button: React.FC<
 	React.ComponentPropsWithoutRef<'button'> & ButtonProps & AdditionalButtonProps
 > = ({
+	/* eslint react/prop-types: 0 */
 	isLoading,
 	colorScheme = 'orange',
 	variant = 'primary',

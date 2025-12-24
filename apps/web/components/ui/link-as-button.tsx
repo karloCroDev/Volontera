@@ -81,6 +81,7 @@ export const getButtonClassNames = ({
 export const LinkAsButton: React.FC<
 	React.ComponentPropsWithoutRef<'a'> & LinkProps & AdditionalButtonProps
 > = ({
+	/* eslint react/prop-types: 0 */
 	colorScheme = 'orange',
 	variant = 'primary',
 	size = 'md',

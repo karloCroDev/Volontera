@@ -6,8 +6,7 @@ import { Avatar } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Collapsible } from '@/components/ui/collapsible';
 import { Tag } from '@/components/ui/tag';
-import { useSession } from '@/hooks/data/auth';
-import { SessionSuccessResponse } from '@repo/types/auth';
+
 import {
 	ChevronRight,
 	Edit,
@@ -26,7 +25,12 @@ export const Comment: React.FC<
 		numberOfReplies: number;
 		// user: SessionSuccessResponse; // Change the type of user when setting the session data
 	}
-> = ({ comment, numberOfReplies, numberOfLikes }) => {
+> = ({
+	/* eslint react/prop-types: 0 */
+	comment,
+	numberOfReplies,
+	numberOfLikes,
+}) => {
 	return (
 		<div className="border-b-input-border border-b py-4">
 			<div className="flex items-center gap-4">

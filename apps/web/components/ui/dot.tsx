@@ -7,6 +7,7 @@ export type DotProps = React.ComponentPropsWithoutRef<'div'> & {
 };
 
 export const Dot: React.FC<DotProps> = ({
+	/* eslint react/prop-types: 0 */
 	size = 'md',
 	state = 'pending',
 	className,

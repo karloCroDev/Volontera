@@ -1,7 +1,6 @@
 'use client';
 
 // External packages
-import { ChevronDown } from 'lucide-react';
 import * as React from 'react';
 import {
 	ComboBox as AriaComboBox,
@@ -13,7 +12,6 @@ import {
 } from 'react-aria-components';
 
 // Components
-import { Button } from '@/components/ui/button';
 import { Input, InputProps } from '@/components/ui/input';
 import { twJoin } from 'tailwind-merge';
 

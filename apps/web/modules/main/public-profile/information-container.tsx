@@ -5,7 +5,13 @@ export const InformationContainer: React.FC<
 	React.ComponentPropsWithoutRef<'div'> & {
 		title?: string;
 	}
-> = ({ title, children, className, ...rest }) => {
+> = ({
+	/* eslint react/prop-types: 0 */
+	title,
+	children,
+	className,
+	...rest
+}) => {
 	return (
 		<div
 			{...rest}

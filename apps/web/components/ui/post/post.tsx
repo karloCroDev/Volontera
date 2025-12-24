@@ -11,7 +11,6 @@ import { LinkAsButton } from '@/components/ui/link-as-button';
 // Modules
 import { PostLike } from '@/components/ui/post/post-like';
 import { SharePost } from '@/components/ui/post/share-post';
-import { Dialog } from '@/components/ui/dialog';
 import { EditPost } from '@/components/ui/post/edit-post';
 
 export const Post: React.FC<{

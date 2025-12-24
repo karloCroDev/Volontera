@@ -1,5 +1,5 @@
 // External packages
-import { ArrowLeft, CloudCheck } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import { BookmarkX } from 'lucide-react';
 
 // Components

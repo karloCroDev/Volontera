@@ -1,11 +1,6 @@
 // Components
-import { Tag } from '@/components/ui/tag';
-import { SharePost } from '@/components/ui/post/share-post';
 import { Avatar } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
-import Link from 'next/link';
-import { Layout, LayoutColumn } from '@/components/ui/layout-grid';
-import { Dot } from '@/components/ui/dot';
 import { OrganizationRoutingHeader } from '@/modules/main/organization/common/organization-routing-header';
 import { JoinDialog } from '@/modules/main/organization/common/join-dialog';
 

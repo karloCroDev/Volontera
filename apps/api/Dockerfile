@@ -1,4 +1,4 @@
-FROM node:20-alpine
+FROM node:22-alpine
 WORKDIR /app
 
 # Copy everything from the root of your project
@@ -10,6 +10,8 @@ RUN yarn install
 # Generate Prisma and build the API
 RUN yarn turbo run build --filter=api
 
-EXPOSE 8080
+WORKDIR /app/apps/api
 
-CMD ["node", "src/server.ts"]
+EXPOSE 4000
+
+CMD ["yarn", "dev"]

@@ -11,7 +11,6 @@ import { toast } from '@/lib/utils/toast';
 import { Button } from '@/components/ui/button';
 import { Dialog } from '@/components/ui/dialog';
 import { Tag } from '@/components/ui/tag';
-import { Collapsible } from '@/components/ui/collapsible';
 import { SidebarItem } from '@/components/ui/sidebar/sidebar-items';
 import { Textarea } from '@/components/ui/textarea';
 import { AdditionalInformationForm } from '@/modules/onboarding/additional-information-form';

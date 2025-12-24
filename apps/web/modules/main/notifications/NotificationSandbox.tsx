@@ -36,6 +36,7 @@ export const NotificationSandbox: React.FC<{
 	console.log(ids);
 	const { mutate, isPending } = useDeleteNotifications();
 
+	console.log(notifications);
 	const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 		mutate(
@@ -92,58 +93,62 @@ export const NotificationSandbox: React.FC<{
 			<Accordion
 				defaultValue="item-0"
 				type="single"
-				items={notifications.map((notification) => ({
-					value: `item-${notification.id}`,
-					trigger: (
-						<div className="border-input-border flex w-full items-center gap-4 border-t px-6 py-3 lg:gap-6">
-							<Checkbox
-								className="group"
-								isSelected={ids.includes(notification.id)}
-								onChange={(val) => {
-									if (val) {
-										setIds((prev) => [...prev, notification.id]);
-									} else {
-										setIds((prev) =>
-											prev.filter((id) => id !== notification.id)
-										);
-									}
-								}}
-							>
-								<CheckboxVisually
-									variant={notification.isRead ? 'suiccess' : 'secondary'}
-								/>
-							</Checkbox>
+				items={
+					notifications.length > 0
+						? notifications.map((notification) => ({
+								value: `item-${notification.id}`,
+								trigger: (
+									<div className="border-input-border flex w-full items-center gap-4 border-t px-6 py-3 lg:gap-6">
+										<Checkbox
+											className="group"
+											isSelected={ids.includes(notification.id)}
+											onChange={(val) => {
+												if (val) {
+													setIds((prev) => [...prev, notification.id]);
+												} else {
+													setIds((prev) =>
+														prev.filter((id) => id !== notification.id)
+													);
+												}
+											}}
+										>
+											<CheckboxVisually
+												variant={notification.isRead ? 'suiccess' : 'secondary'}
+											/>
+										</Checkbox>
 
-							<Link href="/" className="flex items-center gap-4">
-								<Avatar
-									size="sm"
-									imageProps={{
-										src: notification.user.image,
-									}}
-								>
-									{notification.user.firstName +
-										' ' +
-										notification.user.lastName}
-								</Avatar>
+										<Link href="/" className="flex items-center gap-4">
+											<Avatar
+												size="sm"
+												imageProps={{
+													src: notification?.user.image || '',
+												}}
+											>
+												{notification.user.firstName +
+													' ' +
+													notification.user.lastName}
+											</Avatar>
 
-								<p className="text-muted-foreground text-sm underline-offset-2 hover:underline">
-									{notification.user.firstName +
-										' ' +
-										notification.user.lastName}
-								</p>
-							</Link>
+											<p className="text-muted-foreground text-sm underline-offset-2 hover:underline">
+												{notification.user.firstName +
+													' ' +
+													notification.user.lastName}
+											</p>
+										</Link>
 
-							<ChevronDown className="ml-auto transition-transform duration-300 group-data-[state=closed]:rotate-0 group-data-[state=open]:rotate-180" />
-						</div>
-					),
-					contentProps: {
-						children: (
-							<div className="p-4">
-								<p>{notification.content}</p>
-							</div>
-						),
-					},
-				}))}
+										<ChevronDown className="ml-auto transition-transform duration-300 group-data-[state=closed]:rotate-0 group-data-[state=open]:rotate-180" />
+									</div>
+								),
+								contentProps: {
+									children: (
+										<div className="p-4">
+											<p>{notification.content}</p>
+										</div>
+									),
+								},
+							}))
+						: []
+				}
 			/>
 		</Form>
 	);

@@ -1,7 +1,6 @@
 'use client';
 
 // External packages
-import Link from 'next/link';
 import * as React from 'react';
 
 // Components

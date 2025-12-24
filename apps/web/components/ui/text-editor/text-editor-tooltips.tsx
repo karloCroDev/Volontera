@@ -3,7 +3,6 @@
 // External packages
 import {
 	Bold,
-	CaseLower,
 	Heading1,
 	Heading2,
 	Italic,
@@ -20,7 +19,11 @@ import { Image } from 'lucide-react';
 export const TextEditorTooltips: React.FC<{
 	editor: EditorArgs;
 	hasAnImage: boolean;
-}> = ({ editor, hasAnImage }) => {
+}> = ({
+	/* eslint react/prop-types: 0 */
+	editor,
+	hasAnImage,
+}) => {
 	return (
 		<div className="border-input-border mb-1 flex items-center gap-3 overflow-x-scroll border-b pb-2">
 			<Button

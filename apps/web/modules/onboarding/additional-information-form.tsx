@@ -108,7 +108,8 @@ export const AdditionalInformationForm = withReactQueryProvider(() => {
 									imageProps={{
 										src:
 											(currentImage && URL.createObjectURL(currentImage)) ||
-											user?.image,
+											user?.image ||
+											'',
 										alt: 'Avatar',
 									}}
 									size="full"
