@@ -142,7 +142,7 @@ export async function forgotPasswordService(rawData: unknown) {
     };
   }
 
-  const resetLink = `${process.env.NEXT_PORT}/auth/login/forgot-password/reset-password?token=${resetToken}`;
+  const resetLink = `${process.env.WEB_URL}/auth/login/forgot-password/reset-password?token=${resetToken}`;
 
   const { error } = await resend.emails.send({
     from: process.env.RESEND_FROM!,

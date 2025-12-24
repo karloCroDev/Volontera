@@ -14,7 +14,7 @@ export async function serverFetch<T = unknown>({
 
 	const token = cookieStore.get('token')?.value;
 
-	const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/${url}`, {
+	const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL!}/${url}`, {
 		...init,
 		headers: {
 			'Content-Type': 'application/json',

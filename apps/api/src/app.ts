@@ -28,7 +28,7 @@ import { initalizeRedisClient } from "@/config/redis";
 
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: process.env.WEB_URL!,
     credentials: true,
   })
 );

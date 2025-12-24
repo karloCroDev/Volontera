@@ -1,12 +1,14 @@
 FROM node:22-alpine
 WORKDIR /app
 
-# Kopiram sve bitno iz web foldera
 COPY . .
 
-# Instaliram sve dependcije
-RUN yarn install
-RUN yarn turbo run build --filter=web
+# Install dependencies (uses BuildKit cache for faster rebuilds)
+RUN --mount=type=cache,target=/usr/local/share/.cache/yarn \
+	yarn install --frozen-lockfile
+
+RUN --mount=type=cache,target=/app/.turbo \
+	yarn turbo run build --filter=web
 
 EXPOSE 3000
 
