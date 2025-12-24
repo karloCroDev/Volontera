@@ -1,3 +1,5 @@
 export default function LandingPage() {
-  return <div className="text-white bg-black-500">Landing Page</div>;
+	return (
+		<div className="bg-black-500 text-white">Work for fuck sake ssPage</div>
+	);
 }

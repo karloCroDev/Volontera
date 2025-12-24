@@ -1,5 +1,5 @@
 // External packages
-import { type User } from "@prisma/client";
+import { User } from "@repo/database";
 
 export interface JwtUser {
   userId: string;

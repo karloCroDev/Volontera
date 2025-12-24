@@ -2,11 +2,7 @@
 
 // External packages
 import * as React from 'react';
-import {
-	Button as AriaButton,
-	Form,
-	Input as AriaInput,
-} from 'react-aria-components';
+import { Button as AriaButton, Form } from 'react-aria-components';
 import { Plus } from 'lucide-react';
 
 // Components

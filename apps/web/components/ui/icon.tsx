@@ -17,7 +17,12 @@ export const Icon: React.FC<
 	React.ComponentPropsWithoutRef<'svg'> & {
 		name: IconNames;
 	}
-> = ({ name, className, ...rest }) => (
+> = ({
+	/* eslint react/prop-types: 0 */
+	name,
+	className,
+	...rest
+}) => (
 	<>
 		{name === 'google' && (
 			<Icons.GoogleIcon

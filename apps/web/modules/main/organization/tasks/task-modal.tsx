@@ -2,7 +2,7 @@
 
 // External packages
 import * as React from 'react';
-import { Checkbox, CheckboxGroup, Form } from 'react-aria-components';
+import { Checkbox, CheckboxGroup } from 'react-aria-components';
 
 // Components
 import { Dialog } from '@/components/ui/dialog';

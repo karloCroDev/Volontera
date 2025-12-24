@@ -1,8 +1,5 @@
-// External packages
-import { User } from "@prisma/client";
-
-// Config
-import { prisma } from "@/config/prisma";
+// Database
+import { User, prisma } from "@repo/database";
 
 export async function assignSubscription({
   userId,

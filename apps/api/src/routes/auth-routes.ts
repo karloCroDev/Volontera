@@ -57,7 +57,7 @@ authRoutes.get(
 authRoutes.get(
   "/google/callback",
   oAuthGoogleHandle.authenticate("google", {
-    failureRedirect: `${process.env.NEXT_PORT}/auth/login`,
+    failureRedirect: `${process.env.WEB_URL}/auth/login`,
     session: false,
   }),
   (req, res) => {
@@ -69,7 +69,7 @@ authRoutes.get(
       onboardingFinished: req.user.onboardingFinished,
     });
 
-    res.redirect(`${process.env.NEXT_PORT}/home`);
+    res.redirect(`${process.env.WEB_URL}/home`);
   }
 );
 

@@ -10,6 +10,7 @@ import {
 export const AnchorAsButton: React.FC<
 	React.ComponentPropsWithoutRef<'a'> & AdditionalButtonProps
 > = ({
+	/* eslint react/prop-types: 0 */
 	colorScheme = 'orange',
 	variant = 'primary',
 	size = 'sm',

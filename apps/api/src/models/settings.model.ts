@@ -1,9 +1,8 @@
 // External packages
-import { User } from "@prisma/client";
 import bcrypt from "bcrypt";
 
-// Lib
-import { prisma } from "@/config/prisma";
+// Database
+import { prisma, User } from "@repo/database";
 
 export async function updateUsersInformation({
   data,

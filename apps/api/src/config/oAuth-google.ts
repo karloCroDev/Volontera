@@ -2,18 +2,18 @@
 import passport from "passport";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 
-// Lib
-import { prisma } from "@/config/prisma";
-
 // Root types
 import { JwtUser } from "@/@types/jwt";
+
+// Database
+import { prisma } from "@repo/database";
 
 export const oAuthGoogleHandle = passport.use(
   new GoogleStrategy(
     {
       clientID: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-      callbackURL: "http://localhost:4000/auth/google/callback",
+      callbackURL: `${process.env.API_URL}/auth/google/callback`,
     },
     async (accessToken, refreshToken, profile, done) => {
       try {

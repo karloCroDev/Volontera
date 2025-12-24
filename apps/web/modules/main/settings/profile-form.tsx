@@ -104,7 +104,8 @@ export const ProfileForm: React.FC<{
 										imageProps={{
 											src:
 												(currentImage && URL.createObjectURL(currentImage)) ||
-												user?.image,
+												user?.image ||
+												'',
 											alt: 'Avatar',
 										}}
 										size="4xl"

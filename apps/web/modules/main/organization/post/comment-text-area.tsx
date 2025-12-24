@@ -21,10 +21,10 @@ export const CommentTextArea = withReactQueryProvider(() => {
 			iconsLeft={
 				<Avatar
 					imageProps={{
-						src: user?.image,
+						src: user?.image || '',
 					}}
 					size="sm"
-					variant="secondary"
+					colorScheme="gray"
 					className="mt-4 self-start"
 				>
 					{user?.fullname}

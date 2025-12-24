@@ -1,6 +1,8 @@
 // External packages
 import Stripe from "stripe";
-import { User } from "@prisma/client";
+
+// Database
+import { User } from "@repo/database";
 
 // Models
 import {
@@ -154,8 +156,8 @@ export async function checkoutService({
   }
   const session = await stripe.checkout.sessions.create({
     mode: "subscription",
-    success_url: `${process.env.NEXT_PORT}/select-plan/success`,
-    cancel_url: `${process.env.NEXT_PORT}/select-plan/cancel`,
+    success_url: `${process.env.WEB_URL}/select-plan/success`,
+    cancel_url: `${process.env.WEB_URL}/select-plan/cancel`,
     line_items: [
       {
         price: priceId,
@@ -190,7 +192,7 @@ export async function billingService({ userId }: { userId: User["id"] }) {
 
   const session = await stripe.billingPortal.sessions.create({
     customer: customerId,
-    return_url: `${process.env.NEXT_PORT}/select-plan`,
+    return_url: `${process.env.WEB_URL}/select-plan`,
   });
   return {
     status: 200,

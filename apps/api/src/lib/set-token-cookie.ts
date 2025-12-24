@@ -1,7 +1,9 @@
 // External packages
 import jwt from "jsonwebtoken";
 import { Response } from "express";
-import { User } from "@prisma/client";
+
+// Database
+import { User } from "@repo/database";
 
 export function generateTokenAndSetCookie({
   res,

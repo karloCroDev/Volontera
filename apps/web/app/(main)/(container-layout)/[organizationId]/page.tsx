@@ -67,10 +67,10 @@ export default function OrganizationId() {
 								Additional links
 							</h4>
 							<div className="mt-3 flex gap-4">
-								<a href="/">
+								<a href="http://localhost:3000">
 									<Tag colorScheme="gray">http://localhost:3000</Tag>
 								</a>
-								<a href="/">
+								<a href="http://localhost:3000">
 									<Tag colorScheme="gray">http://localhost:3000</Tag>
 								</a>
 							</div>

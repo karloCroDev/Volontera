@@ -1,8 +1,5 @@
-// External packages
-import { User } from "@prisma/client";
-
-// Lib
-import { prisma } from "@/config/prisma";
+// Database
+import { prisma, User } from "@repo/database";
 
 export async function findUserByEmail(email: string) {
   return prisma.user.findUnique({

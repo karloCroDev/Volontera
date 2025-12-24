@@ -9,10 +9,7 @@ import { Message } from '@/components/ui/message';
 import { getSession } from '@/lib/server/auth';
 
 // Modules
-import { ListUsers } from '@/modules/main/direct-messages/list-users';
 import { MessageForm } from '@/modules/main/direct-messages/message-form';
-import { MessageWrapper } from '@/modules/main/direct-messages/message-wrapper';
-import { UsersInfoHeader } from '@/modules/main/direct-messages/users-info-header';
 
 export default async function GroupChatPage() {
 	const user = await getSession();

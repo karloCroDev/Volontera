@@ -91,7 +91,7 @@ export const HelpMessageForm: React.FC<{
 
 	React.useEffect(() => {
 		setMutating(isPending);
-	}, [isPending]);
+	}, [isPending, setMutating]);
 
 	const onSubmit = (data: HelpConversationSchemaArgs) => {
 		mutate(data);

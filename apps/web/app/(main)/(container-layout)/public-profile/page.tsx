@@ -1,12 +1,9 @@
 // External packages
 import { MessageCircle } from 'lucide-react';
-import { twMerge } from 'tailwind-merge';
 
 // Components
 import { Avatar } from '@/components/ui/avatar';
-import { Heading } from '@/components/ui/heading';
 import { LinkAsButton } from '@/components/ui/link-as-button';
-import { getSession } from '@/lib/server/auth';
 
 // Modules
 import { InformationContainer } from '@/modules/main/public-profile/information-container';

@@ -1,9 +1,5 @@
 // External packages
-import {
-	ErrorFormResponse,
-	ErrorToastResponse,
-	SuccessfulResponse,
-} from '@repo/types/general';
+import { ErrorToastResponse, SuccessfulResponse } from '@repo/types/general';
 import {
 	useMutation,
 	UseMutationOptions,

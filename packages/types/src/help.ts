@@ -1,14 +1,8 @@
 import { ServerHandleResponse, SuccessfulResponse } from "./general";
+import { Help } from "@repo/database";
 
 export type HelpConversationSuccess = {
-  messages: {
-    id: string;
-    userId: string;
-    senderType: "USER" | "AI";
-    content: string;
-    createdAt: Date;
-    updatedAt: Date;
-  }[];
+  messages: Help[];
 } & SuccessfulResponse &
   ServerHandleResponse<true>;
 

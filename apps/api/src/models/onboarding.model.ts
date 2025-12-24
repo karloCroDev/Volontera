@@ -1,11 +1,7 @@
-// External packages
-import { User } from "@prisma/client";
+// Database
+import { prisma, User } from "@repo/database";
 
-// Lib
-import { prisma } from "@/config/prisma";
-
-// Shared utils
-import { AdditionalFormArgs } from "@repo/schemas/onboarding";
+// Types
 import { AppType } from "@repo/types/onboarding";
 
 export async function updateUserOnboarding({

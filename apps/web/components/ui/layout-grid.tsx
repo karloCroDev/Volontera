@@ -15,8 +15,6 @@ export const Layout = React.forwardRef<
 
 Layout.displayName = 'Layout'; // When debugging with React DevTools
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-
 type BreakpointsNames = 'base' | 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 export type ColumnsNumbers =
 	| 1

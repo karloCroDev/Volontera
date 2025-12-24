@@ -57,7 +57,10 @@ export const MessagesMapping: React.FC<{
 								avatar={
 									<Avatar
 										imageProps={{
-											src: message.senderType === 'USER' ? user.image : '',
+											src:
+												message.senderType === 'USER'
+													? (user.image ?? undefined)
+													: '',
 										}}
 									>
 										{message.senderType === 'USER' ? user.fullname : 'A I'}

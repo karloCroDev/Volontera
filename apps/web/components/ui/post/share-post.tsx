@@ -27,7 +27,7 @@ export const SharePost: React.FC<{
 							variant: 'success',
 						});
 					})
-					.catch((err) => {
+					.catch(() => {
 						toast({
 							title: "Link isn't copied",
 							content: "Link isn't copied please try again",
