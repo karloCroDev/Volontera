@@ -11,7 +11,7 @@ import { Dot } from '@/components/ui/dot';
 export const UsersSidebar: React.FC<{
 	id: string;
 	username: string;
-	userRole: string;
+	userRole?: string;
 }> = ({ id, username, userRole }) => {
 	const searchParams = useSearchParams();
 

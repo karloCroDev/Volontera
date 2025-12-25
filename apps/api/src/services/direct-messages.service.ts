@@ -17,7 +17,13 @@ import {
   messageSchema,
 } from "@repo/schemas/direct-messages";
 
-export async function searchAllUsersWithQueryService(rawData: unknown) {
+export async function searchAllUsersWithQueryService({
+  rawData,
+  userId,
+}: {
+  rawData: unknown;
+  userId: User["id"];
+}) {
   const { data, success } = searchSchema.safeParse(rawData);
 
   if (!success) {
@@ -30,8 +36,9 @@ export async function searchAllUsersWithQueryService(rawData: unknown) {
     };
   }
 
-  const users = await searchAllUsers({
+  const conversations = await searchAllUsers({
     query: data.query,
+    userId,
     // limit: data.limit,
     // offset: data.offset,
   });
@@ -39,19 +46,13 @@ export async function searchAllUsersWithQueryService(rawData: unknown) {
   // TODO: Cache results with redis
   // TODO: When I implement the real search, make small algrithm
   // TODO: Pagniate this?
-  const usersWithFullname = users.map((user) => {
-    return {
-      ...user,
-      fullName: `${user.firstName} ${user.lastName}`,
-    };
-  });
 
   return {
     status: 200,
     body: {
       title: "Users retrieved successfully",
       message: "Users retrieved successfully",
-      users: usersWithFullname,
+      conversations,
     },
   };
 }
@@ -61,22 +62,17 @@ export async function listAllDirectMessagesConversationsService(
 ) {
   const conversations = await listAllDirectMessagesConversation(userId);
 
-  const conversationsWithFullname = conversations.map((conversation) => {
-    return {
-      ...conversation,
-      fullname: conversation.participants.map(
-        (particpant) =>
-          `${particpant.user.firstName} ${particpant.user.lastName}`
-      ),
-    };
-  });
-
   return {
     status: 200,
     body: {
       title: "Direct messages conversations retrieved",
       message: "Direct messages conversations retrieved successfully",
-      conversations: conversationsWithFullname,
+      conversations: conversations.map((conversation) => ({
+        ...conversation,
+        participant: conversation.participants.find(
+          (participant) => participant.userId !== userId // Get the user that isn't the current user
+        ),
+      })),
     },
   };
 }
@@ -100,20 +96,12 @@ export async function getDirectMessagesConversationByIdService(
     data.conversationId
   );
 
-  const conversationWithFullname = {
-    ...conversation,
-    fullname: conversation?.participants.map(
-      (conversation) =>
-        `${conversation.user.firstName} ${conversation.user.lastName}`
-    ),
-  };
-
   return {
     status: 200,
     body: {
       title: "Direct messages conversation retrieved",
       message: "Direct messages conversation retrieved successfully",
-      conversation: conversationWithFullname,
+      conversation: conversation,
     },
   };
 }

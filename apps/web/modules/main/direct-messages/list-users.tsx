@@ -3,6 +3,7 @@
 // External packages
 import * as React from 'react';
 import { useSearchParams } from 'next/navigation';
+import { twJoin } from 'tailwind-merge';
 
 // Modules
 import { UsersSearch } from '@/modules/main/direct-messages/users-search';
@@ -10,9 +11,13 @@ import {
 	UsersSidebar,
 	UsersSidebarSkeleton,
 } from '@/modules/main/direct-messages/users-sidebar';
-import { twJoin } from 'tailwind-merge';
 
-export const ListUsers = () => {
+// Types
+import { ListConversationsResponse } from '@repo/types/direct-messages';
+
+export const ListUsers: React.FC<{
+	listOfAllDirectMessages: ListConversationsResponse;
+}> = ({ listOfAllDirectMessages }) => {
 	const searchParams = useSearchParams();
 
 	const isActive = searchParams.get('user');
@@ -29,17 +34,27 @@ export const ListUsers = () => {
 			<UsersSearch />
 
 			<div className="no-scrollbar flex-1 overflow-scroll">
-				{[...Array(4)].map((_, indx) => (
+				{/* {[...Array(4)].map((_, indx) => (
 					<UsersSidebar
 						username="Karlo"
 						userRole="Organizator"
 						id={indx.toString()}
 						key={indx}
 					/>
-				))}
-				{[...Array(4)].map((_, indx) => (
-					<UsersSidebarSkeleton key={indx} />
-				))}
+				))} */}
+
+				{listOfAllDirectMessages.conversations.length > 0 &&
+					listOfAllDirectMessages.conversations.map((conversation) => (
+						<UsersSidebar
+							username={`${conversation.participant.firstName} ${conversation.participant.lastName}`}
+							userRole={conversation.participant.role!}
+							id={conversation.participant.id}
+							key={conversation.participant.id}
+						/>
+					))}
+				{/* // [...Array(4)].map((_, indx) => (
+				// 	<UsersSidebarSkeleton key={indx} />
+				// )) */}
 			</div>
 		</aside>
 	);

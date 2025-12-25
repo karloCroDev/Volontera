@@ -13,14 +13,13 @@ import { ListUsers } from '@/modules/main/direct-messages/list-users';
 import { MessageForm } from '@/modules/main/direct-messages/message-form';
 import { MessageWrapper } from '@/modules/main/direct-messages/message-wrapper';
 import { UsersInfoHeader } from '@/modules/main/direct-messages/users-info-header';
+import { getListOfAllDirectMessages } from '@/lib/server/direct-messages';
 
 export default async function DirectMessagesPage() {
-	const user = await getSession();
-	// TODO: Look if I need to write once again if I am already running this code in layout or not
-	if (!user.success) redirect('/auth/login');
+	const listOfAllDirectMessages = await getListOfAllDirectMessages();
 	return (
 		<div className="flex h-full">
-			<ListUsers />
+			<ListUsers listOfAllDirectMessages={listOfAllDirectMessages} />
 
 			<MessageWrapper>
 				<UsersInfoHeader />
@@ -31,11 +30,13 @@ export default async function DirectMessagesPage() {
 							date="16:36 | 8.4. 2024"
 							avatar={
 								<Avatar
-									imageProps={{
-										src: user?.image || '',
-									}}
+									imageProps={
+										{
+											// src: user?.image || '',
+										}
+									}
 								>
-									{user.fullname}
+									{/* {user.fullname} */}
 								</Avatar>
 							}
 						>
