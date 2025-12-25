@@ -138,9 +138,9 @@ export async function startConversationOrStartAndSendDirectMessageService({
 
   // Presigned urls for images
   const images =
-    data.image && data.image.length > 0
+    data.images && data.images.length > 0
       ? await Promise.all(
-          data.image.map(async (image) => {
+          data.images.map(async (image) => {
             return await createUploadUrl({
               contentType: image.contentType,
               filename: image.filename,

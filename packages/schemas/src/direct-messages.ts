@@ -15,7 +15,7 @@ export type SearchArgs = z.infer<typeof searchSchema>;
 export const messageSchema = z.object({
   content: z.string().min(1).max(200),
   particpantId: z.cuid(),
-  image: z
+  images: z
     .object({
       filename: z.string(),
       contentType: z.string(),

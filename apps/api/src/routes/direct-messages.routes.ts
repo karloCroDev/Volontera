@@ -14,23 +14,17 @@ export const directMessagesRoutes = Router();
 
 directMessagesRoutes.use(express.json());
 
-directMessagesRoutes.get(
-  "/direct-messages",
-  listAllDirectMessagesConversationsController
-);
+directMessagesRoutes.get("/", listAllDirectMessagesConversationsController);
 
 directMessagesRoutes.get(
-  "/direct-messages/:conversationId",
+  "/:conversationId",
   getDirectMessagesConversationByIdServiceController
 );
 
 // Get the params from the url
-directMessagesRoutes.get(
-  "/direct-messages/search/:query",
-  searchAllUsersWithQueryController
-);
+directMessagesRoutes.get("/search/:query", searchAllUsersWithQueryController);
 
 directMessagesRoutes.post(
-  "/direct-messages/conversation/message",
+  "/conversation/message",
   startConversationOrStartAndSendDirectMessageController
 );
