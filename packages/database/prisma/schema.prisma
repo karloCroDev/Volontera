@@ -115,14 +115,13 @@ model Notification {
 
 // Direct messages models (1-on-1 conversations, not groups)
 model DirectMessagesConversations {
-  id           String                     @id @default(cuid())
-  lastMessage  String?
-  participants ConversationParticipants[]
-
+  id             String                     @id @default(cuid())
+  lastMessage    String?
+  participants   ConversationParticipants[]
+  pairKey        String                     @unique
   directMessages DirectMessages[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt      DateTime                   @default(now())
+  updatedAt      DateTime                   @updatedAt
 }
 
 // n:n explicit relation table between users included in conversation (only 2 for now)

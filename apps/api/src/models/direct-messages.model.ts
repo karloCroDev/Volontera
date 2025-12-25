@@ -1,11 +1,7 @@
 // Database
 import { prisma, User, DirectMessagesConversations } from "@repo/database";
 
-export async function listAllDirectMessagesConversationService({
-  userId,
-}: {
-  userId: User["id"];
-}) {
+export async function listAllDirectMessagesConversation(userId: User["id"]) {
   return prisma.directMessagesConversations.findMany({
     where: {
       participants: {
@@ -17,35 +13,21 @@ export async function listAllDirectMessagesConversationService({
     include: {
       participants: {
         include: {
-          user: true,
+          user: {
+            omit: {
+              password: true,
+            },
+          },
         },
       },
     },
     orderBy: [{ updatedAt: "desc" }, { createdAt: "desc" }],
   });
 }
-export async function updateDirectMessagesConversationLastMessageService({
-  conversationId,
-  lastMessage,
-}: {
-  conversationId: DirectMessagesConversations["id"];
-  lastMessage: DirectMessagesConversations["lastMessage"];
-}) {
-  return prisma.directMessagesConversations.update({
-    where: {
-      id: conversationId,
-    },
-    data: {
-      lastMessage,
-    },
-  });
-}
 
-export async function getDirectMessagesConversationByIdService({
-  conversationId,
-}: {
-  conversationId: DirectMessagesConversations["id"];
-}) {
+export async function getDirectMessagesConversationById(
+  conversationId: DirectMessagesConversations["id"]
+) {
   return prisma.directMessagesConversations.findUnique({
     where: {
       id: conversationId,
@@ -65,13 +47,51 @@ export async function getDirectMessagesConversationByIdService({
   });
 }
 
-export async function createDirectMessagesConversationService({
+// TODO: Write some small algorithm to search all users by their username (first or last name) or email
+export async function searchAllUsers(query: string) {
+  return prisma.user.findMany({
+    omit: {
+      password: true,
+    },
+    where: {
+      OR: [
+        {
+          firstName: query,
+        },
+        {
+          lastName: query,
+        },
+      ],
+    },
+    orderBy: [{ updatedAt: "desc" }, { createdAt: "desc" }],
+  });
+}
+
+// TODO: Handle this when I make implementation for sending the messages
+export async function updateDirectMessagesConversationLastMessage({
+  conversationId,
+  lastMessage,
+}: {
+  conversationId: DirectMessagesConversations["id"];
+  lastMessage: DirectMessagesConversations["lastMessage"];
+}) {
+  return prisma.directMessagesConversations.update({
+    where: {
+      id: conversationId,
+    },
+    data: {
+      lastMessage,
+    },
+  });
+}
+export async function createDirectMessagesConversation({
   participantIds,
 }: {
   participantIds: User["id"][];
 }) {
   return prisma.directMessagesConversations.create({
     data: {
+      pairKey: "ss",
       participants: {
         create: participantIds.map((id) => ({
           userId: id,
@@ -88,7 +108,7 @@ export async function createDirectMessagesConversationService({
   });
 }
 
-export async function createMessageInDirectMessagesConversationService({
+export async function createMessageInDirectMessagesConversation({
   conversationId,
   authorId,
   content,
@@ -102,14 +122,6 @@ export async function createMessageInDirectMessagesConversationService({
       conversationId,
       authorId,
       content,
-    },
-  });
-}
-
-export async function listAllUsers() {
-  return prisma.user.findMany({
-    omit: {
-      password: true,
     },
   });
 }
