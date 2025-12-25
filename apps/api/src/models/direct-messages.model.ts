@@ -48,11 +48,22 @@ export async function getDirectMessagesConversationById(
 }
 
 // TODO: Write some small algorithm to search all users by their username (first or last name) or email
-export async function searchAllUsers(query: string) {
+export async function searchAllUsers({
+  query,
+  // limit,
+  // offset,
+}: {
+  query: string;
+  // limit: number;
+  // offset: number;
+}) {
   return prisma.user.findMany({
     omit: {
       password: true,
     },
+    // skip: offset,
+    // take: limit,
+
     where: {
       OR: [
         {

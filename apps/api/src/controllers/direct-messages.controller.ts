@@ -9,11 +9,25 @@ import {
   startConversationOrStartAndSendDirectMessageService,
 } from "@/services/direct-messages.service";
 
-export async function searchAllUsersWithQueryC(req: Request, res: Response) {
+export async function searchAllUsersWithQueryController(
+  req: Request,
+  res: Response
+) {
   try {
-    const result = await searchAllUsersWithQueryService(req.body);
+    const result = await searchAllUsersWithQueryService(req.params);
     return res.status(result.status).json(result.body);
   } catch (err) {
+    return res.status(500).json({ success: false, message: "Internal error" });
+  }
+}
+export async function getDirectMessagesConversationByIdServiceController(
+  req: Request,
+  res: Response
+) {
+  try {
+    const result = await getDirectMessagesConversationByIdService(req.params);
+    return res.status(result.status).json(result.body);
+  } catch (error) {
     return res.status(500).json({ success: false, message: "Internal error" });
   }
 }
@@ -26,18 +40,6 @@ export async function listAllDirectMessagesConversationsController(
     const result = await listAllDirectMessagesConversationsService(
       req.user.userId
     );
-    return res.status(result.status).json(result.body);
-  } catch (error) {
-    return res.status(500).json({ success: false, message: "Internal error" });
-  }
-}
-
-export async function getDirectMessagesConversationByIdServiceController(
-  req: Request,
-  res: Response
-) {
-  try {
-    const result = await getDirectMessagesConversationByIdService(req.body);
     return res.status(result.status).json(result.body);
   } catch (error) {
     return res.status(500).json({ success: false, message: "Internal error" });
