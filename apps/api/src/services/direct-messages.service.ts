@@ -3,7 +3,9 @@ import {
   getDirectMessagesConversationById,
   listAllDirectMessagesConversation,
   searchAllUsers,
+  startConversationOrStartAndSendDirectMessage,
 } from "@/models/direct-messages.model";
+import { createUploadUrl } from "@/models/image.model";
 
 // Database
 import { User } from "@repo/database";
@@ -12,13 +14,10 @@ import { User } from "@repo/database";
 import {
   searchSchema,
   conversationSchema,
+  messageSchema,
 } from "@repo/schemas/direct-messages";
 
-export async function searchAllUsersWithQuery({
-  rawData,
-}: {
-  rawData: unknown;
-}) {
+export async function searchAllUsersWithQueryService(rawData: unknown) {
   const { data, success } = searchSchema.safeParse(rawData);
 
   if (!success) {
@@ -115,28 +114,52 @@ export async function getDirectMessagesConversationByIdService(
   };
 }
 
-// export async function startConversationOrSendMessage({
-//   rawData,
-//   userId,
-// }: {
-//   rawData: unknown;
-//   userId: User["id"];
-// }) {
-//   const { success, data } = messageSchema.safeParse(rawData);
+export async function startConversationOrStartAndSendDirectMessageService({
+  rawData,
+  userId,
+}: {
+  rawData: unknown;
+  userId: User["id"];
+}) {
+  const { success, data } = messageSchema.safeParse(rawData);
+  if (!success) {
+    return {
+      status: 400,
+      body: {
+        title: "Invalid data, cannot create notification",
+        message: "Invalid data",
+      },
+    };
+  }
 
-//   if (!success) {
-//     return {
-//       status: 400,
-//       body: {
-//         title: "Invalid data, cannot create notification",
-//         message: "Invalid data",
-//       },
-//     };
-//   }
+  // Presigned urls for images
+  const images =
+    data.image && data.image.length > 0
+      ? await Promise.all(
+          data.image.map(async (image) => {
+            return await createUploadUrl({
+              contentType: image.contentType,
+              filename: image.filename,
+              size: image.size,
+            });
+          })
+        )
+      : undefined;
 
-//   // TODO: This will need to be handled with prisma transactions
+  // TODO: Vidi je li trebam ionako ista vratiti na frontu
+  const { conversation, message } =
+    await startConversationOrStartAndSendDirectMessage({
+      senderId: userId,
+      receiverId: data.particpantId,
+      content: data.content,
+    });
 
-//   //   const createConversation = createDirectMessagesConversation({
-//   //     participantIds: [userId, data.particpantId],
-//   //   })
-// }
+  return {
+    status: 200,
+    body: {
+      title: "Message is sent",
+      message: "Message is successfully sent to the wanted user",
+      images,
+    },
+  };
+}

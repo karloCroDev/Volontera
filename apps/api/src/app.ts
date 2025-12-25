@@ -26,6 +26,7 @@ import { helpRoutes } from "@/routes/help.routes";
 import { paymentRoutes } from "@/routes/payment.routes";
 import { notificationRoutes } from "@/routes/notification.routes";
 import { initalizeRedisClient } from "@/config/redis";
+import { directMessagesRoutes } from "@/routes/direct-messages.routes";
 
 // Security middleware
 app.use(helmet());
@@ -56,6 +57,13 @@ app.use(
   hasRoleMiddleware,
   notificationRoutes
 );
+app.use(
+  "/direct-messages",
+  authMiddleware,
+  hasRoleMiddleware,
+  directMessagesRoutes
+);
+
 // Test
 app.get("/protected-user", authMiddleware, userMiddleware, (req, res) => {
   res.json({ message: "Awesome you accessed the proteced route" });

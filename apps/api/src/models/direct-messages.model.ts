@@ -126,7 +126,7 @@ export async function createMessageInDirectMessagesConversation({
   });
 }
 
-export async function createOrCreateAndSendDirectMessage({
+export async function startConversationOrStartAndSendDirectMessage({
   senderId,
   receiverId,
   content,

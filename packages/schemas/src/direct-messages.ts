@@ -11,13 +11,15 @@ export type SearchArgs = z.infer<typeof searchSchema>;
 // Message field
 export const messageSchema = z.object({
   content: z.string().min(1).max(200),
-  conversationId: z.cuid(),
   particpantId: z.cuid(),
-  // image: z.object({
-  //   filename: z.string(),
-  //   contentType: z.string(),
-  //   size: z.number(),
-  // }),
+  image: z
+    .object({
+      filename: z.string(),
+      contentType: z.string(),
+      size: z.number(),
+    })
+    .array()
+    .optional(),
 });
 
 export type MessageArgs = z.infer<typeof messageSchema>;
