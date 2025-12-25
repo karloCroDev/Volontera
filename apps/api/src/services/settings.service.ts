@@ -19,7 +19,7 @@ import {
   updateUsersInformation,
   updateUsersPassword,
 } from "@/models/settings.model";
-import { findUserById } from "@/models/auth-model";
+import { findUserById } from "@/models/auth.model";
 
 // Config
 import { resend } from "@/config/resend";

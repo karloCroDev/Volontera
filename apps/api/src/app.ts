@@ -29,7 +29,6 @@ import { initalizeRedisClient } from "@/config/redis";
 
 // Security middleware
 app.use(helmet());
-
 app.use(
   cors({
     origin: process.env.WEB_URL!,

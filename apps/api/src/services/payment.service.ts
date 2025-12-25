@@ -10,7 +10,7 @@ import {
   getCustomerId,
   removeSubscription,
   updateSubscription,
-} from "@/models/payment-model";
+} from "@/models/payment.model";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 

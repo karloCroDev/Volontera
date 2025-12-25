@@ -30,7 +30,7 @@ import {
   updateResetPasswordToken,
   updateVerificationData,
   updateVerificationToken,
-} from "@/models/auth-model";
+} from "@/models/auth.model";
 
 // Lib
 import { verifyUser } from "@/lib/verify-user";

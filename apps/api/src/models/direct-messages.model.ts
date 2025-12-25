@@ -125,3 +125,65 @@ export async function createMessageInDirectMessagesConversation({
     },
   });
 }
+
+export async function createOrCreateAndSendDirectMessage({
+  senderId,
+  receiverId,
+  content,
+  imageUrls,
+}: {
+  senderId: User["id"];
+  receiverId: User["id"];
+  content: string;
+  imageUrls?: string[];
+}) {
+  // Pair key mi olakšava način na koji ću pronaći konverzaciju između dva korisnika, također mi omogućava da ako se 2 iste poruke pošalju u isto vrijeme, da ne dobijem konflikt u bazi podataka jer će pair key uvijek biti isti za ta dva korisnika.
+  const pairKey = [senderId, receiverId].sort().join(":"); // Uvijek isti redoslijed korisnika bez obzira tko šalje poruku
+
+  // Koristim transakciju jer imamo veći broj operacija koje moramo obaviti. Ideja je kada korisnik pošalje poruku, ako ne postoji konverzacija između ta dva korisnika, da se kreira nova konverzacija i da se u nju doda poruka. Ako konverzacija postoji, samo se doda poruka u postojeću konverzaciju. Također, potrebno je ažurirati i posljednju poruku u konverzaciji, kako bi ju prikazali u listi konverzacija.
+
+  return prisma.$transaction(async (tx) => {
+    // 1. Tražim ili kreiram konverzaciju
+
+    // Create uvijek napravi novu konverzaciju, zato koristim upsert koji traži po pair keyu, ako ne postoji kreira novu konverzaciju sa ta dva korisnika
+    const conversation = await tx.directMessagesConversations.upsert({
+      where: { pairKey },
+      create: {
+        pairKey,
+        participants: {
+          create: [{ userId: senderId }, { userId: receiverId }],
+        },
+      },
+      update: {},
+    });
+
+    // 2. Kreiram poruku
+    const message = await tx.directMessages.create({
+      data: {
+        conversationId: conversation.id,
+        authorId: senderId,
+        content,
+        directMessagesImages: {
+          create:
+            imageUrls?.map((imageUrl) => ({
+              imageUrl,
+            })) || [],
+        },
+      },
+    });
+
+    // 3️. Ažuriram posljednju poruku u konverzaciji
+    await tx.directMessagesConversations.update({
+      where: { id: conversation.id },
+      data: {
+        lastMessage: content,
+      },
+    });
+
+    // Uhh vidi je li trebam ionako ista vratiti
+    return {
+      conversation,
+      message,
+    };
+  });
+}
