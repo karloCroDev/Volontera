@@ -2,18 +2,24 @@
 
 // External packages
 import { ArrowLeft } from 'lucide-react';
+import { useSearchParams } from 'next/navigation';
 
 // Components
 import { Avatar } from '@/components/ui/avatar';
 import { DotWithLabel } from '@/components/ui/dot';
 import { LinkAsButton } from '@/components/ui/link-as-button';
+
+// Hooks
 import { useGetUser } from '@/hooks/data/user';
-import { useSearchParams } from 'next/navigation';
+
+// Lib
 import { withReactQueryProvider } from '@/lib/utils/react-query';
+import { convertToFullname } from '@/lib/utils/convert-to-fullname';
 
 export const UsersInfoHeader = withReactQueryProvider(() => {
 	const params = useSearchParams();
-	const { data } = useGetUser(params.get('user') || '');
+	const { data: user } = useGetUser(params.get('user') || '');
+
 	return (
 		<div className="border-input-border flex h-28 items-center gap-4 border-b px-4 sm:px-6 lg:px-8">
 			<LinkAsButton
@@ -24,23 +30,33 @@ export const UsersInfoHeader = withReactQueryProvider(() => {
 				<ArrowLeft />
 			</LinkAsButton>
 
-			{data && (
+			{user && (
 				<Avatar
 					imageProps={{
-						src: data?.image || '',
+						src: user?.image || '',
 					}}
 					size="xl"
 				>
-					{data.fullname}
+					{convertToFullname({
+						firstname: user.firstName,
+						lastname: user.lastName,
+					})}
 				</Avatar>
 			)}
 			<div>
-				<h4 className="text-lg lg:text-xl">{data?.fullname}</h4>
+				{user && (
+					<h4 className="text-lg lg:text-xl">
+						{convertToFullname({
+							firstname: user.firstName,
+							lastname: user.lastName,
+						})}
+					</h4>
+				)}
 
-				{data && (
+				{user && (
 					<p className="text-muted-foreground">
 						Last online:
-						{new Date(data.updatedAt).toLocaleString().replaceAll('/', '.')}
+						{new Date(user.updatedAt).toLocaleString().replaceAll('/', '.')}
 					</p>
 				)}
 			</div>

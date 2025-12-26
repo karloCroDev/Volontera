@@ -13,6 +13,7 @@ import { useGetHelpConversation } from '@/hooks/data/help';
 
 // Lib
 import { withReactQueryProvider } from '@/lib/utils/react-query';
+import { convertToFullname } from '@/lib/utils/convert-to-fullname';
 
 // Types
 import { SessionSuccessResponse } from '@repo/types/auth';
@@ -63,7 +64,12 @@ export const MessagesMapping: React.FC<{
 													: '',
 										}}
 									>
-										{message.senderType === 'USER' ? user.fullname : 'A I'}
+										{message.senderType === 'USER'
+											? convertToFullname({
+													firstname: user.firstName,
+													lastname: user.lastName,
+												})
+											: 'A I'}
 									</Avatar>
 								}
 							>

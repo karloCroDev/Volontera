@@ -31,6 +31,7 @@ import { withReactQueryProvider } from '@/lib/utils/react-query';
 
 // Types
 import { SessionSuccessResponse } from '@repo/types/auth';
+import { convertToFullname } from '@/lib/utils/convert-to-fullname';
 
 export const UserInformation: React.FC<{
 	user: SessionSuccessResponse;
@@ -60,12 +61,18 @@ export const UserInformation: React.FC<{
 							colorScheme="gray"
 							size="md"
 						>
-							{user.fullname}
+							{convertToFullname({
+								firstname: user.firstName,
+								lastname: user.lastName,
+							})}
 						</Avatar>
 						<div>
-							<div className="flex items-center justify-between">
-								<p>{user.fullname}</p>
-							</div>
+							<p className="flex items-center justify-between">
+								{convertToFullname({
+									firstname: user.firstName,
+									lastname: user.lastName,
+								})}
+							</p>
 							<p className="text-muted-foreground text-sm">{user.email}</p>
 						</div>
 
@@ -81,7 +88,10 @@ export const UserInformation: React.FC<{
 							size="xl"
 							className="cursor-pointer hover:opacity-65"
 						>
-							{user.fullname}
+							{convertToFullname({
+								firstname: user.firstName,
+								lastname: user.lastName,
+							})}
 						</Avatar>
 					</AriaButton>
 				)}
@@ -101,12 +111,18 @@ export const UserInformation: React.FC<{
 									colorScheme="gray"
 									size="md"
 								>
-									{user.fullname}
+									{convertToFullname({
+										firstname: user.firstName,
+										lastname: user.lastName,
+									})}
 								</Avatar>
 								<div>
-									<div className="flex items-center justify-between">
-										<p>{user.fullname}</p>
-									</div>
+									<p className="flex items-center justify-between">
+										{convertToFullname({
+											firstname: user.firstName,
+											lastname: user.lastName,
+										})}
+									</p>
 									<p className="text-muted-foreground text-sm">{user.email}</p>
 								</div>
 							</div>

@@ -22,6 +22,7 @@ import { SettingsArgs } from '@repo/schemas/settings';
 // Lib
 import { withReactQueryProvider } from '@/lib/utils/react-query';
 import { Input } from '@/components/ui/input';
+import { convertToFullname } from '@/lib/utils/convert-to-fullname';
 
 export const ProfileForm: React.FC<{
 	currentImage: File | undefined;
@@ -130,7 +131,11 @@ export const ProfileForm: React.FC<{
 											)
 										}
 									>
-										{user?.fullname}
+										{user &&
+											convertToFullname({
+												firstname: user.firstName,
+												lastname: user.lastName,
+											})}
 									</Avatar>
 								</AriaLabel>
 

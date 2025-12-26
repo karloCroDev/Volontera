@@ -32,7 +32,6 @@ export async function getUserByIdService(userId: string) {
       message: "User fetched successfully",
       success: true,
       ...userData,
-      fullname: `${user.firstName} ${user.lastName}`,
     },
   };
 }
