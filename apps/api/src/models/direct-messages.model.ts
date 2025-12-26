@@ -28,21 +28,17 @@ export async function listAllDirectMessagesConversation(userId: User["id"]) {
 export async function getDirectMessagesConversationById(
   conversationId: DirectMessagesConversations["id"]
 ) {
-  return prisma.directMessagesConversations.findUnique({
+  return prisma.directMessages.findMany({
     where: {
-      id: conversationId,
+      conversationId,
     },
     include: {
-      participants: {
-        include: {
-          user: true,
+      author: {
+        omit: {
+          password: true,
         },
       },
-      directMessages: {
-        orderBy: {
-          createdAt: "asc",
-        },
-      },
+      directMessagesImages: true,
     },
   });
 }

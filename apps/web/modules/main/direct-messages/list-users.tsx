@@ -48,6 +48,7 @@ export const ListUsers: React.FC<{
 						<UsersSidebar
 							username={`${conversation.participant.firstName} ${conversation.participant.lastName}`}
 							lastMessage={conversation.lastMessage || undefined}
+							conversationId={conversation.id}
 							id={conversation.participant.id}
 							key={conversation.participant.id}
 						/>

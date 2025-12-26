@@ -44,11 +44,11 @@ export const MessageForm = withReactQueryProvider(() => {
 			},
 			{
 				onSuccess({ message, title, conversationId }) {
-					if (!searchParams.get('conversationId')) {
-						const params = new URLSearchParams(searchParams.toString());
-						params.set('conversationId', conversationId);
-						router.push(pathname + '?' + params.toString());
-					}
+					// Ako bude trebalo, napravi custom hook za ovo
+					const params = new URLSearchParams(searchParams.toString());
+					params.set('conversationId', conversationId);
+					router.push(pathname + '?' + params.toString());
+
 					toast({
 						title,
 						content: message,

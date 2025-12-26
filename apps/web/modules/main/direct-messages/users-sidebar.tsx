@@ -11,20 +11,34 @@ import Markdown from 'react-markdown';
 
 export const UsersSidebar: React.FC<{
 	id: string;
+
+	conversationId?: string; // Npr. kod searcha nećemo imati conversationId
 	username: string;
 	userRole?: string;
 	lastMessage?: string;
 	removeUnderline?: boolean;
-}> = ({ id, username, userRole, lastMessage, removeUnderline = false }) => {
+}> = ({
+	id,
+	conversationId,
+	username,
+	userRole,
+	lastMessage,
+	removeUnderline = false,
+}) => {
 	const searchParams = useSearchParams();
 
 	const pathname = usePathname();
 
 	const isActive = searchParams.get('user') === id;
 	const isOnline = false; // TODO: Replace with real online status
+
 	return (
 		<Link
-			href={`${pathname}?user=${id}`}
+			href={
+				conversationId
+					? `${pathname}?user=${id}&conversationId=${conversationId}`
+					: `${pathname}?user=${id}`
+			}
 			className={twJoin(
 				'border-input-border flex items-center gap-4 px-2 py-3',
 				isActive &&

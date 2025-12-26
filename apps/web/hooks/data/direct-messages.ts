@@ -4,7 +4,6 @@ import {
 	UseMutationOptions,
 	useQuery,
 	useQueryClient,
-	UseQueryOptions,
 	useSuspenseQuery,
 	UseSuspenseQueryOptions,
 } from '@tanstack/react-query';
@@ -27,6 +26,7 @@ import {
 import { DataWithFiles } from '@repo/types/upload';
 import { ErrorToastResponse } from '@repo/types/general';
 import {
+	GetDirectMessagesConversationByIdResponse,
 	SearchUsersResponse,
 	StartConversationOrStartAndSendDirectMessageResonse,
 } from '@repo/types/direct-messages';
@@ -53,13 +53,11 @@ export const useSearchAllUsers = (data: SearchArgs) => {
 };
 
 export const useGetDirectMessagesConversationById = (
-	data: ConversationArgs,
-	options?: Omit<UseSuspenseQueryOptions<boolean>, 'queryKey' | 'queryFn'>
+	data: ConversationArgs
 ) => {
-	return useSuspenseQuery({
+	return useQuery<GetDirectMessagesConversationByIdResponse>({
 		queryKey: ['direct-messages-conversation', data.conversationId],
 		queryFn: () => getDirectMessagesConversationById(data),
-		...options,
 	});
 };
 

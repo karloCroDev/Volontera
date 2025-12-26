@@ -70,6 +70,7 @@ model User {
   help                     Help[]
   notifications            Notification[]
   conversationParticipants ConversationParticipants[]
+  directMessages           DirectMessages[]
 }
 
 model Accounts {
@@ -122,6 +123,8 @@ model DirectMessagesConversations {
   directMessages DirectMessages[]
   createdAt      DateTime                   @default(now())
   updatedAt      DateTime                   @updatedAt
+
+  @@index([updatedAt])
 }
 
 // n:n explicit relation table between users included in conversation (only 2 for now)
@@ -134,17 +137,23 @@ model ConversationParticipants {
   userId String
 
   @@unique([conversationId, userId])
+  @@index([userId])
 }
 
 model DirectMessages {
-  id                   String                      @id @default(cuid())
-  conversation         DirectMessagesConversations @relation(fields: [conversationId], references: [id], onDelete: Cascade)
-  conversationId       String
-  authorId             String
+  id             String                      @id @default(cuid())
+  conversation   DirectMessagesConversations @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  conversationId String
+
+  author   User   @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  authorId String
+
   content              String
-  createdAt            DateTime                    @default(now())
-  updatedAt            DateTime                    @updatedAt
+  createdAt            DateTime               @default(now())
+  updatedAt            DateTime               @updatedAt
   directMessagesImages DirectMessagesImages[]
+
+  @@index([conversationId, createdAt])
 }
 
 // Multiple images that could be attached to a single direct message

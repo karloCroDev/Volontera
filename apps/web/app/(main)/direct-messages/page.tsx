@@ -10,6 +10,7 @@ import { UsersInfoHeader } from '@/modules/main/direct-messages/users-info-heade
 
 // Lib
 import { getListOfAllDirectMessages } from '@/lib/server/direct-messages';
+import { Conversation } from '@/modules/main/direct-messages/conversation';
 
 export default async function DirectMessagesPage() {
 	const listOfAllDirectMessages = await getListOfAllDirectMessages();
@@ -22,38 +23,7 @@ export default async function DirectMessagesPage() {
 				<UsersInfoHeader />
 
 				<div className="flex min-h-0 flex-1 flex-col gap-4 px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
-					<div className="no-scrollbar min-h-0 flex-1 space-y-4 overflow-y-auto">
-						<Message
-							date="16:36 | 8.4. 2024"
-							avatar={
-								<Avatar
-									imageProps={
-										{
-											// src: user?.image || '',
-										}
-									}
-								>
-									{/* {user.fullname} */}
-								</Avatar>
-							}
-						>
-							Lorem ipsum dolor sit amet consectetur adipisicing elit. Aperiam
-							laborum enim, accusantium beatae odio sequi vero nulla culpa ab
-							corporis laudantium eligendi consectetur illum quam eos cum
-							debitis possimus adipisci?
-						</Message>
-
-						<Message
-							variant="secondary"
-							date="16:36 | 8.4. 2024"
-							avatar={<Avatar imageProps={{ src: '' }}>Cool man</Avatar>}
-						>
-							Lorem ipsum dolor sit amet consectetur adipisicing elit. Aperiam
-							laborum enim, accusantium beatae odio sequi vero nulla culpa ab
-							corporis laudantium eligendi consectetur illum quam eos cum
-							debitis possimus adipisci?
-						</Message>
-					</div>
+					<Conversation />
 
 					<MessageForm />
 				</div>
