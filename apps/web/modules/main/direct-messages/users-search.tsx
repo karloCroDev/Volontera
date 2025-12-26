@@ -2,50 +2,58 @@
 
 // External packages
 import * as React from 'react';
-import { Form } from 'react-aria-components';
 import { Search } from 'lucide-react';
-import { Controller } from 'react-hook-form';
 
 // Components
-import { Input } from '@/components/ui/input';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
+import { ComboBoxItems, ComboBoxWrapper } from '@/components/ui/combo-box';
 
 // Schemas
-import { searchSchema, SearchArgs } from '@repo/schemas/direct-messages';
 
-export const UsersSearch = () => {
-	const {
-		control,
-		handleSubmit,
-		formState: { errors },
-	} = useForm<SearchArgs>({
-		resolver: zodResolver(searchSchema),
-		defaultValues: {
-			query: '',
-		},
+// Lib
+import { withReactQueryProvider } from '@/lib/utils/react-query';
+
+// Hooks
+import { useSearchAllUsers } from '@/hooks/data/direct-messages';
+import { useDebounce } from '@/hooks/utils/useDebounce';
+import { UsersSidebar } from '@/modules/main/direct-messages/users-sidebar';
+
+export const UsersSearch = withReactQueryProvider(() => {
+	const [query, setQuery] = React.useState('');
+	// TODO: Find out if there is some problems with fetching this data
+	const debouncedQuery = useDebounce(query);
+	const { data } = useSearchAllUsers({
+		query: debouncedQuery,
 	});
 
-	const onSubmit = async (data: SearchArgs) => {
-		console.log(data);
-		return data;
-	};
-
 	return (
-		<Form onSubmit={handleSubmit(onSubmit)}>
-			<Controller
-				control={control}
-				name="query"
-				render={({ formState }) => (
-					<Input
-						label="Search for conversation"
-						className="mb-4"
-						iconLeft={<Search className="size-4" />}
-						inputProps={formState}
-						error={errors.query?.message}
-					/>
-				)}
-			/>
-		</Form>
+		<ComboBoxWrapper
+			inputProps={{
+				label: 'Search users...',
+				iconLeft: <Search className="size-4" />,
+				inputProps: {
+					onChange: (e) => setQuery(e.target.value),
+				},
+			}}
+		>
+			{data &&
+				data.users.length > 0 &&
+				data?.users.map((user, indx) => (
+					<ComboBoxItems
+						key={user.id}
+						id={user.id}
+						textValue={`${user.firstName} ${user.lastName}`}
+						className="bg-green-50 px-4"
+						removeUnderline={indx === data.users.length - 1}
+					>
+						<UsersSidebar
+							key={user.id}
+							username={`${user.firstName} ${user.lastName}`}
+							userRole={user.role!}
+							id={user.id}
+							removeUnderline={indx === data.users.length - 1}
+						/>
+					</ComboBoxItems>
+				))}
+		</ComboBoxWrapper>
 	);
-};
+});

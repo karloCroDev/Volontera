@@ -4,6 +4,7 @@ import {
 	UseMutationOptions,
 	useQuery,
 	useQueryClient,
+	UseQueryOptions,
 	useSuspenseQuery,
 	UseSuspenseQueryOptions,
 } from '@tanstack/react-query';
@@ -25,6 +26,7 @@ import {
 // Types
 import { DataWithFiles } from '@repo/types/upload';
 import { ErrorToastResponse, SuccessfulResponse } from '@repo/types/general';
+import { SearchUsersResponse } from '@repo/types/direct-messages';
 
 export const useGetListOfDirectMessages = (
 	options?: Omit<UseSuspenseQueryOptions<boolean>, 'queryKey' | 'queryFn'>
@@ -37,9 +39,13 @@ export const useGetListOfDirectMessages = (
 };
 
 export const useSearchAllUsers = (data: SearchArgs) => {
-	return useQuery({
-		queryKey: ['direct-messages-search'],
-		queryFn: () => searchAllUsers(data),
+	const q = data.query?.trim() ?? '';
+
+	return useQuery<SearchUsersResponse>({
+		queryKey: ['direct-messages-search', q],
+		queryFn: () => searchAllUsers({ ...data, query: q }),
+		enabled: q.length > 0,
+		refetchOnWindowFocus: false,
 	});
 };
 

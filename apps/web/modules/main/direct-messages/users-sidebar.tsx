@@ -12,7 +12,9 @@ export const UsersSidebar: React.FC<{
 	id: string;
 	username: string;
 	userRole?: string;
-}> = ({ id, username, userRole }) => {
+	lastMessage?: string;
+	removeUnderline?: boolean;
+}> = ({ id, username, userRole, lastMessage, removeUnderline = false }) => {
 	const searchParams = useSearchParams();
 
 	const pathname = usePathname();
@@ -23,8 +25,9 @@ export const UsersSidebar: React.FC<{
 		<Link
 			href={`${pathname}?user=${id}`}
 			className={twJoin(
-				'border-input-border flex items-center gap-4 border-b py-3',
-				isActive && 'border-b-muted-foreground font-semibold'
+				'border-input-border flex items-center gap-4 py-3',
+				isActive && 'border-b-muted-foreground font-semibold',
+				!removeUnderline && 'border-b'
 			)}
 		>
 			<Avatar
@@ -38,7 +41,9 @@ export const UsersSidebar: React.FC<{
 
 			<div>
 				<p className="text-md">{username} </p>
-				<p className="text-muted-foreground text-xs md:text-sm">{userRole} </p>
+				<p className="text-muted-foreground text-xs md:text-sm">
+					{userRole || lastMessage}{' '}
+				</p>
 			</div>
 
 			<Dot

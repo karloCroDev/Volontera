@@ -36,7 +36,7 @@ export async function searchAllUsersWithQueryService({
     };
   }
 
-  const conversations = await searchAllUsers({
+  const users = await searchAllUsers({
     query: data.query,
     userId,
     // limit: data.limit,
@@ -52,7 +52,7 @@ export async function searchAllUsersWithQueryService({
     body: {
       title: "Users retrieved successfully",
       message: "Users retrieved successfully",
-      conversations,
+      users,
     },
   };
 }

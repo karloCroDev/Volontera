@@ -21,6 +21,7 @@ export const ListUsers: React.FC<{
 	const searchParams = useSearchParams();
 
 	const isActive = searchParams.get('user');
+
 	return (
 		<aside
 			className={twJoin(
@@ -47,7 +48,7 @@ export const ListUsers: React.FC<{
 					listOfAllDirectMessages.conversations.map((conversation) => (
 						<UsersSidebar
 							username={`${conversation.participant.firstName} ${conversation.participant.lastName}`}
-							userRole={conversation.participant.role!}
+							lastMessage={conversation.lastMessage || undefined}
 							id={conversation.participant.id}
 							key={conversation.participant.id}
 						/>

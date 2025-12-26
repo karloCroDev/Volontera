@@ -1,9 +1,13 @@
 import { DirectMessagesConversations, User } from "@repo/database";
-import { ServerHandleResponse } from "./general";
+import { ServerHandleResponse, SuccessfulResponse } from "./general";
 
 // Both for listing conversations and searching all conversations
 export type ListConversationsResponse = ServerHandleResponse<true> & {
   conversations: (DirectMessagesConversations & {
     participant: Omit<User, "password">;
   })[];
+};
+
+export type SearchUsersResponse = SuccessfulResponse & {
+  users: Omit<User, "password">[];
 };
