@@ -3,11 +3,11 @@
 // External packages
 import * as React from 'react';
 import { useSearchParams } from 'next/navigation';
-import { Avatar } from '@/components/ui/avatar';
 import Markdown from 'react-markdown';
 
 // Components
 import { Message, MessageSkeleton } from '@/components/ui/message';
+import { Avatar } from '@/components/ui/avatar';
 
 // Hooks
 import { useGetDirectMessagesConversationById } from '@/hooks/data/direct-messages';
@@ -51,7 +51,9 @@ export const Conversation = withReactQueryProvider(() => {
 					</Message>
 				))
 			) : (
-				<p>No messages found. Start a new conversation</p>
+				<p className="text-muted-foreground text-center">
+					No messages found. Start a new conversation
+				</p>
 			)}
 		</div>
 	);

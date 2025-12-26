@@ -13,7 +13,7 @@ import {
   hasUnreadNotifications,
   markNotificationAsRead,
 } from "@/models/notification.model";
-import { findUserById } from "@/models/auth.model";
+import { findUserById } from "@/models/user.model";
 
 // Schemas
 import {

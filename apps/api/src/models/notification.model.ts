@@ -11,25 +11,6 @@ export async function retrieveUserNotifications(userId: User["id"]) {
     },
     include: {
       user: {
-        // TODO: Only data I am willing to expose (if it repeats multiple times, consider creating a select object)
-        // select: {
-        //   id: true,
-        //   firstName: true,
-        //   lastName: true,
-        //   email: true,
-        //   bio: true,
-        //   address: true,
-        //   workOrSchool: true,
-        //   pricingId: true,
-        //   image: true,
-        //   DOB: true,
-        //   role: true,
-        //   createdAt: true,
-        //   updatedAt: true,
-        //   subscriptionTier: true,
-        //   onboardingFinished: true,
-        //   subscriptionType: true,
-        // },
         omit: {
           password: true,
         },

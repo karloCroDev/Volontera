@@ -1,4 +1,5 @@
 // Models
+import { getImagePresignedUrls } from "@/lib/aws-s3-functions";
 import {
   getDirectMessagesConversationById,
   listAllDirectMessagesConversation,
@@ -67,12 +68,29 @@ export async function listAllDirectMessagesConversationsService(
     body: {
       title: "Direct messages conversations retrieved",
       message: "Direct messages conversations retrieved successfully",
-      conversations: conversations.map((conversation) => ({
-        ...conversation,
-        participant: conversation.participants.find(
-          (participant) => participant.userId !== userId // Get the user that isn't the current user
-        )!.user, // Get the user object
-      })),
+      conversations: await Promise.all(
+        conversations.map(async (conversation) => {
+          // Uzimam podatke od drugog korisnika (ne o sebi). Ovo je 1:1 razgovor.
+          const otherParticipant = conversation.participants.find(
+            (participant) => participant.userId !== userId
+          );
+
+          const otherUser = otherParticipant?.user;
+          const image = otherUser?.image
+            ? await getImagePresignedUrls(otherUser.image)
+            : "";
+
+          return {
+            ...conversation,
+            participant: otherUser
+              ? {
+                  ...otherUser,
+                  image,
+                }
+              : "",
+          };
+        })
+      ),
     },
   };
 }
@@ -96,12 +114,31 @@ export async function getDirectMessagesConversationByIdService(
     data.conversationId
   );
 
+  // Samo dva korisnika (1:1) na razgovor, pa da samo generiram dva puta url za slike od presigned urlova, nego za svaku poruku
+  const avatarUrlByUserId: Record<string, string> = {};
+
+  for (const message of conversation) {
+    const author = message.author;
+
+    if (!author?.image) continue;
+
+    let url = avatarUrlByUserId[author.id];
+
+    if (!url) {
+      console.log(Math.random());
+      url = await getImagePresignedUrls(author.image);
+      avatarUrlByUserId[author.id] = url;
+    }
+
+    author.image = url;
+  }
+
   return {
     status: 200,
     body: {
       title: "Direct messages conversation retrieved",
       message: "Direct messages conversation retrieved successfully",
-      conversation: conversation,
+      conversation,
     },
   };
 }

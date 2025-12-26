@@ -19,10 +19,6 @@ export async function getUserByIdService(userId: string) {
   let userData = user;
 
   if (user.image) {
-    // const image = !user.image.includes("lh3.googleusercontent.com")
-    //   ? await getImagePresignedUrls(user.image)
-    //   : user.image;
-
     const image = await getImagePresignedUrls(user.image);
     userData = { ...user, image };
   }
