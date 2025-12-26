@@ -40,6 +40,7 @@ services:
     depends_on:
       - api
 
+# TODO: Add both web and api folder to volumes, fix the url issues with docker
 volumes:
   postgres_data:
   redis_data:

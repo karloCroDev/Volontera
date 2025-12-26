@@ -25,9 +25,9 @@ export const UsersSidebar: React.FC<{
 		<Link
 			href={`${pathname}?user=${id}`}
 			className={twJoin(
-				'border-input-border flex items-center gap-4 py-3',
+				'border-input-border flex items-center gap-4 px-2 py-3',
 				isActive && 'border-b-muted-foreground font-semibold',
-				!removeUnderline && 'border-b'
+				removeUnderline && 'border-b-0'
 			)}
 		>
 			<Avatar

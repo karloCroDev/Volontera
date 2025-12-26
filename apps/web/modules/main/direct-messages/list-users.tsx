@@ -25,7 +25,7 @@ export const ListUsers: React.FC<{
 	return (
 		<aside
 			className={twJoin(
-				'border-input-border flex h-full w-full flex-col border-r px-4 py-6 lg:w-1/4 lg:px-6',
+				'border-input-border flex h-full w-full min-w-80 flex-col border-r px-4 py-6 lg:w-1/4 lg:px-6',
 				isActive && 'hidden lg:flex'
 			)}
 		>

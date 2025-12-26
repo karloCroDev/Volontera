@@ -42,7 +42,6 @@ export const UsersSearch = withReactQueryProvider(() => {
 						key={user.id}
 						id={user.id}
 						textValue={`${user.firstName} ${user.lastName}`}
-						className="bg-green-50 px-4"
 						removeUnderline={indx === data.users.length - 1}
 					>
 						<UsersSidebar
