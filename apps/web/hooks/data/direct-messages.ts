@@ -25,8 +25,11 @@ import {
 
 // Types
 import { DataWithFiles } from '@repo/types/upload';
-import { ErrorToastResponse, SuccessfulResponse } from '@repo/types/general';
-import { SearchUsersResponse } from '@repo/types/direct-messages';
+import { ErrorToastResponse } from '@repo/types/general';
+import {
+	SearchUsersResponse,
+	StartConversationOrStartAndSendDirectMessageResonse,
+} from '@repo/types/direct-messages';
 
 export const useGetListOfDirectMessages = (
 	options?: Omit<UseSuspenseQueryOptions<boolean>, 'queryKey' | 'queryFn'>
@@ -62,7 +65,7 @@ export const useGetDirectMessagesConversationById = (
 
 export const useStartConversationOrStartAndSendDirectMessage = (
 	options?: UseMutationOptions<
-		SuccessfulResponse,
+		StartConversationOrStartAndSendDirectMessageResonse,
 		ErrorToastResponse,
 		DataWithFiles<MessageArgs>
 	>

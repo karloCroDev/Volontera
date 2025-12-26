@@ -72,7 +72,7 @@ export const getButtonClassNames = ({
 
 		// Ghost variant styles
 		variant === 'ghost' &&
-			'backdrop-blur-md transition hover:bg-white/20 hover:opacity-100 bg-transparent',
+			'backdrop-blur-md transition hover:bg-background-foreground/20 hover:opacity-100 bg-transparent',
 
 		// Blank variant styles
 		variant === 'blank' && 'bg-transparent hover:backdrop-blur-2xl px-0 mx-0'

@@ -68,9 +68,9 @@ export async function searchAllUsers({
 
     where: {
       // Ne vraćam samog sebe tj. treutačnog korisnika koji koristi aplikaciju
-      // NOT: {
-      //   id: userId,
-      // },
+      NOT: {
+        id: userId,
+      },
       OR: [
         {
           firstName: query,

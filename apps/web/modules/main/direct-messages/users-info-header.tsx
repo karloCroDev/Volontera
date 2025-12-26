@@ -33,7 +33,7 @@ export const UsersInfoHeader = withReactQueryProvider(() => {
 			{user && (
 				<Avatar
 					imageProps={{
-						src: user?.image || '',
+						src: user?.image || undefined,
 					}}
 					size="xl"
 				>

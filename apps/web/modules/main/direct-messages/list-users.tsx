@@ -4,13 +4,11 @@
 import * as React from 'react';
 import { useSearchParams } from 'next/navigation';
 import { twJoin } from 'tailwind-merge';
+import Markdown from 'react-markdown';
 
 // Modules
 import { UsersSearch } from '@/modules/main/direct-messages/users-search';
-import {
-	UsersSidebar,
-	UsersSidebarSkeleton,
-} from '@/modules/main/direct-messages/users-sidebar';
+import { UsersSidebar } from '@/modules/main/direct-messages/users-sidebar';
 
 // Types
 import { ListConversationsResponse } from '@repo/types/direct-messages';
@@ -22,6 +20,7 @@ export const ListUsers: React.FC<{
 
 	const isActive = searchParams.get('user');
 
+	console.log(listOfAllDirectMessages);
 	return (
 		<aside
 			className={twJoin(
@@ -34,7 +33,7 @@ export const ListUsers: React.FC<{
 			</h4>
 			<UsersSearch />
 
-			<div className="no-scrollbar flex-1 overflow-scroll">
+			<div className="no-scrollbar mt-4 flex-1 overflow-scroll">
 				{/* {[...Array(4)].map((_, indx) => (
 					<UsersSidebar
 						username="Karlo"
@@ -53,6 +52,7 @@ export const ListUsers: React.FC<{
 							key={conversation.participant.id}
 						/>
 					))}
+
 				{/* // [...Array(4)].map((_, indx) => (
 				// 	<UsersSidebarSkeleton key={indx} />
 				// )) */}

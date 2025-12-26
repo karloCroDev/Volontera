@@ -1,10 +1,9 @@
 import { ServerHandleResponse, SuccessfulResponse } from "./general";
-import { User } from "./auth";
-import { Notification } from "@repo/database";
+import { Notification, User } from "@repo/database";
 
 export type NotificationResponse = {
   notifications: (Notification & {
-    user: User;
+    user: Omit<User, "password">;
   })[];
 } & SuccessfulResponse &
   ServerHandleResponse<true>;

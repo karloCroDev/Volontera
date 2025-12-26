@@ -7,6 +7,7 @@ import { usePathname, useSearchParams } from 'next/navigation';
 import { Avatar } from '@/components/ui/avatar';
 import { twJoin } from 'tailwind-merge';
 import { Dot } from '@/components/ui/dot';
+import Markdown from 'react-markdown';
 
 export const UsersSidebar: React.FC<{
 	id: string;
@@ -26,7 +27,8 @@ export const UsersSidebar: React.FC<{
 			href={`${pathname}?user=${id}`}
 			className={twJoin(
 				'border-input-border flex items-center gap-4 px-2 py-3',
-				isActive && 'border-b-muted-foreground font-semibold',
+				isActive &&
+					'border-b-muted-foreground hover:bg-background-foreground/10 rounded-lg font-semibold backdrop-blur-2xl',
 				removeUnderline && 'border-b-0'
 			)}
 		>
@@ -41,9 +43,9 @@ export const UsersSidebar: React.FC<{
 
 			<div>
 				<p className="text-md">{username} </p>
-				<p className="text-muted-foreground text-xs md:text-sm">
-					{userRole || lastMessage}{' '}
-				</p>
+				<div className="text-muted-foreground text-xs md:text-sm">
+					{lastMessage ? <Markdown>{lastMessage}</Markdown> : userRole}
+				</div>
 			</div>
 
 			<Dot

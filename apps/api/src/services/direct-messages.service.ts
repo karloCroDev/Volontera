@@ -71,7 +71,7 @@ export async function listAllDirectMessagesConversationsService(
         ...conversation,
         participant: conversation.participants.find(
           (participant) => participant.userId !== userId // Get the user that isn't the current user
-        ),
+        )!.user, // Get the user object
       })),
     },
   };
@@ -152,6 +152,7 @@ export async function startConversationOrStartAndSendDirectMessageService({
       title: "Message is sent",
       message: "Message is successfully sent to the wanted user",
       images,
+      conversationId: conversation.id,
     },
   };
 }

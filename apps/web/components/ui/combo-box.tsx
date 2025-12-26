@@ -50,7 +50,7 @@ export const ComboBoxItems: React.FC<
 	<ListBoxItem
 		{...rest}
 		className={twJoin(
-			'cursor-pointer rounded-lg py-2 backdrop-blur-md hover:bg-white/10',
+			'cursor-pointer py-2',
 			!removeUnderline && 'border-input-border border-b'
 		)}
 	/>

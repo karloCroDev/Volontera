@@ -11,3 +11,8 @@ export type ListConversationsResponse = ServerHandleResponse<true> & {
 export type SearchUsersResponse = SuccessfulResponse & {
   users: Omit<User, "password">[];
 };
+
+export type StartConversationOrStartAndSendDirectMessageResonse =
+  SuccessfulResponse & {
+    conversationId: DirectMessagesConversations["id"];
+  };
