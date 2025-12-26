@@ -8,7 +8,7 @@ import {
 } from '@tanstack/react-query';
 
 // Lib
-import { clientSession, logout } from '@/lib/data/user';
+import { clientSession, logout, getUserById } from '@/lib/data/user';
 
 // Types
 import { SessionSuccessResponse } from '@repo/types/auth';
@@ -35,10 +35,9 @@ export const useLogout = (options?: UseMutationOptions<void, Error, void>) => {
 	});
 };
 
-// export const getUser = async ()=>{
-//     return useQuery<SessionSuccessResponse, ServerHandleResponse<false>>({
-//         queryKey: ['session'],
-//         queryFn: ()=>,
-//         staleTime: 5 * 60 * 1000,
-//     });
-// }
+export const useGetUser = (userId: string) => {
+	return useQuery<SessionSuccessResponse, ServerHandleResponse<false>>({
+		queryKey: [userId],
+		queryFn: () => getUserById(userId),
+	});
+};

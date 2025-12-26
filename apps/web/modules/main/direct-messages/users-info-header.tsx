@@ -1,3 +1,5 @@
+'use client';
+
 // External packages
 import { ArrowLeft } from 'lucide-react';
 
@@ -5,9 +7,13 @@ import { ArrowLeft } from 'lucide-react';
 import { Avatar } from '@/components/ui/avatar';
 import { DotWithLabel } from '@/components/ui/dot';
 import { LinkAsButton } from '@/components/ui/link-as-button';
-import { useSession } from '@/hooks/data/auth';
+import { useGetUser } from '@/hooks/data/user';
+import { useSearchParams } from 'next/navigation';
+import { withReactQueryProvider } from '@/lib/utils/react-query';
 
-export const UsersInfoHeader = () => {
+export const UsersInfoHeader = withReactQueryProvider(() => {
+	const params = useSearchParams();
+	const { data } = useGetUser(params.get('user') || '');
 	return (
 		<div className="border-input-border flex h-28 items-center gap-4 border-b px-4 sm:px-6 lg:px-8">
 			<LinkAsButton
@@ -17,18 +23,26 @@ export const UsersInfoHeader = () => {
 			>
 				<ArrowLeft />
 			</LinkAsButton>
-			<Avatar
-				imageProps={{
-					src: '',
-				}}
-				size="xl"
-			>
-				Karlo
-			</Avatar>
 
+			{data && (
+				<Avatar
+					imageProps={{
+						src: data?.image || '',
+					}}
+					size="xl"
+				>
+					{data.fullname}
+				</Avatar>
+			)}
 			<div>
-				<h4 className="text-lg lg:text-xl">Karlo Grgic</h4>
-				<p className="text-muted-foreground">Last online: 19:03 22.11.2025</p>
+				<h4 className="text-lg lg:text-xl">{data?.fullname}</h4>
+
+				{data && (
+					<p className="text-muted-foreground">
+						Last online:
+						{new Date(data.updatedAt).toLocaleString().replaceAll('/', '.')}
+					</p>
+				)}
 			</div>
 			<DotWithLabel
 				className="ml-auto"
@@ -37,4 +51,4 @@ export const UsersInfoHeader = () => {
 			/>
 		</div>
 	);
-};
+});
