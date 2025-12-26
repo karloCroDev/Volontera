@@ -14,7 +14,7 @@ import { Label } from '@/components/ui/label';
 import { Avatar } from '@/components/ui/avatar';
 
 // Hooks
-import { useSession } from '@/hooks/data/auth';
+import { useSession } from '@/hooks/data/user';
 
 // Schemas
 import { SettingsArgs } from '@repo/schemas/settings';

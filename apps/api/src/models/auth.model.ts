@@ -123,30 +123,3 @@ export async function updateVerificationToken({
     },
   });
 }
-
-export async function findUserById(userId: User["id"]) {
-  return prisma.user.findUnique({
-    where: { id: userId },
-    // select: {
-    //   id: true,
-    //   firstName: true,
-    //   lastName: true,
-    //   email: true,
-    //   bio: true,
-    //   address: true,
-    //   workOrSchool: true,
-    //   pricingId: true,
-    //   image: true,
-    //   DOB: true,
-    //   role: true,
-    //   createdAt: true,
-    //   updatedAt: true,
-    //   subscriptionTier: true,
-    //   onboardingFinished: true,
-    //   subscriptionType: true,
-    // },
-    omit: {
-      password: true,
-    },
-  });
-}

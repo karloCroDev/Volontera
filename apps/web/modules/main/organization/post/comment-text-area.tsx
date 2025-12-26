@@ -2,14 +2,18 @@
 
 // External packages
 import * as React from 'react';
+import { Plus, Send } from 'lucide-react';
 
 // Components
 import { ResizableTextArea } from '@/components/ui/resizable-input';
 import { Avatar } from '@/components/ui/avatar';
-import { useSession } from '@/hooks/data/auth';
-import { withReactQueryProvider } from '@/lib/utils/react-query';
 import { Button } from '@/components/ui/button';
-import { Plus, Send } from 'lucide-react';
+
+// Hooks
+import { useSession } from '@/hooks/data/user';
+
+// Lib
+import { withReactQueryProvider } from '@/lib/utils/react-query';
 
 export const CommentTextArea = withReactQueryProvider(() => {
 	const { data: user } = useSession();

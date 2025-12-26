@@ -20,7 +20,7 @@ import { Error } from '@/components/ui/error';
 import { SettingsArgs } from '@repo/schemas/settings';
 
 // Hooks
-import { useSession } from '@/hooks/data/auth';
+import { useSession } from '@/hooks/data/user';
 import {
 	useAdditionalInformation,
 	useSkipAdditionalInformation,

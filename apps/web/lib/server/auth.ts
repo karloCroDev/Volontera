@@ -9,7 +9,7 @@ export async function getSession(): Promise<
 	SessionSuccessResponse | ServerHandleResponse<false>
 > {
 	return await serverFetch({
-		url: 'auth/session',
+		url: 'user/session',
 		init: { cache: 'no-store', next: { tags: ['session'] } },
 	});
 }

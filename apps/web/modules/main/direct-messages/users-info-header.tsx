@@ -5,6 +5,7 @@ import { ArrowLeft } from 'lucide-react';
 import { Avatar } from '@/components/ui/avatar';
 import { DotWithLabel } from '@/components/ui/dot';
 import { LinkAsButton } from '@/components/ui/link-as-button';
+import { useSession } from '@/hooks/data/auth';
 
 export const UsersInfoHeader = () => {
 	return (

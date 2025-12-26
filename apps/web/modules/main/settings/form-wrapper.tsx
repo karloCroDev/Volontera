@@ -14,7 +14,7 @@ import { PersonalInformationForm } from '@/modules/main/settings/personal-inform
 import { ProfileForm } from '@/modules/main/settings/profile-form';
 
 // Hooks
-import { useSession } from '@/hooks/data/auth';
+import { useSession } from '@/hooks/data/user';
 
 // Lib
 import { withReactQueryProvider } from '@/lib/utils/react-query';

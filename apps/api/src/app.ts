@@ -18,7 +18,9 @@ import { app } from "@/ws/socket";
 import { oAuthGoogleHandle } from "@/config/oAuth-google";
 
 // Routes
-import { authRoutes } from "@/routes/auth-routes";
+import { authRoutes } from "@/routes/auth.routes";
+import { directMessagesRoutes } from "@/routes/direct-messages.routes";
+import { userRoutes } from "@/routes/user.routes";
 // import { paymentRoutes } from "@/routes/payment-routes";
 import { onboardingRoutes } from "@/routes/onboarding.routes";
 import { settingsRoutes } from "@/routes/settings.routes";
@@ -26,7 +28,6 @@ import { helpRoutes } from "@/routes/help.routes";
 import { paymentRoutes } from "@/routes/payment.routes";
 import { notificationRoutes } from "@/routes/notification.routes";
 import { initalizeRedisClient } from "@/config/redis";
-import { directMessagesRoutes } from "@/routes/direct-messages.routes";
 
 // Security middleware
 app.use(helmet());
@@ -49,6 +50,7 @@ app.use(
   onboardingProcessMiddleware,
   onboardingRoutes
 );
+app.use("/user", authMiddleware, userRoutes);
 app.use("/settings", authMiddleware, hasRoleMiddleware, settingsRoutes);
 app.use("/help", authMiddleware, hasRoleMiddleware, helpRoutes);
 app.use(

@@ -1,11 +1,9 @@
 // External packages
 import bcrypt from "bcrypt";
 import crypto from "crypto";
-import jwt from "jsonwebtoken";
 import { createElement } from "react";
 
 // Lib
-import { sendEmail } from "@/config/nodemailer";
 import { resend } from "@/config/resend";
 
 // Shared utils
@@ -24,7 +22,6 @@ import {
   clearOtpVerification,
   createUser,
   findUserByEmail,
-  findUserById,
   findUserForOtpVerification,
   resetPasswordByToken,
   updateResetPasswordToken,
@@ -261,38 +258,5 @@ export async function resetVerifyTokenService(rawData: unknown) {
   return {
     status: 200,
     body: { message: "Verification code refreshed successfully" },
-  };
-}
-
-export async function getSessionUser(userId: string) {
-  const user = await findUserById(userId);
-
-  if (!user)
-    return {
-      status: 400,
-      body: {
-        message: "There is no user that we could find with that ID",
-        success: false,
-      },
-    };
-
-  let userData = user;
-
-  if (user.image) {
-    // const image = !user.image.includes("lh3.googleusercontent.com")
-    //   ? await getImagePresignedUrls(user.image)
-    //   : user.image;
-
-    const image = await getImagePresignedUrls(user.image);
-    userData = { ...user, image };
-  }
-  return {
-    status: 200,
-    body: {
-      message: "User fetched successfully",
-      success: true,
-      ...userData,
-      fullname: `${user.firstName} ${user.lastName}`,
-    },
   };
 }

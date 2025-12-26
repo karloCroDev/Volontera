@@ -24,7 +24,7 @@ import { LinkAsButton } from '@/components/ui/link-as-button';
 import { useSidebarContext } from '@/components/ui/sidebar/sidebar-provider';
 
 // Hooks
-import { useLogout } from '@/hooks/data/auth';
+import { useLogout } from '@/hooks/data/user';
 
 // Lib
 import { withReactQueryProvider } from '@/lib/utils/react-query';
