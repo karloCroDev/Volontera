@@ -24,9 +24,15 @@ export const UsersSearch = withReactQueryProvider(() => {
 	const [query, setQuery] = React.useState('');
 	// TODO: Find out if there is some problems with fetching this data
 	const debouncedQuery = useDebounce(query);
-	const { data, isPending } = useSearchAllUsers({
-		query: debouncedQuery,
-	});
+	const { data } = useSearchAllUsers(
+		{
+			query: debouncedQuery,
+		},
+		{
+			enabled: debouncedQuery.length > 0,
+			refetchOnWindowFocus: false,
+		}
+	);
 
 	return (
 		<ComboBoxWrapper

@@ -4,7 +4,6 @@
 import * as React from 'react';
 import { useSearchParams } from 'next/navigation';
 import { twJoin } from 'tailwind-merge';
-import Markdown from 'react-markdown';
 
 // Modules
 import { UsersSearch } from '@/modules/main/direct-messages/users-search';
@@ -20,7 +19,6 @@ export const ListUsers: React.FC<{
 
 	const isActive = searchParams.get('user');
 
-	console.log(listOfAllDirectMessages);
 	return (
 		<aside
 			className={twJoin(
@@ -44,10 +42,6 @@ export const ListUsers: React.FC<{
 							key={conversation.participant.id}
 						/>
 					))}
-
-				{/* // [...Array(4)].map((_, indx) => (
-				// 	<UsersSidebarSkeleton key={indx} />
-				// )) */}
 			</div>
 		</aside>
 	);

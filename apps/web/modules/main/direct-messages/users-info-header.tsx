@@ -21,16 +21,16 @@ export const UsersInfoHeader = withReactQueryProvider(() => {
 	const { data: user } = useGetUser(params.get('user') || '');
 
 	return (
-		<div className="border-input-border flex h-28 items-center gap-4 border-b px-4 sm:px-6 lg:px-8">
-			<LinkAsButton
-				variant="blank"
-				href="/direct-messages"
-				className="block lg:hidden"
-			>
-				<ArrowLeft />
-			</LinkAsButton>
+		user && (
+			<div className="border-input-border flex h-28 items-center gap-4 border-b px-4 sm:px-6 lg:px-8">
+				<LinkAsButton
+					variant="blank"
+					href="/direct-messages"
+					className="block lg:hidden"
+				>
+					<ArrowLeft />
+				</LinkAsButton>
 
-			{user && (
 				<Avatar
 					imageProps={{
 						src: user?.image || undefined,
@@ -42,29 +42,30 @@ export const UsersInfoHeader = withReactQueryProvider(() => {
 						lastname: user.lastName,
 					})}
 				</Avatar>
-			)}
-			<div>
-				{user && (
-					<h4 className="text-lg lg:text-xl">
-						{convertToFullname({
-							firstname: user.firstName,
-							lastname: user.lastName,
-						})}
-					</h4>
-				)}
 
-				{user && (
-					<p className="text-muted-foreground">
-						Last online:
-						{new Date(user.updatedAt).toLocaleString().replaceAll('/', '.')}
-					</p>
-				)}
+				<div>
+					{user && (
+						<h4 className="text-lg lg:text-xl">
+							{convertToFullname({
+								firstname: user.firstName,
+								lastname: user.lastName,
+							})}
+						</h4>
+					)}
+
+					{user && (
+						<p className="text-muted-foreground">
+							Last online:
+							{new Date(user.updatedAt).toLocaleString().replaceAll('/', '.')}
+						</p>
+					)}
+				</div>
+				<DotWithLabel
+					className="ml-auto"
+					label="Online"
+					dotProps={{ state: 'success', size: 'md' }}
+				/>
 			</div>
-			<DotWithLabel
-				className="ml-auto"
-				label="Online"
-				dotProps={{ state: 'success', size: 'md' }}
-			/>
-		</div>
+		)
 	);
 });

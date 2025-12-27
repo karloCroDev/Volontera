@@ -19,6 +19,7 @@ import { useStartConversationOrStartAndSendDirectMessage } from '@/hooks/data/di
 // Lib
 import { withReactQueryProvider } from '@/lib/utils/react-query';
 import { toast } from '@/lib/utils/toast';
+import { IRevalidateTag } from '@/lib/server/revalidation';
 
 // TODO: Implement the image option
 export const MessageForm = withReactQueryProvider(() => {
@@ -54,6 +55,8 @@ export const MessageForm = withReactQueryProvider(() => {
 						content: message,
 						variant: 'success',
 					});
+					IRevalidateTag('direct-messages');
+					setValue('');
 				},
 			}
 		);

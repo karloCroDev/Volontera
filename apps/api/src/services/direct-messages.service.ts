@@ -16,6 +16,7 @@ import {
   conversationSchema,
   messageSchema,
 } from "@repo/schemas/direct-messages";
+import { getReceiverSocketId, io } from "@/ws/socket";
 
 export async function searchAllUsersWithQueryService({
   rawData,
@@ -163,6 +164,16 @@ export async function startConversationOrStartAndSendDirectMessageService({
       receiverId: data.particpantId,
       content: data.content,
     });
+
+  const senderSocketId = getReceiverSocketId(userId);
+
+  const receiverSocketId = getReceiverSocketId(data.particpantId);
+
+  // Kreiranje poruke korisniku
+  if (receiverSocketId) io.to(receiverSocketId).emit("new-chat", message);
+
+  // Kreiranje poruke sebi
+  if (senderSocketId) io.to(senderSocketId).emit("new-chat", message);
 
   return {
     status: 200,

@@ -183,15 +183,20 @@ export async function startConversationOrStartAndSendDirectMessage({
         conversationId: conversation.id,
         authorId: senderId,
         content,
-        directMessagesImages: {
-          create:
-            imageUrls?.map((imageUrl) => ({
-              imageUrl,
-            })) || [],
-        },
       },
     });
 
+    // Tommorow when I fix the sending images, than I think about handling the images
+    if (imageUrls) {
+      await tx.directMessagesImages.createMany({
+        data: [
+          ...imageUrls.map((url) => ({
+            messageId: message.id,
+            imageUrl: url,
+          })),
+        ],
+      });
+    }
     // 3️. Ažuriram posljednju poruku u konverzaciji
     await tx.directMessagesConversations.update({
       where: { id: conversation.id },
@@ -201,9 +206,10 @@ export async function startConversationOrStartAndSendDirectMessage({
     });
 
     // Uhh vidi je li trebam ionako ista vratiti
+
     return {
-      conversation,
       message,
+      conversation,
     };
   });
 }

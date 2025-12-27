@@ -18,12 +18,17 @@ import { convertToFullname } from '@/lib/utils/convert-to-fullname';
 
 export const Conversation = withReactQueryProvider(() => {
 	const searchParams = useSearchParams();
-	const { data: conversation, isLoading } =
-		useGetDirectMessagesConversationById({
-			conversationId: searchParams.get('conversationId') || '',
-		});
 
-	console.log('Conversation', conversation);
+	const { data: conversation, isLoading } =
+		useGetDirectMessagesConversationById(
+			{
+				conversationId: searchParams.get('conversationId')!,
+			},
+			{
+				enabled: !!searchParams.get('conversationId'),
+			}
+		);
+
 	return (
 		<div className="no-scrollbar min-h-0 flex-1 space-y-4 overflow-y-auto">
 			{isLoading &&

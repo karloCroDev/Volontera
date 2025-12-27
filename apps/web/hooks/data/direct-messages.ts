@@ -4,6 +4,7 @@ import {
 	UseMutationOptions,
 	useQuery,
 	useQueryClient,
+	UseQueryOptions,
 	useSuspenseQuery,
 	UseSuspenseQueryOptions,
 } from '@tanstack/react-query';
@@ -41,23 +42,28 @@ export const useGetListOfDirectMessages = (
 	});
 };
 
-export const useSearchAllUsers = (data: SearchArgs) => {
-	const q = data.query?.trim() ?? '';
-
+export const useSearchAllUsers = (
+	data: SearchArgs,
+	options?: Omit<UseQueryOptions<SearchUsersResponse>, 'queryKey' | 'queryFn'>
+) => {
 	return useQuery<SearchUsersResponse>({
-		queryKey: ['direct-messages-search', q],
-		queryFn: () => searchAllUsers({ ...data, query: q }),
-		enabled: q.length > 0,
-		refetchOnWindowFocus: false,
+		queryKey: ['direct-messages-search', data.query],
+		queryFn: () => searchAllUsers(data),
+		...options,
 	});
 };
 
 export const useGetDirectMessagesConversationById = (
-	data: ConversationArgs
+	data: ConversationArgs,
+	options?: Omit<
+		UseQueryOptions<GetDirectMessagesConversationByIdResponse>,
+		'queryKey' | 'queryFn'
+	>
 ) => {
 	return useQuery<GetDirectMessagesConversationByIdResponse>({
 		queryKey: ['direct-messages-conversation', data.conversationId],
 		queryFn: () => getDirectMessagesConversationById(data),
+		...options,
 	});
 };
 
