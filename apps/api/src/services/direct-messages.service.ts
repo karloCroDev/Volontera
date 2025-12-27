@@ -1,12 +1,11 @@
 // Models
-import { getImagePresignedUrls } from "@/lib/aws-s3-functions";
 import {
   getDirectMessagesConversationById,
   listAllDirectMessagesConversation,
   searchAllUsers,
   startConversationOrStartAndSendDirectMessage,
 } from "@/models/direct-messages.model";
-import { createUploadUrl } from "@/models/image.model";
+import { createUploadUrl, getImagePresignedUrls } from "@/lib/aws-s3-functions";
 
 // Database
 import { User } from "@repo/database";
@@ -68,29 +67,12 @@ export async function listAllDirectMessagesConversationsService(
     body: {
       title: "Direct messages conversations retrieved",
       message: "Direct messages conversations retrieved successfully",
-      conversations: await Promise.all(
-        conversations.map(async (conversation) => {
-          // Uzimam podatke od drugog korisnika (ne o sebi). Ovo je 1:1 razgovor.
-          const otherParticipant = conversation.participants.find(
-            (participant) => participant.userId !== userId
-          );
-
-          const otherUser = otherParticipant?.user;
-          const image = otherUser?.image
-            ? await getImagePresignedUrls(otherUser.image)
-            : "";
-
-          return {
-            ...conversation,
-            participant: otherUser
-              ? {
-                  ...otherUser,
-                  image,
-                }
-              : "",
-          };
-        })
-      ),
+      conversations: conversations.map((conversation) => ({
+        ...conversation,
+        participant: conversation.participants.find(
+          (participant) => participant.userId !== userId // Uzimam podatke od drugog korisnika (ne o sebi)
+        )!.user,
+      })),
     },
   };
 }
@@ -125,7 +107,6 @@ export async function getDirectMessagesConversationByIdService(
     let url = avatarUrlByUserId[author.id];
 
     if (!url) {
-      console.log(Math.random());
       url = await getImagePresignedUrls(author.image);
       avatarUrlByUserId[author.id] = url;
     }

@@ -15,13 +15,16 @@ import { withReactQueryProvider } from '@/lib/utils/react-query';
 // Hooks
 import { useSearchAllUsers } from '@/hooks/data/direct-messages';
 import { useDebounce } from '@/hooks/utils/useDebounce';
-import { UsersSidebar } from '@/modules/main/direct-messages/users-sidebar';
+import {
+	UsersSidebar,
+	UsersSidebarSkeleton,
+} from '@/modules/main/direct-messages/users-sidebar';
 
 export const UsersSearch = withReactQueryProvider(() => {
 	const [query, setQuery] = React.useState('');
 	// TODO: Find out if there is some problems with fetching this data
 	const debouncedQuery = useDebounce(query);
-	const { data } = useSearchAllUsers({
+	const { data, isPending } = useSearchAllUsers({
 		query: debouncedQuery,
 	});
 
@@ -32,9 +35,16 @@ export const UsersSearch = withReactQueryProvider(() => {
 				iconLeft: <Search className="size-4" />,
 				inputProps: {
 					onChange: (e) => setQuery(e.target.value),
+					value: query,
 				},
 			}}
 		>
+			{query &&
+				[...Array(4)].map((_, indx) => (
+					<ComboBoxItems key={indx}>
+						<UsersSidebarSkeleton />
+					</ComboBoxItems>
+				))}
 			{data &&
 				data.users.length > 0 &&
 				data?.users.map((user, indx) => (

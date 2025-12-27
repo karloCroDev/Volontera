@@ -34,15 +34,6 @@ export const ListUsers: React.FC<{
 			<UsersSearch />
 
 			<div className="no-scrollbar mt-4 flex-1 overflow-scroll">
-				{/* {[...Array(4)].map((_, indx) => (
-					<UsersSidebar
-						username="Karlo"
-						userRole="Organizator"
-						id={indx.toString()}
-						key={indx}
-					/>
-				))} */}
-
 				{listOfAllDirectMessages.conversations.length > 0 &&
 					listOfAllDirectMessages.conversations.map((conversation) => (
 						<UsersSidebar

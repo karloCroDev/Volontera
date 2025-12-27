@@ -59,9 +59,16 @@ export async function searchAllUsers({
     omit: {
       password: true,
     },
+    // include: {
+    //   directMessagesConversations: {
+    //     select: {
+    //       conversationId: true,
+    //     },
+    //   },
+    // },
+
     // skip: offset,
     // take: limit,
-
     where: {
       // Ne vraćam samog sebe tj. treutačnog korisnika koji koristi aplikaciju
       NOT: {

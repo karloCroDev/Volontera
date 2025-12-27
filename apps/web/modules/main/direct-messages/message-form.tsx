@@ -19,7 +19,6 @@ import { useStartConversationOrStartAndSendDirectMessage } from '@/hooks/data/di
 // Lib
 import { withReactQueryProvider } from '@/lib/utils/react-query';
 import { toast } from '@/lib/utils/toast';
-import { IRevalidateTag } from '@/lib/server/revalidation';
 
 // TODO: Implement the image option
 export const MessageForm = withReactQueryProvider(() => {
@@ -45,18 +44,16 @@ export const MessageForm = withReactQueryProvider(() => {
 			},
 			{
 				onSuccess({ message, title, conversationId }) {
-					// Ako bude trebalo, napravi custom hook za ovo
-					const params = new URLSearchParams(searchParams.toString());
-					params.set('conversationId', conversationId);
-					router.push(pathname + '?' + params.toString());
-
+					if (!searchParams.get('conversationId')) {
+						const params = new URLSearchParams(searchParams.toString());
+						params.set('conversationId', conversationId);
+						router.push(pathname + '?' + params.toString());
+					}
 					toast({
 						title,
 						content: message,
 						variant: 'success',
 					});
-					setValue('');
-					IRevalidateTag('direct-messages');
 				},
 			}
 		);

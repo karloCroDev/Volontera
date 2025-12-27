@@ -1,5 +1,9 @@
 // External packages
-import { DeleteObjectCommand, PutObjectCommand } from "@aws-sdk/client-s3";
+import {
+  DeleteObjectCommand,
+  GetObjectCommand,
+  PutObjectCommand,
+} from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { v4 as uuid } from "uuid";
 
@@ -7,35 +11,29 @@ import { v4 as uuid } from "uuid";
 import { s3 } from "@/config/aws";
 import { getKeyFromUrl } from "@/lib/aws-s3-functions";
 
-export async function deleteImage(key: string) {
-  const getKey = getKeyFromUrl(key);
-  const command = new DeleteObjectCommand({
-    Bucket: process.env.AWS_S3_BUCKET_NAME!,
-    Key: getKey,
-  });
+// TODO: Make api for fething urls from presigned urls for multiple images
+// export async function getImagePresignedUrls(image: string) {
+//   // Deduplicate
+//   const uniqueKeys = [...new Set(keys)];
 
-  return s3.send(command);
-}
+//   // (VERY IMPORTANT) authorize keys
+//   // Example: ensure user owns or can access these images
+//   // await authorizeImageAccess(session.user.id, uniqueKeys);
 
-export async function createUploadUrl({
-  contentType,
-  filename,
-  size,
-}: {
-  filename: string;
-  contentType: string;
-  size: number;
-}) {
-  const key = `${uuid()}_${filename}`;
+//   const urls: Record<string, string> = {};
 
-  const command = new PutObjectCommand({
-    Bucket: process.env.AWS_S3_BUCKET_NAME!,
-    Key: key,
-    ContentType: contentType,
-    ContentLength: size,
-  });
+//   await Promise.all(
+//     uniqueKeys.map(async (key) => {
+//       const command = new GetObjectCommand({
+//         Bucket: process.env.AWS_S3_BUCKET_NAME!,
+//         Key: key,
+//       });
 
-  const url = await getSignedUrl(s3, command, { expiresIn: 300 });
+//       urls[key] = await getSignedUrl(s3, command, {
+//         expiresIn: 3600,
+//       });
+//     })
+//   );
 
-  return { key, url };
-}
+//   return Response.json({ urls });
+// }

@@ -67,10 +67,10 @@ model User {
   accounts Accounts[]
 
   //  Relations
-  help                     Help[]
-  notifications            Notification[]
-  conversationParticipants ConversationParticipants[]
-  directMessages           DirectMessages[]
+  help                        Help[]
+  notifications               Notification[]
+  conversationParticipants    ConversationParticipants[]
+  directMessagesConversations DirectMessages[]
 }
 
 model Accounts {
@@ -116,15 +116,15 @@ model Notification {
 
 // Direct messages models (1-on-1 conversations, not groups)
 model DirectMessagesConversations {
-  id             String                     @id @default(cuid())
-  lastMessage    String?
-  participants   ConversationParticipants[]
-  pairKey        String                     @unique
-  directMessages DirectMessages[]
-  createdAt      DateTime                   @default(now())
-  updatedAt      DateTime                   @updatedAt
+  id                          String                     @id @default(cuid())
+  lastMessage                 String?
+  participants                ConversationParticipants[]
+  pairKey                     String                     @unique
+  directMessagesConversations DirectMessages[]
+  createdAt                   DateTime                   @default(now())
+  updatedAt                   DateTime                   @updatedAt
 
-  @@index([updatedAt])
+  @@index([updatedAt, id])
 }
 
 // n:n explicit relation table between users included in conversation (only 2 for now)

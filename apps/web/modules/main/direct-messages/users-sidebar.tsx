@@ -11,7 +11,6 @@ import Markdown from 'react-markdown';
 
 export const UsersSidebar: React.FC<{
 	id: string;
-
 	conversationId?: string; // Npr. kod searcha nećemo imati conversationId
 	username: string;
 	userRole?: string;
@@ -40,18 +39,12 @@ export const UsersSidebar: React.FC<{
 					: `${pathname}?user=${id}`
 			}
 			className={twJoin(
-				'border-input-border flex items-center gap-4 px-2 py-3',
-				isActive &&
-					'border-b-muted-foreground hover:bg-background-foreground/10 rounded-lg font-semibold backdrop-blur-2xl',
+				'border-input-border hover:bg-background-foreground/10 flex items-center gap-4 rounded-lg px-2 py-3 backdrop-blur-2xl',
+				isActive && 'border-b-muted-foreground font-semibold',
 				removeUnderline && 'border-b-0'
 			)}
 		>
-			<Avatar
-				imageProps={{
-					src: '',
-				}}
-				size="lg"
-			>
+			<Avatar imageProps={{}} size="lg">
 				{username}
 			</Avatar>
 
