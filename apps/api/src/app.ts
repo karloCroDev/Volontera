@@ -28,6 +28,7 @@ import { helpRoutes } from "@/routes/help.routes";
 import { paymentRoutes } from "@/routes/payment.routes";
 import { notificationRoutes } from "@/routes/notification.routes";
 import { initalizeRedisClient } from "@/config/redis";
+import { imageRoutes } from "@/routes/image.routes";
 
 // Security middleware
 app.use(helmet());
@@ -65,6 +66,7 @@ app.use(
   hasRoleMiddleware,
   directMessagesRoutes
 );
+app.use("/image", imageRoutes);
 
 // Test
 app.get("/protected-user", authMiddleware, userMiddleware, (req, res) => {
