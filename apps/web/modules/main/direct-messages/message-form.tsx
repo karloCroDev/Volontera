@@ -5,7 +5,6 @@ import * as React from 'react';
 import { Send } from 'lucide-react';
 import { Form } from 'react-aria-components';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import TurndownService from 'turndown';
 
 // Components
 import { TextEditor } from '@/components/ui/text-editor/text-editor';
@@ -36,11 +35,10 @@ export const MessageForm = withReactQueryProvider(() => {
 		e.preventDefault();
 		if (!searchParams.get('user') || !value) return;
 
-		const turndownService = new TurndownService();
 		mutate(
 			{
 				data: {
-					content: turndownService.turndown(value),
+					content: value,
 					particpantId: searchParams.get('user') || '',
 				},
 			},
@@ -57,14 +55,17 @@ export const MessageForm = withReactQueryProvider(() => {
 							content: message,
 							variant: 'success',
 						});
-						IRevalidateTag('direct-messages');
 					}
+					IRevalidateTag('direct-messages');
+				},
+				onSettled() {
+					setValue('');
 				},
 			}
 		);
-
-		setValue('');
 	};
+
+	console.log(value);
 
 	return (
 		<Form
@@ -80,7 +81,7 @@ export const MessageForm = withReactQueryProvider(() => {
 					<Button
 						type="submit"
 						className="p-2"
-						isDisabled={!value && isPending}
+						isDisabled={!value || isPending}
 					>
 						<Send />
 					</Button>

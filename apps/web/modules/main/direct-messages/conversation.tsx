@@ -68,6 +68,8 @@ export const Conversation = withReactQueryProvider(() => {
 		}
 	);
 	const { data: user } = useSession();
+
+	console.log(messages?.at(-1)?.content);
 	return (
 		<div className="no-scrollbar min-h-0 flex-1 space-y-4 overflow-y-auto">
 			{isLoading &&
@@ -99,7 +101,9 @@ export const Conversation = withReactQueryProvider(() => {
 								</Avatar>
 							}
 						>
-							<Markdown>{message.content}</Markdown>
+							<div className="prose prose-custom max-w-full">
+								<Markdown>{message.content}</Markdown>
+							</div>
 						</Message>
 					))
 				: !isLoading && (

@@ -19,10 +19,14 @@ import { Image } from 'lucide-react';
 export const TextEditorTooltips: React.FC<{
 	editor: EditorArgs;
 	hasAnImage: boolean;
+	setShowDndImageUpload: React.Dispatch<React.SetStateAction<boolean>>;
+	showDndImageUpload: boolean;
 }> = ({
 	/* eslint react/prop-types: 0 */
 	editor,
 	hasAnImage,
+	setShowDndImageUpload,
+	showDndImageUpload,
 }) => {
 	return (
 		<div className="border-input-border mb-1 flex items-center gap-3 overflow-x-scroll border-b pb-2">
@@ -118,15 +122,8 @@ export const TextEditorTooltips: React.FC<{
 			{hasAnImage && (
 				<Button
 					variant="blank"
-					className={
-						!editor.isActive('orderedList')
-							? 'text-muted-foreground p-0'
-							: 'p-2'
-					}
-					onPress={() => {
-						// Upload image to s3 get the url and set it here
-						editor.chain().focus().setImage({ src: '' }).run();
-					}}
+					className={!showDndImageUpload ? 'text-muted-foreground p-0' : 'p-2'}
+					onPress={() => setShowDndImageUpload((prev) => !prev)}
 				>
 					<Image className="size-5" />
 				</Button>

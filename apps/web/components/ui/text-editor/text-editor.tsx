@@ -14,11 +14,12 @@ import { Label } from 'react-aria-components';
 import { CharacterCount } from '@tiptap/extensions';
 import Underline from '@tiptap/extension-underline';
 import Image from '@tiptap/extension-image';
+import { Markdown } from '@tiptap/markdown';
 
 // Components
 import { Error } from '@/components/ui/error';
-
 import { TextEditorTooltips } from '@/components/ui/text-editor/text-editor-tooltips';
+import { DndMapppingImages } from '@/components/ui/dnd-mapping-images';
 
 export const TextEditor: React.FC<
 	React.ComponentPropsWithoutRef<'div'> & {
@@ -53,6 +54,7 @@ export const TextEditor: React.FC<
 			StarterKit,
 			Underline,
 			Image,
+			Markdown,
 			CharacterCount.configure({
 				limit: 200,
 			}),
@@ -60,7 +62,7 @@ export const TextEditor: React.FC<
 
 		content: value,
 		onUpdate: ({ editor }) => {
-			setValue(editor.getHTML());
+			setValue(editor.getMarkdown());
 		},
 		// Avoding SSR issues
 		immediatelyRender: false,
@@ -75,7 +77,11 @@ export const TextEditor: React.FC<
 		},
 	}) ?? { charactersCount: 0, wordsCount: 0 };
 
+	// Handle the apperance of dnd image
+	const [showDndImageUpload, setShowDndImageUpload] = React.useState(false);
+
 	if (!editor) return null;
+
 	return (
 		<div
 			{...rest}
@@ -84,7 +90,14 @@ export const TextEditor: React.FC<
 				className
 			)}
 		>
-			<TextEditorTooltips editor={editor} hasAnImage={hasAnImage} />
+			{showDndImageUpload && <DndMapppingImages className="mb-4" />}
+
+			<TextEditorTooltips
+				editor={editor}
+				hasAnImage={hasAnImage}
+				showDndImageUpload={showDndImageUpload}
+				setShowDndImageUpload={setShowDndImageUpload}
+			/>
 			<div className="flex w-full items-end">
 				<div className="relative flex-1">
 					<EditorContent

@@ -60,7 +60,9 @@ export const MessagesMapping: React.FC<{
 									</Avatar>
 								}
 							>
-								{<Markdown>{message.content}</Markdown>}
+								<div className="prose prose-custom max-w-full">
+									<Markdown>{message.content}</Markdown>
+								</div>
 							</Message>
 						);
 					})

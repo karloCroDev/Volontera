@@ -24,6 +24,7 @@
 		"@tiptap/extension-image": "^3.10.7",
 		"@tiptap/extension-underline": "^3.10.7",
 		"@tiptap/extensions": "^3.10.7",
+		"@tiptap/markdown": "^3.14.0",
 		"@tiptap/pm": "^3.10.7",
 		"@tiptap/react": "^3.10.7",
 		"@tiptap/starter-kit": "^3.10.7",
@@ -45,7 +46,7 @@
 		"tailwindcss": "^4.1.13",
 		"tailwindcss-animate": "^1.0.7",
 		"tailwindcss-radix": "^4.0.2",
-		"turndown": "^7.2.2"
+		"turndown-plugin-gfm": "^1.0.2"
 	},
 	"devDependencies": {
 		"@repo/eslint-config": "*",

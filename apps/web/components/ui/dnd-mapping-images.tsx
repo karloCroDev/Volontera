@@ -8,6 +8,7 @@ import Image from 'next/image';
 
 // Components
 import { Button } from '@/components/ui/button';
+import { twMerge } from 'tailwind-merge';
 
 type ImageItem = {
 	id: string;
@@ -25,7 +26,9 @@ const moveItem = <T,>(items: T[], fromIndex: number, toIndex: number) => {
 	return next;
 };
 
-export const DndMapppingImages = () => {
+export const DndMapppingImages: React.FC<
+	React.ComponentPropsWithoutRef<'div'>
+> = ({ className, ...rest }) => {
 	// Sve slike
 	const [images, setImages] = React.useState<ImageItem[]>([]);
 	const dragFromIdRef = React.useRef<string | null>(null);
@@ -61,7 +64,7 @@ export const DndMapppingImages = () => {
 		});
 	}, []);
 	return (
-		<div className="flex flex-wrap gap-4">
+		<div {...rest} className={twMerge('flex flex-wrap gap-4', className)}>
 			{images.map((image) => (
 				<div
 					key={image.id}
