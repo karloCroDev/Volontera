@@ -13,6 +13,9 @@ import { UsersSidebar } from '@/modules/main/direct-messages/users-sidebar';
 import { ListConversationsResponse } from '@repo/types/direct-messages';
 import { useSocketContext } from '@/modules/main/direct-messages/SocketContext';
 
+// Hooks
+import { useGetImageFromKey } from '@/hooks/data/image';
+
 export const ListUsers: React.FC<{
 	listOfAllDirectMessages: ListConversationsResponse;
 }> = ({ listOfAllDirectMessages }) => {
@@ -21,6 +24,18 @@ export const ListUsers: React.FC<{
 	const isActive = searchParams.get('user');
 
 	const { onlineUsers } = useSocketContext();
+
+	const { data: images } = useGetImageFromKey({
+		imageUrls: listOfAllDirectMessages.conversations
+			.map((conversation) =>
+				typeof conversation.participant.image === 'string'
+					? conversation.participant.image
+					: ''
+			)
+			.filter(Boolean),
+	});
+
+	console.log('Image obj', images);
 	return (
 		<aside
 			className={twJoin(
@@ -37,6 +52,11 @@ export const ListUsers: React.FC<{
 				{listOfAllDirectMessages.conversations.length > 0 &&
 					listOfAllDirectMessages.conversations.map((conversation) => (
 						<UsersSidebar
+							imageUrl={
+								conversation.participant.image && images
+									? images.urls[conversation.participant.image]
+									: ''
+							}
 							isOnline={onlineUsers.includes(conversation.participant.id)}
 							username={`${conversation.participant.firstName} ${conversation.participant.lastName}`}
 							lastMessage={conversation.lastMessage || undefined}

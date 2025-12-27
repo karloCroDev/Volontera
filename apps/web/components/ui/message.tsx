@@ -2,6 +2,9 @@
 import { CheckCheck } from 'lucide-react';
 import { twJoin, twMerge } from 'tailwind-merge';
 
+// Lib
+import { adjustMessageTime } from '@/lib/utils/time-adjustments';
+
 export const Message: React.FC<
 	React.ComponentPropsWithoutRef<'div'> & {
 		avatar: React.ReactNode;
@@ -17,11 +20,6 @@ export const Message: React.FC<
 	className,
 	...rest
 }) => {
-	const hours = new Date(date).getHours().toString().padStart(2, '0');
-	const minutes = new Date(date).getMinutes().toString().padStart(2, '0');
-	const day = new Date(date).getDate();
-	const month = new Date(date).getMonth() + 1;
-	const year = new Date(date).getFullYear();
 	return (
 		<>
 			<div
@@ -49,7 +47,7 @@ export const Message: React.FC<
 					</div>
 					<div className="mt-2 flex items-center justify-between">
 						<p className="text-muted-foreground text-xs lg:text-sm">
-							{`${hours}:${minutes} | ${day}.${month}. ${year}`}
+							{adjustMessageTime(date)}
 						</p>
 						<CheckCheck className="text-muted-foreground size-4" />
 					</div>

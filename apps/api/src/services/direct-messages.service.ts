@@ -98,24 +98,6 @@ export async function getDirectMessagesConversationByIdService(
     data.conversationId
   );
 
-  // Samo dva korisnika (1:1) na razgovor, pa da samo generiram dva puta url za slike od presigned urlova, nego za svaku poruku
-  const avatarUrlByUserId: Record<string, string> = {};
-
-  for (const message of conversation) {
-    const author = message.author;
-
-    if (!author?.image) continue;
-
-    let url = avatarUrlByUserId[author.id];
-
-    if (!url) {
-      url = await getImagePresignedUrls(author.image);
-      avatarUrlByUserId[author.id] = url;
-    }
-
-    author.image = url;
-  }
-
   return {
     status: 200,
     body: {

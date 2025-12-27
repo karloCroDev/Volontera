@@ -11,6 +11,8 @@ import { Avatar } from '@/components/ui/avatar';
 
 // Hooks
 import { useGetDirectMessagesConversationById } from '@/hooks/data/direct-messages';
+import { useSession } from '@/hooks/data/user';
+import { useGetImageFromKey } from '@/hooks/data/image';
 
 // Lib
 import { withReactQueryProvider } from '@/lib/utils/react-query';
@@ -21,7 +23,6 @@ import { useSocketContext } from '@/modules/main/direct-messages/SocketContext';
 
 // Types
 import { EmitNewChat } from '@repo/types/sockets';
-import { useSession } from '@/hooks/data/user';
 
 export const Conversation = withReactQueryProvider(() => {
 	const searchParams = useSearchParams();
@@ -55,6 +56,17 @@ export const Conversation = withReactQueryProvider(() => {
 		};
 	}, [messages, setMessages, socketGlobal]);
 
+	const { data: images } = useGetImageFromKey(
+		{
+			imageUrls:
+				messages
+					?.map((message) => message.author.image || '')
+					.filter(Boolean) || [],
+		},
+		{
+			enabled: messages && !!messages.length,
+		}
+	);
 	const { data: user } = useSession();
 	return (
 		<div className="no-scrollbar min-h-0 flex-1 space-y-4 overflow-y-auto">
@@ -75,7 +87,9 @@ export const Conversation = withReactQueryProvider(() => {
 							avatar={
 								<Avatar
 									imageProps={{
-										src: message.author.image || '',
+										src: message.author.image
+											? images?.urls[message.author.image]
+											: '',
 									}}
 								>
 									{convertToFullname({

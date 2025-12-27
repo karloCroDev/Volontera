@@ -4,7 +4,6 @@ import { MessageForm } from '@/modules/main/direct-messages/message-form';
 import { MessageWrapper } from '@/modules/main/direct-messages/message-wrapper';
 import { UsersInfoHeader } from '@/modules/main/direct-messages/users-info-header';
 import { Conversation } from '@/modules/main/direct-messages/conversation';
-import { SocketContextProvider } from '@/modules/main/direct-messages/SocketContext';
 
 // Lib
 import { getListOfAllDirectMessages } from '@/lib/server/direct-messages';

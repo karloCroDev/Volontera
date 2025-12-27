@@ -17,6 +17,7 @@ export const UsersSidebar: React.FC<{
 	lastMessage?: string;
 	removeUnderline?: boolean;
 	isOnline?: boolean;
+	imageUrl?: string;
 }> = ({
 	id,
 	conversationId,
@@ -25,6 +26,7 @@ export const UsersSidebar: React.FC<{
 	lastMessage,
 	removeUnderline = false,
 	isOnline,
+	imageUrl,
 }) => {
 	const searchParams = useSearchParams();
 
@@ -45,7 +47,12 @@ export const UsersSidebar: React.FC<{
 				removeUnderline && 'border-b-0'
 			)}
 		>
-			<Avatar imageProps={{}} size="lg">
+			<Avatar
+				imageProps={{
+					src: imageUrl,
+				}}
+				size="lg"
+			>
 				{username}
 			</Avatar>
 

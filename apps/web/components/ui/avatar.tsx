@@ -55,6 +55,7 @@ export const Avatar: React.FC<
 					colorScheme === 'orange' && 'bg-primary text-background',
 					colorScheme === 'yellow' && 'bg-accent text-background-foreground'
 				)}
+				delayMs={500}
 			>
 				{children
 					?.toString()

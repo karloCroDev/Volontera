@@ -4,15 +4,10 @@ import { getImagePresignedUrls } from "@/lib/aws-s3-functions";
 // Schemas
 import { imageKeysSchema } from "@repo/schemas/image";
 
-// Database
-import { User } from "@repo/database";
-
 export async function getImageFromKeyService({
   rawData,
-  userId,
 }: {
   rawData: unknown;
-  userId: User["id"];
 }) {
   const { data, success } = imageKeysSchema.safeParse(rawData);
 
@@ -37,7 +32,6 @@ export async function getImageFromKeyService({
   return {
     status: 200,
     body: {
-      success: true,
       title: "Image URLs",
       message: "Successfuly get image url from the keys",
       urls,

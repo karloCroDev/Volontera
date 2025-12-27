@@ -16,7 +16,7 @@ import { useGetUser } from '@/hooks/data/user';
 import { withReactQueryProvider } from '@/lib/utils/react-query';
 import { convertToFullname } from '@/lib/utils/convert-to-fullname';
 import { useSocketContext } from '@/modules/main/direct-messages/SocketContext';
-import { on } from 'events';
+import { adjustMessageTime } from '@/lib/utils/time-adjustments';
 
 export const UsersInfoHeader = withReactQueryProvider(() => {
 	const params = useSearchParams();
@@ -59,8 +59,9 @@ export const UsersInfoHeader = withReactQueryProvider(() => {
 
 					{user && (
 						<p className="text-muted-foreground">
-							Last online:
-							{new Date(user.updatedAt).toLocaleString().replaceAll('/', '.')}
+							{onlineUsers.includes(user.id)
+								? 'Currently online'
+								: ` Last online: ${adjustMessageTime(new Date(user.updatedAt))}`}
 						</p>
 					)}
 				</div>
