@@ -29,7 +29,8 @@ export const MessageForm = withReactQueryProvider(() => {
 
 	const [value, setValue] = React.useState('');
 
-	const { mutate } = useStartConversationOrStartAndSendDirectMessage();
+	const { mutate, isPending } =
+		useStartConversationOrStartAndSendDirectMessage();
 
 	const onSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
@@ -45,21 +46,24 @@ export const MessageForm = withReactQueryProvider(() => {
 			},
 			{
 				onSuccess({ message, title, conversationId }) {
+					// Samo kada započinjem novi razgovor
 					if (!searchParams.get('conversationId')) {
 						const params = new URLSearchParams(searchParams.toString());
 						params.set('conversationId', conversationId);
 						router.push(pathname + '?' + params.toString());
+
+						toast({
+							title,
+							content: message,
+							variant: 'success',
+						});
+						IRevalidateTag('direct-messages');
 					}
-					toast({
-						title,
-						content: message,
-						variant: 'success',
-					});
-					IRevalidateTag('direct-messages');
-					setValue('');
 				},
 			}
 		);
+
+		setValue('');
 	};
 
 	return (
@@ -68,11 +72,16 @@ export const MessageForm = withReactQueryProvider(() => {
 			onSubmit={onSubmit}
 		>
 			<TextEditor
+				value={value}
 				setValue={setValue}
 				hasAnImage
 				label="Enter your message..."
 				iconsRight={
-					<Button type="submit" className="p-2">
+					<Button
+						type="submit"
+						className="p-2"
+						isDisabled={!value && isPending}
+					>
 						<Send />
 					</Button>
 				}

@@ -184,6 +184,12 @@ export async function startConversationOrStartAndSendDirectMessage({
         authorId: senderId,
         content,
       },
+
+      // Trebam vratiti slike i autora da ih mogu prikazati odmah nakon slanja poruke (websocket)
+      include: {
+        directMessagesImages: true,
+        author: true,
+      },
     });
 
     // Tommorow when I fix the sending images, than I think about handling the images

@@ -16,6 +16,7 @@ export const UsersSidebar: React.FC<{
 	userRole?: string;
 	lastMessage?: string;
 	removeUnderline?: boolean;
+	isOnline?: boolean;
 }> = ({
 	id,
 	conversationId,
@@ -23,13 +24,13 @@ export const UsersSidebar: React.FC<{
 	userRole,
 	lastMessage,
 	removeUnderline = false,
+	isOnline,
 }) => {
 	const searchParams = useSearchParams();
 
 	const pathname = usePathname();
 
 	const isActive = searchParams.get('user') === id;
-	const isOnline = false; // TODO: Replace with real online status
 
 	return (
 		<Link

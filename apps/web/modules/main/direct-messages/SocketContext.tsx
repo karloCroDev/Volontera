@@ -54,7 +54,9 @@ export const SocketContextProvider: React.FC<{ children: React.ReactNode }> =
 			return () => {
 				socket.close();
 			};
-		}, [user, socketGlobal]);
+
+			// eslint-disable-next-line react-hooks/exhaustive-deps
+		}, [user]);
 
 		return (
 			<SocketContext.Provider value={{ onlineUsers, socketGlobal }}>

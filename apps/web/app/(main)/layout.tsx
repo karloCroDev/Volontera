@@ -8,6 +8,7 @@ import { SidebarProvider } from '@/components/ui/sidebar/sidebar-provider';
 
 // Types
 import { getSession } from '@/lib/server/auth';
+import { SocketContextProvider } from '@/modules/main/direct-messages/SocketContext';
 
 export default async function MainLayout({
 	children,
@@ -21,19 +22,22 @@ export default async function MainLayout({
 		redirect('/onboarding/app-type');
 
 	return (
-		<SidebarProvider>
-			<div className="flex h-screen">
-				<Sidebar user={user} />
+		// Socket context provider je pomaknut put gore kako bi odmah nakon što je korisnik logirano dobio status online tj. da koristi aplikaciju
+		<SocketContextProvider>
+			<SidebarProvider>
+				<div className="flex h-screen">
+					<Sidebar user={user} />
 
-				<div className="flex flex-1 flex-col">
-					<div className="border-input-border rounded-2xl lg:my-7 lg:mb-5 lg:mr-10 lg:h-[calc(100vh-28px-28px)] lg:border">
-						<Header />
-						<main className="no-scrollbar flex h-[calc(100vh-96px)] flex-col overflow-x-hidden overflow-y-scroll lg:h-[calc(100vh-28px-28px-112px)]">
-							{children}
-						</main>
+					<div className="flex flex-1 flex-col">
+						<div className="border-input-border rounded-2xl lg:my-7 lg:mb-5 lg:mr-10 lg:h-[calc(100vh-28px-28px)] lg:border">
+							<Header />
+							<main className="no-scrollbar flex h-[calc(100vh-96px)] flex-col overflow-x-hidden overflow-y-scroll lg:h-[calc(100vh-28px-28px-112px)]">
+								{children}
+							</main>
+						</div>
 					</div>
 				</div>
-			</div>
-		</SidebarProvider>
+			</SidebarProvider>
+		</SocketContextProvider>
 	);
 }

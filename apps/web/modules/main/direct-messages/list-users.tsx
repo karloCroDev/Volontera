@@ -11,6 +11,7 @@ import { UsersSidebar } from '@/modules/main/direct-messages/users-sidebar';
 
 // Types
 import { ListConversationsResponse } from '@repo/types/direct-messages';
+import { useSocketContext } from '@/modules/main/direct-messages/SocketContext';
 
 export const ListUsers: React.FC<{
 	listOfAllDirectMessages: ListConversationsResponse;
@@ -19,6 +20,7 @@ export const ListUsers: React.FC<{
 
 	const isActive = searchParams.get('user');
 
+	const { onlineUsers } = useSocketContext();
 	return (
 		<aside
 			className={twJoin(
@@ -35,6 +37,7 @@ export const ListUsers: React.FC<{
 				{listOfAllDirectMessages.conversations.length > 0 &&
 					listOfAllDirectMessages.conversations.map((conversation) => (
 						<UsersSidebar
+							isOnline={onlineUsers.includes(conversation.participant.id)}
 							username={`${conversation.participant.firstName} ${conversation.participant.lastName}`}
 							lastMessage={conversation.lastMessage || undefined}
 							conversationId={conversation.id}

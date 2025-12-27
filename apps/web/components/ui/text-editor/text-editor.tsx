@@ -25,12 +25,14 @@ export const TextEditor: React.FC<
 		label: string;
 		iconsRight?: React.ReactNode;
 		error?: string;
+		value: string;
 		setValue: React.Dispatch<React.SetStateAction<string>>;
 		textEditorProps?: React.ComponentPropsWithoutRef<'div'> &
 			EditorContentProps;
 		hasAnImage?: boolean;
 	}
 > = ({
+	value,
 	setValue,
 	label,
 	iconsRight,
@@ -40,6 +42,12 @@ export const TextEditor: React.FC<
 	hasAnImage = false,
 	...rest
 }) => {
+	React.useEffect(() => {
+		if (value === '') {
+			editor?.commands.clearContent();
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [value]);
 	const editor = useEditor({
 		extensions: [
 			StarterKit,
@@ -49,7 +57,8 @@ export const TextEditor: React.FC<
 				limit: 200,
 			}),
 		],
-		content: '',
+
+		content: value,
 		onUpdate: ({ editor }) => {
 			setValue(editor.getHTML());
 		},

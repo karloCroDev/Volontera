@@ -15,10 +15,14 @@ import { useGetUser } from '@/hooks/data/user';
 // Lib
 import { withReactQueryProvider } from '@/lib/utils/react-query';
 import { convertToFullname } from '@/lib/utils/convert-to-fullname';
+import { useSocketContext } from '@/modules/main/direct-messages/SocketContext';
+import { on } from 'events';
 
 export const UsersInfoHeader = withReactQueryProvider(() => {
 	const params = useSearchParams();
 	const { data: user } = useGetUser(params.get('user') || '');
+
+	const { onlineUsers } = useSocketContext();
 
 	return (
 		user && (
@@ -62,8 +66,11 @@ export const UsersInfoHeader = withReactQueryProvider(() => {
 				</div>
 				<DotWithLabel
 					className="ml-auto"
-					label="Online"
-					dotProps={{ state: 'success', size: 'md' }}
+					label={onlineUsers.includes(user.id) ? 'Online' : 'Offline'}
+					dotProps={{
+						state: onlineUsers.includes(user.id) ? 'success' : 'destructive',
+						size: 'md',
+					}}
 				/>
 			</div>
 		)

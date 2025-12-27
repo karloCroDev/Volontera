@@ -16,6 +16,13 @@ import { useGetDirectMessagesConversationById } from '@/hooks/data/direct-messag
 import { withReactQueryProvider } from '@/lib/utils/react-query';
 import { convertToFullname } from '@/lib/utils/convert-to-fullname';
 
+// Modules
+import { useSocketContext } from '@/modules/main/direct-messages/SocketContext';
+
+// Types
+import { EmitNewChat } from '@repo/types/sockets';
+import { useSession } from '@/hooks/data/user';
+
 export const Conversation = withReactQueryProvider(() => {
 	const searchParams = useSearchParams();
 
@@ -29,37 +36,63 @@ export const Conversation = withReactQueryProvider(() => {
 			}
 		);
 
+	const { socketGlobal } = useSocketContext();
+
+	const [messages, setMessages] = React.useState(conversation?.conversation);
+
+	React.useEffect(() => {
+		setMessages(conversation?.conversation);
+	}, [conversation]);
+
+	React.useEffect(() => {
+		if (!socketGlobal) return;
+		socketGlobal.on<EmitNewChat>('new-chat', (newChat) =>
+			setMessages(messages ? [...messages, newChat] : [newChat])
+		);
+
+		return () => {
+			socketGlobal.off<EmitNewChat>('new-chat');
+		};
+	}, [messages, setMessages, socketGlobal]);
+
+	const { data: user } = useSession();
 	return (
 		<div className="no-scrollbar min-h-0 flex-1 space-y-4 overflow-y-auto">
 			{isLoading &&
-				[...Array(5)].map((_, index) => <MessageSkeleton key={index} />)}
+				[...Array(5)].map((_, indx) => (
+					<MessageSkeleton
+						key={indx}
+						variant={indx % 2 === 0 ? 'primary' : 'secondary'}
+					/>
+				))}
 
-			{conversation?.conversation && conversation.conversation.length > 0 ? (
-				conversation.conversation.map((message) => (
-					<Message
-						key={message.id}
-						date={new Date(message.createdAt)}
-						avatar={
-							<Avatar
-								imageProps={{
-									src: message.author.image || '',
-								}}
-							>
-								{convertToFullname({
-									firstname: message.author.firstName,
-									lastname: message.author.lastName,
-								})}
-							</Avatar>
-						}
-					>
-						<Markdown>{message.content}</Markdown>
-					</Message>
-				))
-			) : (
-				<p className="text-muted-foreground text-center">
-					No messages found. Start a new conversation
-				</p>
-			)}
+			{messages && messages.length > 0
+				? messages.map((message) => (
+						<Message
+							key={message.id}
+							variant={message.author.id === user?.id ? 'primary' : 'secondary'}
+							date={new Date(message.createdAt)}
+							avatar={
+								<Avatar
+									imageProps={{
+										src: message.author.image || '',
+									}}
+								>
+									{convertToFullname({
+										firstname: message.author.firstName,
+										lastname: message.author.lastName,
+									})}
+								</Avatar>
+							}
+						>
+							<Markdown>{message.content}</Markdown>
+						</Message>
+					))
+				: !isLoading && (
+						<p className="text-muted-foreground text-center">
+							No messages found. Start a new conversation
+						</p>
+					)}
 		</div>
 	);
 });

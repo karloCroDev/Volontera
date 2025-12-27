@@ -13,6 +13,8 @@ export default async function DirectMessagesPage() {
 	const listOfAllDirectMessages = await getListOfAllDirectMessages();
 
 	return (
+		// Move higher maybe to show the online status
+
 		<div className="flex h-full">
 			<ListUsers listOfAllDirectMessages={listOfAllDirectMessages} />
 
