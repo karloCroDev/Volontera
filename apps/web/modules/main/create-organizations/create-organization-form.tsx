@@ -11,6 +11,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Layout, LayoutColumn } from '@/components/ui/layout-grid';
 import { RadioIconVisual } from '@/components/ui/radio';
+import { InsertPhoto } from '@/modules/main/create-organizations/insert-photo';
 
 export const CreateOrganizationForm = () => {
 	// TODO: Decide where to put this, under the creation of new board or here
@@ -21,26 +22,24 @@ export const CreateOrganizationForm = () => {
 				<LayoutColumn
 					start={{
 						base: 1,
+						// Malo od manje centra (bolje izgleda)
 						lg: 3,
 					}}
 					end={{
 						base: 13,
+						// Malo od manje centra (bolje izgleda)
 						lg: 9,
 					}}
 					className="flex flex-col"
 				>
 					<Form>
 						<div className="flex gap-4">
-							<div className="border-input-border text-muted-foreground flex min-h-80 flex-1 flex-col items-center justify-center rounded-2xl border border-dashed">
-								<Camera />
-								<p>Insert avatar photo </p>
-								<p>(optional)</p>
-							</div>
-							<div className="border-input-border text-muted-foreground flex min-h-80 flex-1 flex-col items-center justify-center rounded-2xl border border-dashed">
-								<Camera />
-								<p>Insert avatar photo </p>
-								<p>(optional)</p>
-							</div>
+							<InsertPhoto htmlFor="avatar-photo">
+								Insert organization <strong>avatar</strong> photo
+							</InsertPhoto>
+							<InsertPhoto htmlFor="cover-photo">
+								Insert organization <strong>cover</strong> photo
+							</InsertPhoto>
 						</div>
 
 						<div className="mt-8 flex flex-col gap-6">
