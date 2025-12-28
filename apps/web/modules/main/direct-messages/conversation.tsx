@@ -24,6 +24,7 @@ import { useSocketContext } from '@/modules/main/direct-messages/SocketContext';
 
 // Types
 import { EmitNewChat } from '@repo/types/sockets';
+import { MessageImages } from '@/modules/main/direct-messages/message-images';
 
 export const Conversation = withReactQueryProvider(() => {
 	const searchParams = useSearchParams();
@@ -38,14 +39,14 @@ export const Conversation = withReactQueryProvider(() => {
 			}
 		);
 
-	const { socketGlobal } = useSocketContext();
-
+	// Samo stavljam nove poruke kada se razgovor učita
 	const [messages, setMessages] = React.useState(conversation?.conversation);
-
 	React.useEffect(() => {
 		setMessages(conversation?.conversation);
 	}, [conversation]);
 
+	// Slušam nove poruke preko socketa
+	const { socketGlobal } = useSocketContext();
 	React.useEffect(() => {
 		if (!socketGlobal) return;
 		socketGlobal.on<EmitNewChat>('new-chat', (newChat) =>
@@ -68,25 +69,9 @@ export const Conversation = withReactQueryProvider(() => {
 			enabled: messages && !!messages.length,
 		}
 	);
-	const { data: images } = useGetImageFromKey(
-		{
-			imageUrls:
-				messages
-					?.map((message) =>
-						message.directMessagesImages.map((img) => img.imageUrl)
-					)
-					.flat() || [],
-		},
-		{
-			enabled: messages && !!messages.length,
-		}
-	);
 
-	console.log('Cool images', images);
+	// Dobivam trenutno ulogiranog korisnika za prikaz varijanti poruka
 	const { data: user } = useSession();
-
-	console.log('Conversation', conversation);
-	console.log(messages?.at(-1)?.content);
 
 	return (
 		<div className="no-scrollbar min-h-0 flex-1 space-y-4 overflow-y-auto">
@@ -118,27 +103,13 @@ export const Conversation = withReactQueryProvider(() => {
 									})}
 								</Avatar>
 							}
+							images={
+								message.directMessagesImages[0]?.imageUrl && (
+									<MessageImages message={message} messages={messages} />
+								)
+							}
 						>
 							<Markdown>{message.content}</Markdown>
-
-							{message.directMessagesImages.map(({ imageUrl, id }) => {
-								console.log('Image url', images?.urls[imageUrl]);
-								return (
-									images?.urls[imageUrl] && (
-										<div
-											key={id}
-											className="relative flex h-80 w-80 overflow-hidden rounded-md"
-										>
-											<Image
-												src={images.urls[imageUrl]}
-												alt="Message Image"
-												fill
-												className="object-cover"
-											/>
-										</div>
-									)
-								);
-							})}
 						</Message>
 					))
 				: !isLoading && (

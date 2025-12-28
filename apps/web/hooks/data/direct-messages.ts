@@ -80,7 +80,9 @@ export const useStartConversationOrStartAndSendDirectMessage = (
 		mutationFn: (values: DataWithFiles<MessageArgs>) =>
 			startConversationOrStartAndSendDirectMessage(values),
 		onSuccess: async (...args) => {
-			await queryClient.invalidateQueries({ queryKey: ['direct-messages'] });
+			await queryClient.invalidateQueries({
+				queryKey: ['direct-messages', 'message-images'],
+			});
 			await options?.onSuccess?.(...args);
 		},
 		...options,

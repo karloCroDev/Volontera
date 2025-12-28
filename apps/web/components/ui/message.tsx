@@ -10,6 +10,7 @@ export const Message: React.FC<
 		avatar: React.ReactNode;
 		date: Date;
 		variant?: 'primary' | 'secondary';
+		images?: React.ReactNode;
 	}
 > = ({
 	/* eslint react/prop-types: 0 */
@@ -17,11 +18,15 @@ export const Message: React.FC<
 	date,
 	children,
 	variant = 'primary',
+
+	images,
 	className,
 	...rest
 }) => {
 	return (
 		<>
+			{images}
+
 			<div
 				{...rest}
 				className={twMerge(

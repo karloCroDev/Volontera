@@ -14,7 +14,7 @@ export const useGetImageFromKey = (
 	data: ImageKeysSchemaArgs,
 	options?: Omit<
 		UseQueryOptions<SuccessfulResponse & { urls: Record<string, string> }>,
-		'queryKey' | 'queryFn'
+		'queryFn' | 'queryKey'
 	>
 ) => {
 	return useQuery<
@@ -22,7 +22,11 @@ export const useGetImageFromKey = (
 			urls: Record<string, string>;
 		}
 	>({
-		queryKey: ['get-image-from-keys', data.imageUrls],
+		queryKey: [
+			'get-image-from-keys',
+			data.imageUrls,
+			// ...(options?.queryKey || []),
+		],
 		queryFn: () => getImageFromKey(data),
 		...options,
 	});
