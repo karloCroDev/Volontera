@@ -19,7 +19,13 @@ import { Markdown } from '@tiptap/markdown';
 // Components
 import { Error } from '@/components/ui/error';
 import { TextEditorTooltips } from '@/components/ui/text-editor/text-editor-tooltips';
-import { DndMapppingImages } from '@/components/ui/dnd-mapping-images';
+import {
+	DndMapppingImages,
+	ImageItemArgs,
+} from '@/components/ui/dnd-mapping-images';
+
+// Types
+import { UploadImageArgs } from '@repo/schemas/image';
 
 export const TextEditor: React.FC<
 	React.ComponentPropsWithoutRef<'div'> & {
@@ -31,10 +37,14 @@ export const TextEditor: React.FC<
 		textEditorProps?: React.ComponentPropsWithoutRef<'div'> &
 			EditorContentProps;
 		hasAnImage?: boolean;
+		images?: ImageItemArgs;
+		setImages?: React.Dispatch<React.SetStateAction<ImageItemArgs>>;
 	}
 > = ({
 	value,
 	setValue,
+	images,
+	setImages,
 	label,
 	iconsRight,
 	error,
@@ -90,7 +100,13 @@ export const TextEditor: React.FC<
 				className
 			)}
 		>
-			{showDndImageUpload && <DndMapppingImages className="mb-4" />}
+			{showDndImageUpload && images && setImages && (
+				<DndMapppingImages
+					className="mb-4"
+					images={images}
+					setImages={setImages}
+				/>
+			)}
 
 			<TextEditorTooltips
 				editor={editor}

@@ -48,17 +48,17 @@ export async function startConversationOrStartAndSendDirectMessage({
 	try {
 		const res = await API().post(`direct-messages/conversation/message`, data);
 
-		if (res.data?.presignedUrls && data.images && files) {
+		if (res.data?.images && data.images && files) {
 			await Promise.all(
 				data.images.map(
 					async (image, index) =>
 						await API({
 							headers: { 'Content-type': image.contentType },
-						}).put(res.data[index].presignedUrls, files[index])
+						}).put(res.data.images[index].url, files[index])
 				)
 			);
 		}
-		delete res.data?.presignedUrls;
+		delete res.data?.images;
 
 		return res.data;
 	} catch (err) {

@@ -9,13 +9,13 @@ import Image from 'next/image';
 // Components
 import { Button } from '@/components/ui/button';
 import { twMerge } from 'tailwind-merge';
+import { UploadImageArgs } from '@repo/schemas/image';
 
-type ImageItem = {
+export type ImageItemArgs = (UploadImageArgs['image'] & {
 	id: string;
 	file: File;
 	previewUrl: string;
-};
-
+})[];
 // Logika za premještanje elemenata u nizu
 const moveItem = <T,>(items: T[], fromIndex: number, toIndex: number) => {
 	if (fromIndex === toIndex) return items;
@@ -27,13 +27,17 @@ const moveItem = <T,>(items: T[], fromIndex: number, toIndex: number) => {
 };
 
 export const DndMapppingImages: React.FC<
-	React.ComponentPropsWithoutRef<'div'>
-> = ({ className, ...rest }) => {
+	React.ComponentPropsWithoutRef<'div'> & {
+		setImages: React.Dispatch<React.SetStateAction<ImageItemArgs>>;
+		images: ImageItemArgs;
+	}
+> = ({ setImages, images, className, ...rest }) => {
 	// Sve slike
-	const [images, setImages] = React.useState<ImageItem[]>([]);
 	const dragFromIdRef = React.useRef<string | null>(null);
 	const [dragOverId, setDragOverId] = React.useState<string | null>(null);
-	const imagesRef = React.useRef<ImageItem[]>([]);
+	const imagesRef = React.useRef<ImageItemArgs>([]);
+
+	console.log(images);
 
 	React.useEffect(() => {
 		imagesRef.current = images;
@@ -137,12 +141,17 @@ export const DndMapppingImages: React.FC<
 					const files = e.target?.files;
 
 					if (!files) return;
-					const nextItems: ImageItem[] = Array.from(files).map(
-						(file, indx) => ({
-							id: indx.toString(),
-							file,
-							previewUrl: URL.createObjectURL(file),
-						})
+					const nextItems: ImageItemArgs = Array.from(files).map(
+						(file, indx) => {
+							return {
+								id: indx.toString(),
+								contentType: file.type,
+								filename: file.name,
+								size: file.size,
+								file,
+								previewUrl: URL.createObjectURL(file),
+							};
+						}
 					);
 					setImages((prev) => [...prev, ...nextItems]);
 				}}

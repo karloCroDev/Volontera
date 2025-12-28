@@ -9,8 +9,7 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 // Components
 import { TextEditor } from '@/components/ui/text-editor/text-editor';
 import { Button } from '@/components/ui/button';
-
-// Scheams
+import { ImageItemArgs } from '@/components/ui/dnd-mapping-images';
 
 // Hooks
 import { useStartConversationOrStartAndSendDirectMessage } from '@/hooks/data/direct-messages';
@@ -27,7 +26,9 @@ export const MessageForm = withReactQueryProvider(() => {
 	const router = useRouter();
 
 	const [value, setValue] = React.useState('');
+	const [images, setImages] = React.useState<ImageItemArgs>([]);
 
+	console.log(images);
 	const { mutate, isPending } =
 		useStartConversationOrStartAndSendDirectMessage();
 
@@ -40,7 +41,13 @@ export const MessageForm = withReactQueryProvider(() => {
 				data: {
 					content: value,
 					particpantId: searchParams.get('user') || '',
+					images: images.map(({ contentType, filename, size }) => ({
+						contentType,
+						filename,
+						size,
+					})),
 				},
+				files: images.map((img) => img.file),
 			},
 			{
 				onSuccess({ message, title, conversationId }) {
@@ -60,12 +67,11 @@ export const MessageForm = withReactQueryProvider(() => {
 				},
 				onSettled() {
 					setValue('');
+					setImages([]);
 				},
 			}
 		);
 	};
-
-	console.log(value);
 
 	return (
 		<Form
@@ -73,6 +79,8 @@ export const MessageForm = withReactQueryProvider(() => {
 			onSubmit={onSubmit}
 		>
 			<TextEditor
+				images={images}
+				setImages={setImages}
 				value={value}
 				setValue={setValue}
 				hasAnImage
@@ -81,6 +89,7 @@ export const MessageForm = withReactQueryProvider(() => {
 					<Button
 						type="submit"
 						className="p-2"
+						isLoading={isPending}
 						isDisabled={!value || isPending}
 					>
 						<Send />

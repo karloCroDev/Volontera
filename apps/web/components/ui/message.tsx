@@ -36,14 +36,14 @@ export const Message: React.FC<
 					{/* Must be a (in some places I am handling markdown) */}
 					<div
 						className={twJoin(
-							'items-end rounded-lg border px-5 py-3 text-sm md:text-base',
+							'w-full items-end rounded-lg border px-5 py-3 text-sm md:text-base',
 							variant === 'primary' &&
 								'bg-accent text-accent-foreground border-accent-foreground rounded-tl-none',
 							variant === 'secondary' &&
 								'border-input-border text-background-foreground rounded-tr-none'
 						)}
 					>
-						{children}
+						<div className="prose prose-custom !max-w-full">{children}</div>
 					</div>
 					<div className="mt-2 flex items-center justify-between">
 						<p className="text-muted-foreground text-xs lg:text-sm">

@@ -192,6 +192,7 @@ export async function startConversationOrStartAndSendDirectMessage({
       },
     });
 
+    console.log(imageUrls);
     // Tommorow when I fix the sending images, than I think about handling the images
     if (imageUrls) {
       await tx.directMessagesImages.createMany({

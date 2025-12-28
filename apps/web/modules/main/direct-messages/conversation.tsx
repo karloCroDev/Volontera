@@ -101,9 +101,7 @@ export const Conversation = withReactQueryProvider(() => {
 								</Avatar>
 							}
 						>
-							<div className="prose prose-custom max-w-full">
-								<Markdown>{message.content}</Markdown>
-							</div>
+							<Markdown>{message.content}</Markdown>
 						</Message>
 					))
 				: !isLoading && (

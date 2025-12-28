@@ -146,6 +146,9 @@ export async function startConversationOrStartAndSendDirectMessageService({
       senderId: userId,
       receiverId: data.particpantId,
       content: data.content,
+      imageUrls: data.images
+        ? images?.map((img) => img.url) // Uzmem samo urlove za spremanje u bazu
+        : undefined,
     });
 
   const senderSocketId = getReceiverSocketId(userId);
