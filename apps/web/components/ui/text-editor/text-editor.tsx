@@ -14,24 +14,37 @@ import { Label } from 'react-aria-components';
 import { CharacterCount } from '@tiptap/extensions';
 import Underline from '@tiptap/extension-underline';
 import Image from '@tiptap/extension-image';
+import { Markdown } from '@tiptap/markdown';
 
 // Components
 import { Error } from '@/components/ui/error';
-
 import { TextEditorTooltips } from '@/components/ui/text-editor/text-editor-tooltips';
+import {
+	DndMapppingImages,
+	ImageItemArgs,
+} from '@/components/ui/dnd-mapping-images';
+
+// Types
+import { UploadImageArgs } from '@repo/schemas/image';
 
 export const TextEditor: React.FC<
 	React.ComponentPropsWithoutRef<'div'> & {
 		label: string;
 		iconsRight?: React.ReactNode;
 		error?: string;
+		value: string;
 		setValue: React.Dispatch<React.SetStateAction<string>>;
 		textEditorProps?: React.ComponentPropsWithoutRef<'div'> &
 			EditorContentProps;
 		hasAnImage?: boolean;
+		images?: ImageItemArgs;
+		setImages?: React.Dispatch<React.SetStateAction<ImageItemArgs>>;
 	}
 > = ({
+	value,
 	setValue,
+	images,
+	setImages,
 	label,
 	iconsRight,
 	error,
@@ -40,18 +53,26 @@ export const TextEditor: React.FC<
 	hasAnImage = false,
 	...rest
 }) => {
+	React.useEffect(() => {
+		if (value === '') {
+			editor?.commands.clearContent();
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [value]);
 	const editor = useEditor({
 		extensions: [
 			StarterKit,
 			Underline,
 			Image,
+			Markdown,
 			CharacterCount.configure({
 				limit: 200,
 			}),
 		],
-		content: '',
+
+		content: value,
 		onUpdate: ({ editor }) => {
-			setValue(editor.getHTML());
+			setValue(editor.getMarkdown());
 		},
 		// Avoding SSR issues
 		immediatelyRender: false,
@@ -66,7 +87,11 @@ export const TextEditor: React.FC<
 		},
 	}) ?? { charactersCount: 0, wordsCount: 0 };
 
+	// Handle the apperance of dnd image
+	const [showDndImageUpload, setShowDndImageUpload] = React.useState(false);
+
 	if (!editor) return null;
+
 	return (
 		<div
 			{...rest}
@@ -75,7 +100,20 @@ export const TextEditor: React.FC<
 				className
 			)}
 		>
-			<TextEditorTooltips editor={editor} hasAnImage={hasAnImage} />
+			{showDndImageUpload && images && setImages && (
+				<DndMapppingImages
+					className="mb-4"
+					images={images}
+					setImages={setImages}
+				/>
+			)}
+
+			<TextEditorTooltips
+				editor={editor}
+				hasAnImage={hasAnImage}
+				showDndImageUpload={showDndImageUpload}
+				setShowDndImageUpload={setShowDndImageUpload}
+			/>
 			<div className="flex w-full items-end">
 				<div className="relative flex-1">
 					<EditorContent

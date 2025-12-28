@@ -14,7 +14,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 
 // Modules
-import { DndMapppingImages } from '@/modules/main/organization/home/dnd-mapping-images';
+import { DndMapppingImages } from '@/components/ui/dnd-mapping-images';
 
 export const NewPostDialog = () => {
 	return (

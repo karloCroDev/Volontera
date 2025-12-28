@@ -2,14 +2,19 @@
 
 // External packages
 import * as React from 'react';
+import { Plus, Send } from 'lucide-react';
 
 // Components
 import { ResizableTextArea } from '@/components/ui/resizable-input';
 import { Avatar } from '@/components/ui/avatar';
-import { useSession } from '@/hooks/data/auth';
-import { withReactQueryProvider } from '@/lib/utils/react-query';
 import { Button } from '@/components/ui/button';
-import { Plus, Send } from 'lucide-react';
+
+// Hooks
+import { useSession } from '@/hooks/data/user';
+
+// Lib
+import { withReactQueryProvider } from '@/lib/utils/react-query';
+import { convertToFullname } from '@/lib/utils/convert-to-fullname';
 
 export const CommentTextArea = withReactQueryProvider(() => {
 	const { data: user } = useSession();
@@ -19,16 +24,21 @@ export const CommentTextArea = withReactQueryProvider(() => {
 			label="Enter your message"
 			className="border-input-border mt-12 gap-4 border"
 			iconsLeft={
-				<Avatar
-					imageProps={{
-						src: user?.image || '',
-					}}
-					size="sm"
-					colorScheme="gray"
-					className="mt-4 self-start"
-				>
-					{user?.fullname}
-				</Avatar>
+				user && (
+					<Avatar
+						imageProps={{
+							src: user?.image || '',
+						}}
+						size="sm"
+						colorScheme="gray"
+						className="mt-4 self-start"
+					>
+						{convertToFullname({
+							firstname: user.firstName,
+							lastname: user.lastName,
+						})}
+					</Avatar>
+				)
 			}
 			iconsRight={
 				<>

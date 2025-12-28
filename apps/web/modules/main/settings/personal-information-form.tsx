@@ -19,7 +19,7 @@ import { SettingsArgs } from '@repo/schemas/settings';
 import { withReactQueryProvider } from '@/lib/utils/react-query';
 
 // Hpoks
-import { useSession } from '@/hooks/data/auth';
+import { useSession } from '@/hooks/data/user';
 
 // Modules
 import { DeleteAccountDialog } from '@/modules/main/settings/delete-account-dialog';

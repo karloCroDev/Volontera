@@ -12,8 +12,8 @@ import {
   deleteNotifications,
   hasUnreadNotifications,
   markNotificationAsRead,
-} from "@/models/notification-model";
-import { findUserById } from "@/models/auth-model";
+} from "@/models/notification.model";
+import { findUserById } from "@/models/user.model";
 
 // Schemas
 import {

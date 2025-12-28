@@ -1,61 +1,27 @@
-// External packages
-import { redirect } from 'next/navigation';
-
-// Components
-import { Avatar } from '@/components/ui/avatar';
-import { Message } from '@/components/ui/message';
-
-// Lib
-import { getSession } from '@/lib/server/auth';
-
 // Modules
 import { ListUsers } from '@/modules/main/direct-messages/list-users';
 import { MessageForm } from '@/modules/main/direct-messages/message-form';
 import { MessageWrapper } from '@/modules/main/direct-messages/message-wrapper';
 import { UsersInfoHeader } from '@/modules/main/direct-messages/users-info-header';
+import { Conversation } from '@/modules/main/direct-messages/conversation';
+
+// Lib
+import { getListOfAllDirectMessages } from '@/lib/server/direct-messages';
 
 export default async function DirectMessagesPage() {
-	const user = await getSession();
-	// TODO: Look if I need to write once again if I am already running this code in layout or not
-	if (!user.success) redirect('/auth/login');
+	const listOfAllDirectMessages = await getListOfAllDirectMessages();
+
 	return (
+		// Move higher maybe to show the online status
+
 		<div className="flex h-full">
-			<ListUsers />
+			<ListUsers listOfAllDirectMessages={listOfAllDirectMessages} />
 
 			<MessageWrapper>
 				<UsersInfoHeader />
 
 				<div className="flex min-h-0 flex-1 flex-col gap-4 px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
-					<div className="no-scrollbar min-h-0 flex-1 space-y-4 overflow-y-auto">
-						<Message
-							date="16:36 | 8.4. 2024"
-							avatar={
-								<Avatar
-									imageProps={{
-										src: user?.image || '',
-									}}
-								>
-									{user.fullname}
-								</Avatar>
-							}
-						>
-							Lorem ipsum dolor sit amet consectetur adipisicing elit. Aperiam
-							laborum enim, accusantium beatae odio sequi vero nulla culpa ab
-							corporis laudantium eligendi consectetur illum quam eos cum
-							debitis possimus adipisci?
-						</Message>
-
-						<Message
-							variant="secondary"
-							date="16:36 | 8.4. 2024"
-							avatar={<Avatar imageProps={{ src: '' }}>Cool man</Avatar>}
-						>
-							Lorem ipsum dolor sit amet consectetur adipisicing elit. Aperiam
-							laborum enim, accusantium beatae odio sequi vero nulla culpa ab
-							corporis laudantium eligendi consectetur illum quam eos cum
-							debitis possimus adipisci?
-						</Message>
-					</div>
+					<Conversation />
 
 					<MessageForm />
 				</div>

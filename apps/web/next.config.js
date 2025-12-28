@@ -3,10 +3,10 @@ const nextConfig = {
 	images: {
 		domains: [
 			'lh3.googleusercontent.com',
-			'https://drzavno-projekt.s3.us-east-1.amazonaws.com',
+			'drzavno-projekt.s3.us-east-1.amazonaws.com',
 		],
 	},
-	output: 'standalone',
+	// output: 'standalone',
 };
 
 export default nextConfig;

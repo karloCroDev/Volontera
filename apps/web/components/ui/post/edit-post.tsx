@@ -13,7 +13,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { FilledInput } from '@/components/ui/filled-input';
 
 // Modules
-import { DndMapppingImages } from '@/modules/main/organization/home/dnd-mapping-images';
+import { DndMapppingImages } from '@/components/ui/dnd-mapping-images';
 
 export const EditPost = () => {
 	return (

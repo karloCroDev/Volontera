@@ -7,29 +7,49 @@ import { usePathname, useSearchParams } from 'next/navigation';
 import { Avatar } from '@/components/ui/avatar';
 import { twJoin } from 'tailwind-merge';
 import { Dot } from '@/components/ui/dot';
+import Markdown from 'react-markdown';
 
 export const UsersSidebar: React.FC<{
 	id: string;
+	conversationId?: string; // Npr. kod searcha nećemo imati conversationId
 	username: string;
-	userRole: string;
-}> = ({ id, username, userRole }) => {
+	userRole?: string;
+	lastMessage?: string;
+	removeUnderline?: boolean;
+	isOnline?: boolean;
+	imageUrl?: string;
+}> = ({
+	id,
+	conversationId,
+	username,
+	userRole,
+	lastMessage,
+	removeUnderline = false,
+	isOnline,
+	imageUrl,
+}) => {
 	const searchParams = useSearchParams();
 
 	const pathname = usePathname();
 
 	const isActive = searchParams.get('user') === id;
-	const isOnline = false; // TODO: Replace with real online status
+
 	return (
 		<Link
-			href={`${pathname}?user=${id}`}
+			href={
+				conversationId
+					? `${pathname}?user=${id}&conversationId=${conversationId}`
+					: `${pathname}?user=${id}`
+			}
 			className={twJoin(
-				'border-input-border flex items-center gap-4 border-b py-3',
-				isActive && 'border-b-muted-foreground font-semibold'
+				'border-input-border hover:bg-background-foreground/10 flex items-center gap-4 rounded-lg px-2 py-3 backdrop-blur-2xl',
+				isActive && 'border-b-muted-foreground font-semibold',
+				removeUnderline && 'border-b-0'
 			)}
 		>
 			<Avatar
 				imageProps={{
-					src: '',
+					src: imageUrl,
 				}}
 				size="lg"
 			>
@@ -38,7 +58,9 @@ export const UsersSidebar: React.FC<{
 
 			<div>
 				<p className="text-md">{username} </p>
-				<p className="text-muted-foreground text-xs md:text-sm">{userRole} </p>
+				<div className="text-muted-foreground text-xs md:text-sm">
+					{lastMessage ? <Markdown>{lastMessage}</Markdown> : userRole}
+				</div>
 			</div>
 
 			<Dot

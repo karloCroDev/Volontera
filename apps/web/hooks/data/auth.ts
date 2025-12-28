@@ -2,17 +2,13 @@
 import {
 	useMutation,
 	UseMutationOptions,
-	useQuery,
 	useQueryClient,
 } from '@tanstack/react-query';
-import { cache } from 'react';
 
 // Lib
 import {
-	clientSession,
 	forgotPassword,
 	login,
-	logout,
 	register,
 	resendEmail,
 	resetPassword,
@@ -30,20 +26,7 @@ import {
 } from '@repo/schemas/auth';
 
 // Types
-import { SessionSuccessResponse } from '@repo/types/auth';
-import {
-	ErrorFormResponse,
-	ServerHandleResponse,
-	SuccessfulResponse,
-} from '@repo/types/general';
-
-export const useSession = () => {
-	return useQuery<SessionSuccessResponse, ServerHandleResponse<false>>({
-		queryKey: ['session'],
-		queryFn: cache(clientSession),
-		staleTime: 5 * 60 * 1000,
-	});
-};
+import { ErrorFormResponse, SuccessfulResponse } from '@repo/types/general';
 
 // Authentication (basics)
 export const useLogin = (
@@ -72,19 +55,6 @@ export const useRegister = (
 	return useMutation({
 		mutationKey: ['register'],
 		mutationFn: (values: RegisterArgs) => register(values),
-		onSuccess: async (...args) => {
-			await queryClient.invalidateQueries({ queryKey: ['session'] });
-			await options?.onSuccess?.(...args);
-		},
-		...options,
-	});
-};
-
-export const useLogout = (options?: UseMutationOptions<void, Error, void>) => {
-	const queryClient = useQueryClient();
-	return useMutation({
-		mutationKey: ['logout'],
-		mutationFn: () => logout(),
 		onSuccess: async (...args) => {
 			await queryClient.invalidateQueries({ queryKey: ['session'] });
 			await options?.onSuccess?.(...args);

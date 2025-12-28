@@ -2,11 +2,15 @@
 import { CheckCheck } from 'lucide-react';
 import { twJoin, twMerge } from 'tailwind-merge';
 
+// Lib
+import { adjustMessageTime } from '@/lib/utils/time-adjustments';
+
 export const Message: React.FC<
 	React.ComponentPropsWithoutRef<'div'> & {
 		avatar: React.ReactNode;
-		date: string;
+		date: Date;
 		variant?: 'primary' | 'secondary';
+		images?: React.ReactNode;
 	}
 > = ({
 	/* eslint react/prop-types: 0 */
@@ -14,41 +18,49 @@ export const Message: React.FC<
 	date,
 	children,
 	variant = 'primary',
+
+	images,
 	className,
 	...rest
-}) => (
-	<>
-		<div
-			{...rest}
-			className={twMerge(
-				'flex gap-4 md:gap-8',
-				variant === 'secondary' && 'ml-auto flex-row-reverse',
+}) => {
+	return (
+		<>
+			{images}
 
-				className
-			)}
-		>
-			{avatar}
-			<div className="md:max-w-3/5 mt-6 w-4/5">
-				{/* Must be a (in some places I am handling markdown) */}
-				<div
-					className={twJoin(
-						'items-end rounded-lg border px-5 py-3 text-sm md:text-base',
-						variant === 'primary' &&
-							'bg-accent text-accent-foreground border-accent-foreground rounded-tl-none',
-						variant === 'secondary' &&
-							'border-input-border text-background-foreground rounded-tr-none'
-					)}
-				>
-					{children}
-				</div>
-				<div className="mt-2 flex items-center justify-between">
-					<p className="text-muted-foreground text-xs lg:text-sm">{date}</p>
-					<CheckCheck className="text-muted-foreground size-4" />
+			<div
+				{...rest}
+				className={twMerge(
+					'flex gap-4 md:gap-8',
+					variant === 'secondary' && 'ml-auto flex-row-reverse',
+
+					className
+				)}
+			>
+				{avatar}
+				<div className="md:max-w-3/5 mt-6 w-4/5">
+					{/* Must be a (in some places I am handling markdown) */}
+					<div
+						className={twJoin(
+							'w-full items-end rounded-lg border px-5 py-3 text-sm md:text-base',
+							variant === 'primary' &&
+								'bg-accent text-accent-foreground border-accent-foreground rounded-tl-none',
+							variant === 'secondary' &&
+								'border-input-border text-background-foreground rounded-tr-none'
+						)}
+					>
+						<div className="prose prose-custom !max-w-full">{children}</div>
+					</div>
+					<div className="mt-2 flex items-center justify-between">
+						<p className="text-muted-foreground text-xs lg:text-sm">
+							{adjustMessageTime(date)}
+						</p>
+						<CheckCheck className="text-muted-foreground size-4" />
+					</div>
 				</div>
 			</div>
-		</div>
-	</>
-);
+		</>
+	);
+};
 
 export const MessageSkeleton: React.FC<
 	React.ComponentPropsWithoutRef<'div'> & {

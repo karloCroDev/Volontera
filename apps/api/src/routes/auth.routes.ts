@@ -2,23 +2,10 @@
 import express from "express";
 import { Router } from "express";
 
-// Contorllers
-// import { login } from "@/controllers/auth/login";
-// import { register } from "@/controllers/auth/register";
-// import { logout } from "@/controllers/auth/logout";
-// import { session } from "@/controllers/auth/session";
-// import { forgotPassword } from "@/controllers/auth/forgot-password";
-// import { resetPassword } from "@/controllers/auth/reset-password";
-// import {
-//   resetVerifyToken,
-//   verifyTokenOtp,
-// } from "@/controllers/auth/verify-token-otp";
-
 // Controllers
 import {
   forgetPassword,
   login,
-  logout,
   register,
   resetPassword,
   resetVerifyToken,
@@ -30,8 +17,6 @@ import { generateTokenAndSetCookie } from "@/lib/set-token-cookie";
 
 // Lib
 import { oAuthGoogleHandle } from "@/config/oAuth-google";
-import { userSession } from "@/controllers/auth.controller";
-import { authMiddleware } from "@/middleware/auth-middleware";
 
 export const authRoutes = Router();
 
@@ -39,7 +24,6 @@ authRoutes.use(express.json());
 
 authRoutes.post("/register", register);
 authRoutes.post("/login", login);
-authRoutes.post("/logout", authMiddleware, logout);
 authRoutes.post("/forgot-password", forgetPassword);
 authRoutes.post("/reset-password", resetPassword);
 authRoutes.post("/verify-token", verifyToken);
@@ -72,6 +56,3 @@ authRoutes.get(
     res.redirect(`${process.env.WEB_URL}/home`);
   }
 );
-
-// Retrieving the user session
-authRoutes.get("/session", authMiddleware, userSession);

@@ -3,12 +3,15 @@ import http from "http";
 import express from "express";
 import { Server } from "socket.io";
 
+// Types
+import { EmitUsers } from "@repo/types/sockets";
+
 export const app = express();
 export const server = http.createServer(app);
 
 export const io = new Server(server, {
   cors: {
-    origin: [process.env.WEB_URL || "http://localhost:3000"],
+    origin: [process.env.WEB_URL!],
     methods: ["GET", "POST"],
   },
 });
@@ -26,10 +29,10 @@ io.on("connection", (socket) => {
 
   if (userId) userSocketObj[userId] = socket.id;
 
-  // Emit send data to all connected clients
-  io.emit("get-online-users", Object.keys(userSocketObj));
+  // Emit => Šalje podatke svim klijentima
+  io.emit<EmitUsers>("get-online-users", Object.keys(userSocketObj));
 
-  // On is listening to all events
+  // On sluša događaje sve od klijenata
   socket.on("disconnect", () => {
     console.log("user disconnected", socket.id);
     delete userSocketObj[userId];

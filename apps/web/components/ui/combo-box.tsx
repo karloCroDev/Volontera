@@ -35,7 +35,7 @@ export function ComboBoxWrapper<T extends object>({
 				<Input {...inputProps} />
 			</div>
 
-			<Popover className="bg-muted border-input-border flex w-[var(--trigger-width)] flex-col gap-3 rounded-md border p-2">
+			<Popover className="bg-muted border-input-border flex w-[var(--trigger-width)] flex-col gap-x-3 gap-y-2 rounded-md border p-2">
 				<ListBox items={items}>{children}</ListBox>
 			</Popover>
 		</AriaComboBox>
@@ -50,7 +50,7 @@ export const ComboBoxItems: React.FC<
 	<ListBoxItem
 		{...rest}
 		className={twJoin(
-			'cursor-pointer py-2 backdrop-blur-md hover:bg-white/10',
+			'cursor-pointer py-2',
 			!removeUnderline && 'border-input-border border-b'
 		)}
 	/>

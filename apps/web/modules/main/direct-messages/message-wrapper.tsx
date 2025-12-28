@@ -5,7 +5,7 @@ import * as React from 'react';
 import { useSearchParams } from 'next/navigation';
 import { twJoin } from 'tailwind-merge';
 
-// Ovako wrappam kako bi children tj. poruke bile ssr a na na clientu
+// Ako budem ikako fetchao poruke na serveru, onda ovo nije loša stvar
 export const MessageWrapper: React.FC<{
 	children: React.ReactNode;
 }> = ({ children }) => {

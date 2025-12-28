@@ -24,9 +24,11 @@
 		"@tiptap/extension-image": "^3.10.7",
 		"@tiptap/extension-underline": "^3.10.7",
 		"@tiptap/extensions": "^3.10.7",
+		"@tiptap/markdown": "^3.14.0",
 		"@tiptap/pm": "^3.10.7",
 		"@tiptap/react": "^3.10.7",
 		"@tiptap/starter-kit": "^3.10.7",
+		"@types/turndown": "^5.0.6",
 		"axios": "^1.12.2",
 		"input-otp": "^1.4.2",
 		"lucide-react": "^0.562.0",
@@ -38,11 +40,13 @@
 		"react-dom": "^19.1.0",
 		"react-hook-form": "^7.65.0",
 		"react-markdown": "^10.1.0",
+		"socket.io-client": "^4.8.3",
 		"swiper": "^12.0.3",
 		"tailwind-merge": "^3.3.1",
 		"tailwindcss": "^4.1.13",
 		"tailwindcss-animate": "^1.0.7",
-		"tailwindcss-radix": "^4.0.2"
+		"tailwindcss-radix": "^4.0.2",
+		"turndown-plugin-gfm": "^1.0.2"
 	},
 	"devDependencies": {
 		"@repo/eslint-config": "*",

@@ -7,7 +7,6 @@ import {
   registerService,
   resetVerifyTokenService,
   verifyOtpService,
-  getSessionUser,
 } from "@/services/auth.service";
 
 // Lib
@@ -94,33 +93,6 @@ export async function forgetPassword(req: Request, res: Response) {
     console.error(err);
     return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
       message: err instanceof Error ? err.message : "Internal Server Error",
-    });
-  }
-}
-
-export async function userSession(req: Request, res: Response) {
-  try {
-    const { userId } = req.user;
-
-    const result = await getSessionUser(userId);
-
-    return res.status(result.status).json(result.body);
-  } catch (err) {
-    console.error(err);
-    res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
-      error: err instanceof Error ? err.message : "Internal Server Error",
-    });
-  }
-}
-
-export async function logout(req: Request, res: Response) {
-  try {
-    res.clearCookie("token");
-    return res.status(200).json({ message: "Logged out successfully" });
-  } catch (err) {
-    console.error(err);
-    res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
-      error: err instanceof Error ? err.message : "Internal Server Error",
     });
   }
 }

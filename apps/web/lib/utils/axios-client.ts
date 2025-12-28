@@ -7,7 +7,7 @@ export const API = ({
 	...rest
 }: CreateAxiosDefaults = {}) => {
 	return axios.create({
-		baseURL: 'http://localhost:4000',
+		baseURL: process.env.NEXT_PUBLIC_API_URL,
 		withCredentials: withCredentials ?? true,
 		headers: headers || { 'Content-Type': 'application/json' },
 		...rest,

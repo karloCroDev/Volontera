@@ -17,7 +17,7 @@ const SwiperNavButtons = () => {
 	const swiper = useSwiper();
 
 	return (
-		<div className="absolute top-1/2 z-20 flex w-full justify-between px-2">
+		<div className="absolute top-1/2 z-20 flex w-full -translate-y-1/2 justify-between px-2">
 			<Button
 				isFullyRounded
 				className="bg-background p-4"
@@ -48,14 +48,14 @@ export const Carousel: React.FC<{
 	swiperProps?: React.ComponentProps<typeof Swiper>;
 }> = ({ slides, swiperProps }) => {
 	return (
-		<div className="relative xl:hidden">
+		<div className="relative">
 			<Swiper
 				modules={[Pagination, Navigation]}
 				pagination={{ type: 'bullets', clickable: true }}
 				spaceBetween={24}
 				slidesPerView={1}
 				loop
-				className={twMerge('h-full w-full', swiperProps?.className)}
+				className={twMerge('size-full', swiperProps?.className)}
 				{...swiperProps}
 			>
 				<SwiperNavButtons />

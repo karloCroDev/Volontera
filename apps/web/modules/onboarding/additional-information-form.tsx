@@ -20,7 +20,7 @@ import { Error } from '@/components/ui/error';
 import { SettingsArgs } from '@repo/schemas/settings';
 
 // Hooks
-import { useSession } from '@/hooks/data/auth';
+import { useSession } from '@/hooks/data/user';
 import {
 	useAdditionalInformation,
 	useSkipAdditionalInformation,
@@ -29,6 +29,9 @@ import {
 // Lib
 import { withReactQueryProvider } from '@/lib/utils/react-query';
 import { toast } from '@/lib/utils/toast';
+import { convertToFullname } from '@/lib/utils/convert-to-fullname';
+
+// Schemas
 import {
 	AdditionalFormArgs,
 	additionalInformationSchema,
@@ -130,7 +133,11 @@ export const AdditionalInformationForm = withReactQueryProvider(() => {
 										)
 									}
 								>
-									{user?.fullname}
+									{user &&
+										convertToFullname({
+											firstname: user.firstName,
+											lastname: user.lastName,
+										})}
 								</Avatar>
 							</AriaLabel>
 

@@ -6,20 +6,22 @@ import { createElement } from "react";
 import { User } from "@repo/database";
 
 // Services
-import { createUploadUrl, deleteImage } from "@/models/image.model";
+import { createUploadUrl, deleteImage } from "@/lib/aws-s3-functions";
 
 // Schemas
 import {
   resetPasswordSettingsSchema,
   settingsSchema,
 } from "@repo/schemas/settings";
+
+// Models
 import {
   deleteUserAccount,
   getUsersOldPassword,
   updateUsersInformation,
   updateUsersPassword,
 } from "@/models/settings.model";
-import { findUserById } from "@/models/auth-model";
+import { findUserById } from "@/models/user.model";
 
 // Config
 import { resend } from "@/config/resend";
