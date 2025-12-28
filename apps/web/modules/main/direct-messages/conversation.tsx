@@ -4,7 +4,6 @@
 import * as React from 'react';
 import { useSearchParams } from 'next/navigation';
 import Markdown from 'react-markdown';
-import Image from 'next/image';
 
 // Components
 import { Message, MessageSkeleton } from '@/components/ui/message';

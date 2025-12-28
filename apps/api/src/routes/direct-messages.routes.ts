@@ -6,6 +6,7 @@ import { Router } from "express";
 import {
   getDirectMessagesConversationByIdServiceController,
   listAllDirectMessagesConversationsController,
+  presignDirectMessageImagesController,
   searchAllUsersWithQueryController,
   startConversationOrStartAndSendDirectMessageController,
 } from "@/controllers/direct-messages.controller";
@@ -27,4 +28,10 @@ directMessagesRoutes.get("/search/:query", searchAllUsersWithQueryController);
 directMessagesRoutes.post(
   "/conversation/message",
   startConversationOrStartAndSendDirectMessageController
+);
+
+// Upload-first flow: get presigned PUT urls for images
+directMessagesRoutes.post(
+  "/presign-images",
+  presignDirectMessageImagesController
 );

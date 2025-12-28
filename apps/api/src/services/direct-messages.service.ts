@@ -5,7 +5,7 @@ import {
   searchAllUsers,
   startConversationOrStartAndSendDirectMessage,
 } from "@/models/direct-messages.model";
-import { createUploadUrl, getImagePresignedUrls } from "@/lib/aws-s3-functions";
+import { createUploadUrl } from "@/lib/aws-s3-functions";
 
 // Database
 import { User } from "@repo/database";
@@ -14,10 +14,53 @@ import { User } from "@repo/database";
 import {
   searchSchema,
   conversationSchema,
-  messageSchema,
+  createDirectMessageSchema,
+  presignDirectMessageImagesSchema,
 } from "@repo/schemas/direct-messages";
 import { getReceiverSocketId, io } from "@/ws/socket";
 import { EmitNewChat } from "@repo/types/sockets";
+
+export async function presignDirectMessageImagesService({
+  rawData,
+  userId,
+}: {
+  rawData: unknown;
+  userId: User["id"];
+}) {
+  // userId currently unused, but keeps auth context for future limits/rate-limits
+  const { success, data } = presignDirectMessageImagesSchema.safeParse(rawData);
+
+  if (!success) {
+    return {
+      status: 400,
+      body: {
+        title: "Invalid data",
+        message: "Invalid data",
+        success: false,
+      },
+    };
+  }
+
+  const images = await Promise.all(
+    data.images.map(async (image) =>
+      createUploadUrl({
+        contentType: image.contentType,
+        filename: image.filename,
+        size: image.size,
+      })
+    )
+  );
+
+  return {
+    status: 200,
+    body: {
+      title: "Presigned URLs",
+      message: "Successfully generated presigned URLs",
+      success: true,
+      images,
+    },
+  };
+}
 
 export async function searchAllUsersWithQueryService({
   rawData,
@@ -115,7 +158,7 @@ export async function startConversationOrStartAndSendDirectMessageService({
   rawData: unknown;
   userId: User["id"];
 }) {
-  const { success, data } = messageSchema.safeParse(rawData);
+  const { success, data } = createDirectMessageSchema.safeParse(rawData);
   if (!success) {
     return {
       status: 400,
@@ -126,29 +169,13 @@ export async function startConversationOrStartAndSendDirectMessageService({
     };
   }
 
-  // Presigned urls for images
-  const images =
-    data.images && data.images.length > 0
-      ? await Promise.all(
-          data.images.map(async (image) => {
-            return await createUploadUrl({
-              contentType: image.contentType,
-              filename: image.filename,
-              size: image.size,
-            });
-          })
-        )
-      : undefined;
-
   // TODO: Vidi je li trebam ionako ista vratiti na frontu
   const { conversation, message } =
     await startConversationOrStartAndSendDirectMessage({
       senderId: userId,
       receiverId: data.particpantId,
       content: data.content,
-      imageUrls: data.images
-        ? images?.map((img) => img.key) // Save S3 object keys to DB (not presigned PUT URLs)
-        : undefined,
+      imageKeys: data.imageKeys,
     });
 
   const senderSocketId = getReceiverSocketId(userId);
@@ -168,7 +195,6 @@ export async function startConversationOrStartAndSendDirectMessageService({
     body: {
       title: "Message is sent",
       message: "Message is successfully sent to the wanted user",
-      images,
       conversationId: conversation.id,
     },
   };

@@ -150,12 +150,12 @@ export async function startConversationOrStartAndSendDirectMessage({
   senderId,
   receiverId,
   content,
-  imageUrls,
+  imageKeys,
 }: {
   senderId: User["id"];
   receiverId: User["id"];
   content: string;
-  imageUrls?: string[];
+  imageKeys?: string[];
 }) {
   // Pair key mi olakšava način na koji ću pronaći konverzaciju između dva korisnika, također mi omogućava da ako se 2 iste poruke pošalju u isto vrijeme, da ne dobijem konflikt u bazi podataka jer će pair key uvijek biti isti za ta dva korisnika.
   const pairKey = [senderId, receiverId].sort().join(":"); // Uvijek isti redoslijed korisnika bez obzira tko šalje poruku
@@ -183,6 +183,17 @@ export async function startConversationOrStartAndSendDirectMessage({
         conversationId: conversation.id,
         authorId: senderId,
         content,
+
+        // Create attachments in the same write so they are present in the emitted payload
+        ...(imageKeys && imageKeys.length
+          ? {
+              directMessagesImages: {
+                create: imageKeys.map((key) => ({
+                  imageUrl: key,
+                })),
+              },
+            }
+          : {}),
       },
 
       // Trebam vratiti slike i autora da ih mogu prikazati odmah nakon slanja poruke (websocket)
@@ -192,18 +203,6 @@ export async function startConversationOrStartAndSendDirectMessage({
       },
     });
 
-    console.log(imageUrls);
-    // Tommorow when I fix the sending images, than I think about handling the images
-    if (imageUrls) {
-      await tx.directMessagesImages.createMany({
-        data: [
-          ...imageUrls.map((url) => ({
-            messageId: message.id,
-            imageUrl: url,
-          })),
-        ],
-      });
-    }
     // 3️. Ažuriram posljednju poruku u konverzaciji
     await tx.directMessagesConversations.update({
       where: { id: conversation.id },

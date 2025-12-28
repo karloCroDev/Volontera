@@ -29,43 +29,47 @@ export const MessageImages: React.FC<{
 		}
 	);
 
+	const firstImageKey = message.directMessagesImages[0]!.imageUrl; // Znamo da cemo ga dobiti jer se koristi samo ako postoji barem jedna slika
+	const firstImageSrc = firstImageKey
+		? images?.urls?.[firstImageKey]
+		: undefined;
+
 	return (
 		<div className="border-input-border relative size-80 overflow-hidden rounded-lg border-2">
 			{isPending && (
 				<div className="bg-muted-foreground text-muted-foreground h-full w-full animate-pulse" />
 			)}
-			{message.directMessagesImages.length > 1 ? (
-				<Carousel
-					slides={message.directMessagesImages.map(
-						({ imageUrl, id }) =>
-							images?.urls?.[imageUrl] && (
+
+			{!isPending &&
+				(message.directMessagesImages.length > 1 ? (
+					<Carousel
+						slides={message.directMessagesImages.map(({ imageUrl, id }) => {
+							const src = images?.urls?.[imageUrl];
+							if (!src) return null;
+
+							return (
 								<div
 									key={id}
 									className="relative flex size-80 overflow-hidden rounded-md"
 								>
 									<Image
-										src={images.urls?.[imageUrl]}
+										src={src}
 										alt="Message Image"
 										fill
 										className="object-cover"
 									/>
 								</div>
-							)
-					)}
-				/>
-			) : (
-				// Ovo provjeravam u vanjskoj komponenti (kako ne bi bez razloga fethcao slike ako ih nema), ali TypeScript ne prepoznaje da je sigurno paa koristim as cast
-				<Image
-					src={
-						images?.urls?.[
-							message.directMessagesImages[0]?.imageUrl as string
-						] as string
-					}
-					alt="Message Image"
-					fill
-					className="object-cover"
-				/>
-			)}
+							);
+						})}
+					/>
+				) : firstImageSrc ? (
+					<Image
+						src={firstImageSrc}
+						alt="Message Image"
+						fill
+						className="object-cover"
+					/>
+				) : null)}
 		</div>
 	);
 };

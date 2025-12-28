@@ -5,6 +5,7 @@ import { Request, Response } from "express";
 import {
   getDirectMessagesConversationByIdService,
   listAllDirectMessagesConversationsService,
+  presignDirectMessageImagesService,
   searchAllUsersWithQueryService,
   startConversationOrStartAndSendDirectMessageService,
 } from "@/services/direct-messages.service";
@@ -23,6 +24,7 @@ export async function searchAllUsersWithQueryController(
     return res.status(500).json({ success: false, message: "Internal error" });
   }
 }
+
 export async function getDirectMessagesConversationByIdServiceController(
   req: Request,
   res: Response
@@ -55,6 +57,21 @@ export async function startConversationOrStartAndSendDirectMessageController(
 ) {
   try {
     const result = await startConversationOrStartAndSendDirectMessageService({
+      rawData: req.body,
+      userId: req.user.userId,
+    });
+    return res.status(result.status).json(result.body);
+  } catch (error) {
+    return res.status(500).json({ success: false, message: "Internal error" });
+  }
+}
+
+export async function presignDirectMessageImagesController(
+  req: Request,
+  res: Response
+) {
+  try {
+    const result = await presignDirectMessageImagesService({
       rawData: req.body,
       userId: req.user.userId,
     });

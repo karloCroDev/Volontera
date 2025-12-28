@@ -7,6 +7,8 @@ import {
 	SearchArgs,
 	ConversationArgs,
 	MessageArgs,
+	CreateDirectMessageArgs,
+	PresignDirectMessageImagesArgs,
 } from '@repo/schemas/direct-messages';
 
 // Types
@@ -46,20 +48,36 @@ export async function startConversationOrStartAndSendDirectMessage({
 	files,
 }: DataWithFiles<MessageArgs>) {
 	try {
-		const res = await API().post(`direct-messages/conversation/message`, data);
+		let imageKeys: string[] | undefined;
 
-		if (res.data?.images && data.images && files) {
-			await Promise.all(
-				data.images.map(
-					async (image, index) =>
-						await API({
-							headers: { 'Content-type': image.contentType },
-						}).put(res.data.images[index].url, files[index])
-				)
-			);
+		// Dobivam presigned URL-ove i keyve slika, te uploadam slike
+		if (data.images && data.images.length && files && files.length) {
+			const presignRes = await API().post('direct-messages/presign-images', {
+				images: data.images,
+			} satisfies PresignDirectMessageImagesArgs);
+
+			// Uploadam slike
+			if (presignRes.data?.images) {
+				await Promise.all(
+					presignRes.data.images.map(
+						async (img: { key: string; url: string }, index: number) =>
+							await API({
+								headers: { 'Content-type': data.images![index]!.contentType },
+							}).put(img.url, files[index])
+					)
+				);
+				imageKeys = presignRes.data.images.map(
+					(img: { key: string }) => img.key
+				);
+			}
 		}
-		delete res.data?.images;
 
+		// Onda posaljem poruku s keyevima slika (posto su websocketi moram na ovaj nacin handleati upload slika)
+		const res = await API().post('direct-messages/conversation/message', {
+			content: data.content,
+			particpantId: data.particpantId,
+			...(imageKeys && imageKeys.length ? { imageKeys } : {}),
+		});
 		return res.data;
 	} catch (err) {
 		catchError(err);
