@@ -147,7 +147,7 @@ export async function startConversationOrStartAndSendDirectMessageService({
       receiverId: data.particpantId,
       content: data.content,
       imageUrls: data.images
-        ? images?.map((img) => img.url) // Uzmem samo urlove za spremanje u bazu
+        ? images?.map((img) => img.key) // Save S3 object keys to DB (not presigned PUT URLs)
         : undefined,
     });
 

@@ -4,6 +4,7 @@
 import * as React from 'react';
 import { useSearchParams } from 'next/navigation';
 import Markdown from 'react-markdown';
+import Image from 'next/image';
 
 // Components
 import { Message, MessageSkeleton } from '@/components/ui/message';
@@ -56,7 +57,7 @@ export const Conversation = withReactQueryProvider(() => {
 		};
 	}, [messages, setMessages, socketGlobal]);
 
-	const { data: images } = useGetImageFromKey(
+	const { data: userImages } = useGetImageFromKey(
 		{
 			imageUrls:
 				messages
@@ -67,9 +68,26 @@ export const Conversation = withReactQueryProvider(() => {
 			enabled: messages && !!messages.length,
 		}
 	);
+	const { data: images } = useGetImageFromKey(
+		{
+			imageUrls:
+				messages
+					?.map((message) =>
+						message.directMessagesImages.map((img) => img.imageUrl)
+					)
+					.flat() || [],
+		},
+		{
+			enabled: messages && !!messages.length,
+		}
+	);
+
+	console.log('Cool images', images);
 	const { data: user } = useSession();
 
+	console.log('Conversation', conversation);
 	console.log(messages?.at(-1)?.content);
+
 	return (
 		<div className="no-scrollbar min-h-0 flex-1 space-y-4 overflow-y-auto">
 			{isLoading &&
@@ -90,7 +108,7 @@ export const Conversation = withReactQueryProvider(() => {
 								<Avatar
 									imageProps={{
 										src: message.author.image
-											? images?.urls[message.author.image]
+											? userImages?.urls[message.author.image]
 											: '',
 									}}
 								>
@@ -102,6 +120,25 @@ export const Conversation = withReactQueryProvider(() => {
 							}
 						>
 							<Markdown>{message.content}</Markdown>
+
+							{message.directMessagesImages.map(({ imageUrl, id }) => {
+								console.log('Image url', images?.urls[imageUrl]);
+								return (
+									images?.urls[imageUrl] && (
+										<div
+											key={id}
+											className="relative flex h-80 w-80 overflow-hidden rounded-md"
+										>
+											<Image
+												src={images.urls[imageUrl]}
+												alt="Message Image"
+												fill
+												className="object-cover"
+											/>
+										</div>
+									)
+								);
+							})}
 						</Message>
 					))
 				: !isLoading && (

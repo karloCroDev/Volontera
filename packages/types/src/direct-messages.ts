@@ -1,6 +1,7 @@
 import {
   DirectMessages,
   DirectMessagesConversations,
+  DirectMessagesImages,
   User,
 } from "@repo/database";
 import { ServerHandleResponse, SuccessfulResponse } from "./general";
@@ -24,6 +25,6 @@ export type StartConversationOrStartAndSendDirectMessageResonse =
 export type GetDirectMessagesConversationByIdResponse = SuccessfulResponse & {
   conversation: (DirectMessages & {
     author: Omit<User, "password">;
-    directMessagesImages: DirectMessagesConversations;
+    directMessagesImages: DirectMessagesImages[];
   })[];
 };
