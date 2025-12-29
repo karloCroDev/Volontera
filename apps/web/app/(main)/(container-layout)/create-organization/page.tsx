@@ -7,7 +7,10 @@ import { CreateOrganizationForm } from '@/modules/main/create-organizations/crea
 export default async function CreateOrganizationPage() {
 	return (
 		<>
-			<Heading subtitle="Please enter the information about your organization inside these fields">
+			<Heading
+				subtitle="Please enter the information about your organization inside these fields"
+				className="ml-0 md:ml-8"
+			>
 				Let&apos;s create new organization
 			</Heading>
 			<CreateOrganizationForm />
