@@ -22,12 +22,20 @@ import {
 	CreateOrganizationArgs,
 	createOrganizationSchema,
 } from '@repo/schemas/create-organization';
+import { useCreateOrganization } from '@/hooks/data/organization';
+import { toast } from '@/lib/utils/toast';
 
 export const CreateOrganizationForm = () => {
 	// TODO: Decide where to put this, under the creation of new board or here
 	const [assignTasks, setAssignTasks] = React.useState(false);
 
-	const { control, handleSubmit } = useForm<CreateOrganizationArgs>({
+	const { mutate, isPending } = useCreateOrganization();
+	const {
+		control,
+		handleSubmit,
+		setError,
+		formState: { errors },
+	} = useForm<CreateOrganizationArgs>({
 		context: zodResolver(createOrganizationSchema),
 		defaultValues: {
 			organization_name: '',
@@ -39,7 +47,25 @@ export const CreateOrganizationForm = () => {
 		},
 	});
 
-	const onSubmit = (data: CreateOrganizationArgs) => {};
+	const onSubmit = (data: CreateOrganizationArgs) => {
+		mutate(
+			{ ...data, assignPredefinedTasks: assignTasks },
+			{
+				onSuccess({ message, title }) {
+					toast({
+						title,
+						content: message,
+						variant: 'success',
+					});
+				},
+				onError({ message }) {
+					setError('root', {
+						message,
+					});
+				},
+			}
+		);
+	};
 	return (
 		<>
 			<Layout>
@@ -71,7 +97,18 @@ export const CreateOrganizationForm = () => {
 						<div className="mt-8 flex flex-col gap-6">
 							<div>
 								<Label>Organization&apos;s name</Label>
-								<Input label="Enter your oganizations name" className="mt-2" />
+								<Controller
+									control={control}
+									name="organization_name"
+									render={({ field }) => (
+										<Input
+											label="Enter your organization's name"
+											className="mt-2"
+											inputProps={field}
+											error={errors.organization_name?.message}
+										/>
+									)}
+								/>
 							</div>
 							<div>
 								<Label>Organization&apos;s bio</Label>
@@ -79,10 +116,12 @@ export const CreateOrganizationForm = () => {
 								<Controller
 									control={control}
 									name="organization_bio"
-									render={() => (
+									render={({ field }) => (
 										<Input
 											label="Enter your organization's bio"
 											className="mt-2"
+											inputProps={field}
+											error={errors.organization_bio?.message}
 										/>
 									)}
 								/>
@@ -93,10 +132,12 @@ export const CreateOrganizationForm = () => {
 								<Controller
 									control={control}
 									name="organization_type"
-									render={() => (
+									render={({ field }) => (
 										<Input
 											label="Enter more information about the organization"
 											className="mt-2"
+											inputProps={field}
+											error={errors.organization_type?.message}
 										/>
 									)}
 								/>
@@ -108,10 +149,12 @@ export const CreateOrganizationForm = () => {
 								<Controller
 									control={control}
 									name="additional_links"
-									render={() => (
+									render={({ field }) => (
 										<Input
 											label="Enter your additional links"
 											className="mt-2"
+											inputProps={field}
+											error={errors.additional_links?.message}
 										/>
 									)}
 								/>
@@ -119,14 +162,19 @@ export const CreateOrganizationForm = () => {
 							{/* TODO: Probabbly new separate component  and better naming*/}
 							<div>
 								<Label isOptional>Embbedd the form link</Label>
-
+								{/* 
 								<Controller
 									control={control}
 									name="external_form_link"
-									render={() => (
-										<Input label="Enter your form link" className="mt-2" />
+									render={({ field }) => (
+										<Input
+											label="Enter your form link"
+											className="mt-2"
+											inputProps={field}
+											error={errors.external_form_link?.message}
+										/>
 									)}
-								/>
+								/> */}
 							</div>
 
 							{/* If there is a link that I can embedd then display preview immeditelly */}
@@ -182,7 +230,12 @@ export const CreateOrganizationForm = () => {
 						</div>
 						<hr className="bg-input-border my-8 h-px w-full border-0" />
 
-						<Button size="md" className="ml-auto" type="submit">
+						<Button
+							size="md"
+							className="ml-auto"
+							type="submit"
+							isDisabled={isPending}
+						>
 							Let&apos; go
 						</Button>
 					</Form>

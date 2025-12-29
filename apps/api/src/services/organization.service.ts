@@ -16,7 +16,6 @@ export async function CreateOrganizationService({
     return {
       status: 400,
       body: {
-        title: "Invalid data",
         message: "The provided data is invalid",
       },
     };
