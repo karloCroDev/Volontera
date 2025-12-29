@@ -4,12 +4,14 @@
 import * as React from 'react';
 import Image from 'next/image';
 
+// Components
+import { Carousel } from '@/components/ui/carousel';
+
 // Hooks
 import { useGetImageFromKey } from '@/hooks/data/image';
 
 // Types
 import { GetDirectMessagesConversationByIdResponse } from '@repo/types/direct-messages';
-import { Carousel } from '@/components/ui/carousel';
 
 export const MessageImages: React.FC<{
 	messages: GetDirectMessagesConversationByIdResponse['conversation'];

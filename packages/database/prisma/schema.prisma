@@ -71,6 +71,8 @@ model User {
   notifications               Notification[]
   conversationParticipants    ConversationParticipants[]
   directMessagesConversations DirectMessages[]
+  organizationFollowers       OrganizationFollowers[]
+  organizationAttendees       OrganizationAttendees[]
 }
 
 model Accounts {
@@ -164,4 +166,57 @@ model DirectMessagesImages {
   imageUrl     String // URL of the image stored in s3
   createdAt    DateTime       @default(now())
   updatedAt    DateTime       @updatedAt
+}
+
+model Orgnizations {
+  id               String            @id @default(cuid())
+  name             String
+  bio              String?
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+  organizationInfo OrganizationInfo?
+}
+
+model OrganizationInfo {
+  id              String                  @id @default(cuid())
+  bio             String
+  followers       OrganizationFollowers[]
+  attendees       OrganizationAttendees[]
+  additionalLinks AdditionalLinks[]
+  // location        String? // Might add later
+
+  organization   Orgnizations @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  organizationId String       @unique
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+}
+
+// Additional fields that can be for the orgnznization model
+model OrganizationFollowers {
+  id                 String           @id @default(cuid())
+  organizationInfo   OrganizationInfo @relation(fields: [organizationInfoId], references: [id], onDelete: Cascade)
+  organizationInfoId String
+  followerUser       User             @relation(fields: [followerUserId], references: [id], onDelete: Cascade)
+  followerUserId     String
+  createdAt          DateTime         @default(now())
+  updatedAt          DateTime         @updatedAt
+}
+
+model OrganizationAttendees {
+  id                 String           @id @default(cuid())
+  organizationInfo   OrganizationInfo @relation(fields: [organizationInfoId], references: [id], onDelete: Cascade)
+  organizationInfoId String
+  attendeeUser       User             @relation(fields: [attendeeUserId], references: [id], onDelete: Cascade)
+  attendeeUserId     String
+  createdAt          DateTime         @default(now())
+  updatedAt          DateTime         @updatedAt
+}
+
+model AdditionalLinks {
+  id                 String           @id @default(cuid())
+  organizationInfo   OrganizationInfo @relation(fields: [organizationInfoId], references: [id], onDelete: Cascade)
+  organizationInfoId String
+  createdAt          DateTime         @default(now())
+  updatedAt          DateTime         @updatedAt
+  link               String
 }
