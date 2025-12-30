@@ -1,7 +1,13 @@
 // Schemas
-import { createOrganization } from "@/models/organization.model";
+import {
+  createOrganization,
+  getOrganizationDetailsById,
+} from "@/models/organization.model";
 import { User } from "@repo/database";
-import { createOrganizationSchema } from "@repo/schemas/create-organization";
+import {
+  createOrganizationSchema,
+  getOrganizationDetailsByIdSchema,
+} from "@repo/schemas/create-organization";
 
 export async function CreateOrganizationService({
   rawData,
@@ -32,6 +38,40 @@ export async function CreateOrganizationService({
       title: "Organization Created",
       message: "Organization created successfully",
       organizationId: organization.id,
+    },
+  };
+}
+
+export async function getOrganizationDetailsByIdService(rawData: unknown) {
+  const { success, data } = getOrganizationDetailsByIdSchema.safeParse(rawData);
+
+  if (!success) {
+    return {
+      status: 400,
+      body: {
+        message: "The provided data is invalid",
+      },
+    };
+  }
+
+  const organization = await getOrganizationDetailsById(data.organizationId);
+
+  if (!organization) {
+    return {
+      status: 404,
+      body: {
+        title: "Organization Not Found",
+        message: "No organization found with the provided ID",
+      },
+    };
+  }
+
+  return {
+    status: 200,
+    body: {
+      message: "Organization details retrieved successfully",
+      success: true,
+      organization,
     },
   };
 }

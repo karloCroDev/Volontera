@@ -16,3 +16,11 @@ export const createOrganizationSchema = z.object({
 });
 
 export type CreateOrganizationArgs = z.infer<typeof createOrganizationSchema>;
+
+export const getOrganizationDetailsByIdSchema = z.object({
+  organizationId: z.cuid(),
+});
+
+export type GetOrganizationDetailsByIdArgs = z.infer<
+  typeof getOrganizationDetailsByIdSchema
+>;
