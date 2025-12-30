@@ -6,7 +6,6 @@ import * as React from 'react';
 import { Form, Radio, RadioGroup } from 'react-aria-components';
 import { Controller, useFieldArray, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
 import { useRouter } from 'next/navigation';
 
 // Components
@@ -18,6 +17,10 @@ import { RadioIconVisual } from '@/components/ui/radio';
 
 // Modules
 import { InsertPhoto } from '@/modules/main/create-organizations/insert-photo';
+import { PreviewForm } from '@/modules/main/create-organizations/preview-form';
+
+// Lib
+import { toast } from '@/lib/utils/toast';
 
 // Schemas
 import {
@@ -25,17 +28,6 @@ import {
 	createOrganizationSchema,
 } from '@repo/schemas/create-organization';
 import { useCreateOrganization } from '@/hooks/data/organization';
-import { toast } from '@/lib/utils/toast';
-
-// Client-side schema: allow empty strings in optional URL inputs.
-const createOrganizationFormSchema = createOrganizationSchema.extend({
-	external_form_link: z.union([z.literal(''), z.string().url()]).optional(),
-	additional_links: z
-		.array(z.union([z.literal(''), z.string().url()]))
-		.optional(),
-});
-
-type CreateOrganizationFormInput = z.input<typeof createOrganizationFormSchema>;
 
 export const CreateOrganizationForm = () => {
 	// TODO: Decide where to put this, under the creation of new board or here
@@ -48,9 +40,10 @@ export const CreateOrganizationForm = () => {
 		control,
 		handleSubmit,
 		setError,
+		watch,
 		formState: { errors },
-	} = useForm<CreateOrganizationFormInput>({
-		resolver: zodResolver(createOrganizationFormSchema),
+	} = useForm<CreateOrganizationArgs>({
+		context: zodResolver(createOrganizationSchema),
 		defaultValues: {
 			organization_avatar_image: undefined,
 			organization_cover_image: undefined,
@@ -79,7 +72,7 @@ export const CreateOrganizationForm = () => {
 	}, [arrFields.length, append]);
 
 	const router = useRouter();
-	const onSubmit = (data: CreateOrganizationFormInput) => {
+	const onSubmit = (data: CreateOrganizationArgs) => {
 		console.log(data);
 		const cleanedAdditionalLinks = (data.additional_links || [])
 			.map((l) => l.trim())
@@ -97,14 +90,14 @@ export const CreateOrganizationForm = () => {
 		};
 
 		mutate(payload, {
-			onSuccess({ message, title }) {
+			onSuccess({ message, title, organizationId }) {
 				toast({
 					title,
 					content: message,
 					variant: 'success',
 				});
 
-				router.push('/');
+				router.push(`/organization/${organizationId}`);
 			},
 			onError({ message }) {
 				setError('root', {
@@ -113,6 +106,9 @@ export const CreateOrganizationForm = () => {
 			},
 		});
 	};
+
+	const externalFormLink = watch('external_form_link') ?? '';
+
 	return (
 		<>
 			<Layout>
@@ -272,10 +268,19 @@ export const CreateOrganizationForm = () => {
 									<Plus />
 								</Button>
 							</div>
-							{/* TODO: Probabbly new separate component  and better naming*/}
-							<div>
-								<Label isOptional>Embbedd the form link</Label>
+							<hr className="bg-input-border h-px w-full border-0" />
 
+							<h4 className="text-xl italic underline underline-offset-4">
+								Joinment information{' '}
+							</h4>
+							<div>
+								<div className="flex items-baseline justify-between">
+									<Label isOptional>Embbedd the form link </Label>
+
+									{externalFormLink.length > 0 && (
+										<PreviewForm src={externalFormLink} />
+									)}
+								</div>
 								<Controller
 									control={control}
 									name="external_form_link"
@@ -290,19 +295,10 @@ export const CreateOrganizationForm = () => {
 								/>
 							</div>
 
-							{/* If there is a link that I can embedd then display preview immeditelly */}
-
-							{/* <div>
-								<p className="lg:text-md text-muted-foreground mb-2">
-									(Preview)
-								</p>
-
-								<iframe
-									src="https://docs.google.com/forms/d/e/1FAIpQLSeJ_PbnTvmK3edUaCQl6QFL7N86EZXnIhCgKEMMRObrbrMxdg/viewform?embedded=true"
-									className="border-input-border aspect-[4/3] w-full rounded-lg border"
-								/>
-							</div> */}
-
+							<hr className="bg-input-border h-px w-full border-0" />
+							<h4 className="text-xl italic underline underline-offset-4">
+								Addtional features
+							</h4>
 							<div>
 								<Label isOptional>Assign predefined tasks (PRO)</Label>
 								<p className="text-muted-foreground text-sm">

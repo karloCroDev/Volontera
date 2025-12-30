@@ -21,7 +21,7 @@ export async function CreateOrganizationService({
     };
   }
 
-  await createOrganization({
+  const organization = await createOrganization({
     data,
     userId,
   });
@@ -31,6 +31,7 @@ export async function CreateOrganizationService({
     body: {
       title: "Organization Created",
       message: "Organization created successfully",
+      organizationId: organization.id,
     },
   };
 }

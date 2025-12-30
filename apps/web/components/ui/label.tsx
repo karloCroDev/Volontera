@@ -7,7 +7,6 @@ import { twMerge } from 'tailwind-merge';
 
 export const Label: React.FC<
 	React.ComponentPropsWithoutRef<'label'> & {
-		children: string;
 		isOptional?: boolean;
 	}
 > = ({ isOptional, className, children, ...rest }) => {

@@ -9,7 +9,6 @@ export async function createOrganizationController(
   res: Response
 ) {
   try {
-    console.log("Cmonn lets go ");
     const result = await CreateOrganizationService({
       rawData: req.body,
       userId: req.user.userId,

@@ -13,10 +13,11 @@ import { CreateOrganizationArgs } from '@repo/schemas/create-organization';
 
 // Types
 import { ErrorFormResponse, SuccessfulResponse } from '@repo/types/general';
+import { CreateOrganizationResponse } from '@repo/types/organization';
 
 export const useCreateOrganization = (
 	options?: UseMutationOptions<
-		SuccessfulResponse,
+		CreateOrganizationResponse,
 		ErrorFormResponse,
 		CreateOrganizationArgs
 	>
