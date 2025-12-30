@@ -21,12 +21,13 @@ export const useCreateOrganization = (
 		CreateOrganizationArgs
 	>
 ) => {
+	console.log('What');
 	const queryClient = useQueryClient();
 	return useMutation({
 		mutationKey: ['create-organization'],
 		mutationFn: (data: CreateOrganizationArgs) => createOrganization(data),
 		onSuccess: async (...args) => {
-			await queryClient.invalidateQueries({ queryKey: ['session'] });
+			await queryClient.invalidateQueries({ queryKey: ['organization'] });
 			await options?.onSuccess?.(...args);
 		},
 		...options,

@@ -1,11 +1,13 @@
 'use client';
 
 // External packages
-import { Camera, Plus } from 'lucide-react';
+import { Minus, Plus } from 'lucide-react';
 import * as React from 'react';
 import { Form, Radio, RadioGroup } from 'react-aria-components';
-import { Controller, useForm } from 'react-hook-form';
+import { Controller, useFieldArray, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import { useRouter } from 'next/navigation';
 
 // Components
 import { Button } from '@/components/ui/button';
@@ -25,9 +27,21 @@ import {
 import { useCreateOrganization } from '@/hooks/data/organization';
 import { toast } from '@/lib/utils/toast';
 
+// Client-side schema: allow empty strings in optional URL inputs.
+const createOrganizationFormSchema = createOrganizationSchema.extend({
+	external_form_link: z.union([z.literal(''), z.string().url()]).optional(),
+	additional_links: z
+		.array(z.union([z.literal(''), z.string().url()]))
+		.optional(),
+});
+
+type CreateOrganizationFormInput = z.input<typeof createOrganizationFormSchema>;
+
 export const CreateOrganizationForm = () => {
 	// TODO: Decide where to put this, under the creation of new board or here
 	const [assignTasks, setAssignTasks] = React.useState(false);
+	const [avatarFile, setAvatarFile] = React.useState<File | undefined>();
+	const [coverFile, setCoverFile] = React.useState<File | undefined>();
 
 	const { mutate, isPending } = useCreateOrganization();
 	const {
@@ -35,36 +49,69 @@ export const CreateOrganizationForm = () => {
 		handleSubmit,
 		setError,
 		formState: { errors },
-	} = useForm<CreateOrganizationArgs>({
-		context: zodResolver(createOrganizationSchema),
+	} = useForm<CreateOrganizationFormInput>({
+		resolver: zodResolver(createOrganizationFormSchema),
 		defaultValues: {
+			organization_avatar_image: undefined,
+			organization_cover_image: undefined,
 			organization_name: '',
 			organization_bio: '',
 			organization_type: '',
-			external_form_link: undefined,
-			additional_links: [],
+			external_form_link: '',
+			additional_links: [''],
 			assignPredefinedTasks: false,
 		},
 	});
 
-	const onSubmit = (data: CreateOrganizationArgs) => {
-		mutate(
-			{ ...data, assignPredefinedTasks: assignTasks },
-			{
-				onSuccess({ message, title }) {
-					toast({
-						title,
-						content: message,
-						variant: 'success',
-					});
-				},
-				onError({ message }) {
-					setError('root', {
-						message,
-					});
-				},
-			}
-		);
+	const {
+		fields: arrFields,
+		append,
+		remove,
+	} = useFieldArray({
+		control,
+		name: 'additional_links' as unknown as never,
+	});
+
+	React.useEffect(() => {
+		if (arrFields.length === 0) {
+			append('');
+		}
+	}, [arrFields.length, append]);
+
+	const router = useRouter();
+	const onSubmit = (data: CreateOrganizationFormInput) => {
+		console.log(data);
+		const cleanedAdditionalLinks = (data.additional_links || [])
+			.map((l) => l.trim())
+			.filter((l) => l.length > 0);
+
+		const payload: CreateOrganizationArgs = {
+			...data,
+			external_form_link: data.external_form_link?.trim()
+				? data.external_form_link.trim()
+				: undefined,
+			additional_links: cleanedAdditionalLinks.length
+				? cleanedAdditionalLinks
+				: undefined,
+			assignPredefinedTasks: assignTasks,
+		};
+
+		mutate(payload, {
+			onSuccess({ message, title }) {
+				toast({
+					title,
+					content: message,
+					variant: 'success',
+				});
+
+				router.push('/');
+			},
+			onError({ message }) {
+				setError('root', {
+					message,
+				});
+			},
+		});
 	};
 	return (
 		<>
@@ -86,12 +133,54 @@ export const CreateOrganizationForm = () => {
 				>
 					<Form onSubmit={handleSubmit(onSubmit)}>
 						<div className="flex gap-4">
-							<InsertPhoto htmlFor="avatar-photo">
-								Insert organization <strong>avatar</strong> photo
-							</InsertPhoto>
-							<InsertPhoto htmlFor="cover-photo">
-								Insert organization <strong>cover</strong> photo
-							</InsertPhoto>
+							<Controller
+								control={control}
+								name="organization_avatar_image"
+								render={({ field: { onChange } }) => (
+									<InsertPhoto
+										htmlFor="avatar-photo"
+										file={avatarFile}
+										onFileChange={(file) => {
+											setAvatarFile(file);
+											if (!file) {
+												onChange(undefined);
+												return;
+											}
+											onChange({
+												filename: file.name,
+												contentType: file.type,
+												size: file.size,
+											});
+										}}
+									>
+										Insert organization <strong>avatar</strong> photo
+									</InsertPhoto>
+								)}
+							/>
+							<Controller
+								control={control}
+								name="organization_cover_image"
+								render={({ field: { onChange } }) => (
+									<InsertPhoto
+										htmlFor="cover-photo"
+										file={coverFile}
+										onFileChange={(file) => {
+											setCoverFile(file);
+											if (!file) {
+												onChange(undefined);
+												return;
+											}
+											onChange({
+												filename: file.name,
+												contentType: file.type,
+												size: file.size,
+											});
+										}}
+									>
+										Insert organization <strong>cover</strong> photo
+									</InsertPhoto>
+								)}
+							/>
 						</div>
 
 						<div className="mt-8 flex flex-col gap-6">
@@ -146,23 +235,47 @@ export const CreateOrganizationForm = () => {
 							<div>
 								<Label isOptional>Additional Links</Label>
 
-								<Controller
-									control={control}
-									name="additional_links"
-									render={({ field }) => (
-										<Input
-											label="Enter your additional links"
-											className="mt-2"
-											inputProps={field}
-											error={errors.additional_links?.message}
-										/>
-									)}
-								/>
+								{arrFields.map((field, index) => (
+									<Controller
+										key={field.id}
+										control={control}
+										name={`additional_links.${index}` as const}
+										render={({ field }) => (
+											<Input
+												label="Enter your additional links"
+												className="mt-2"
+												inputProps={field}
+												error={errors.additional_links?.[index]?.message}
+											/>
+										)}
+									/>
+								))}
+							</div>
+
+							<div className="flex justify-between">
+								{arrFields.length > 1 && (
+									<Button
+										colorScheme="destructive"
+										variant="outline"
+										className="p-2"
+										onPress={() => remove(arrFields.length - 1)}
+									>
+										<Minus />
+									</Button>
+								)}
+								<Button
+									colorScheme="yellow"
+									variant="outline"
+									className="ml-auto p-2"
+									onPress={() => append('')}
+								>
+									<Plus />
+								</Button>
 							</div>
 							{/* TODO: Probabbly new separate component  and better naming*/}
 							<div>
 								<Label isOptional>Embbedd the form link</Label>
-								{/* 
+
 								<Controller
 									control={control}
 									name="external_form_link"
@@ -174,7 +287,7 @@ export const CreateOrganizationForm = () => {
 											error={errors.external_form_link?.message}
 										/>
 									)}
-								/> */}
+								/>
 							</div>
 
 							{/* If there is a link that I can embedd then display preview immeditelly */}
@@ -189,14 +302,6 @@ export const CreateOrganizationForm = () => {
 									className="border-input-border aspect-[4/3] w-full rounded-lg border"
 								/>
 							</div> */}
-
-							<Button
-								colorScheme="yellow"
-								variant="outline"
-								className="self-end p-2"
-							>
-								<Plus />
-							</Button>
 
 							<div>
 								<Label isOptional>Assign predefined tasks (PRO)</Label>
@@ -236,7 +341,7 @@ export const CreateOrganizationForm = () => {
 							type="submit"
 							isDisabled={isPending}
 						>
-							Let&apos; go
+							Let&apos;s go
 						</Button>
 					</Form>
 				</LayoutColumn>

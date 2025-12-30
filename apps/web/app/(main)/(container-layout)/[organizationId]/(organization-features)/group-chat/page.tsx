@@ -21,7 +21,7 @@ export default async function GroupChatPage() {
 			<div className="flex min-h-[800px] flex-1 flex-col gap-4 px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
 				<div className="no-scrollbar min-h-0 flex-1 space-y-4 overflow-y-auto">
 					<Message
-						date="16:36 | 8.4. 2024"
+						date={new Date()}
 						avatar={
 							<Avatar
 								imageProps={{
@@ -43,7 +43,7 @@ export default async function GroupChatPage() {
 
 					<Message
 						variant="secondary"
-						date="16:36 | 8.4. 2024"
+						date={new Date()}
 						avatar={<Avatar imageProps={{ src: '' }}>Cool man</Avatar>}
 					>
 						Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ea, rem,
@@ -53,7 +53,7 @@ export default async function GroupChatPage() {
 					</Message>
 					<Message
 						variant="secondary"
-						date="16:36 | 8.4. 2024"
+						date={new Date()}
 						avatar={<Avatar imageProps={{ src: '' }}>Cool man</Avatar>}
 					>
 						Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ea, rem,
@@ -63,7 +63,7 @@ export default async function GroupChatPage() {
 					</Message>
 					<Message
 						variant="secondary"
-						date="16:36 | 8.4. 2024"
+						date={new Date()}
 						avatar={<Avatar imageProps={{ src: '' }}>Cool man</Avatar>}
 					>
 						Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ea, rem,
@@ -73,7 +73,7 @@ export default async function GroupChatPage() {
 					</Message>
 					<Message
 						variant="secondary"
-						date="16:36 | 8.4. 2024"
+						date={new Date()}
 						avatar={<Avatar imageProps={{ src: '' }}>Cool man</Avatar>}
 					>
 						Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ea, rem,
@@ -83,7 +83,7 @@ export default async function GroupChatPage() {
 					</Message>
 					<Message
 						variant="secondary"
-						date="16:36 | 8.4. 2024"
+						date={new Date()}
 						avatar={<Avatar imageProps={{ src: '' }}>Cool man</Avatar>}
 					>
 						Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ea, rem,
@@ -93,7 +93,7 @@ export default async function GroupChatPage() {
 					</Message>
 					<Message
 						variant="secondary"
-						date="16:36 | 8.4. 2024"
+						date={new Date()}
 						avatar={<Avatar imageProps={{ src: '' }}>Cool man</Avatar>}
 					>
 						Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ea, rem,
@@ -103,7 +103,7 @@ export default async function GroupChatPage() {
 					</Message>
 					<Message
 						variant="secondary"
-						date="16:36 | 8.4. 2024"
+						date={new Date()}
 						avatar={<Avatar imageProps={{ src: '' }}>Cool man</Avatar>}
 					>
 						Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ea, rem,

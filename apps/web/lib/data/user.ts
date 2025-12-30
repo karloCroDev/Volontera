@@ -23,7 +23,7 @@ export async function getUserById(userId: string) {
 
 export async function logout() {
 	try {
-		const res = await API().post('auth/logout');
+		const res = await API().post('user/logout');
 		return res.data;
 	} catch (err) {
 		catchError(err);
