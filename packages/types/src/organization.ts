@@ -2,18 +2,18 @@
 import {
   OrganizationAttendees,
   OrganizationInfo,
-  Orgnizations,
+  Organization,
   OrganizationFollowers,
   AdditionalLinks,
 } from "@repo/database";
 import { ServerHandleResponse, SuccessfulResponse } from "./general";
 
 export type CreateOrganizationResponse = SuccessfulResponse & {
-  organizationId: Orgnizations["id"];
+  organizationId: Organization["id"];
 };
 
 export type GetOrganizationDetailsByIdResponse = ServerHandleResponse<true> & {
-  organization: Orgnizations & {
+  organization: Organization & {
     organizationInfo: OrganizationInfo & {
       additionalLinks: AdditionalLinks[];
     };

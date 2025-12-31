@@ -73,7 +73,7 @@ model User {
   directMessagesConversations DirectMessages[]
   organizationFollowers       OrganizationFollowers[]
   organizationAttendees       OrganizationAttendees[]
-  orgnizations                Orgnizations?
+  organization                Organization?
 }
 
 model Accounts {
@@ -169,7 +169,7 @@ model DirectMessagesImages {
   updatedAt    DateTime       @updatedAt
 }
 
-model Orgnizations {
+model Organization {
   id      String  @id @default(cuid())
   name    String
   bio     String?
@@ -189,7 +189,7 @@ model OrganizationInfo {
   type             String
   additionalLinks  AdditionalLinks[]
   externalFormLink String?
-  organization     Orgnizations      @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  organization     Organization      @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   organizationId   String            @unique
   createdAt        DateTime          @default(now())
   updatedAt        DateTime          @updatedAt
@@ -198,7 +198,7 @@ model OrganizationInfo {
   organizationAttendees OrganizationAttendees[]
 }
 
-// Additional fields that can be for the orgnznizaton
+// Additional fields that can be for the organznizaton
 model OrganizationFollowers {
   id                 String           @id @default(cuid())
   organizationInfo   OrganizationInfo @relation(fields: [organizationInfoId], references: [id], onDelete: Cascade)
@@ -207,8 +207,8 @@ model OrganizationFollowers {
   followerUserId     String
   createdAt          DateTime         @default(now())
   updatedAt          DateTime         @updatedAt
-  orgnizations       Orgnizations?    @relation(fields: [orgnizationsId], references: [id])
-  orgnizationsId     String?
+  organization       Organization?    @relation(fields: [organizationId], references: [id])
+  organizationId     String?
 }
 
 model OrganizationAttendees {
@@ -219,8 +219,8 @@ model OrganizationAttendees {
   attendeeUserId     String
   createdAt          DateTime         @default(now())
   updatedAt          DateTime         @updatedAt
-  orgnizations       Orgnizations?    @relation(fields: [orgnizationsId], references: [id])
-  orgnizationsId     String?
+  organization       Organization?    @relation(fields: [organizationId], references: [id])
+  organizationId     String?
 }
 
 model AdditionalLinks {

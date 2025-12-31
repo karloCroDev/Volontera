@@ -13,6 +13,8 @@ import { Layout, LayoutColumn } from '@/components/ui/layout-grid';
 import { OrganizationRoutingHeader } from '@/modules/main/organization/common/organization-routing-header';
 import { NewPostDialog } from '@/modules/main/organization/home/new-post-dialog';
 import { JoinDialog } from '@/modules/main/organization/common/join-dialog';
+
+// Lib
 import { getOrganizationDetailsById } from '@/lib/server/organization';
 
 export default async function OrganizationPage({

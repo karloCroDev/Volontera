@@ -76,10 +76,16 @@ export async function searchAllUsers({
       },
       OR: [
         {
-          firstName: query,
+          firstName: {
+            contains: query,
+            mode: "insensitive",
+          },
         },
         {
-          lastName: query,
+          lastName: {
+            contains: query,
+            mode: "insensitive",
+          },
         },
       ],
     },

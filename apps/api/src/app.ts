@@ -30,6 +30,7 @@ import { notificationRoutes } from "@/routes/notification.routes";
 import { initalizeRedisClient } from "@/config/redis";
 import { imageRoutes } from "@/routes/image.routes";
 import { organizationRoutes } from "@/routes/organization.routes";
+import { searchRoutes } from "@/routes/search.routes";
 
 // Security middleware
 app.use(helmet());
@@ -75,6 +76,7 @@ app.use(
   organizationMiddleware,
   organizationRoutes
 );
+app.use("/search", authMiddleware, hasRoleMiddleware, searchRoutes);
 
 // Test
 app.get("/protected-user", authMiddleware, userMiddleware, (req, res) => {
