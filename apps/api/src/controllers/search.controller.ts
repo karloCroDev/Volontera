@@ -4,7 +4,7 @@ import { Request, Response } from "express";
 // Services
 import { searchUsersService } from "@/services/search.service";
 
-export async function changeProfileInfo(req: Request, res: Response) {
+export async function searchUsersController(req: Request, res: Response) {
   try {
     const result = await searchUsersService({
       rawData: req.params,

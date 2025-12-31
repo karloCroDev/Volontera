@@ -170,11 +170,11 @@ model DirectMessagesImages {
 }
 
 model Organization {
-  id      String  @id @default(cuid())
+  id      String @id @default(cuid())
   name    String
-  bio     String?
-  owner   User    @relation(fields: [ownerId], references: [id], onDelete: Cascade)
-  ownerId String  @unique
+  bio     String
+  owner   User   @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  ownerId String @unique
 
   organizationFollowers OrganizationFollowers[]
   organizationAttendees OrganizationAttendees[]

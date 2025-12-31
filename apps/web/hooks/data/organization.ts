@@ -12,7 +12,7 @@ import { createOrganization } from '@/lib/data/organization';
 import { CreateOrganizationArgs } from '@repo/schemas/create-organization';
 
 // Types
-import { ErrorFormResponse, SuccessfulResponse } from '@repo/types/general';
+import { ErrorFormResponse } from '@repo/types/general';
 import { CreateOrganizationResponse } from '@repo/types/organization';
 
 export const useCreateOrganization = (
@@ -22,7 +22,6 @@ export const useCreateOrganization = (
 		CreateOrganizationArgs
 	>
 ) => {
-	console.log('What');
 	const queryClient = useQueryClient();
 	return useMutation({
 		mutationKey: ['create-organization'],

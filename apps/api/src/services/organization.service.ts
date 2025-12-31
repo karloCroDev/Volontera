@@ -50,6 +50,7 @@ export async function getOrganizationDetailsByIdService(rawData: unknown) {
       status: 400,
       body: {
         message: "The provided data is invalid",
+        success: false,
       },
     };
   }
@@ -61,6 +62,7 @@ export async function getOrganizationDetailsByIdService(rawData: unknown) {
       status: 404,
       body: {
         title: "Organization Not Found",
+        success: false,
         message: "No organization found with the provided ID",
       },
     };
