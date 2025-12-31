@@ -1,3 +1,6 @@
+// External packages
+import { notFound } from 'next/navigation';
+
 // Components
 import { Avatar } from '@/components/ui/avatar';
 import { Post } from '@/components/ui/post/post';
@@ -10,13 +13,25 @@ import { Layout, LayoutColumn } from '@/components/ui/layout-grid';
 import { OrganizationRoutingHeader } from '@/modules/main/organization/common/organization-routing-header';
 import { NewPostDialog } from '@/modules/main/organization/home/new-post-dialog';
 import { JoinDialog } from '@/modules/main/organization/common/join-dialog';
+import { getOrganizationDetailsById } from '@/lib/server/organization';
 
-export default function OrganizationId() {
+export default async function OrganizationPage({
+	params,
+}: {
+	params: { organizationId: string };
+}) {
+	const organizationDetailsById = await getOrganizationDetailsById(
+		params.organizationId
+	);
+
+	if (!organizationDetailsById.success) notFound();
 	return (
 		<>
 			<div className="border-input-border relative -mx-4 -my-6 rounded-xl px-5 py-4 md:m-0 md:border">
 				<div className="flex justify-between">
-					<Tag colorScheme="gray">Nature</Tag>
+					<Tag colorScheme="gray">
+						{organizationDetailsById.organization.organizationInfo.type}
+					</Tag>
 					<SharePost link="" />
 				</div>
 
@@ -42,8 +57,9 @@ export default function OrganizationId() {
 						</div>
 					</div>
 					<h1 className="mt-4 text-xl font-medium md:text-2xl lg:text-3xl">
-						Organization #1
+						{organizationDetailsById.organization.name}
 					</h1>
+					{/* TODO: Get the number, and just check if user is inside the organization or not */}
 					<div className="text-muted-foreground mt-1.5 flex items-center gap-4">
 						<p>
 							<strong>30</strong> attendees
@@ -63,26 +79,34 @@ export default function OrganizationId() {
 								lg: 8,
 							}}
 						>
-							<h4 className="text-lg underline underline-offset-4 lg:text-xl">
-								Additional links
-							</h4>
-							<div className="mt-3 flex gap-4">
-								<a href="http://localhost:3000">
-									<Tag colorScheme="gray">http://localhost:3000</Tag>
-								</a>
-								<a href="http://localhost:3000">
-									<Tag colorScheme="gray">http://localhost:3000</Tag>
-								</a>
-							</div>
-
+							{organizationDetailsById.organization.organizationInfo
+								.additionalLinks.length > 0 && (
+								<>
+									<h4 className="text-lg underline underline-offset-4 lg:text-xl">
+										Additional links
+									</h4>
+									<div className="mt-3 flex gap-4">
+										{organizationDetailsById.organization.organizationInfo.additionalLinks.map(
+											({ link, id }) => (
+												<a
+													key={id}
+													href={link}
+													target="_blank"
+													rel="noopener noreferrer"
+												>
+													<Tag colorScheme="gray">{link}</Tag>
+												</a>
+											)
+										)}
+									</div>
+								</>
+							)}
 							<h4 className="mt-6 text-lg underline underline-offset-4 lg:text-xl">
 								About
 							</h4>
 
 							<p className="mt-2">
-								Lorem ipsum doloremLorem ipsum dolorem Lorem ipsum doloremLorem
-								ipsum doloremLorem ipsum doloremLorem ipsum doloremLorem ipsum
-								doloremLorem ipsum doloremLorem ipsum dolorem
+								{organizationDetailsById.organization.organizationInfo.bio}
 							</p>
 						</LayoutColumn>
 
