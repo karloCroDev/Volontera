@@ -9,7 +9,7 @@ import {
   getOrganizationDetailsByIdSchema,
 } from "@repo/schemas/create-organization";
 
-export async function CreateOrganizationService({
+export async function createOrganizationService({
   rawData,
   userId,
 }: {

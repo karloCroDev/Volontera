@@ -3,7 +3,7 @@ import { Request, Response } from "express";
 
 // Services
 import {
-  CreateOrganizationService,
+  createOrganizationService,
   getOrganizationDetailsByIdService,
 } from "@/services/organization.service";
 
@@ -12,7 +12,7 @@ export async function createOrganizationController(
   res: Response
 ) {
   try {
-    const result = await CreateOrganizationService({
+    const result = await createOrganizationService({
       rawData: req.body,
       userId: req.user.userId,
     });

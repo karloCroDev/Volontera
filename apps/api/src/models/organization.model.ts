@@ -6,7 +6,7 @@ import { CreateOrganizationArgs } from "@repo/schemas/create-organization";
 
 // Owners only
 export async function listAllOrganizationsOwner(userId: User["id"]) {
-  return prisma.orgnizations.findMany({
+  return prisma.organization.findMany({
     where: {
       ownerId: userId,
     },
@@ -20,7 +20,7 @@ export async function createOrganization({
   data: CreateOrganizationArgs;
   userId: User["id"];
 }) {
-  return await prisma.orgnizations.create({
+  return await prisma.organization.create({
     data: {
       name: data.organization_name,
       bio: data.organization_bio,
@@ -47,7 +47,7 @@ export async function createOrganization({
 
 // User only
 export async function listAllOrganizationsUser(userId: User["id"]) {
-  return prisma.orgnizations.findMany({
+  return prisma.organization.findMany({
     where: {
       // Following organization
       OR: [
@@ -75,7 +75,7 @@ export async function listAllOrganizationsUser(userId: User["id"]) {
 // All
 // TODO: Handle this with redis or something simmilar and make alogirthm for that
 export async function searchOrganizationsByName(query: string) {
-  return prisma.orgnizations.findMany({
+  return prisma.organization.findMany({
     where: {
       name: {
         contains: query,
@@ -87,7 +87,7 @@ export async function searchOrganizationsByName(query: string) {
 }
 
 export async function getOrganizationDetailsById(organizationId: string) {
-  return prisma.orgnizations.findUnique({
+  return prisma.organization.findUnique({
     where: {
       id: organizationId,
     },

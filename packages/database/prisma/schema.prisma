@@ -187,6 +187,7 @@ model OrganizationInfo {
   id               String            @id @default(cuid())
   bio              String
   type             String
+  location         String?
   additionalLinks  AdditionalLinks[]
   externalFormLink String?
   organization     Organization      @relation(fields: [organizationId], references: [id], onDelete: Cascade)

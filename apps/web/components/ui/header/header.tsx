@@ -47,7 +47,7 @@ export const Header = () => {
 					<Menu />
 				</Button>
 
-				{!isMobile && splittedPathname && (
+				{/* {!isMobile && splittedPathname && (
 					<Breadcrumbs className="flex gap-4 lg:gap-5">
 						{splittedPathname.map((path, index) => {
 							const href = '/' + splittedPathname.slice(0, index + 1).join('/');
@@ -62,7 +62,7 @@ export const Header = () => {
 							);
 						})}
 					</Breadcrumbs>
-				)}
+				)} */}
 				<div className="ml-auto flex items-center gap-5 lg:gap-8">
 					<Search />
 					<NotificationButton />

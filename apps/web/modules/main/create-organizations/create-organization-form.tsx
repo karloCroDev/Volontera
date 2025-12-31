@@ -50,6 +50,7 @@ export const CreateOrganizationForm = () => {
 			organization_name: '',
 			organization_bio: '',
 			organization_type: '',
+			organization_location: '',
 			external_form_link: '',
 			additional_links: [''],
 			assignPredefinedTasks: false,
@@ -223,6 +224,22 @@ export const CreateOrganizationForm = () => {
 											className="mt-2"
 											inputProps={field}
 											error={errors.organization_type?.message}
+										/>
+									)}
+								/>
+							</div>
+							<div>
+								<Label isOptional>Organization location</Label>
+
+								<Controller
+									control={control}
+									name="organization_location"
+									render={({ field }) => (
+										<Input
+											label="Enter the location (if it exists)"
+											className="mt-2"
+											inputProps={field}
+											error={errors.organization_location?.message}
 										/>
 									)}
 								/>

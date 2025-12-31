@@ -16,6 +16,8 @@ import { JoinDialog } from '@/modules/main/organization/common/join-dialog';
 
 // Lib
 import { getOrganizationDetailsById } from '@/lib/server/organization';
+import { LinkAsButton } from '@/components/ui/link-as-button';
+import { randomColorVariant } from '@/lib/utils/random-color-variant';
 
 export default async function OrganizationPage({
 	params,
@@ -73,21 +75,15 @@ export default async function OrganizationPage({
 					</div>
 					<hr className="bg-input-border my-6 h-px w-full border-0" />
 
-					<Layout className="gap-y-6 lg:gap-y-0">
-						<LayoutColumn
-							start={1}
-							end={{
-								base: 13,
-								lg: 8,
-							}}
-						>
+					<div className="flex justify-between lg:gap-8">
+						<div>
 							{organizationDetailsById.organization.organizationInfo
 								.additionalLinks.length > 0 && (
 								<>
 									<h4 className="text-lg underline underline-offset-4 lg:text-xl">
 										Additional links
 									</h4>
-									<div className="mt-3 flex gap-4">
+									<div className="mb-6 mt-3 flex gap-4">
 										{organizationDetailsById.organization.organizationInfo.additionalLinks.map(
 											({ link, id }) => (
 												<a
@@ -103,27 +99,67 @@ export default async function OrganizationPage({
 									</div>
 								</>
 							)}
-							<h4 className="mt-6 text-lg underline underline-offset-4 lg:text-xl">
+							<h4 className="text-lg underline underline-offset-4 lg:text-xl">
 								About
 							</h4>
 
 							<p className="mt-2">
 								{organizationDetailsById.organization.organizationInfo.bio}
 							</p>
-						</LayoutColumn>
 
-						<LayoutColumn
-							start={{
-								base: 1,
-								lg: 10,
-							}}
-							end={13}
-							className="flex flex-col gap-3"
-						>
-							<p className="text-muted-foreground">21 street, New York, USA</p>
-							<div className="border-input-border h-full min-h-80 flex-1 rounded-lg border"></div>
-						</LayoutColumn>
-					</Layout>
+							{organizationDetailsById.organization.organizationInfo
+								.location && (
+								<>
+									<h4 className="mt-6 text-lg underline underline-offset-4 lg:text-xl">
+										Location
+									</h4>
+
+									<p className="mt-2">
+										{
+											organizationDetailsById.organization.organizationInfo
+												.location
+										}
+									</p>
+								</>
+							)}
+						</div>
+
+						<div>
+							<h4 className="text-lg underline underline-offset-4 lg:text-xl">
+								Members
+							</h4>
+							<div className="mt-3 grid grid-cols-2 items-center gap-4 md:grid-cols-3 xl:grid-cols-4">
+								{/* TODO: Samo vrati imena */}
+								{[...Array(7)].map((_, indx) => (
+									<LinkAsButton
+										key={indx}
+										href="/"
+										isFullyRounded
+										size="xs"
+										colorScheme={randomColorVariant([
+											'orange',
+											'yellow',
+											'bland',
+										])}
+									>
+										<Avatar
+											imageProps={{
+												src: '',
+											}}
+											size="xs"
+										>
+											Ante
+										</Avatar>
+										Ana
+									</LinkAsButton>
+								))}
+
+								<Tag colorScheme="gray" className="h-fit w-full justify-center">
+									+99 more
+								</Tag>
+							</div>
+						</div>
+					</div>
 				</div>
 
 				<div className="bg-input-border absolute left-0 top-0 -z-[1] h-64 w-full md:rounded-t-xl" />
