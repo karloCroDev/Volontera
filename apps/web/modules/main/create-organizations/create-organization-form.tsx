@@ -38,10 +38,11 @@ export const CreateOrganizationForm = () => {
 	const { mutate, isPending } = useCreateOrganization();
 	const {
 		control,
+
 		handleSubmit,
 		setError,
 		watch,
-		formState: { errors },
+		formState: { errors, isDirty },
 	} = useForm<CreateOrganizationArgs>({
 		context: zodResolver(createOrganizationSchema),
 		defaultValues: {
@@ -387,7 +388,7 @@ export const CreateOrganizationForm = () => {
 							size="md"
 							className="ml-auto"
 							type="submit"
-							isDisabled={isPending}
+							isDisabled={isPending || !isDirty}
 							isLoading={isPending}
 						>
 							Let&apos;s go

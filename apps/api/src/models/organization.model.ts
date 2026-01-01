@@ -20,9 +20,9 @@ export async function createOrganization({
 }: {
   data: CreateOrganizationArgs;
   userId: User["id"];
-  imageKeys?: {
-    avatarImageKey?: string;
-    coverImageKey?: string;
+  imageKeys: {
+    avatarImageKey: string;
+    coverImageKey: string;
   };
 }) {
   return await prisma.organization.create({
@@ -30,7 +30,7 @@ export async function createOrganization({
       name: data.organization_name,
       bio: data.organization_bio,
       ownerId: userId,
-      avatarImage: imageKeys?.avatarImageKey,
+      avatarImage: imageKeys.avatarImageKey,
       organizationInfo: {
         create: {
           bio: data.organization_bio,
@@ -108,6 +108,7 @@ export async function getOrganizationDetailsById(organizationId: string) {
           additionalLinks: true,
         },
       },
+
       owner: true,
     },
   });

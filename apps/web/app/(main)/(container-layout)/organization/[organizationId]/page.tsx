@@ -30,21 +30,22 @@ export default async function OrganizationPage({
 
 	if (!organizationDetailsById.success) notFound();
 
+	console.log(organizationDetailsById);
 	const avatarKey = organizationDetailsById.organization.avatarImage;
 	const coverKey =
 		organizationDetailsById.organization.organizationInfo.coverImage;
-	const imageKeys = [avatarKey, coverKey].filter((key): key is string =>
-		Boolean(key)
-	);
+	const imageKeys = [avatarKey, coverKey].filter(Boolean);
 
 	const imageResponse = imageKeys.length
 		? await getImageFromKey({ imageUrls: imageKeys })
 		: null;
 
-	const organizationAvatarImage =
-		avatarKey && imageResponse?.urls ? imageResponse.urls[avatarKey] : '';
-	const organizationCoverImage =
-		coverKey && imageResponse?.urls ? imageResponse.urls[coverKey] : '';
+	const organizationAvatarImage = imageResponse?.urls
+		? imageResponse.urls[avatarKey]
+		: '';
+	const organizationCoverImage = imageResponse?.urls
+		? imageResponse.urls[coverKey]
+		: '';
 	return (
 		<>
 			<div className="border-input-border relative -mx-4 -my-6 rounded-xl px-5 py-4 md:m-0 md:border">

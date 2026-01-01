@@ -28,19 +28,20 @@ export async function createOrganizationService({
     };
   }
 
-  const organizationAvatarUploadUrl = data.organization_avatar_image
-    ? await createUploadUrl(data.organization_avatar_image)
-    : undefined;
-  const organizationCoverUploadUrl = data.organization_cover_image
-    ? await createUploadUrl(data.organization_cover_image)
-    : undefined;
+  const organizationAvatarUploadUrl = await createUploadUrl(
+    data.organization_avatar_image
+  );
+
+  const organizationCoverUploadUrl = await createUploadUrl(
+    data.organization_cover_image
+  );
 
   const organization = await createOrganization({
     data,
     userId,
     imageKeys: {
-      avatarImageKey: organizationAvatarUploadUrl?.key,
-      coverImageKey: organizationCoverUploadUrl?.key,
+      avatarImageKey: organizationAvatarUploadUrl.key,
+      coverImageKey: organizationCoverUploadUrl.key,
     },
   });
 
@@ -50,8 +51,8 @@ export async function createOrganizationService({
       title: "Organization Created",
       message: "Organization created successfully",
       organizationId: organization.id,
-      imageAvatar: organizationAvatarUploadUrl?.url,
-      imageCover: organizationCoverUploadUrl?.url,
+      imageAvatar: organizationAvatarUploadUrl.url,
+      imageCover: organizationCoverUploadUrl.url,
     },
   };
 }

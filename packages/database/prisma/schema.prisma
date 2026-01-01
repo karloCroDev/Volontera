@@ -220,10 +220,10 @@ model OrganizationAttendees {
   organizationInfoId String
   attendeeUser       User             @relation(fields: [attendeeUserId], references: [id], onDelete: Cascade)
   attendeeUserId     String
-  createdAt          DateTime         @default(now())
-  updatedAt          DateTime         @updatedAt
   organization       Organization?    @relation(fields: [organizationId], references: [id])
   organizationId     String?
+  createdAt          DateTime         @default(now())
+  updatedAt          DateTime         @updatedAt
 }
 
 model AdditionalLinks {
