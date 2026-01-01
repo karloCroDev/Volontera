@@ -1,5 +1,6 @@
 // External packages
 import { notFound } from 'next/navigation';
+import Image from 'next/image';
 
 // Components
 import { Avatar } from '@/components/ui/avatar';
@@ -7,7 +8,7 @@ import { Post } from '@/components/ui/post/post';
 import { Tag } from '@/components/ui/tag';
 import { SharePost } from '@/components/ui/post/share-post';
 import { Button } from '@/components/ui/button';
-import { Layout, LayoutColumn } from '@/components/ui/layout-grid';
+import { AnchorAsButton } from '@/components/ui/anchor-as-button';
 
 // Modules
 import { OrganizationRoutingHeader } from '@/modules/main/organization/common/organization-routing-header';
@@ -16,8 +17,7 @@ import { JoinDialog } from '@/modules/main/organization/common/join-dialog';
 
 // Lib
 import { getOrganizationDetailsById } from '@/lib/server/organization';
-import { LinkAsButton } from '@/components/ui/link-as-button';
-import { randomColorVariant } from '@/lib/utils/random-color-variant';
+import { getImageFromKey } from '@/lib/server/image';
 
 export default async function OrganizationPage({
 	params,
@@ -29,6 +29,22 @@ export default async function OrganizationPage({
 	);
 
 	if (!organizationDetailsById.success) notFound();
+
+	const avatarKey = organizationDetailsById.organization.avatarImage;
+	const coverKey =
+		organizationDetailsById.organization.organizationInfo.coverImage;
+	const imageKeys = [avatarKey, coverKey].filter((key): key is string =>
+		Boolean(key)
+	);
+
+	const imageResponse = imageKeys.length
+		? await getImageFromKey({ imageUrls: imageKeys })
+		: null;
+
+	const organizationAvatarImage =
+		avatarKey && imageResponse?.urls ? imageResponse.urls[avatarKey] : '';
+	const organizationCoverImage =
+		coverKey && imageResponse?.urls ? imageResponse.urls[coverKey] : '';
 	return (
 		<>
 			<div className="border-input-border relative -mx-4 -my-6 rounded-xl px-5 py-4 md:m-0 md:border">
@@ -44,7 +60,7 @@ export default async function OrganizationPage({
 						<div className="flex w-fit flex-col items-center">
 							<Avatar
 								imageProps={{
-									src: '',
+									src: organizationAvatarImage,
 								}}
 								colorScheme="gray"
 								size="2xl"
@@ -85,15 +101,17 @@ export default async function OrganizationPage({
 									</h4>
 									<div className="mb-6 mt-3 flex gap-4">
 										{organizationDetailsById.organization.organizationInfo.additionalLinks.map(
-											({ link, id }) => (
-												<a
+											({ name, url, id }) => (
+												<AnchorAsButton
 													key={id}
-													href={link}
-													target="_blank"
-													rel="noopener noreferrer"
+													size="xs"
+													href={url}
+													isFullyRounded
+													className="border-accent-foreground/10 border"
+													colorScheme="yellow"
 												>
-													<Tag colorScheme="gray">{link}</Tag>
-												</a>
+													{name}
+												</AnchorAsButton>
 											)
 										)}
 									</div>
@@ -131,17 +149,7 @@ export default async function OrganizationPage({
 							<div className="mt-3 grid grid-cols-2 items-center gap-4 md:grid-cols-3 xl:grid-cols-4">
 								{/* TODO: Samo vrati imena */}
 								{[...Array(7)].map((_, indx) => (
-									<LinkAsButton
-										key={indx}
-										href="/"
-										isFullyRounded
-										size="xs"
-										colorScheme={randomColorVariant([
-											'orange',
-											'yellow',
-											'bland',
-										])}
-									>
+									<Tag key={indx} className="flex gap-2" colorScheme="gray">
 										<Avatar
 											imageProps={{
 												src: '',
@@ -151,7 +159,7 @@ export default async function OrganizationPage({
 											Ante
 										</Avatar>
 										Ana
-									</LinkAsButton>
+									</Tag>
 								))}
 
 								<Tag colorScheme="gray" className="h-fit w-full justify-center">
@@ -162,7 +170,16 @@ export default async function OrganizationPage({
 					</div>
 				</div>
 
-				<div className="bg-input-border absolute left-0 top-0 -z-[1] h-64 w-full md:rounded-t-xl" />
+				<div className="bg-input-border absolute left-0 top-0 -z-[1] h-64 w-full overflow-hidden md:rounded-t-xl">
+					{organizationCoverImage && (
+						<Image
+							src={organizationCoverImage}
+							alt="Cover image url"
+							fill
+							className="object-cover"
+						/>
+					)}
+				</div>
 			</div>
 
 			<OrganizationRoutingHeader />

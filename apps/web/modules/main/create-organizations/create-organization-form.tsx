@@ -52,7 +52,12 @@ export const CreateOrganizationForm = () => {
 			organization_type: '',
 			organization_location: '',
 			external_form_link: '',
-			additional_links: [''],
+			additional_links: [
+				{
+					label: '',
+					url: '',
+				},
+			],
 			assignPredefinedTasks: false,
 		},
 	});
@@ -68,16 +73,22 @@ export const CreateOrganizationForm = () => {
 
 	React.useEffect(() => {
 		if (arrFields.length === 0) {
-			append('');
+			append({ label: '', url: '' } as never);
 		}
 	}, [arrFields.length, append]);
 
 	const router = useRouter();
 	const onSubmit = (data: CreateOrganizationArgs) => {
-		console.log(data);
 		const cleanedAdditionalLinks = (data.additional_links || [])
-			.map((l) => l.trim())
-			.filter((l) => l.length > 0);
+			.map((l) =>
+				l.label.trim().length > 0 && l.url.trim().length > 0
+					? {
+							label: l.label.trim(),
+							url: l.url.trim(),
+						}
+					: null
+			)
+			.filter((l): l is { label: string; url: string } => l !== null);
 
 		const payload: CreateOrganizationArgs = {
 			...data,
@@ -90,22 +101,31 @@ export const CreateOrganizationForm = () => {
 			assignPredefinedTasks: assignTasks,
 		};
 
-		mutate(payload, {
-			onSuccess({ message, title, organizationId }) {
-				toast({
-					title,
-					content: message,
-					variant: 'success',
-				});
+		const files = [];
+		if (avatarFile) files.push(avatarFile);
+		if (coverFile) files.push(coverFile);
+		mutate(
+			{
+				data: payload,
+				files: files.length > 0 ? files : undefined,
+			},
+			{
+				onSuccess({ message, title, organizationId }) {
+					toast({
+						title,
+						content: message,
+						variant: 'success',
+					});
 
-				router.push(`/organization/${organizationId}`);
-			},
-			onError({ message }) {
-				setError('root', {
-					message,
-				});
-			},
-		});
+					router.push(`/organization/${organizationId}`);
+				},
+				onError({ message }) {
+					setError('root', {
+						message,
+					});
+				},
+			}
+		);
 	};
 
 	const externalFormLink = watch('external_form_link') ?? '';
@@ -249,19 +269,34 @@ export const CreateOrganizationForm = () => {
 								<Label isOptional>Additional Links</Label>
 
 								{arrFields.map((field, index) => (
-									<Controller
-										key={field.id}
-										control={control}
-										name={`additional_links.${index}` as const}
-										render={({ field }) => (
-											<Input
-												label="Enter your additional links"
-												className="mt-2"
-												inputProps={field}
-												error={errors.additional_links?.[index]?.message}
-											/>
-										)}
-									/>
+									<div key={field.id} className="flex gap-4">
+										<Controller
+											control={control}
+											name={`additional_links.${index}.label` as const}
+											render={({ field }) => (
+												<Input
+													label="Enter the name"
+													className="mt-2"
+													inputProps={field}
+													error={
+														errors.additional_links?.[index]?.label?.message
+													}
+												/>
+											)}
+										/>
+										<Controller
+											control={control}
+											name={`additional_links.${index}.url` as const}
+											render={({ field }) => (
+												<Input
+													label="Enter the URL"
+													className="min-w-3/5 mt-2 flex-1"
+													inputProps={field}
+													error={errors.additional_links?.[index]?.url?.message}
+												/>
+											)}
+										/>
+									</div>
 								))}
 							</div>
 
@@ -280,7 +315,7 @@ export const CreateOrganizationForm = () => {
 									colorScheme="yellow"
 									variant="outline"
 									className="ml-auto p-2"
-									onPress={() => append('')}
+									onPress={() => append({ label: '', url: '' } as never)}
 								>
 									<Plus />
 								</Button>
@@ -353,6 +388,7 @@ export const CreateOrganizationForm = () => {
 							className="ml-auto"
 							type="submit"
 							isDisabled={isPending}
+							isLoading={isPending}
 						>
 							Let&apos;s go
 						</Button>

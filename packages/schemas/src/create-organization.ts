@@ -12,7 +12,14 @@ export const createOrganizationSchema = z.object({
   organization_type: z.string(),
   organization_location: z.string().optional(),
   external_form_link: z.url().optional(),
-  additional_links: z.array(z.url()).optional(),
+  additional_links: z
+    .array(
+      z.object({
+        label: z.string().min(1),
+        url: z.url(),
+      })
+    )
+    .optional(),
   assignPredefinedTasks: z.boolean().default(false),
 });
 

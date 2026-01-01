@@ -73,7 +73,7 @@ model User {
   directMessagesConversations DirectMessages[]
   organizationFollowers       OrganizationFollowers[]
   organizationAttendees       OrganizationAttendees[]
-  organization                Organization?
+  organization                Organization[]
 }
 
 model Accounts {
@@ -170,11 +170,12 @@ model DirectMessagesImages {
 }
 
 model Organization {
-  id      String @id @default(cuid())
-  name    String
-  bio     String
-  owner   User   @relation(fields: [ownerId], references: [id], onDelete: Cascade)
-  ownerId String @unique
+  id          String @id @default(cuid())
+  avatarImage String
+  name        String
+  bio         String
+  owner       User   @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  ownerId     String
 
   organizationFollowers OrganizationFollowers[]
   organizationAttendees OrganizationAttendees[]
@@ -185,6 +186,7 @@ model Organization {
 
 model OrganizationInfo {
   id               String            @id @default(cuid())
+  coverImage       String
   bio              String
   type             String
   location         String?
@@ -226,9 +228,10 @@ model OrganizationAttendees {
 
 model AdditionalLinks {
   id                 String           @id @default(cuid())
+  name               String
+  url                String
   organizationInfo   OrganizationInfo @relation(fields: [organizationInfoId], references: [id], onDelete: Cascade)
   organizationInfoId String
   createdAt          DateTime         @default(now())
   updatedAt          DateTime         @updatedAt
-  link               String
 }

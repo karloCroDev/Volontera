@@ -14,18 +14,20 @@ import { CreateOrganizationArgs } from '@repo/schemas/create-organization';
 // Types
 import { ErrorFormResponse } from '@repo/types/general';
 import { CreateOrganizationResponse } from '@repo/types/organization';
+import { DataWithFiles } from '@repo/types/upload';
 
 export const useCreateOrganization = (
 	options?: UseMutationOptions<
 		CreateOrganizationResponse,
 		ErrorFormResponse,
-		CreateOrganizationArgs
+		DataWithFiles<CreateOrganizationArgs>
 	>
 ) => {
 	const queryClient = useQueryClient();
 	return useMutation({
 		mutationKey: ['create-organization'],
-		mutationFn: (data: CreateOrganizationArgs) => createOrganization(data),
+		mutationFn: (data: DataWithFiles<CreateOrganizationArgs>) =>
+			createOrganization(data),
 		onSuccess: async (...args) => {
 			await queryClient.invalidateQueries({ queryKey: ['organization'] });
 			await options?.onSuccess?.(...args);

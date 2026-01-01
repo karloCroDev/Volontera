@@ -16,25 +16,34 @@ export async function listAllOrganizationsOwner(userId: User["id"]) {
 export async function createOrganization({
   data,
   userId,
+  imageKeys,
 }: {
   data: CreateOrganizationArgs;
   userId: User["id"];
+  imageKeys?: {
+    avatarImageKey?: string;
+    coverImageKey?: string;
+  };
 }) {
   return await prisma.organization.create({
     data: {
       name: data.organization_name,
       bio: data.organization_bio,
       ownerId: userId,
+      avatarImage: imageKeys?.avatarImageKey,
       organizationInfo: {
         create: {
           bio: data.organization_bio,
+          coverImage: imageKeys?.coverImageKey,
           type: data.organization_type,
+          location: data.organization_location,
           externalFormLink: data.external_form_link,
           additionalLinks: data.additional_links
             ? {
                 createMany: {
                   data: [...(data.additional_links ?? [])].map((link) => ({
-                    link,
+                    url: link.url,
+                    name: link.label,
                   })),
                 },
               }
