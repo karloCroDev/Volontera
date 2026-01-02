@@ -14,7 +14,7 @@ import { ListConversationsResponse } from '@repo/types/direct-messages';
 import { useSocketContext } from '@/modules/main/direct-messages/SocketContext';
 
 // Hooks
-import { useGetImageFromKey } from '@/hooks/data/image';
+import { useGetImageFromKeys } from '@/hooks/data/image';
 
 export const ListUsers: React.FC<{
 	listOfAllDirectMessages: ListConversationsResponse;
@@ -25,7 +25,7 @@ export const ListUsers: React.FC<{
 
 	const { onlineUsers } = useSocketContext();
 
-	const { data: images } = useGetImageFromKey({
+	const { data: images } = useGetImageFromKeys({
 		imageUrls: listOfAllDirectMessages.conversations
 			.map((conversation) =>
 				typeof conversation.participant.image === 'string'

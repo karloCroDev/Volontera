@@ -8,7 +8,7 @@ import Image from 'next/image';
 import { Carousel } from '@/components/ui/carousel';
 
 // Hooks
-import { useGetImageFromKey } from '@/hooks/data/image';
+import { useGetImageFromKeys } from '@/hooks/data/image';
 
 // Types
 import { GetDirectMessagesConversationByIdResponse } from '@repo/types/direct-messages';
@@ -17,7 +17,7 @@ export const MessageImages: React.FC<{
 	messages: GetDirectMessagesConversationByIdResponse['conversation'];
 	message: GetDirectMessagesConversationByIdResponse['conversation'][0];
 }> = ({ messages, message }) => {
-	const { data: images, isPending } = useGetImageFromKey(
+	const { data: images, isPending } = useGetImageFromKeys(
 		{
 			imageUrls:
 				messages

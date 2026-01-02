@@ -47,12 +47,12 @@ export const useCreateOrganization = (
 };
 
 export function useListOrganizations(role?: string) {
-	return useQuery({
+	return useQuery<ListOrganizationsOrganizatorResponse>({
 		queryKey: ['organization', role],
 		queryFn:
 			role === 'ORGANIZATION'
-				? (listOrganizationsOrganizator as () => Promise<ListOrganizationsOrganizatorResponse>)
-				: (listOrganizationsUser as () => Promise<ListOrganizationsOrganizatorResponse>),
+				? listOrganizationsOrganizator
+				: listOrganizationsUser,
 		enabled: !!role,
 		refetchOnWindowFocus: false,
 	});

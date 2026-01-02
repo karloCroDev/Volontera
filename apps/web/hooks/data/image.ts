@@ -10,7 +10,7 @@ import { ImageKeysSchemaArgs } from '@repo/schemas/image';
 // Types
 import { SuccessfulResponse } from '@repo/types/general';
 
-export const useGetImageFromKey = (
+export const useGetImageFromKeys = (
 	data: ImageKeysSchemaArgs,
 	options?: Omit<
 		UseQueryOptions<SuccessfulResponse & { urls: Record<string, string> }>,

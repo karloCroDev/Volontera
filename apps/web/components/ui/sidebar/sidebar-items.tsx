@@ -23,6 +23,7 @@ import { useListOrganizations } from '@/hooks/data/organization';
 import { ListOrganizationsOrganizatorResponse } from '@repo/types/organization';
 import { useParams } from 'next/navigation';
 import { Dot } from '@/components/ui/dot';
+import { useGetImageFromKeys } from '@/hooks/data/image';
 
 export const SidebarItem: React.FC<
 	React.ComponentPropsWithoutRef<'button'> &
@@ -61,9 +62,24 @@ export const Organizations = () => {
 		user?.role || undefined
 	);
 
+	const { data: images } = useGetImageFromKeys({
+		imageUrls: organizations
+			? [
+					...organizations.attendingOrganizations
+						.map((org) => org.avatarImage)
+						.filter(Boolean),
+					...organizations.ownedOrganizations
+						.map((org) => org.avatarImage)
+						.filter(Boolean),
+					...organizations.followingOrganizations
+						.map((org) => org.avatarImage)
+						.filter(Boolean),
+				]
+			: [],
+	});
+
 	const params = useParams();
 
-	console.log(params);
 	return (
 		<Collapsible
 			open={open}
@@ -113,6 +129,7 @@ export const Organizations = () => {
 											key={organization.id}
 											organization={organization}
 											isSelected={organization.id === params.organizationId}
+											imageUrl={images?.urls[organization.avatarImage]}
 										/>
 									))
 								) : (
@@ -132,6 +149,9 @@ export const Organizations = () => {
 										key={organization.id}
 										organization={organization}
 										isSelected={organization.id === params.organizationId}
+										imageUrl={
+											images?.urls[organization.avatarImage] || undefined
+										}
 									/>
 								))
 							) : (
@@ -151,6 +171,7 @@ export const Organizations = () => {
 										key={organization.id}
 										organization={organization}
 										isSelected={organization.id === params.organizationId}
+										imageUrl={images?.urls[organization.avatarImage]}
 									/>
 								))
 							) : (
@@ -181,7 +202,9 @@ export const Organizations = () => {
 export const OrganizationSidebarItem: React.FC<{
 	organization: ListOrganizationsOrganizatorResponse['attendingOrganizations'][0]; // Nebitno koja je organizacija, sve vrate isti tip podataka
 	isSelected?: boolean;
-}> = ({ organization, isSelected = false }) => {
+
+	imageUrl?: string;
+}> = ({ organization, isSelected = false, imageUrl }) => {
 	const isMobile = useIsMobile();
 	return (
 		<li className="mt-4 flex items-center text-sm lg:text-base">
@@ -200,13 +223,14 @@ export const OrganizationSidebarItem: React.FC<{
 			>
 				<Avatar
 					imageProps={{
-						src: organization.avatarImage,
+						src: imageUrl,
 					}}
 					size={isMobile ? 'sm' : 'md'}
 					colorScheme={'gray'}
 				>
 					{organization.name}
 				</Avatar>
+
 				<p className={isSelected ? 'font-semibold' : undefined}>
 					{organization.name}
 				</p>

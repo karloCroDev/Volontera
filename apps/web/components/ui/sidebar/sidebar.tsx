@@ -132,8 +132,8 @@ export const Sidebar: React.FC<{
 								</Button>
 							</div>
 
-							<div>
-								<div className="flex w-3/4 flex-1 flex-col gap-4 md:w-3/5">
+							<div className="flex w-3/4 flex-col gap-2 md:w-3/5">
+								<div className="flex flex-1 flex-col gap-4">
 									<Link href="/home">
 										<SidebarItem
 											iconLeft={<Home className="size-5" />}
