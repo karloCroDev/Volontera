@@ -6,7 +6,7 @@ import { Avatar } from '@/components/ui/avatar';
 import { Message } from '@/components/ui/message';
 
 // Lib
-import { getSession } from '@/lib/server/auth';
+import { getSession } from '@/lib/server/user';
 
 // Modules
 import { MessageForm } from '@/modules/main/direct-messages/message-form';

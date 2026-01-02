@@ -3,5 +3,5 @@ import type { User as PrismaUser } from "@repo/database";
 
 // Session (User)
 
-export type SessionSuccessResponse = Omit<PrismaUser, "password"> &
+export type UserResponse = Omit<PrismaUser, "password"> &
   ServerHandleResponse<true>;

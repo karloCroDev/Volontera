@@ -3,7 +3,7 @@ import { Heading } from '@/components/ui/heading';
 
 // Lib
 import { getHelpConversation } from '@/lib/server/help';
-import { getSession } from '@/lib/server/auth';
+import { getSession } from '@/lib/server/user';
 
 // Types
 import { MessagesMapping } from '@/modules/main/help/messages-mapping';

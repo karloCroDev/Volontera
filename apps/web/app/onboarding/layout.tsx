@@ -8,7 +8,7 @@ import { Layout, LayoutColumn } from '@/components/ui/layout-grid';
 import { ProgressTracker } from '@/modules/onboarding/progress-tracker';
 
 // Lib
-import { getSession } from '@/lib/server/auth';
+import { getSession } from '@/lib/server/user';
 
 // Karlo: TODO: Mobile view not the prettiest one!
 export default async function OnboardingLayout({

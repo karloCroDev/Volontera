@@ -16,13 +16,13 @@ import { withReactQueryProvider } from '@/lib/utils/react-query';
 import { convertToFullname } from '@/lib/utils/convert-to-fullname';
 
 // Types
-import { SessionSuccessResponse } from '@repo/types/auth';
+import { UserResponse } from '@repo/types/user';
 import { HelpConversationSuccess } from '@repo/types/help';
 import { HelpMessageForm } from '@/modules/main/help/help-message-form';
 
 export const MessagesMapping: React.FC<{
 	initialData: HelpConversationSuccess;
-	user: SessionSuccessResponse;
+	user: UserResponse;
 }> = withReactQueryProvider(({ initialData, user }) => {
 	const { data: helpConversation } = useGetHelpConversation({
 		initialData,

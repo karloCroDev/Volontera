@@ -2,7 +2,7 @@
 
 // External packages
 import * as React from 'react';
-import { SessionSuccessResponse } from '@repo/types/auth';
+import { UserResponse } from '@repo/types/user';
 
 // Components
 import { AnchorAsButton } from '@/components/ui/anchor-as-button';
@@ -25,7 +25,7 @@ const stripePriceIds = {
 };
 
 type PlansProps = {
-	user: SessionSuccessResponse;
+	user: UserResponse;
 	billingLink: string;
 };
 

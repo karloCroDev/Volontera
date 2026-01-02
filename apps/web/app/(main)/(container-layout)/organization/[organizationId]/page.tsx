@@ -22,11 +22,13 @@ import { getImageFromKey } from '@/lib/server/image';
 export default async function OrganizationPage({
 	params,
 }: {
-	params: { organizationId: string };
+	params: Promise<{
+		organizationId: string;
+	}>;
 }) {
-	const organizationDetailsById = await getOrganizationDetailsById(
-		params.organizationId
-	);
+	const { organizationId } = await params;
+	const organizationDetailsById =
+		await getOrganizationDetailsById(organizationId);
 
 	if (!organizationDetailsById.success) notFound();
 

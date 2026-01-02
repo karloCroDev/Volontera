@@ -9,7 +9,7 @@ import { Heading } from '@/components/ui/heading';
 import { Plans } from '@/modules/main/select-plan/plans';
 
 // Lib
-import { getSession } from '@/lib/server/auth';
+import { getSession } from '@/lib/server/user';
 import { getBillingLink } from '@/lib/server/payment';
 
 export default async function SelectPlan() {

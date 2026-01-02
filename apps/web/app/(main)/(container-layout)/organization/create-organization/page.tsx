@@ -1,6 +1,6 @@
 // Components
 import { Heading } from '@/components/ui/heading';
-import { getSession } from '@/lib/server/auth';
+import { getSession } from '@/lib/server/user';
 
 // Modules
 import { CreateOrganizationForm } from '@/modules/main/create-organizations/create-organization-form';

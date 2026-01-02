@@ -26,10 +26,10 @@ import {
 	Organizations,
 	SidebarItem,
 } from '@/components/ui/sidebar/sidebar-items';
-import { SessionSuccessResponse } from '@repo/types/auth';
+import { UserResponse } from '@repo/types/user';
 
 export const Sidebar: React.FC<{
-	user: SessionSuccessResponse;
+	user: UserResponse;
 }> = ({ /* eslint react/prop-types: 0 */ user }) => {
 	const { desktopOpen, mobileOpen, setMobileOpen, setDesktopOpen } =
 		useSidebarContext();

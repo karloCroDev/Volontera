@@ -14,6 +14,6 @@ export const userRoutes = Router();
 
 userRoutes.use(express.json());
 
-userRoutes.get("/id/:userId", getUserByIdController);
+userRoutes.get("/:userId", getUserByIdController);
 userRoutes.get("/session", userSessionController);
 userRoutes.post("/logout", logoutController);

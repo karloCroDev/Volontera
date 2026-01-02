@@ -19,6 +19,7 @@ import {
 } from '@/components/ui/link-as-button';
 import { Avatar } from '@/components/ui/avatar';
 import { useSidebarContext } from '@/components/ui/sidebar/sidebar-provider';
+import { useSession } from '@/hooks/data/user';
 
 export const SidebarItem: React.FC<
 	React.ComponentPropsWithoutRef<'button'> &
@@ -50,6 +51,8 @@ export const Organizations = () => {
 	React.useEffect(() => {
 		if (!desktopOpen) setOpen(false);
 	}, [desktopOpen]);
+
+	const { data: user } = useSession();
 	return (
 		<Collapsible
 			open={open}
@@ -114,15 +117,17 @@ export const Organizations = () => {
 							))}
 						</ul>
 
-						<LinkAsButton
-							className="mt-4 w-full justify-start"
-							href="/organization/create-organization"
-							variant="outline"
-							colorScheme="orange"
-							iconLeft={<Plus />}
-						>
-							Create Organization
-						</LinkAsButton>
+						{user && user.role === 'ORGANIZATION' && (
+							<LinkAsButton
+								className="mt-4 w-full justify-start"
+								href="/organization/create-organization"
+								variant="outline"
+								colorScheme="orange"
+								iconLeft={<Plus />}
+							>
+								Create Organization
+							</LinkAsButton>
+						)}
 					</>
 				),
 			}}

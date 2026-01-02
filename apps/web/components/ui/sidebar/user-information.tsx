@@ -30,11 +30,11 @@ import { useLogout } from '@/hooks/data/user';
 import { withReactQueryProvider } from '@/lib/utils/react-query';
 
 // Types
-import { SessionSuccessResponse } from '@repo/types/auth';
+import { UserResponse } from '@repo/types/user';
 import { convertToFullname } from '@/lib/utils/convert-to-fullname';
 
 export const UserInformation: React.FC<{
-	user: SessionSuccessResponse;
+	user: UserResponse;
 }> = withReactQueryProvider(({ user }) => {
 	const router = useRouter();
 	const { desktopOpen } = useSidebarContext();
@@ -130,7 +130,7 @@ export const UserInformation: React.FC<{
 							<ul>
 								<li>
 									<LinkAsButton
-										href="/public-profile"
+										href={`/profile/${user.id}`}
 										variant="ghost"
 										iconLeft={<CircleUserRound className="size-4" />}
 										size="sm"
