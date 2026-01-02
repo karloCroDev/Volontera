@@ -5,7 +5,6 @@ import * as React from 'react';
 import { twJoin, twMerge } from 'tailwind-merge';
 import { ButtonProps } from 'react-aria-components';
 import { Building2, ChevronDown, Plus } from 'lucide-react';
-import Link from 'next/link';
 
 // Hooks
 import { useIsMobile } from '@/hooks/utils/useIsMobile';
@@ -20,6 +19,10 @@ import {
 import { Avatar } from '@/components/ui/avatar';
 import { useSidebarContext } from '@/components/ui/sidebar/sidebar-provider';
 import { useSession } from '@/hooks/data/user';
+import { useListOrganizations } from '@/hooks/data/organization';
+import { ListOrganizationsOrganizatorResponse } from '@repo/types/organization';
+import { useParams } from 'next/navigation';
+import { Dot } from '@/components/ui/dot';
 
 export const SidebarItem: React.FC<
 	React.ComponentPropsWithoutRef<'button'> &
@@ -53,6 +56,14 @@ export const Organizations = () => {
 	}, [desktopOpen]);
 
 	const { data: user } = useSession();
+
+	const { data: organizations, isLoading } = useListOrganizations(
+		user?.role || undefined
+	);
+
+	const params = useParams();
+
+	console.log(params);
 	return (
 		<Collapsible
 			open={open}
@@ -83,43 +94,75 @@ export const Organizations = () => {
 			contentProps={{
 				children: (
 					<>
-						<ul className="border-input-border ml-4 mt-4 border-t">
-							{[...Array(3)].map((_, i) => (
-								<li
-									key={i}
-									className="ml-8 mt-4 text-xs sm:text-sm lg:text-base"
-								>
-									<Link
-										href={`/organizations/${i.toString()}`}
-										className="relative flex items-center gap-4 pl-6 hover:opacity-70"
-									>
-										<span
-											className={twJoin(
-												'absolute left-0 top-3 h-2 w-2 rounded-full',
-												i == 1 ? 'bg-pending' : 'bg-muted-foreground'
-											)}
-										/>
-
-										<Avatar
-											imageProps={{
-												src: '',
-											}}
-											size={isMobile ? 'sm' : 'md'}
-											colorScheme={!isMobile ? 'black' : 'gray'}
-										>
-											Organization
-										</Avatar>
-										<p className={i == 1 ? 'font-semibold' : undefined}>
-											Organization {i + 1}
-										</p>
-									</Link>
+						<hr className="bg-input-border my-6 h-px w-full border-0" />
+						<ul className="ml-4 mt-4">
+							{isLoading && (
+								<li className="ml-8 mt-4 text-xs sm:text-sm lg:text-base">
+									<div className="bg-muted-foreground h-6 animate-pulse"></div>
 								</li>
-							))}
+							)}
+						</ul>
+						<p className="text-md ml-2 mt-4 text-start font-medium underline underline-offset-4">
+							Your
+						</p>
+						<ul className="border-input-border ml-4 mt-4 border-t">
+							{organizations?.ownedOrganizations &&
+								(organizations.ownedOrganizations.length > 0 ? (
+									organizations.ownedOrganizations.map((organization) => (
+										<OrganizationSidebarItem
+											key={organization.id}
+											organization={organization}
+											isSelected={organization.id === params.organizationId}
+										/>
+									))
+								) : (
+									<p className="text-muted-foreground mt-4 text-center text-xs sm:text-sm lg:text-base">
+										No organizations found.
+									</p>
+								))}
+						</ul>
+						<p className="text-md ml-2 mt-4 text-start font-medium underline underline-offset-4">
+							Attending
+						</p>
+						<ul className="border-input-border ml-4 mt-4 border-t">
+							{organizations &&
+							organizations.attendingOrganizations.length > 0 ? (
+								organizations.attendingOrganizations.map((organization) => (
+									<OrganizationSidebarItem
+										key={organization.id}
+										organization={organization}
+										isSelected={organization.id === params.organizationId}
+									/>
+								))
+							) : (
+								<p className="text-muted-foreground mt-4 text-center text-xs sm:text-sm lg:text-base">
+									No organizations found.
+								</p>
+							)}
+						</ul>
+						<p className="text-md ml-2 mt-4 text-start font-medium underline underline-offset-4">
+							Following
+						</p>
+						<ul className="border-input-border ml-4 mt-4 border-t">
+							{organizations &&
+							organizations.followingOrganizations.length > 0 ? (
+								organizations?.followingOrganizations.map((organization) => (
+									<OrganizationSidebarItem
+										key={organization.id}
+										organization={organization}
+										isSelected={organization.id === params.organizationId}
+									/>
+								))
+							) : (
+								<p className="text-muted-foreground mt-4 text-center text-xs sm:text-sm lg:text-base">
+									No organizations found.
+								</p>
+							)}
 						</ul>
 
 						{user && user.role === 'ORGANIZATION' && (
 							<LinkAsButton
-								className="mt-4 w-full justify-start"
+								className="my-4 w-full justify-start"
 								href="/organization/create-organization"
 								variant="outline"
 								colorScheme="orange"
@@ -132,5 +175,42 @@ export const Organizations = () => {
 				),
 			}}
 		/>
+	);
+};
+
+export const OrganizationSidebarItem: React.FC<{
+	organization: ListOrganizationsOrganizatorResponse['attendingOrganizations'][0]; // Nebitno koja je organizacija, sve vrate isti tip podataka
+	isSelected?: boolean;
+}> = ({ organization, isSelected = false }) => {
+	const isMobile = useIsMobile();
+	return (
+		<li className="mt-4 flex items-center text-sm lg:text-base">
+			<LinkAsButton
+				variant="ghost"
+				size="xs"
+				href={`/organization/${organization.id}`}
+				className="relative flex w-full items-center gap-4 hover:opacity-70"
+				iconLeft={
+					<Dot
+						className={twJoin(
+							isSelected ? 'bg-pending' : 'bg-muted-foreground'
+						)}
+					/>
+				}
+			>
+				<Avatar
+					imageProps={{
+						src: organization.avatarImage,
+					}}
+					size={isMobile ? 'sm' : 'md'}
+					colorScheme={'gray'}
+				>
+					{organization.name}
+				</Avatar>
+				<p className={isSelected ? 'font-semibold' : undefined}>
+					{organization.name}
+				</p>
+			</LinkAsButton>
+		</li>
 	);
 };

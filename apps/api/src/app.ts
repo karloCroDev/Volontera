@@ -69,13 +69,7 @@ app.use(
   directMessagesRoutes
 );
 app.use("/image", imageRoutes);
-app.use(
-  "/organization",
-  authMiddleware,
-  hasRoleMiddleware,
-  organizationMiddleware,
-  organizationRoutes
-);
+app.use("/organization", authMiddleware, hasRoleMiddleware, organizationRoutes);
 app.use("/search", authMiddleware, hasRoleMiddleware, searchRoutes);
 
 // Test

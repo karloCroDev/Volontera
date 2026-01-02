@@ -45,12 +45,19 @@ export const UserInformation: React.FC<{
 		user.subscriptionTier[0]?.toUpperCase() +
 		user.subscriptionTier.slice(1).toLowerCase();
 
-	console.log(user);
+	const userRole =
+		user.role![0]?.toUpperCase() + user.role!.slice(1).toLowerCase();
 	return (
 		<>
-			<p className="text-muted-foreground mb-3 mt-auto text-start">
-				{desktopOpen ? `Current plan: ${subscriptionTier}` : subscriptionTier}
-			</p>
+			<div className="mb-3 mt-auto">
+				<p className="text-muted-foreground text-start">
+					{desktopOpen ? `Current plan: ${subscriptionTier}` : subscriptionTier}
+				</p>
+				<p className="text-muted-foreground text-start">
+					{desktopOpen ? `Type: ${userRole}` : userRole}
+				</p>
+			</div>
+
 			<DialogTrigger>
 				{desktopOpen ? (
 					<AriaButton className="border-input-border bg-muted hover:bg-muted/80 flex h-fit w-full cursor-pointer items-center gap-4 rounded-lg border p-3 outline-none sm:w-3/4 md:w-3/5 lg:w-full">

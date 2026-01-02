@@ -35,10 +35,18 @@ export async function createOrganization({
 
 export async function listOrganizationsUser() {
 	try {
-	} catch (error) {}
+		const res = await API().get('/organization/list-organizations-user');
+		return res.data;
+	} catch (err) {
+		catchError(err);
+	}
 }
 
 export async function listOrganizationsOrganizator() {
 	try {
-	} catch (error) {}
+		const res = await API().get('/organization/list-organizations-organizator');
+		return res.data;
+	} catch (err) {
+		catchError(err);
+	}
 }

@@ -9,7 +9,7 @@ export async function getOrganizationDetailsById(
 	organizationId: string
 ): Promise<GetOrganizationDetailsByIdResponse | ServerHandleResponse<false>> {
 	return await serverFetch({
-		url: `organization/${organizationId}`,
+		url: `organization/id/${organizationId}`,
 		init: { next: { tags: ['organization-details'] }, cache: 'no-store' },
 	});
 }

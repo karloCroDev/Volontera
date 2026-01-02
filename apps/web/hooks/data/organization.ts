@@ -2,18 +2,28 @@
 import {
 	useMutation,
 	UseMutationOptions,
+	useQuery,
 	useQueryClient,
+	UseQueryResult,
 } from '@tanstack/react-query';
 
 // Lib
-import { createOrganization } from '@/lib/data/organization';
+import {
+	createOrganization,
+	listOrganizationsOrganizator,
+	listOrganizationsUser,
+} from '@/lib/data/organization';
 
 // Schemas
 import { CreateOrganizationArgs } from '@repo/schemas/create-organization';
 
 // Types
 import { ErrorFormResponse } from '@repo/types/general';
-import { CreateOrganizationResponse } from '@repo/types/organization';
+import {
+	CreateOrganizationResponse,
+	ListOrganizationsOrganizatorResponse,
+	ListOrganizationsUserResponse,
+} from '@repo/types/organization';
 import { DataWithFiles } from '@repo/types/upload';
 
 export const useCreateOrganization = (
@@ -35,3 +45,15 @@ export const useCreateOrganization = (
 		...options,
 	});
 };
+
+export function useListOrganizations(role?: string) {
+	return useQuery({
+		queryKey: ['organization', role],
+		queryFn:
+			role === 'ORGANIZATION'
+				? (listOrganizationsOrganizator as () => Promise<ListOrganizationsOrganizatorResponse>)
+				: (listOrganizationsUser as () => Promise<ListOrganizationsOrganizatorResponse>),
+		enabled: !!role,
+		refetchOnWindowFocus: false,
+	});
+}

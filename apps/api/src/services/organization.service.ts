@@ -3,7 +3,7 @@ import { createUploadUrl } from "@/lib/aws-s3-functions";
 import {
   createOrganization,
   getOrganizationDetailsById,
-  listOrganizationsOrganizator,
+  listOrganizationsOrganizatorGrouped,
   listOrganizationsUser,
 } from "@/models/organization.model";
 import { User } from "@repo/database";
@@ -96,12 +96,14 @@ export async function getOrganizationDetailsByIdService(rawData: unknown) {
 }
 
 export async function listOrganizationsUserService(userId: User["id"]) {
-  const organizations = await listOrganizationsUser(userId);
+  const { attendingOrganizations, followingOrganizations } =
+    await listOrganizationsUser(userId);
   return {
     status: 200,
     body: {
       message: "Organizations retrieved successfully",
-      organizations,
+      attendingOrganizations,
+      followingOrganizations,
     },
   };
 }
@@ -109,13 +111,18 @@ export async function listOrganizationsUserService(userId: User["id"]) {
 export async function listOrganizationsOrganizatorService(
   organizatorId: User["id"]
 ) {
-  const organizations = await listOrganizationsOrganizator(organizatorId);
+  const { ownedOrganizations, followingOrganizations, attendingOrganizations } =
+    await listOrganizationsOrganizatorGrouped(organizatorId);
 
+  console.log(ownedOrganizations);
   return {
     status: 200,
     body: {
+      title: "Organizations Retrieved",
       message: "Organizations retrieved successfully",
-      organizations,
+      ownedOrganizations,
+      followingOrganizations,
+      attendingOrganizations,
     },
   };
 }

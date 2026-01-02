@@ -9,7 +9,9 @@ export async function listOrganizationsOrganizator(userId: User["id"]) {
   return prisma.organization.findMany({
     where: {
       OR: [
+        // Organization owner
         { ownerId: userId },
+        // Following organization
         {
           organizationFollowers: {
             some: {
@@ -29,6 +31,41 @@ export async function listOrganizationsOrganizator(userId: User["id"]) {
       ],
     },
   });
+}
+
+export async function listOrganizationsOrganizatorGrouped(userId: User["id"]) {
+  const [ownedOrganizations, followingOrganizations, attendingOrganizations] =
+    await prisma.$transaction([
+      prisma.organization.findMany({
+        where: {
+          ownerId: userId,
+        },
+      }),
+      prisma.organization.findMany({
+        where: {
+          organizationFollowers: {
+            some: {
+              followerUserId: userId,
+            },
+          },
+        },
+      }),
+      prisma.organization.findMany({
+        where: {
+          organizationAttendees: {
+            some: {
+              attendeeUserId: userId,
+            },
+          },
+        },
+      }),
+    ]);
+
+  return {
+    ownedOrganizations,
+    followingOrganizations,
+    attendingOrganizations,
+  };
 }
 
 export async function createOrganization({
@@ -74,29 +111,32 @@ export async function createOrganization({
 
 // User only
 export async function listOrganizationsUser(userId: User["id"]) {
-  return prisma.organization.findMany({
-    where: {
-      // Following organization
-      OR: [
-        {
+  const [followingOrganizations, attendingOrganizations] =
+    await prisma.$transaction([
+      prisma.organization.findMany({
+        where: {
           organizationFollowers: {
             some: {
               followerUserId: userId,
             },
           },
         },
-
-        // Attending organization
-        {
+      }),
+      prisma.organization.findMany({
+        where: {
           organizationAttendees: {
             some: {
               attendeeUserId: userId,
             },
           },
         },
-      ],
-    },
-  });
+      }),
+    ]);
+
+  return {
+    followingOrganizations,
+    attendingOrganizations,
+  };
 }
 
 // All

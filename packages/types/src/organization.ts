@@ -21,3 +21,14 @@ export type GetOrganizationDetailsByIdResponse = ServerHandleResponse<true> & {
     organizationAttendees: OrganizationAttendees[];
   };
 };
+
+export type ListOrganizationsOrganizatorResponse = SuccessfulResponse & {
+  ownedOrganizations: Organization[];
+  followingOrganizations: Organization[];
+  attendingOrganizations: Organization[];
+};
+
+export type ListOrganizationsUserResponse = SuccessfulResponse & {
+  followingOrganizations: Organization[];
+  attendingOrganizations: Organization[];
+};
