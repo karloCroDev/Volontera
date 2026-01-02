@@ -46,6 +46,11 @@ export const AdditionalInformationForm = withReactQueryProvider(() => {
 		setError,
 	} = useForm<AdditionalFormArgs>({
 		resolver: zodResolver(additionalInformationSchema),
+		defaultValues: {
+			bio: '',
+			DOB: '',
+			image: undefined,
+		},
 	});
 
 	const router = useRouter();
@@ -58,6 +63,7 @@ export const AdditionalInformationForm = withReactQueryProvider(() => {
 	const { mutate, isPending } = useAdditionalInformation();
 	const { mutate: skipAdditionalInformation } = useSkipAdditionalInformation();
 
+	console.log(isDirty);
 	const onSubmit = async (data: SettingsArgs) => {
 		const hasUserInput = data.DOB || data.bio || data.image;
 

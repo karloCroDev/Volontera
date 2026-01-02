@@ -10,7 +10,7 @@ export async function getSession(): Promise<
 > {
 	return await serverFetch({
 		url: 'user/session',
-		init: { cache: 'force-cache', next: { tags: ['session'] } },
+		init: { cache: 'no-cache', next: { tags: ['session'] } },
 	});
 }
 
@@ -18,7 +18,7 @@ export async function getUserData(
 	userId: string
 ): Promise<UserResponse | ServerHandleResponse<false>> {
 	return await serverFetch({
-		url: `user/${userId}`,
-		init: { cache: 'no-store', next: { tags: ['user'] } },
+		url: `user/id/${userId}`,
+		init: { cache: 'force-cache', next: { tags: ['user'] } },
 	});
 }
