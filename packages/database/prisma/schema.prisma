@@ -73,6 +73,8 @@ model User {
   directMessagesConversations DirectMessages[]
   organizationFollowers       OrganizationFollowers[]
   organizationAttendees       OrganizationAttendees[]
+  posts                       Post[]
+  postComments                PostComments[]
 }
 
 model Accounts {
@@ -177,9 +179,11 @@ model Organization {
 
   organizationFollowers OrganizationFollowers[]
   organizationAttendees OrganizationAttendees[]
-  createdAt             DateTime                @default(now())
-  updatedAt             DateTime                @updatedAt
   organizationInfo      OrganizationInfo?
+
+  posts     Post[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model OrganizationInfo {
@@ -232,4 +236,42 @@ model AdditionalLinks {
   organizationInfoId String
   createdAt          DateTime         @default(now())
   updatedAt          DateTime         @updatedAt
+}
+
+// Post
+
+model Post {
+  id       String @id @default(cuid())
+  title    String
+  content  String
+  imageUrl String
+  authorId String
+
+  organization   Organization?  @relation(fields: [organizationId], references: [id])
+  organizationId String?
+  author         User           @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  postComments   PostComments[]
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+}
+
+model PostComments {
+  id                String              @id @default(cuid())
+  content           String
+  post              Post                @relation(fields: [postId], references: [id], onDelete: Cascade)
+  postId            String
+  author            User                @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  authorId          String
+  postCommentImages PostCommentImages[]
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+}
+
+model PostCommentImages {
+  id            String       @id @default(cuid())
+  imageUrl      String
+  postComment   PostComments @relation(fields: [postCommentId], references: [id], onDelete: Cascade)
+  postCommentId String
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
 }

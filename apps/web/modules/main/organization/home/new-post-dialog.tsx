@@ -14,9 +14,13 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 
 // Modules
-import { DndMapppingImages } from '@/components/ui/dnd-mapping-images';
+import {
+	DndMapppingImages,
+	ImageItemArgs,
+} from '@/components/ui/dnd-mapping-images';
 
 export const NewPostDialog = () => {
+	const [images, setImages] = React.useState<ImageItemArgs>([]);
 	return (
 		<Dialog
 			triggerChildren={
@@ -54,7 +58,7 @@ export const NewPostDialog = () => {
 				<div className="flex items-end gap-4">
 					<div className="flex-1">
 						<Label className="mb-2">Post image(s)</Label>
-						<DndMapppingImages />
+						<DndMapppingImages images={images} setImages={setImages} />
 					</div>
 
 					<Button type="submit" className="ml-auto">

@@ -12,7 +12,7 @@ import { Avatar } from '@/components/ui/avatar';
 // Hooks
 import { useGetDirectMessagesConversationById } from '@/hooks/data/direct-messages';
 import { useSession } from '@/hooks/data/user';
-import { useGetImageFromKey } from '@/hooks/data/image';
+import { useGetImageFromKeys } from '@/hooks/data/image';
 
 // Lib
 import { withReactQueryProvider } from '@/lib/utils/react-query';
@@ -58,7 +58,7 @@ export const Conversation = withReactQueryProvider(() => {
 		};
 	}, [messages, setMessages, socketGlobal]);
 
-	const { data: userImages } = useGetImageFromKey(
+	const { data: userImages } = useGetImageFromKeys(
 		{
 			imageUrls:
 				messages

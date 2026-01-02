@@ -91,6 +91,7 @@ export const Organizations = () => {
 			trigger={
 				desktopOpen ? (
 					<SidebarItem
+						isSelected={!!params.organizationId}
 						className="group"
 						iconLeft={(desktopOpen || isMobile) && <Building2 />}
 						iconRight={
@@ -102,7 +103,12 @@ export const Organizations = () => {
 						Organizations
 					</SidebarItem>
 				) : (
-					<SidebarItem size="lg" isFullyRounded className="p-4">
+					<SidebarItem
+						size="lg"
+						isFullyRounded
+						className="p-4"
+						isSelected={!!params.organizationId}
+					>
 						<Building2 className="size-8" />
 					</SidebarItem>
 				)
@@ -119,7 +125,7 @@ export const Organizations = () => {
 							)}
 						</ul>
 						<p className="text-md ml-2 mt-4 text-start font-medium underline underline-offset-4">
-							Your
+							Managing
 						</p>
 						<ul className="border-input-border ml-4 mt-4 border-t">
 							{organizations?.ownedOrganizations &&
