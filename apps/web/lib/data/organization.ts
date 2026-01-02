@@ -32,3 +32,13 @@ export async function createOrganization({
 		catchError(err);
 	}
 }
+
+export async function listOrganizationsUser() {
+	try {
+	} catch (error) {}
+}
+
+export async function listOrganizationsOrganizator() {
+	try {
+	} catch (error) {}
+}

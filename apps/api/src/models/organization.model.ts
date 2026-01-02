@@ -5,10 +5,28 @@ import { prisma, User } from "@repo/database";
 import { CreateOrganizationArgs } from "@repo/schemas/create-organization";
 
 // Owners only
-export async function listAllOrganizationsOwner(userId: User["id"]) {
+export async function listOrganizationsOrganizator(userId: User["id"]) {
   return prisma.organization.findMany({
     where: {
-      ownerId: userId,
+      OR: [
+        { ownerId: userId },
+        {
+          organizationFollowers: {
+            some: {
+              followerUserId: userId,
+            },
+          },
+        },
+
+        // Attending organization
+        {
+          organizationAttendees: {
+            some: {
+              attendeeUserId: userId,
+            },
+          },
+        },
+      ],
     },
   });
 }
@@ -55,7 +73,7 @@ export async function createOrganization({
 }
 
 // User only
-export async function listAllOrganizationsUser(userId: User["id"]) {
+export async function listOrganizationsUser(userId: User["id"]) {
   return prisma.organization.findMany({
     where: {
       // Following organization

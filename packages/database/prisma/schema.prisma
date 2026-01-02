@@ -73,7 +73,6 @@ model User {
   directMessagesConversations DirectMessages[]
   organizationFollowers       OrganizationFollowers[]
   organizationAttendees       OrganizationAttendees[]
-  organization                Organization[]
 }
 
 model Accounts {
@@ -174,8 +173,7 @@ model Organization {
   avatarImage String
   name        String
   bio         String
-  owner       User   @relation(fields: [ownerId], references: [id], onDelete: Cascade)
-  ownerId     String
+  ownerId     String // Msm da nije potrebno da linkam za ownera jer ne virujem da cu povuci obodvoje. 
 
   organizationFollowers OrganizationFollowers[]
   organizationAttendees OrganizationAttendees[]

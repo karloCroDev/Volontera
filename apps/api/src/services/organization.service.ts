@@ -3,6 +3,8 @@ import { createUploadUrl } from "@/lib/aws-s3-functions";
 import {
   createOrganization,
   getOrganizationDetailsById,
+  listOrganizationsOrganizator,
+  listOrganizationsUser,
 } from "@/models/organization.model";
 import { User } from "@repo/database";
 import {
@@ -89,6 +91,31 @@ export async function getOrganizationDetailsByIdService(rawData: unknown) {
       message: "Organization details retrieved successfully",
       success: true,
       organization,
+    },
+  };
+}
+
+export async function listOrganizationsUserService(userId: User["id"]) {
+  const organizations = await listOrganizationsUser(userId);
+  return {
+    status: 200,
+    body: {
+      message: "Organizations retrieved successfully",
+      organizations,
+    },
+  };
+}
+
+export async function listOrganizationsOrganizatorService(
+  organizatorId: User["id"]
+) {
+  const organizations = await listOrganizationsOrganizator(organizatorId);
+
+  return {
+    status: 200,
+    body: {
+      message: "Organizations retrieved successfully",
+      organizations,
     },
   };
 }
