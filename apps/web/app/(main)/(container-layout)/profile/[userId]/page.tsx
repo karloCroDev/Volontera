@@ -13,6 +13,7 @@ import { ListPosts } from '@/modules/main/public-profile/list-posts';
 // Lib
 import { getUserData, getSession } from '@/lib/server/user';
 import { convertToFullname } from '@/lib/utils/convert-to-fullname';
+import { ListOrganizations } from '@/modules/main/public-profile/list-organization';
 
 export default async function PublicProfilePage({
 	params,
@@ -20,7 +21,7 @@ export default async function PublicProfilePage({
 	params: Promise<{ userId: string }>;
 }) {
 	const { userId } = await params;
-	console.log(userId);
+
 	const [user, session] = await Promise.all([
 		getUserData(userId),
 		getSession(),
@@ -90,34 +91,12 @@ export default async function PublicProfilePage({
 				<hr className="bg-input-border my-2 h-px w-full border-0" />
 				<div className="mt-6 flex items-center justify-between">
 					<h6 className="text-md lg:text-lg">Work / School</h6>
-					<p className="lg:text-md text-muted-foreground">
+					<p className="text-muted-foreground">
 						{user.workOrSchool || 'Not fullfilled yet'}
 					</p>
 				</div>
 			</InformationContainer>
-			<InformationContainer title="Organizations">
-				<div className="border-input-border bg-muted mt-4 flex items-center gap-4 rounded-md border px-4 py-3">
-					<Avatar
-						imageProps={{
-							src: '',
-						}}
-						colorScheme="gray"
-					>
-						Organization Example
-					</Avatar>
-
-					<p className="text-md">Organization Example</p>
-
-					<LinkAsButton
-						href="/organizations/organization"
-						size="sm"
-						className="ml-auto"
-					>
-						Explore
-					</LinkAsButton>
-				</div>
-			</InformationContainer>
-
+			<ListOrganizations />
 			<ListPosts />
 		</div>
 	);

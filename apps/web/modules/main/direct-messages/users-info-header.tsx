@@ -17,6 +17,7 @@ import { withReactQueryProvider } from '@/lib/utils/react-query';
 import { convertToFullname } from '@/lib/utils/convert-to-fullname';
 import { useSocketContext } from '@/modules/main/direct-messages/SocketContext';
 import { adjustMessageTime } from '@/lib/utils/time-adjustments';
+import Link from 'next/link';
 
 export const UsersInfoHeader = withReactQueryProvider(() => {
 	const params = useSearchParams();
@@ -35,19 +36,20 @@ export const UsersInfoHeader = withReactQueryProvider(() => {
 					<ArrowLeft />
 				</LinkAsButton>
 
-				<Avatar
-					imageProps={{
-						src: user?.image || undefined,
-					}}
-					size="xl"
-				>
-					{convertToFullname({
-						firstname: user.firstName,
-						lastname: user.lastName,
-					})}
-				</Avatar>
-
-				<div>
+				<Link href={`/profile/${user.id}`}>
+					<Avatar
+						imageProps={{
+							src: user?.image || undefined,
+						}}
+						size="xl"
+					>
+						{convertToFullname({
+							firstname: user.firstName,
+							lastname: user.lastName,
+						})}
+					</Avatar>
+				</Link>
+				<Link href={`/profile/${user.id}`}>
 					{user && (
 						<h4 className="text-lg lg:text-xl">
 							{convertToFullname({
@@ -64,7 +66,7 @@ export const UsersInfoHeader = withReactQueryProvider(() => {
 								: ` Last online: ${adjustMessageTime(new Date(user.updatedAt))}`}
 						</p>
 					)}
-				</div>
+				</Link>
 				<DotWithLabel
 					className="ml-auto"
 					label={onlineUsers.includes(user.id) ? 'Online' : 'Offline'}

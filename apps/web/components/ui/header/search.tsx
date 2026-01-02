@@ -12,12 +12,12 @@ import { Dialog } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Avatar } from '@/components/ui/avatar';
-import { LinkAsButton } from '@/components/ui/link-as-button';
 
 // Hooks
 import { useSearch } from '@/hooks/data/search';
 import { useDebounce } from '@/hooks/utils/useDebounce';
 import { convertToFullname } from '@/lib/utils/convert-to-fullname';
+import Link from 'next/link';
 
 export const Search = () => {
 	const isMobile = useIsMobile();
@@ -104,7 +104,7 @@ export const Search = () => {
 									info={user.email}
 									mainLink={`/profile/${user.id}`}
 									// TODO: See how I handled if there is no conversation ID, but the message still works
-									chatLink={`direct-messages?user=${user.id}`}
+									chatLink={`/direct-messages?user=${user.id}&conversationId`}
 								/>
 							))
 						) : (
@@ -143,19 +143,19 @@ const SearchOutput: React.FC<{
 				<p className="text-muted-foreground text-xs">{info}</p>
 			</div>
 
+			{/* Ovdje se ne koristi LinkAsButton kako bi se zatvorio dialog (iz tog samo razloga),pa je konstrukcija link -> button*/}
 			<div className="ml-auto flex gap-4">
-				<LinkAsButton
-					href={chatLink}
-					className="p-2"
-					variant="outline"
-					colorScheme="yellow"
-				>
-					<MessageCircle />
-				</LinkAsButton>
+				<Link href={chatLink}>
+					<Button className="p-2" variant="outline" colorScheme="yellow">
+						<MessageCircle />
+					</Button>
+				</Link>
 
-				<LinkAsButton href={mainLink} className="p-2">
-					{type === 'user' ? <User /> : <ArrowRight />}
-				</LinkAsButton>
+				<Link href={mainLink}>
+					<Button className="p-2">
+						{type === 'user' ? <User /> : <ArrowRight />}
+					</Button>
+				</Link>
 			</div>
 		</div>
 	);

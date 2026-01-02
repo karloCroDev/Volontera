@@ -14,7 +14,7 @@ export async function clientSession() {
 
 export async function getUserById(userId: string) {
 	try {
-		const res = await API().get(`user/id/${userId}`);
+		const res = await API().get(`user/${userId}`);
 		return res.data;
 	} catch (err) {
 		catchError(err);
