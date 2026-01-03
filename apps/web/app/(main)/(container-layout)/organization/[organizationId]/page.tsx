@@ -30,6 +30,7 @@ export default async function OrganizationPage({
 	const organizationDetailsById =
 		await getOrganizationDetailsById(organizationId);
 
+	console.log(organizationDetailsById);
 	if (!organizationDetailsById.success) notFound();
 
 	console.log(organizationDetailsById);

@@ -1,6 +1,9 @@
 // External packages
 import { z } from "zod";
 
+// Schemas
+import { uploadImageSchema } from "./image";
+
 // Search field
 export const searchSchema = z.object({
   query: z.string().min(1).max(100),
@@ -11,25 +14,17 @@ export const searchSchema = z.object({
 
 export type SearchArgs = z.infer<typeof searchSchema>;
 
-// Message field
-export const directMessageImageMetaSchema = z.object({
-  filename: z.string(),
-  contentType: z.string(),
-  size: z.number(),
-});
-
 export const messageSchema = z.object({
   content: z.string().min(1).max(200),
   particpantId: z.cuid(),
-  // Client-side composer payload (used for presigning + upload)
-  images: directMessageImageMetaSchema.array().optional(),
+  images: uploadImageSchema.shape.image.array().optional(),
 });
 
 export type MessageArgs = z.infer<typeof messageSchema>;
 
-// Upload-first: presign PUT urls for images
+// Kada uploadam slike za direct message, prvo trazim presign URL-ove, pa onda ws stavljam slike u poruku
 export const presignDirectMessageImagesSchema = z.object({
-  images: directMessageImageMetaSchema.array().min(1),
+  images: uploadImageSchema.shape.image.array().min(1),
 });
 
 export type PresignDirectMessageImagesArgs = z.infer<
