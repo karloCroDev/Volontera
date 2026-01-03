@@ -1,16 +1,20 @@
 // Database
 import { Organization, Post, prisma, User } from "@repo/database";
 
+// Organization admins only
+type PostMangmentArgs = {
+  title: Post["title"];
+  content: Post["content"];
+  images: string[];
+};
+
 export async function createPost({
   title,
   content,
   images,
   userId,
   organizationId,
-}: {
-  title: Post["title"];
-  content: Post["content"];
-  images: string[];
+}: PostMangmentArgs & {
   userId: User["id"];
   organizationId: Organization["id"];
 }) {
@@ -27,7 +31,32 @@ export async function createPost({
   });
 }
 
-export async function retrievePosts(organizationId: Organization["id"]) {
+export async function deletePost(postId: Post["id"]) {
+  return prisma.post.delete({
+    where: { id: postId },
+  });
+}
+
+export async function updatePost({
+  postId,
+  title,
+  content,
+}: PostMangmentArgs & {
+  postId: Post["id"];
+}) {
+  return prisma.post.update({
+    where: { id: postId },
+    data: {
+      title,
+      content,
+    },
+  });
+}
+
+// Everyone
+export async function retrieveOrganizationPosts(
+  organizationId: Organization["id"]
+) {
   return prisma.post.findMany({
     include: {
       organization: true,
@@ -45,11 +74,24 @@ export async function retrievePostWithComments(postId: Post["id"]) {
     include: {
       organization: true,
       postImages: true,
+      author: true,
       postComments: {
         include: {
           author: true,
         },
       },
+    },
+  });
+}
+
+// Home (with cool algorithm later)
+
+export async function retrieveHomePosts() {
+  return prisma.post.findMany({
+    include: {
+      organization: true,
+      postImages: true,
+      author: true,
     },
   });
 }
