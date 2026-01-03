@@ -25,4 +25,6 @@ postRoutes.get("/:organizationId", retrieveOrganizationPostsController);
 
 postRoutes.get("/id/:postId", retrievePostWithCommentsController);
 
+postRoutes.patch("/like/:patchId");
+postRoutes.patch("/dislike/:postId");
 // postRoutes.route('/home')

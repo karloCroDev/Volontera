@@ -75,6 +75,7 @@ model User {
   organizationAttendees       OrganizationAttendees[]
   posts                       Post[]
   postComments                PostComments[]
+  postLikes                   PostLikes[]
 }
 
 model Accounts {
@@ -253,6 +254,7 @@ model Post {
   author         User         @relation(fields: [authorId], references: [id], onDelete: Cascade)
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @updatedAt
+  postLikes      PostLikes[]
 }
 
 model PostImages {
@@ -262,6 +264,19 @@ model PostImages {
   postId    String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model PostLikes {
+  id     String @id @default(cuid())
+  post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+  postId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([postId, userId])
 }
 
 model PostComments {

@@ -84,6 +84,36 @@ export async function retrievePostWithComments(postId: Post["id"]) {
   });
 }
 
+type LikeOrDislikePostArgs = {
+  postId: Post["id"];
+  userId: User["id"];
+};
+
+export async function likePost({ postId, userId }: LikeOrDislikePostArgs) {
+  return prisma.postLikes.upsert({
+    where: {
+      postId_userId: {
+        postId,
+        userId,
+      },
+    },
+    update: {},
+    create: {
+      postId,
+      userId,
+    },
+  });
+}
+
+export async function dislikePost({ postId, userId }: LikeOrDislikePostArgs) {
+  return prisma.postLikes.deleteMany({
+    where: {
+      postId,
+      userId,
+    },
+  });
+}
+
 // Home (with cool algorithm later)
 
 export async function retrieveHomePosts() {

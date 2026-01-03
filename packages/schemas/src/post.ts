@@ -43,3 +43,8 @@ export const retrievePostWithCommentsSchema = z.object({
 export type RetrievePostWithCommentsArgs = z.infer<
   typeof retrievePostWithCommentsSchema
 >;
+
+export const likeOrDislikePostSchema = z.object({
+  postId: z.cuid(),
+});
+export type LikeOrDislikePostArgs = z.infer<typeof likeOrDislikePostSchema>;

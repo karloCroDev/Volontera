@@ -3,22 +3,22 @@ import { createUploadUrl } from "@/lib/aws-s3-functions";
 import {
   createPost,
   deletePost,
+  dislikePost,
+  likePost,
   retrieveOrganizationPosts,
   retrievePostWithComments,
-  updatePost,
 } from "@/models/post.model";
 
 // Database
 import { User } from "@repo/database";
-import { getOrganizationDetailsByIdSchema } from "@repo/schemas/create-organization";
 
 // Schemas
 import {
   createPostSchema,
   deletePostSchema,
+  likeOrDislikePostSchema,
   retrieveOrganizationPostsSchema,
   retrievePostWithCommentsSchema,
-  updatePostSchema,
 } from "@repo/schemas/post";
 
 // Organization admins only
@@ -176,6 +176,72 @@ export async function retrievePostWithCommentsService(rawData: unknown) {
       title: "Post with comments Retrieved",
       message: "Post with comments retrieved successfully",
       post,
+    },
+  };
+}
+
+export async function likePostService({
+  rawData,
+  userId,
+}: {
+  rawData: unknown;
+  userId: User["id"];
+}) {
+  const { success, data } = likeOrDislikePostSchema.safeParse(rawData);
+
+  if (!success) {
+    return {
+      status: 400,
+      body: {
+        title: "Invalid Data",
+        message: "The provided data is invalid",
+      },
+    };
+  }
+
+  await likePost({
+    postId: data.postId,
+    userId,
+  });
+
+  return {
+    status: 200,
+    body: {
+      title: "Post Liked",
+      message: "Post liked successfully",
+    },
+  };
+}
+
+export async function dislikePostService({
+  rawData,
+  userId,
+}: {
+  rawData: unknown;
+  userId: User["id"];
+}) {
+  const { success, data } = likeOrDislikePostSchema.safeParse(rawData);
+
+  if (!success) {
+    return {
+      status: 400,
+      body: {
+        title: "Invalid Data",
+        message: "The provided data is invalid",
+      },
+    };
+  }
+
+  await dislikePost({
+    postId: data.postId,
+    userId,
+  });
+
+  return {
+    status: 200,
+    body: {
+      title: "Post Disliked",
+      message: "Post disliked successfully",
     },
   };
 }
