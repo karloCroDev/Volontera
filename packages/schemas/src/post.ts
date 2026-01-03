@@ -7,7 +7,9 @@ import { uploadImageSchema } from "./image";
 export const createPostSchema = z.object({
   title: z.string().min(1),
   content: z.string().max(200),
-  images: uploadImageSchema.shape.image.array(),
+  images: uploadImageSchema.shape.image
+    .array()
+    .min(1, "Please upload at least one image"),
 });
 
 export type CreatePostArgs = z.infer<typeof createPostSchema>;

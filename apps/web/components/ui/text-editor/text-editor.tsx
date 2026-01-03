@@ -132,13 +132,12 @@ export const TextEditor: React.FC<
 					>
 						{label}
 					</Label>
-					<p className="text-muted-foreground bg-background text-sm">
-						{charactersCount}/200
-					</p>
+					<p className="text-muted-foreground text-sm">{charactersCount}/200</p>
 				</div>
 				{iconsRight}
-				{error && <Error>{error}</Error>}
 			</div>
+
+			{error && <Error>{error}</Error>}
 		</div>
 	);
 };

@@ -44,7 +44,6 @@ export async function createPostService({
       title: "Successfuly created post",
       message: "Post created successfully",
       presignedUrls: uploadImages.map((img) => img.url),
-      post,
     },
   };
 }

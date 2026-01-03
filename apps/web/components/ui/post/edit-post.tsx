@@ -13,9 +13,14 @@ import { Textarea } from '@/components/ui/textarea';
 import { FilledInput } from '@/components/ui/filled-input';
 
 // Modules
-import { DndMapppingImages } from '@/components/ui/dnd-mapping-images';
+import {
+	DndMapppingImages,
+	ImageItemArgs,
+} from '@/components/ui/dnd-mapping-images';
 
 export const EditPost = () => {
+	const [images, setImages] = React.useState<ImageItemArgs>([]);
+
 	return (
 		<Dialog
 			title="Edit post"
@@ -40,7 +45,7 @@ export const EditPost = () => {
 				<div className="flex items-end gap-4">
 					<div className="flex-1">
 						<Label className="mb-2">Manage images</Label>
-						<DndMapppingImages />
+						<DndMapppingImages images={images} setImages={setImages} />
 					</div>
 
 					<Button type="submit" className="ml-auto">
