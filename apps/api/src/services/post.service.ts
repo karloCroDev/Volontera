@@ -70,7 +70,8 @@ export async function deletePostService(rawData: string) {
     return {
       status: 400,
       body: {
-        message: "Invalid post data",
+        title: "Invalid Data",
+        message: "Invalid delete post data",
       },
     };
   }
@@ -137,8 +138,8 @@ export async function retrieveOrganizationPostsService(rawData: unknown) {
     return {
       status: 400,
       body: {
+        title: "Invalid Data",
         message: "The provided data is invalid",
-        success: false,
       },
     };
   }
@@ -162,8 +163,8 @@ export async function retrievePostWithCommentsService(rawData: unknown) {
     return {
       status: 400,
       body: {
+        title: "Invalid Data",
         message: "The provided data is invalid",
-        success: false,
       },
     };
   }

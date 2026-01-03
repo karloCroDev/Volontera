@@ -19,13 +19,10 @@ postRoutes.use(express.json());
 postRoutes
   .route("/")
   .post(organizationMiddleware, createPostController)
-  .delete(organizationMiddleware, deletePostController)
-  .get(retrieveOrganizationPostsController);
+  .delete(organizationMiddleware, deletePostController);
 
-postRoutes.get(
-  "/:postId",
-  organizationMiddleware,
-  retrievePostWithCommentsController
-);
+postRoutes.get("/:organizationId", retrieveOrganizationPostsController);
+
+postRoutes.get("/id/:postId", retrievePostWithCommentsController);
 
 // postRoutes.route('/home')
