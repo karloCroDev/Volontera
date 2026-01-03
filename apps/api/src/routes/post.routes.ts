@@ -6,6 +6,8 @@ import { Router } from "express";
 import {
   createPostController,
   deletePostController,
+  dislikePostController,
+  likePostController,
   retrieveOrganizationPostsController,
   retrievePostWithCommentsController,
 } from "@/controllers/post.controller";
@@ -25,6 +27,6 @@ postRoutes.get("/:organizationId", retrieveOrganizationPostsController);
 
 postRoutes.get("/id/:postId", retrievePostWithCommentsController);
 
-postRoutes.patch("/like/:patchId");
-postRoutes.patch("/dislike/:postId");
+postRoutes.patch("/like", likePostController);
+postRoutes.patch("/dislike", dislikePostController);
 // postRoutes.route('/home')

@@ -3,17 +3,34 @@ import {
 	useMutation,
 	UseMutationOptions,
 	useQueryClient,
+	useSuspenseQuery,
+	UseSuspenseQueryOptions,
 } from '@tanstack/react-query';
 
 // Lib
-import { createPost } from '@/lib/data/post';
+import {
+	createPost,
+	deletePost,
+	dislikePost,
+	likePost,
+	retrieveOrganizationPosts,
+} from '@/lib/data/post';
 
 // Types
-import { ErrorFormResponse, SuccessfulResponse } from '@repo/types/general';
+import {
+	ErrorFormResponse,
+	ErrorToastResponse,
+	SuccessfulResponse,
+} from '@repo/types/general';
 import { DataWithFile, DataWithFiles } from '@repo/types/upload';
 
 // Schemas
-import { CreatePostArgs } from '@repo/schemas/post';
+import {
+	CreatePostArgs,
+	DeletePostArgs,
+	LikeOrDislikePostArgs,
+} from '@repo/schemas/post';
+import { RetrieveOrganizationPostsResponse } from '@repo/types/post';
 
 export const useCreatePost = (
 	options?: UseMutationOptions<
@@ -32,6 +49,91 @@ export const useCreatePost = (
 			await queryClient.invalidateQueries({ queryKey: ['posts'] });
 			await options?.onSuccess?.(...args);
 		},
+		...options,
+	});
+};
+
+export const useDeletePost = (
+	options?: UseMutationOptions<
+		SuccessfulResponse,
+		ErrorToastResponse,
+		DeletePostArgs
+	>
+) => {
+	const queryClient = useQueryClient();
+	return useMutation({
+		mutationKey: ['delete-post'],
+		mutationFn: (data: DeletePostArgs) => deletePost(data),
+		onSuccess: async (...args) => {
+			await queryClient.invalidateQueries({ queryKey: ['posts'] });
+			await options?.onSuccess?.(...args);
+		},
+		...options,
+	});
+};
+
+export const useLikePost = (
+	options?: UseMutationOptions<
+		SuccessfulResponse,
+		ErrorToastResponse,
+		LikeOrDislikePostArgs
+	>
+) => {
+	const queryClient = useQueryClient();
+	return useMutation({
+		mutationKey: ['like-post'],
+		mutationFn: (data: LikeOrDislikePostArgs) => likePost(data),
+		onSuccess: async (...args) => {
+			await queryClient.invalidateQueries({ queryKey: ['posts'] });
+			await options?.onSuccess?.(...args);
+		},
+		...options,
+	});
+};
+
+export const useDislikePost = (
+	options?: UseMutationOptions<
+		SuccessfulResponse,
+		ErrorToastResponse,
+		LikeOrDislikePostArgs
+	>
+) => {
+	const queryClient = useQueryClient();
+	return useMutation({
+		mutationKey: ['dislike-post'],
+		mutationFn: (data: LikeOrDislikePostArgs) => dislikePost(data),
+		onSuccess: async (...args) => {
+			await queryClient.invalidateQueries({ queryKey: ['posts'] });
+			await options?.onSuccess?.(...args);
+		},
+		...options,
+	});
+};
+
+export const useRetrieveOrganizationPosts = (
+	organizationId: string,
+	options?: Omit<
+		UseSuspenseQueryOptions<RetrieveOrganizationPostsResponse>,
+		'queryKey' | 'queryFn'
+	>
+) => {
+	return useSuspenseQuery({
+		queryKey: ['posts', organizationId],
+		queryFn: () => retrieveOrganizationPosts({ organizationId }),
+		...options,
+	});
+};
+
+export const useRetrievePostWithComments = (
+	organizationId: string,
+	options?: Omit<
+		UseSuspenseQueryOptions<RetrieveOrganizationPostsResponse>,
+		'queryKey' | 'queryFn'
+	>
+) => {
+	return useSuspenseQuery({
+		queryKey: ['posts', organizationId],
+		queryFn: () => retrieveOrganizationPosts({ organizationId }),
 		...options,
 	});
 };

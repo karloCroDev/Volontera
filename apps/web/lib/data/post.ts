@@ -9,6 +9,7 @@ import {
 	UpdatePostArgs,
 	RetrievePostWithCommentsArgs,
 	RetrieveOrganizationPostsArgs,
+	LikeOrDislikePostArgs,
 } from '@repo/schemas/post';
 import { DataWithFiles } from '@repo/types/upload';
 
@@ -56,11 +57,29 @@ export async function retrieveOrganizationPosts({
 		catchError(err);
 	}
 }
+
 export async function retrievePostWithComments({
 	postId,
 }: RetrievePostWithCommentsArgs) {
 	try {
 		const res = await API().get(`/post/id/${postId}`);
+		return res.data;
+	} catch (err) {
+		catchError(err);
+	}
+}
+
+export async function likePost({ postId }: LikeOrDislikePostArgs) {
+	try {
+		const res = await API().patch('/post/like', { postId });
+		return res.data;
+	} catch (err) {
+		catchError(err);
+	}
+}
+export async function dislikePost({ postId }: LikeOrDislikePostArgs) {
+	try {
+		const res = await API().patch('/post/dislike', { postId });
 		return res.data;
 	} catch (err) {
 		catchError(err);
