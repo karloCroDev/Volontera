@@ -31,6 +31,7 @@ import { initalizeRedisClient } from "@/config/redis";
 import { imageRoutes } from "@/routes/image.routes";
 import { organizationRoutes } from "@/routes/organization.routes";
 import { searchRoutes } from "@/routes/search.routes";
+import { postRoutes } from "@/routes/post.routes";
 
 // Security middleware
 app.use(helmet());
@@ -71,6 +72,7 @@ app.use(
 app.use("/image", imageRoutes);
 app.use("/organization", authMiddleware, hasRoleMiddleware, organizationRoutes);
 app.use("/search", authMiddleware, hasRoleMiddleware, searchRoutes);
+app.use("/post", authMiddleware, hasRoleMiddleware, postRoutes);
 
 // Test
 app.get("/protected-user", authMiddleware, userMiddleware, (req, res) => {
