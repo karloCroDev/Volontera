@@ -78,7 +78,7 @@ export const Organizations = () => {
 			: [],
 	});
 
-	const params = useParams();
+	const params = useParams<{ organizationId: string }>();
 
 	return (
 		<Collapsible

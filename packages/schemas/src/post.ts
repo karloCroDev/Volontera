@@ -10,6 +10,7 @@ export const createPostSchema = z.object({
   images: uploadImageSchema.shape.image
     .array()
     .min(1, "Please upload at least one image"),
+  organizationId: z.cuid(),
 });
 
 export type CreatePostArgs = z.infer<typeof createPostSchema>;

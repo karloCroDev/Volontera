@@ -4,6 +4,7 @@
 import * as React from 'react';
 import { Button as AriaButton, Form } from 'react-aria-components';
 import { Plus } from 'lucide-react';
+import { useParams } from 'next/navigation';
 
 // Components
 import { Avatar } from '@/components/ui/avatar';
@@ -37,6 +38,7 @@ export const NewPostDialog = () => {
 	const [isOpen, setIsOpen] = React.useState(false);
 
 	const [images, setImages] = React.useState<ImageItemArgs>([]);
+	const params = useParams<{ organizationId: string }>();
 
 	const {
 		handleSubmit,
@@ -67,11 +69,15 @@ export const NewPostDialog = () => {
 	}, [images, setValue]);
 
 	const { mutate, isPending } = useCreatePost();
-	const onSubmit = (data: Omit<CreatePostArgs, 'images'>) => {
+
+	const onSubmit = (
+		data: Omit<CreatePostArgs, 'images' | 'organizationId'>
+	) => {
 		mutate(
 			{
 				data: {
 					...data,
+					organizationId: params.organizationId,
 					images: images.map(({ contentType, filename, size }) => ({
 						contentType,
 						filename,

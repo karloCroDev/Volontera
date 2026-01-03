@@ -36,6 +36,7 @@ export async function createPostService({
     content: data.content,
     images: uploadImages.map((img) => img.key),
     userId,
+    organizationId: data.organizationId,
   });
 
   return {

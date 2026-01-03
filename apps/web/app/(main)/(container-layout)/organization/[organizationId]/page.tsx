@@ -174,7 +174,7 @@ export default async function OrganizationPage({
 					</div>
 				</div>
 
-				<div className="bg-input-border absolute left-0 top-0 -z-[1] h-64 w-full overflow-hidden md:rounded-t-xl">
+				<div className="absolute left-0 top-0 -z-[1] h-64 w-full overflow-hidden md:rounded-t-xl">
 					{organizationCoverImage && (
 						<Image
 							src={organizationCoverImage}

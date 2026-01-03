@@ -167,7 +167,7 @@ export async function getOrganizationDetailsById(organizationId: string) {
         },
       },
 
-      // Vrati po hijewrarhiji i onda displayamo na frontendu (admini organizacije, vlasnik i neke korisnike)
+      // Vrati po hijewrarhiji korisnike i onda displayamo na frontendu (admini organizacije, vlasnik i neke korisnike)
       // owner: true,
     },
   });
