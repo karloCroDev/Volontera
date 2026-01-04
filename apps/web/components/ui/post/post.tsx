@@ -1,6 +1,7 @@
 // External packages
 import { ChevronDown, MessageCircleMore } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 // Components
 import { Avatar } from '@/components/ui/avatar';
@@ -11,22 +12,26 @@ import { LinkAsButton } from '@/components/ui/link-as-button';
 import { PostLike } from '@/components/ui/post/post-like';
 import { SharePost } from '@/components/ui/post/share-post';
 import { EditPost } from '@/components/ui/post/edit-post';
-
-// Repo Types
-import { RetrieveOrganizationPostsResponse } from '@repo/types/post';
-import { convertToFullname } from '@/lib/utils/convert-to-fullname';
+import { DeletePostDialog } from '@/components/ui/post/delete-post-dialog';
 import { Carousel } from '@/components/ui/carousel';
-import Image from 'next/image';
+
+// Types
+import { RetrieveOrganizationPostsResponse } from '@repo/types/post';
+
+// Lib
+import { convertToFullname } from '@/lib/utils/convert-to-fullname';
 
 export const Post: React.FC<{
 	post: RetrieveOrganizationPostsResponse['posts'][0];
 	isInsideOrganization?: boolean;
 	images?: Record<string, string>;
+	hasAnAdminAccess?: boolean;
 }> = ({
 	/* eslint react/prop-types: 0 */
 	images,
 	post,
 	isInsideOrganization = false,
+	hasAnAdminAccess = false,
 }) => {
 	const splittedContent = post.content.split('.');
 	const singlePostImage = post.postImages[0];
@@ -53,17 +58,20 @@ export const Post: React.FC<{
 					</div>
 				</div>
 
-				{!isInsideOrganization && (
-					<LinkAsButton
-						href="/home/explore"
-						colorScheme="yellow"
-						size="sm"
-						className="ml-auto"
-					>
-						Explore
-					</LinkAsButton>
-				)}
-				<EditPost />
+				<div className="ml-auto flex gap-2">
+					{hasAnAdminAccess && <DeletePostDialog postId={post.id} />}
+					{!isInsideOrganization && (
+						<LinkAsButton
+							href="/home/explore"
+							colorScheme="yellow"
+							size="sm"
+							className="ml-auto"
+						>
+							Explore
+						</LinkAsButton>
+					)}
+					<EditPost />
+				</div>
 			</div>
 			<h4 className="mb-4 text-lg font-semibold">{post.title}</h4>
 			<Collapsible

@@ -43,6 +43,7 @@ export const DeleteAccountDialog = () => {
 						});
 					}}
 					isLoading={isPending}
+					isDisabled={isPending}
 				>
 					Yes
 				</Button>

@@ -22,7 +22,7 @@ export async function retrieveOrganizationPosts({
 	return await serverFetch({
 		url: `post/${organizationId}`,
 		init: {
-			next: { tags: ['organization-posts'], revalidate: 360 },
+			next: { tags: ['organization-posts'] },
 			cache: 'no-store',
 		},
 	});

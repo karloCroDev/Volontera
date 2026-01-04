@@ -47,6 +47,8 @@ export const PostsMapping: React.FC<{
 						key={post.id}
 						post={post}
 						isInsideOrganization
+						// TODO: Only organization admins can delete posts handle this!
+						hasAnAdminAccess
 						images={imagesData?.urls}
 					/>
 				))
