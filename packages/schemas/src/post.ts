@@ -17,10 +17,9 @@ export const createPostSchema = z.object({
 export type CreatePostArgs = z.infer<typeof createPostSchema>;
 
 export const updatePostSchema = z.object({
-  postId: z.cuid().or(z.literal("")),
+  postId: z.cuid(),
   ...createPostSchema.omit({ organizationId: true, images: true }).shape,
-
-  images: z.union([uploadImageSchema.shape.image.array(), array(string())]),
+  images: z.array(z.union([z.string(), uploadImageSchema.shape.image])),
 });
 
 export type UpdatePostArgs = z.infer<typeof updatePostSchema>;

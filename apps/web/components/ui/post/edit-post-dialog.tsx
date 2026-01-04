@@ -15,23 +15,25 @@ import { TextEditor } from '@/components/ui/text-editor/text-editor';
 import {
 	DndMapppingImages,
 	ImageItemArgs,
+	isLocalImageItem,
 } from '@/components/ui/dnd-mapping-images';
 
 // Schemas
 import { UpdatePostArgs, updatePostSchema } from '@repo/schemas/post';
 
 // Hooks
-import { useRetrievePostData } from '@/hooks/data/post';
+import { useRetrievePostData, useUpadatePost } from '@/hooks/data/post';
 import { useGetImageFromKeys } from '@/hooks/data/image';
+import { useRouter } from 'next/navigation';
+import { toast } from '@/lib/utils/toast';
 
 export const EditPostDialog: React.FC<{
 	postId: string;
 }> = ({ postId }) => {
 	const [images, setImages] = React.useState<ImageItemArgs>([]);
-
+	console.log('images', images);
 	const { data } = useRetrievePostData(postId);
 
-	console.log('post', data);
 	const { data: image } = useGetImageFromKeys({
 		imageUrls: data?.post.postImages.map((image) => image.imageUrl) || [],
 	});
@@ -40,9 +42,10 @@ export const EditPostDialog: React.FC<{
 		control,
 		reset,
 		handleSubmit,
+		setValue,
 		formState: { errors },
 	} = useForm<UpdatePostArgs>({
-		context: updatePostSchema,
+		context: updatePostSchema.omit({ postId: true }),
 		defaultValues: {
 			title: '',
 			content: '',
@@ -50,7 +53,19 @@ export const EditPostDialog: React.FC<{
 		},
 	});
 
-	console.log('images', image);
+	React.useEffect(() => {
+		const localImages = images.filter(isLocalImageItem);
+		setValue(
+			'images',
+			localImages.map((img) => ({
+				filename: img.filename,
+				contentType: img.contentType,
+				size: img.size,
+			})),
+			{ shouldDirty: true, shouldValidate: true }
+		);
+	}, [images, setValue]);
+
 	React.useEffect(() => {
 		if (data && image) {
 			setImages(
@@ -76,8 +91,44 @@ export const EditPostDialog: React.FC<{
 		}
 	}, [data, image, reset]);
 
+	const { mutate, isPending } = useUpadatePost();
+
+	const router = useRouter();
 	const onSubmit = (data: UpdatePostArgs) => {
-		console.log('submit', data, images);
+		mutate(
+			{
+				data: {
+					...data,
+					images: images
+						.map((img) => {
+							if (isLocalImageItem(img)) {
+								return {
+									filename: img.filename,
+									contentType: img.contentType,
+									size: img.size,
+								};
+							}
+							return img.imageUrl;
+						})
+						.filter((img) => img !== undefined),
+
+					postId,
+				},
+				files: images
+					.filter((img) => img.kind === 'local')
+					.map((img) => img.file),
+			},
+			{
+				onSuccess: ({ title, message }) => {
+					toast({
+						title,
+						content: message,
+						variant: 'success',
+					});
+					router.push(`/organization/post/${postId}`);
+				},
+			}
+		);
 	};
 
 	return (
@@ -134,7 +185,12 @@ export const EditPostDialog: React.FC<{
 						<DndMapppingImages images={images} setImages={setImages} />
 					</div>
 
-					<Button type="submit" className="ml-auto">
+					<Button
+						type="submit"
+						className="ml-auto"
+						isLoading={isPending}
+						isPending={isPending}
+					>
 						Submit
 					</Button>
 				</div>

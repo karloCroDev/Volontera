@@ -18,7 +18,7 @@ export async function createPost({
 	files,
 }: Required<DataWithFiles<CreatePostArgs>>) {
 	try {
-		const res = await API().post('/post', { ...data, ...files });
+		const res = await API().post('/post', data);
 
 		await Promise.all(
 			data.images.map((image, index) =>
@@ -89,8 +89,11 @@ export async function updatePost({
 	files,
 }: DataWithFiles<UpdatePostArgs>) {
 	try {
-		const res = await API().patch('/post', { ...data, ...files });
+		const res = await API().patch('/post', data);
+
+		console.log(files);
 		if (files && files.length > 0 && res.data?.presignedUrls) {
+			console.log('Uploading files...');
 			await Promise.all(
 				data.images.map((image, index) => {
 					if (typeof image !== 'string') {

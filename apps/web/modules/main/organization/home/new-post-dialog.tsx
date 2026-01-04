@@ -39,7 +39,6 @@ export const NewPostDialog = () => {
 	const [isOpen, setIsOpen] = React.useState(false);
 
 	const [images, setImages] = React.useState<ImageItemArgs>([]);
-	const params = useParams<{ organizationId: string }>();
 
 	const {
 		handleSubmit,
@@ -57,33 +56,34 @@ export const NewPostDialog = () => {
 		},
 	});
 
+	const { mutate, isPending } = useCreatePost();
+
 	React.useEffect(() => {
 		const localImages = images.filter(isLocalImageItem);
 		setValue(
 			'images',
-			localImages.map((img) => ({
-				filename: img.filename,
-				contentType: img.contentType,
-				size: img.size,
+			localImages.map(({ contentType, filename, size }) => ({
+				contentType,
+				filename,
+				size,
 			})),
-			{ shouldDirty: true, shouldValidate: true }
+			{
+				shouldDirty: true,
+				shouldTouch: true,
+				shouldValidate: true,
+			}
 		);
 	}, [images, setValue]);
 
-	const { mutate, isPending } = useCreatePost();
-
+	const params = useParams<{ organizationId: string }>();
 	const onSubmit = (data: Omit<CreatePostArgs, 'organizationId'>) => {
 		const localImages = images.filter(isLocalImageItem);
+
 		mutate(
 			{
 				data: {
 					...data,
 					organizationId: params.organizationId,
-					images: localImages.map(({ contentType, filename, size }) => ({
-						contentType,
-						filename,
-						size,
-					})),
 				},
 				files: localImages.map((img) => img.file),
 			},
@@ -96,12 +96,10 @@ export const NewPostDialog = () => {
 						content: message,
 						variant: 'success',
 					});
+					reset();
 				},
 				onError: (err: { message: string }) => {
 					setError('root', { message: err.message });
-				},
-				onSettled: () => {
-					reset();
 				},
 			}
 		);
@@ -178,7 +176,14 @@ export const NewPostDialog = () => {
 				<div className="flex items-end gap-4">
 					<div className="flex-1">
 						<Label className="mb-2">Post image(s)</Label>
-						<DndMapppingImages images={images} setImages={setImages} />
+						<DndMapppingImages
+							images={images}
+							setImages={(next) => {
+								setImages((prev) =>
+									typeof next === 'function' ? next(prev) : next
+								);
+							}}
+						/>
 						{errors.images?.message && (
 							<p className="text-destructive mt-2 text-sm">
 								{errors.images.message}

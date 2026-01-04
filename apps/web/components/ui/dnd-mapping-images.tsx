@@ -28,9 +28,8 @@ export type RemoteImageItemArgs = {
 
 export type ImageItemArgs = (LocalImageItemArgs | RemoteImageItemArgs)[];
 
-export const isLocalImageItem = (
-	item: ImageItemArgs[number]
-): item is LocalImageItemArgs => item.kind === 'local';
+export const isLocalImageItem = (item: ImageItemArgs[number]) =>
+	item.kind === 'local';
 
 // Logika za premještanje elemenata u nizu
 const moveItem = <T,>(items: T[], fromIndex: number, toIndex: number) => {
@@ -66,83 +65,90 @@ export const DndMapppingImages: React.FC<
 		};
 	}, []);
 
-	const removeImage = React.useCallback((id: string) => {
-		setImages((prev) => {
-			// Maknem sliku od url
-			const toRemove = prev.find((x) => x.id === id);
-			// Ovo samo makne sliku iz memorije browsera
-			if (toRemove?.kind === 'local') URL.revokeObjectURL(toRemove.previewUrl);
-			return prev.filter((x) => x.id !== id);
-		});
-	}, [setImages]);
+	const removeImage = React.useCallback(
+		(id: string) => {
+			setImages((prev) => {
+				// Maknem sliku od url
+				const toRemove = prev.find((x) => x.id === id);
+				// Ovo samo makne sliku iz memorije browsera
+				if (toRemove?.kind === 'local')
+					URL.revokeObjectURL(toRemove.previewUrl);
+				return prev.filter((x) => x.id !== id);
+			});
+		},
+		[setImages]
+	);
 
-	const reorderImages = React.useCallback((fromId: string, toId: string) => {
-		setImages((prev) => {
-			const fromIndex = prev.findIndex((x) => x.id === fromId);
-			const toIndex = prev.findIndex((x) => x.id === toId);
-			if (fromIndex === -1 || toIndex === -1) return prev;
-			return moveItem(prev, fromIndex, toIndex);
-		});
-	}, [setImages]);
+	const reorderImages = React.useCallback(
+		(fromId: string, toId: string) => {
+			setImages((prev) => {
+				const fromIndex = prev.findIndex((x) => x.id === fromId);
+				const toIndex = prev.findIndex((x) => x.id === toId);
+				if (fromIndex === -1 || toIndex === -1) return prev;
+				return moveItem(prev, fromIndex, toIndex);
+			});
+		},
+		[setImages]
+	);
 	return (
 		<div {...rest} className={twMerge('flex flex-wrap gap-4', className)}>
 			{images
 				.filter((image) => Boolean(image.previewUrl))
 				.map((image) => (
-				<div
-					key={image.id}
-					draggable
-					onDragStart={(e) => {
-						dragFromIdRef.current = image.id;
-						setDragOverId(null);
+					<div
+						key={image.id}
+						draggable
+						onDragStart={(e) => {
+							dragFromIdRef.current = image.id;
+							setDragOverId(null);
 
-						e.dataTransfer.setData('text/plain', image.id);
+							e.dataTransfer.setData('text/plain', image.id);
 
-						e.dataTransfer.effectAllowed = 'move';
-					}}
-					onDragOver={(e) => {
-						e.preventDefault();
-						if (dragOverId !== image.id) setDragOverId(image.id);
-						e.dataTransfer.dropEffect = 'move';
-					}}
-					onDragLeave={() => {
-						setDragOverId((prev) => (prev === image.id ? null : prev));
-					}}
-					onDrop={(e) => {
-						e.preventDefault();
-						const fromId =
-							dragFromIdRef.current ?? e.dataTransfer.getData('text/plain');
-						if (!fromId) return;
-						reorderImages(fromId, image.id);
-						setDragOverId(null);
-						dragFromIdRef.current = null;
-					}}
-					onDragEnd={() => {
-						setDragOverId(null);
-						dragFromIdRef.current = null;
-					}}
-					className={
-						'size-30 border-input-border relative overflow-hidden rounded-lg border' +
-						(dragOverId === image.id ? ' border-primary' : '')
-					}
-				>
-					<Image
-						src={image.previewUrl}
-						alt="Woah awesome"
-						fill
-						className="object-cover"
-					/>
-
-					<Button
-						className="absolute right-2 top-2 p-1"
-						isFullyRounded
-						colorScheme="destructive"
-						onPress={() => removeImage(image.id)}
+							e.dataTransfer.effectAllowed = 'move';
+						}}
+						onDragOver={(e) => {
+							e.preventDefault();
+							if (dragOverId !== image.id) setDragOverId(image.id);
+							e.dataTransfer.dropEffect = 'move';
+						}}
+						onDragLeave={() => {
+							setDragOverId((prev) => (prev === image.id ? null : prev));
+						}}
+						onDrop={(e) => {
+							e.preventDefault();
+							const fromId =
+								dragFromIdRef.current ?? e.dataTransfer.getData('text/plain');
+							if (!fromId) return;
+							reorderImages(fromId, image.id);
+							setDragOverId(null);
+							dragFromIdRef.current = null;
+						}}
+						onDragEnd={() => {
+							setDragOverId(null);
+							dragFromIdRef.current = null;
+						}}
+						className={
+							'size-30 border-input-border relative overflow-hidden rounded-lg border' +
+							(dragOverId === image.id ? ' border-primary' : '')
+						}
 					>
-						<X className="size-4" />
-					</Button>
-				</div>
-			))}
+						<Image
+							src={image.previewUrl}
+							alt="Image preview"
+							fill
+							className="object-cover"
+						/>
+
+						<Button
+							className="absolute right-2 top-2 p-1"
+							isFullyRounded
+							colorScheme="destructive"
+							onPress={() => removeImage(image.id)}
+						>
+							<X className="size-4" />
+						</Button>
+					</div>
+				))}
 			<label
 				htmlFor={inputId}
 				className="border-input-border hover:border-primary size-30 text-muted-foreground hover:text-primary flex cursor-pointer items-center justify-center gap-4 rounded-lg border border-dashed transition-colors"

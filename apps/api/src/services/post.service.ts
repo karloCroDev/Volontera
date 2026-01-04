@@ -143,8 +143,9 @@ export async function updatePostService(rawData: unknown) {
     })
   );
 
+  console.log(data);
   // Maybe return if I want to see it immediately!
-  const post = await updatePost({
+  await updatePost({
     postId: data.postId,
     title: data.title,
     content: data.content,

@@ -3,7 +3,7 @@ import { serverFetch } from '@/lib/utils/server-fetch';
 
 // Schemas
 import {
-	RetrievePostWithCommentsArgs,
+	RetrievePostArgs,
 	RetrieveOrganizationPostsArgs,
 } from '@repo/schemas/post';
 import { ServerHandleResponse } from '@repo/types/general';
@@ -29,7 +29,7 @@ export async function retrieveOrganizationPosts({
 }
 export async function retrievePostWithComments({
 	postId,
-}: RetrievePostWithCommentsArgs): Promise<
+}: RetrievePostArgs): Promise<
 	RetrievePostWithComments | ServerHandleResponse<false>
 > {
 	return await serverFetch({

@@ -51,6 +51,7 @@ export async function updatePost({
       title,
       content,
       postImages: {
+        deleteMany: {},
         create: images.map((imageUrl) => ({ imageUrl })),
       },
     },
