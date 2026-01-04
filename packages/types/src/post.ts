@@ -1,3 +1,4 @@
+// Database
 import {
   Post,
   PostComments,
@@ -5,7 +6,7 @@ import {
   Organization,
   User,
 } from "@repo/database";
-import { ServerHandleResponse } from "./general";
+import { ServerHandleResponse, SuccessfulResponse } from "./general";
 
 type SharedPostValues = Post & {
   organization: Organization;
@@ -20,9 +21,16 @@ type SharedPostValues = Post & {
 export type RetrieveOrganizationPostsResponse = ServerHandleResponse<true> & {
   posts: SharedPostValues[];
 };
+
 export type RetrievePostWithComments = ServerHandleResponse<true> & {
   post: Post &
     SharedPostValues & {
       postComments: PostComments[];
     };
+};
+
+export type RetrievePostData = SuccessfulResponse & {
+  post: Post & {
+    postImages: PostImages[];
+  };
 };

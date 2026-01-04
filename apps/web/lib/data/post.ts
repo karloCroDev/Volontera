@@ -7,7 +7,7 @@ import {
 	CreatePostArgs,
 	DeletePostArgs,
 	UpdatePostArgs,
-	RetrievePostWithCommentsArgs,
+	RetrievePostArgs,
 	RetrieveOrganizationPostsArgs,
 	LikeOrDislikePostArgs,
 } from '@repo/schemas/post';
@@ -58,9 +58,7 @@ export async function retrieveOrganizationPosts({
 	}
 }
 
-export async function retrievePostWithComments({
-	postId,
-}: RetrievePostWithCommentsArgs) {
+export async function retrievePostWithComments({ postId }: RetrievePostArgs) {
 	try {
 		const res = await API().get(`/post/id/${postId}`);
 		return res.data;
@@ -80,6 +78,39 @@ export async function likePost({ postId }: LikeOrDislikePostArgs) {
 export async function dislikePost({ postId }: LikeOrDislikePostArgs) {
 	try {
 		const res = await API().patch('/post/dislike', { postId });
+		return res.data;
+	} catch (err) {
+		catchError(err);
+	}
+}
+
+export async function updatePost({
+	data,
+	files,
+}: DataWithFiles<UpdatePostArgs>) {
+	try {
+		const res = await API().patch('/post', { ...data, ...files });
+		if (files && files.length > 0 && res.data?.presignedUrls) {
+			await Promise.all(
+				data.images.map((image, index) => {
+					if (typeof image !== 'string') {
+						return API({
+							headers: { 'Content-type': image.contentType },
+						}).put(res.data.presignedUrls[index], files[index]);
+					}
+				})
+			);
+		}
+		delete res.data?.presignedUrls;
+		return res.data;
+	} catch (err) {
+		catchError(err);
+	}
+}
+
+export async function retrievePostData({ postId }: RetrievePostArgs) {
+	try {
+		const res = await API().get(`/post/data/${postId}`);
 		return res.data;
 	} catch (err) {
 		catchError(err);

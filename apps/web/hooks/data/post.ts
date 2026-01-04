@@ -2,7 +2,9 @@
 import {
 	useMutation,
 	UseMutationOptions,
+	useQuery,
 	useQueryClient,
+	UseQueryOptions,
 	useSuspenseQuery,
 	UseSuspenseQueryOptions,
 } from '@tanstack/react-query';
@@ -14,7 +16,9 @@ import {
 	dislikePost,
 	likePost,
 	retrieveOrganizationPosts,
+	retrievePostData,
 	retrievePostWithComments,
+	updatePost,
 } from '@/lib/data/post';
 
 // Types
@@ -30,6 +34,7 @@ import {
 	CreatePostArgs,
 	DeletePostArgs,
 	LikeOrDislikePostArgs,
+	UpdatePostArgs,
 } from '@repo/schemas/post';
 import { RetrieveOrganizationPostsResponse } from '@repo/types/post';
 
@@ -135,6 +140,40 @@ export const useRetrievePostWithComments = (
 	return useSuspenseQuery({
 		queryKey: ['posts', postId],
 		queryFn: () => retrievePostWithComments({ postId }),
+		...options,
+	});
+};
+
+export const useUpadatePost = (
+	options?: UseMutationOptions<
+		SuccessfulResponse,
+		ErrorFormResponse,
+		DataWithFiles<UpdatePostArgs>
+	>
+) => {
+	const queryClient = useQueryClient();
+	return useMutation({
+		mutationKey: ['update-post'],
+		// mutation receives a single variable object { data, files }
+		mutationFn: (data: DataWithFiles<UpdatePostArgs>) => updatePost(data),
+		onSuccess: async (...args) => {
+			await queryClient.invalidateQueries({ queryKey: ['posts'] });
+			await options?.onSuccess?.(...args);
+		},
+		...options,
+	});
+};
+
+export const useRetrievePostData = (
+	postId: string,
+	options?: Omit<
+		UseQueryOptions<RetrieveOrganizationPostsResponse>,
+		'queryKey' | 'queryFn'
+	>
+) => {
+	return useQuery({
+		queryKey: ['post-data', postId],
+		queryFn: () => retrievePostData({ postId }),
 		...options,
 	});
 };

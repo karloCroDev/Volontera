@@ -11,7 +11,7 @@ import { LinkAsButton } from '@/components/ui/link-as-button';
 // Modules
 import { PostLike } from '@/components/ui/post/post-like';
 import { SharePost } from '@/components/ui/post/share-post';
-import { EditPost } from '@/components/ui/post/edit-post';
+import { EditPostDialog } from '@/components/ui/post/edit-post-dialog';
 import { DeletePostDialog } from '@/components/ui/post/delete-post-dialog';
 import { Carousel } from '@/components/ui/carousel';
 
@@ -70,7 +70,7 @@ export const Post: React.FC<{
 							Explore
 						</LinkAsButton>
 					)}
-					<EditPost />
+					<EditPostDialog />
 				</div>
 			</div>
 			<h4 className="mb-4 text-lg font-semibold">{post.title}</h4>

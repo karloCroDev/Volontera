@@ -35,6 +35,7 @@ postRoutes.get(
 
 postRoutes.get("/:organizationId", retrieveOrganizationPostsController);
 
+// Everyone
 postRoutes.get("/id/:postId", retrievePostWithCommentsController);
 
 postRoutes.patch("/like", likePostController);

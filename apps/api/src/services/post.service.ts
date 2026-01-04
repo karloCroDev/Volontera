@@ -123,6 +123,7 @@ export async function updatePostService(rawData: unknown) {
     return {
       status: 400,
       body: {
+        title: "Invalid Data",
         message: "Invalid post data",
       },
     };
