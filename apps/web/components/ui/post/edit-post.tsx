@@ -26,7 +26,7 @@ export const EditPost = () => {
 			title="Edit post"
 			subtitle="Change title, images or descirption of your post"
 			triggerChildren={
-				<Button variant="blank">
+				<Button variant="blank" className="ml-auto">
 					<EllipsisVertical className="text-muted-foreground" />
 				</Button>
 			}

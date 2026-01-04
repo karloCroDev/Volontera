@@ -1,0 +1,60 @@
+'use client';
+
+// External packages
+import * as React from 'react';
+
+// Components
+import { Post } from '@/components/ui/post/post';
+import { useRetrieveOrganizationPosts } from '@/hooks/data/post';
+import { useParams } from 'next/navigation';
+import { RetrieveOrganizationPostsResponse } from '@repo/types/post';
+import { useGetImageFromKeys } from '@/hooks/data/image';
+
+export const PostsMapping: React.FC<{
+	posts: RetrieveOrganizationPostsResponse;
+}> = ({ posts }) => {
+	const params = useParams<{ organizationId: string }>();
+
+	const { data } = useRetrieveOrganizationPosts(params.organizationId, {
+		initialData: posts,
+	});
+
+	const { data: imagesData } = useGetImageFromKeys({
+		imageUrls: [
+			...data.posts
+				.flatMap((post) => post.postImages.map((image) => image.imageUrl))
+				.filter(
+					(url): url is string => typeof url === 'string' && url.length > 0
+				),
+			...data.posts
+				.map((post) => post.organization.avatarImage)
+				.filter(
+					(url): url is string => typeof url === 'string' && url.length > 0
+				),
+			...data.posts
+				.map((post) => post.author.image)
+				.filter(
+					(url): url is string => typeof url === 'string' && url.length > 0
+				),
+		],
+	});
+
+	return (
+		<div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
+			{data.posts.length > 0 ? (
+				data.posts.map((post) => (
+					<Post
+						key={post.id}
+						post={post}
+						isInsideOrganization
+						images={imagesData?.urls}
+					/>
+				))
+			) : (
+				<p className="text-muted-foreground text-center">
+					No posts have been created yet.
+				</p>
+			)}
+		</div>
+	);
+};

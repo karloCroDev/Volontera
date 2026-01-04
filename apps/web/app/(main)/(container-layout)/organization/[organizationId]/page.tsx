@@ -12,12 +12,14 @@ import { AnchorAsButton } from '@/components/ui/anchor-as-button';
 
 // Modules
 import { OrganizationRoutingHeader } from '@/modules/main/organization/common/organization-routing-header';
-import { NewPostDialog } from '@/modules/main/organization/home/new-post-dialog';
-import { JoinDialog } from '@/modules/main/organization/common/join-dialog';
 
+import { JoinDialog } from '@/modules/main/organization/common/join-dialog';
+import { NewPostDialog } from '@/modules/main/organization/home/new-post-dialog';
+import { PostsMapping } from '@/modules/main/organization/home/posts-mapping';
 // Lib
 import { getOrganizationDetailsById } from '@/lib/server/organization';
 import { getImageFromKey } from '@/lib/server/image';
+import { retrieveOrganizationPosts } from '@/lib/server/post';
 
 export default async function OrganizationPage({
 	params,
@@ -30,10 +32,8 @@ export default async function OrganizationPage({
 	const organizationDetailsById =
 		await getOrganizationDetailsById(organizationId);
 
-	console.log(organizationDetailsById);
 	if (!organizationDetailsById.success) notFound();
 
-	console.log(organizationDetailsById);
 	const avatarKey = organizationDetailsById.organization.avatarImage;
 	const coverKey =
 		organizationDetailsById.organization.organizationInfo.coverImage;
@@ -49,6 +49,10 @@ export default async function OrganizationPage({
 	const organizationCoverImage = imageResponse?.urls
 		? imageResponse.urls[coverKey]
 		: '';
+
+	const posts = await retrieveOrganizationPosts({ organizationId });
+
+	if (!posts.success) notFound();
 	return (
 		<>
 			<div className="border-input-border relative -mx-4 -my-6 rounded-xl px-5 py-4 md:m-0 md:border">
@@ -69,7 +73,7 @@ export default async function OrganizationPage({
 								colorScheme="gray"
 								size="2xl"
 							>
-								Organization
+								{organizationDetailsById.organization.name}
 							</Avatar>
 						</div>
 
@@ -188,10 +192,8 @@ export default async function OrganizationPage({
 
 			<OrganizationRoutingHeader />
 			<NewPostDialog />
-			<Post
-				title="Example title"
-				content="Lorem ipsum dolorem et imet sssswqdd po qkwd kqwdkpoqwpodk qk. What is going on in this world. Hello w"
-			/>
+
+			<PostsMapping posts={posts} />
 		</>
 	);
 }

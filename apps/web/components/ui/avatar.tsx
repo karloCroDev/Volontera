@@ -44,6 +44,10 @@ export const Avatar: React.FC<
 				alt={imageProps?.alt || 'Representation of users profile picture'}
 				className={twMerge(
 					'size-full rounded-full object-cover',
+					colorScheme === 'gray' && 'bg-secondary-background',
+					colorScheme === 'black' && 'bg-muted',
+					colorScheme === 'orange' && 'bg-primary',
+					colorScheme === 'yellow' && 'bg-accent',
 					imageProps.className
 				)}
 			/>

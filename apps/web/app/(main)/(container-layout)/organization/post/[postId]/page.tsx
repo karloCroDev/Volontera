@@ -8,10 +8,10 @@ import { CommentTextArea } from '@/modules/main/organization/post/comment-text-a
 export default async function HomePage() {
 	return (
 		<>
-			<Post
+			{/* <Post
 				title="Example title"
 				content="Lorem ipsum dolorem et imet sssswqdd po qkwd kqwdkpoqwpodk qk. What is going on in this world. Hello w"
-			/>
+			/> */}
 
 			<hr className="bg-muted my-6 h-px w-full border-0" />
 			<div className="border-input-border bg-muted max-h- relative w-full rounded-xl border px-5 py-6">

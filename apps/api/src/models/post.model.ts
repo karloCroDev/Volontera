@@ -61,6 +61,17 @@ export async function retrieveOrganizationPosts(
     include: {
       organization: true,
       postImages: true,
+      _count: {
+        select: {
+          postComments: true,
+          postLikes: true,
+        },
+      },
+      author: {
+        omit: {
+          password: true,
+        },
+      },
     },
     where: {
       organizationId,
@@ -75,9 +86,19 @@ export async function retrievePostWithComments(postId: Post["id"]) {
       organization: true,
       postImages: true,
       author: true,
+      _count: {
+        select: {
+          postComments: true,
+          postLikes: true,
+        },
+      },
       postComments: {
         include: {
-          author: true,
+          author: {
+            omit: {
+              password: true,
+            },
+          },
         },
       },
     },

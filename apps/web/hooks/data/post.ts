@@ -14,6 +14,7 @@ import {
 	dislikePost,
 	likePost,
 	retrieveOrganizationPosts,
+	retrievePostWithComments,
 } from '@/lib/data/post';
 
 // Types
@@ -125,15 +126,15 @@ export const useRetrieveOrganizationPosts = (
 };
 
 export const useRetrievePostWithComments = (
-	organizationId: string,
+	postId: string,
 	options?: Omit<
 		UseSuspenseQueryOptions<RetrieveOrganizationPostsResponse>,
 		'queryKey' | 'queryFn'
 	>
 ) => {
 	return useSuspenseQuery({
-		queryKey: ['posts', organizationId],
-		queryFn: () => retrieveOrganizationPosts({ organizationId }),
+		queryKey: ['posts', postId],
+		queryFn: () => retrievePostWithComments({ postId }),
 		...options,
 	});
 };

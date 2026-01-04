@@ -39,6 +39,10 @@ export const NewPostDialog = () => {
 
 	const [images, setImages] = React.useState<ImageItemArgs>([]);
 	const params = useParams<{ organizationId: string }>();
+	const createPostFormSchema = React.useMemo(
+		() => createPostSchema.omit({ organizationId: true }),
+		[]
+	);
 
 	const {
 		handleSubmit,
@@ -47,8 +51,8 @@ export const NewPostDialog = () => {
 		setError,
 		setValue,
 		reset,
-	} = useForm<CreatePostArgs>({
-		resolver: zodResolver(createPostSchema),
+	} = useForm<Omit<CreatePostArgs, 'organizationId'>>({
+		resolver: zodResolver(createPostFormSchema),
 		defaultValues: {
 			title: '',
 			content: '',
@@ -70,9 +74,7 @@ export const NewPostDialog = () => {
 
 	const { mutate, isPending } = useCreatePost();
 
-	const onSubmit = (
-		data: Omit<CreatePostArgs, 'images' | 'organizationId'>
-	) => {
+	const onSubmit = (data: Omit<CreatePostArgs, 'organizationId'>) => {
 		mutate(
 			{
 				data: {
@@ -185,7 +187,12 @@ export const NewPostDialog = () => {
 						)}
 					</div>
 
-					<Button type="submit" className="ml-auto" isLoading={isPending}>
+					<Button
+						type="submit"
+						className="ml-auto"
+						isLoading={isPending}
+						isDisabled={isPending}
+					>
 						Submit
 					</Button>
 				</div>

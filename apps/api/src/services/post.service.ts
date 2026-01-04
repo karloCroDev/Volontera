@@ -138,8 +138,8 @@ export async function retrieveOrganizationPostsService(rawData: unknown) {
     return {
       status: 400,
       body: {
-        title: "Invalid Data",
         message: "The provided data is invalid",
+        success: false,
       },
     };
   }
@@ -149,8 +149,8 @@ export async function retrieveOrganizationPostsService(rawData: unknown) {
   return {
     status: 200,
     body: {
-      title: "Organization Posts Retrieved",
       message: "Posts retrieved successfully",
+      success: true,
       posts,
     },
   };
@@ -163,8 +163,8 @@ export async function retrievePostWithCommentsService(rawData: unknown) {
     return {
       status: 400,
       body: {
-        title: "Invalid Data",
         message: "The provided data is invalid",
+        success: false,
       },
     };
   }
@@ -173,8 +173,8 @@ export async function retrievePostWithCommentsService(rawData: unknown) {
   return {
     status: 200,
     body: {
-      title: "Post with comments Retrieved",
       message: "Post with comments retrieved successfully",
+      success: true,
       post,
     },
   };
