@@ -9,8 +9,11 @@ import {
   dislikePostController,
   likePostController,
   retrieveOrganizationPostsController,
+  retrievePostDataController,
   retrievePostWithCommentsController,
+  updatePostController,
 } from "@/controllers/post.controller";
+
 import { organizationMiddleware } from "@/middleware/role-middleware";
 
 export const postRoutes = Router();
@@ -21,7 +24,14 @@ postRoutes.use(express.json());
 postRoutes
   .route("/")
   .post(organizationMiddleware, createPostController)
-  .delete(organizationMiddleware, deletePostController);
+  .delete(organizationMiddleware, deletePostController)
+  .patch(organizationMiddleware, updatePostController);
+
+postRoutes.get(
+  "/data/:postId",
+  organizationMiddleware,
+  retrievePostDataController
+);
 
 postRoutes.get("/:organizationId", retrieveOrganizationPostsController);
 
@@ -29,4 +39,5 @@ postRoutes.get("/id/:postId", retrievePostWithCommentsController);
 
 postRoutes.patch("/like", likePostController);
 postRoutes.patch("/dislike", dislikePostController);
+
 // postRoutes.route('/home')

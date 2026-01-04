@@ -19,7 +19,7 @@ export const DeletePostDialog: React.FC<{
 		<Dialog
 			title="Delete post?"
 			triggerChildren={
-				<Button variant="outline" colorScheme="destructive">
+				<Button variant="outline" colorScheme="destructive" size="xs">
 					Delete Post
 				</Button>
 			}

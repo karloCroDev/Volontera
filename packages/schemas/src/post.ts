@@ -1,5 +1,5 @@
 // External packages
-import { z } from "zod";
+import { array, string, z } from "zod";
 
 // Schemas
 import { uploadImageSchema } from "./image";
@@ -18,7 +18,9 @@ export type CreatePostArgs = z.infer<typeof createPostSchema>;
 
 export const updatePostSchema = z.object({
   postId: z.cuid().or(z.literal("")),
-  ...createPostSchema.omit({ organizationId: true }),
+  ...createPostSchema.omit({ organizationId: true, images: true }).shape,
+
+  images: z.union([uploadImageSchema.shape.image.array(), array(string())]),
 });
 
 export type UpdatePostArgs = z.infer<typeof updatePostSchema>;
@@ -37,12 +39,10 @@ export type RetrieveOrganizationPostsArgs = z.infer<
   typeof retrieveOrganizationPostsSchema
 >;
 
-export const retrievePostWithCommentsSchema = z.object({
+export const retrievePost = z.object({
   postId: z.cuid(),
 });
-export type RetrievePostWithCommentsArgs = z.infer<
-  typeof retrievePostWithCommentsSchema
->;
+export type RetrievePostArgs = z.infer<typeof retrievePost>;
 
 export const likeOrDislikePostSchema = z.object({
   postId: z.cuid(),

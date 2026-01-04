@@ -41,6 +41,7 @@ export async function updatePost({
   postId,
   title,
   content,
+  images,
 }: PostMangmentArgs & {
   postId: Post["id"];
 }) {
@@ -49,6 +50,18 @@ export async function updatePost({
     data: {
       title,
       content,
+      postImages: {
+        create: images.map((imageUrl) => ({ imageUrl })),
+      },
+    },
+  });
+}
+
+export async function retrievePostData(postId: Post["id"]) {
+  return prisma.post.findUnique({
+    where: { id: postId },
+    include: {
+      postImages: true,
     },
   });
 }
@@ -136,7 +149,6 @@ export async function dislikePost({ postId, userId }: LikeOrDislikePostArgs) {
 }
 
 // Home (with cool algorithm later)
-
 export async function retrieveHomePosts() {
   return prisma.post.findMany({
     include: {

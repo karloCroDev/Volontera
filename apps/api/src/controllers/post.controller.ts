@@ -8,7 +8,9 @@ import {
   dislikePostService,
   likePostService,
   retrieveOrganizationPostsService,
+  retrievePostDataService,
   retrievePostWithCommentsService,
+  updatePostService,
 } from "@/services/post.service";
 
 export async function createPostController(req: Request, res: Response) {
@@ -34,18 +36,25 @@ export async function deletePostController(req: Request, res: Response) {
   }
 }
 
-// export async function updatePostSchema(req: Request, res: Response) {
-//   try {
-//     const result = await up({
-//       rawData: req.body,
-//       userId: req.user.userId,
-//     });
+export async function updatePostController(req: Request, res: Response) {
+  try {
+    const result = await updatePostService(req.body);
 
-//     return res.status(result.status).json(result.body);
-//   } catch (err) {
-//     return res.status(500).json({ success: false, message: "Internal error" });
-//   }
-// }
+    return res.status(result.status).json(result.body);
+  } catch (err) {
+    return res.status(500).json({ success: false, message: "Internal error" });
+  }
+}
+
+export async function retrievePostDataController(req: Request, res: Response) {
+  try {
+    const result = await retrievePostDataService(req.params);
+
+    return res.status(result.status).json(result.body);
+  } catch (err) {
+    res.status(500).json({ success: false, message: "Internal error" });
+  }
+}
 
 // Everyone
 export async function retrieveOrganizationPostsController(
