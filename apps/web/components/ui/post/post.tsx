@@ -15,6 +15,8 @@ import { EditPost } from '@/components/ui/post/edit-post';
 // Repo Types
 import { RetrieveOrganizationPostsResponse } from '@repo/types/post';
 import { convertToFullname } from '@/lib/utils/convert-to-fullname';
+import { Carousel } from '@/components/ui/carousel';
+import Image from 'next/image';
 
 export const Post: React.FC<{
 	post: RetrieveOrganizationPostsResponse['posts'][0];
@@ -27,6 +29,10 @@ export const Post: React.FC<{
 	isInsideOrganization = false,
 }) => {
 	const splittedContent = post.content.split('.');
+	const singlePostImage = post.postImages[0];
+	const singlePostImageSrc = singlePostImage
+		? images?.[singlePostImage.imageUrl]
+		: undefined;
 
 	return (
 		<div className="border-input-border bg-muted rounded-xl border px-8 py-6">
@@ -78,7 +84,42 @@ export const Post: React.FC<{
 				}}
 			/>
 
-			<div className="rouded-md border-input-border mt-4 aspect-[4/3] max-h-[600px] w-full rounded border" />
+			<div className="mt-4">
+				{post.postImages.length > 1 ? (
+					<Carousel
+						slides={post.postImages.map(({ imageUrl, id }) => {
+							const src = images?.[imageUrl];
+							if (!src) return null;
+
+							return (
+								<div
+									className="rouded-md border-input-border aspect-[4/3] max-h-[600px] w-full rounded border"
+									key={id}
+								>
+									<Image
+										src={src}
+										alt="Post image"
+										fill
+										className="object-contain"
+									/>
+								</div>
+							);
+						})}
+					/>
+				) : (
+					post.postImages.length === 1 &&
+					singlePostImageSrc && (
+						<div className="rouded-md border-input-border mt-4 aspect-[4/3] max-h-[600px] w-full rounded border">
+							<Image
+								src={singlePostImageSrc}
+								alt="Post image"
+								fill
+								className="object-cover"
+							/>
+						</div>
+					)
+				)}
+			</div>
 
 			<div className="mt-6 flex items-center gap-8">
 				<div className="flex items-center gap-2">
