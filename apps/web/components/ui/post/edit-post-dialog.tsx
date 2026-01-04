@@ -4,28 +4,41 @@
 import * as React from 'react';
 import { EllipsisVertical } from 'lucide-react';
 import { Form } from 'react-aria-components';
+import { Controller, useForm } from 'react-hook-form';
 
 // Components
 import { Button } from '@/components/ui/button';
 import { Dialog } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
 import { FilledInput } from '@/components/ui/filled-input';
-
-// Modules
+import { TextEditor } from '@/components/ui/text-editor/text-editor';
 import {
 	DndMapppingImages,
 	ImageItemArgs,
 } from '@/components/ui/dnd-mapping-images';
-import { Controller, useForm } from 'react-hook-form';
-import { UpdatePostArgs, updatePostSchema } from '@repo/schemas/post';
-import { TextEditor } from '@/components/ui/text-editor/text-editor';
 
-export const EditPostDialog = () => {
+// Schemas
+import { UpdatePostArgs, updatePostSchema } from '@repo/schemas/post';
+
+// Hooks
+import { useRetrievePostData } from '@/hooks/data/post';
+import { useGetImageFromKeys } from '@/hooks/data/image';
+
+export const EditPostDialog: React.FC<{
+	postId: string;
+}> = ({ postId }) => {
 	const [images, setImages] = React.useState<ImageItemArgs>([]);
+
+	const { data } = useRetrievePostData(postId);
+
+	console.log('post', data);
+	const { data: image } = useGetImageFromKeys({
+		imageUrls: data?.post.postImages.map((image) => image.imageUrl) || [],
+	});
 
 	const {
 		control,
+		reset,
 		handleSubmit,
 		formState: { errors },
 	} = useForm<UpdatePostArgs>({
@@ -37,9 +50,35 @@ export const EditPostDialog = () => {
 		},
 	});
 
-	React.useEffect(() => {}, []);
+	console.log('images', image);
+	React.useEffect(() => {
+		if (data && image) {
+			setImages(
+				data.post.postImages.flatMap((img) => {
+					const resolvedUrl = image.urls[img.imageUrl];
+					if (!resolvedUrl) return [];
+					return [
+						{
+							id: img.id,
+							kind: 'remote',
+							previewUrl: resolvedUrl,
+							imageUrl: img.imageUrl,
+						},
+					];
+				})
+			);
+			reset({
+				title: data.post.title,
+				content: data.post.content,
+				// Existing images are represented as keys/urls (schema allows string[])
+				images: data.post.postImages.map((img) => img.imageUrl),
+			});
+		}
+	}, [data, image, reset]);
 
-	const onSubmit = (data: UpdatePostArgs) => {};
+	const onSubmit = (data: UpdatePostArgs) => {
+		console.log('submit', data, images);
+	};
 
 	return (
 		<Dialog
@@ -54,7 +93,18 @@ export const EditPostDialog = () => {
 			<Form className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
 				<div>
 					<Label isOptional>Title</Label>
-					<FilledInput placeholderValue="Woah" className="mt-2" />
+
+					<Controller
+						control={control}
+						name="title"
+						render={({ field }) => (
+							<FilledInput
+								placeholderValue="Title"
+								inputProps={field}
+								className="mt-2"
+							/>
+						)}
+					/>
 				</div>
 
 				<div>

@@ -70,7 +70,8 @@ export const Post: React.FC<{
 							Explore
 						</LinkAsButton>
 					)}
-					<EditPostDialog />
+
+					{hasAnAdminAccess && <EditPostDialog postId={post.id} />}
 				</div>
 			</div>
 			<h4 className="mb-4 text-lg font-semibold">{post.title}</h4>

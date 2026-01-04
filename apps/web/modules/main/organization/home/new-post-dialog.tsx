@@ -17,6 +17,7 @@ import { Label } from '@/components/ui/label';
 import {
 	DndMapppingImages,
 	ImageItemArgs,
+	isLocalImageItem,
 } from '@/components/ui/dnd-mapping-images';
 import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -39,10 +40,6 @@ export const NewPostDialog = () => {
 
 	const [images, setImages] = React.useState<ImageItemArgs>([]);
 	const params = useParams<{ organizationId: string }>();
-	const createPostFormSchema = React.useMemo(
-		() => createPostSchema.omit({ organizationId: true }),
-		[]
-	);
 
 	const {
 		handleSubmit,
@@ -52,7 +49,7 @@ export const NewPostDialog = () => {
 		setValue,
 		reset,
 	} = useForm<Omit<CreatePostArgs, 'organizationId'>>({
-		resolver: zodResolver(createPostFormSchema),
+		resolver: zodResolver(createPostSchema.omit({ organizationId: true })),
 		defaultValues: {
 			title: '',
 			content: '',
@@ -61,9 +58,10 @@ export const NewPostDialog = () => {
 	});
 
 	React.useEffect(() => {
+		const localImages = images.filter(isLocalImageItem);
 		setValue(
 			'images',
-			images.map((img) => ({
+			localImages.map((img) => ({
 				filename: img.filename,
 				contentType: img.contentType,
 				size: img.size,
@@ -75,18 +73,19 @@ export const NewPostDialog = () => {
 	const { mutate, isPending } = useCreatePost();
 
 	const onSubmit = (data: Omit<CreatePostArgs, 'organizationId'>) => {
+		const localImages = images.filter(isLocalImageItem);
 		mutate(
 			{
 				data: {
 					...data,
 					organizationId: params.organizationId,
-					images: images.map(({ contentType, filename, size }) => ({
+					images: localImages.map(({ contentType, filename, size }) => ({
 						contentType,
 						filename,
 						size,
 					})),
 				},
-				files: images.map((img) => img.file),
+				files: localImages.map((img) => img.file),
 			},
 			{
 				onSuccess: ({ message, title }) => {

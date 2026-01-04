@@ -127,7 +127,7 @@ export const TextEditor: React.FC<
 					<Label
 						className={twJoin(
 							'text-muted-foreground absolute left-0 top-6 -z-[1] origin-left -translate-y-1/2 transition-transform',
-							charactersCount > 0 && '-translate-y-[24px] scale-75'
+							value.length > 0 && '-translate-y-[24px] scale-75'
 						)}
 					>
 						{label}

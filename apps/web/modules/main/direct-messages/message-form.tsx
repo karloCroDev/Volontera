@@ -9,7 +9,10 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 // Components
 import { TextEditor } from '@/components/ui/text-editor/text-editor';
 import { Button } from '@/components/ui/button';
-import { ImageItemArgs } from '@/components/ui/dnd-mapping-images';
+import {
+	ImageItemArgs,
+	isLocalImageItem,
+} from '@/components/ui/dnd-mapping-images';
 
 // Hooks
 import { useStartConversationOrStartAndSendDirectMessage } from '@/hooks/data/direct-messages';
@@ -41,13 +44,15 @@ export const MessageForm = withReactQueryProvider(() => {
 				data: {
 					content: value,
 					particpantId: searchParams.get('user') || '',
-					images: images.map(({ contentType, filename, size }) => ({
-						contentType,
-						filename,
-						size,
-					})),
+					images: images
+						.filter(isLocalImageItem)
+						.map(({ contentType, filename, size }) => ({
+							contentType,
+							filename,
+							size,
+						})),
 				},
-				files: images.map((img) => img.file),
+				files: images.filter(isLocalImageItem).map((img) => img.file),
 			},
 			{
 				onSuccess({ message, title, conversationId }) {

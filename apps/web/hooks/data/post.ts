@@ -34,9 +34,13 @@ import {
 	CreatePostArgs,
 	DeletePostArgs,
 	LikeOrDislikePostArgs,
+	RetrievePostArgs,
 	UpdatePostArgs,
 } from '@repo/schemas/post';
-import { RetrieveOrganizationPostsResponse } from '@repo/types/post';
+import {
+	RetrieveOrganizationPostsResponse,
+	RetrievePostData,
+} from '@repo/types/post';
 
 export const useCreatePost = (
 	options?: UseMutationOptions<
@@ -165,11 +169,8 @@ export const useUpadatePost = (
 };
 
 export const useRetrievePostData = (
-	postId: string,
-	options?: Omit<
-		UseQueryOptions<RetrieveOrganizationPostsResponse>,
-		'queryKey' | 'queryFn'
-	>
+	postId: RetrievePostArgs['postId'],
+	options?: Omit<UseQueryOptions<RetrievePostData>, 'queryKey' | 'queryFn'>
 ) => {
 	return useQuery({
 		queryKey: ['post-data', postId],
