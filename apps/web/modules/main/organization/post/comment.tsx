@@ -1,7 +1,9 @@
 'use client';
 
 // External packages
+import * as React from 'react';
 
+// Components
 import { Avatar } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Collapsible } from '@/components/ui/collapsible';
@@ -14,6 +16,12 @@ import {
 	Reply as ReplyIcon,
 	Trash2,
 } from 'lucide-react';
+import {
+	useParams,
+	usePathname,
+	useRouter,
+	useSearchParams,
+} from 'next/navigation';
 
 type CommentOrReplyProps = {
 	numberOfLikes: number;
@@ -24,13 +32,15 @@ export const Comment: React.FC<
 	CommentOrReplyProps & {
 		numberOfReplies: number;
 		// user: SessionSuccessResponse; // Change the type of user when setting the session data
+		// commentData: Omit<RetrievePostWithComments, 'post'> & {
+		// 	comments: RetrievePostWithComments['post']['postComments'];
+		// };
+		commentId: string;
 	}
-> = ({
-	/* eslint react/prop-types: 0 */
-	comment,
-	numberOfReplies,
-	numberOfLikes,
-}) => {
+> = ({ comment, commentId, numberOfReplies, numberOfLikes }) => {
+	const pathname = usePathname();
+	const searchParams = useSearchParams();
+	const router = useRouter();
 	return (
 		<div className="border-b-input-border border-b py-4">
 			<div className="flex items-center gap-4">
@@ -61,7 +71,26 @@ export const Comment: React.FC<
 
 					<div className="flex items-center gap-2">
 						<p>Reply</p>
-						<Button variant="blank" className="p-0">
+						<Button
+							variant={
+								searchParams.get('commentId') === commentId
+									? 'primary'
+									: 'blank'
+							}
+							className="p-0"
+							onPress={() => {
+								const params = new URLSearchParams(searchParams.toString());
+								if (searchParams.get('commentId') === commentId) {
+									params.delete('commentId');
+								} else {
+									params.set('commentId', commentId);
+								}
+
+								router.push(pathname + '?' + params.toString(), {
+									scroll: false,
+								});
+							}}
+						>
 							<ReplyIcon />
 						</Button>
 					</div>
@@ -80,7 +109,7 @@ export const Comment: React.FC<
 					<Collapsible
 						trigger={
 							<div className="group">
-								<Tag className="flex items-center gap-4">
+								<Tag className="flex cursor-pointer items-center gap-4">
 									See {numberOfReplies} replies{' '}
 									<ChevronRight className="size-4 transition-transform group-data-[state=open]:-rotate-90" />
 								</Tag>

@@ -31,7 +31,6 @@ export const EditPostDialog: React.FC<{
 	postId: string;
 }> = ({ postId }) => {
 	const [images, setImages] = React.useState<ImageItemArgs>([]);
-	console.log('images', images);
 	const { data } = useRetrievePostData(postId);
 
 	const { data: image } = useGetImageFromKeys({

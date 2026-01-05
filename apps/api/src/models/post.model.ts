@@ -142,6 +142,14 @@ export async function retrievePostWithComments({
   });
 }
 
+export async function retrieveComments(postId: Post["id"]) {
+  return prisma.postComments.findMany({
+    where: {
+      postId,
+    },
+  });
+}
+
 export async function checkIfUserLiked({
   postId,
   userId,

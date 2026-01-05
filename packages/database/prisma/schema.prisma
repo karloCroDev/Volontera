@@ -76,6 +76,8 @@ model User {
   posts                       Post[]
   postComments                PostComments[]
   postLikes                   PostLikes[]
+  postCommentsReplies         PostCommentsReply[]
+  postCommentsLikes           PostCommentsLikes[]
 }
 
 model Accounts {
@@ -286,6 +288,33 @@ model PostComments {
   postId   String
   author   User   @relation(fields: [authorId], references: [id], onDelete: Cascade)
   authorId String
+
+  createdAt           DateTime            @default(now())
+  updatedAt           DateTime            @updatedAt
+  postCommentsReplies PostCommentsReply[]
+  postCommentsLikes   PostCommentsLikes[]
+}
+
+model PostCommentsLikes {
+  id          String       @id @default(cuid())
+  postComment PostComments @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  commentId   String
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId      String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([commentId, userId])
+}
+
+model PostCommentsReply {
+  id          String       @id @default(cuid())
+  content     String
+  postComment PostComments @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  commentId   String
+  author      User         @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  authorId    String
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

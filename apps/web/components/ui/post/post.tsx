@@ -1,7 +1,7 @@
 // External packages
-import { ChevronDown, MessageCircleMore } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { ChevronDown, MessageCircleMore } from 'lucide-react';
 
 // Components
 import { Avatar } from '@/components/ui/avatar';
@@ -64,7 +64,7 @@ export const Post: React.FC<{
 					{hasAnAdminAccess && <DeletePostDialog postId={post.id} />}
 					{!isInsideOrganization && (
 						<LinkAsButton
-							href="/home/explore"
+							href={`/organization/${post.organizationId}`}
 							colorScheme="yellow"
 							size="sm"
 							className="ml-auto"
