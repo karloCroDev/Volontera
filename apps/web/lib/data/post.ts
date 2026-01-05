@@ -65,17 +65,9 @@ export async function retrievePostWithComments({ postId }: RetrievePostArgs) {
 	}
 }
 
-export async function likePost({ postId }: LikeOrDislikePostArgs) {
+export async function toggleLike({ postId }: LikeOrDislikePostArgs) {
 	try {
-		const res = await API().patch('/post/like', { postId });
-		return res.data;
-	} catch (err) {
-		catchError(err);
-	}
-}
-export async function dislikePost({ postId }: LikeOrDislikePostArgs) {
-	try {
-		const res = await API().patch('/post/dislike', { postId });
+		const res = await API().patch('/post/toggle-like', { postId });
 		return res.data;
 	} catch (err) {
 		catchError(err);

@@ -1,6 +1,7 @@
 // Models
 import { createUploadUrl } from "@/lib/aws-s3-functions";
 import {
+  checkIfUserLiked,
   createPost,
   deletePost,
   dislikePost,
@@ -163,7 +164,13 @@ export async function updatePostService(rawData: unknown) {
 }
 
 // Everyone
-export async function retrieveOrganizationPostsService(rawData: unknown) {
+export async function retrieveOrganizationPostsService({
+  rawData,
+  userId,
+}: {
+  rawData: unknown;
+  userId: string;
+}) {
   const { success, data } = retrieveOrganizationPostsSchema.safeParse(rawData);
 
   if (!success) {
@@ -176,7 +183,10 @@ export async function retrieveOrganizationPostsService(rawData: unknown) {
     };
   }
 
-  const posts = await retrieveOrganizationPosts(data.organizationId);
+  const posts = await retrieveOrganizationPosts({
+    organizationId: data.organizationId,
+    userId,
+  });
 
   return {
     status: 200,
@@ -188,7 +198,13 @@ export async function retrieveOrganizationPostsService(rawData: unknown) {
   };
 }
 
-export async function retrievePostWithCommentsService(rawData: unknown) {
+export async function retrievePostWithCommentsService({
+  rawData,
+  userId,
+}: {
+  rawData: unknown;
+  userId: string;
+}) {
   const { success, data } = retrievePost.safeParse(rawData);
 
   if (!success) {
@@ -200,7 +216,10 @@ export async function retrievePostWithCommentsService(rawData: unknown) {
       },
     };
   }
-  const post = await retrievePostWithComments(data.postId);
+  const post = await retrievePostWithComments({
+    postId: data.postId,
+    userId,
+  });
 
   return {
     status: 200,
@@ -212,7 +231,7 @@ export async function retrievePostWithCommentsService(rawData: unknown) {
   };
 }
 
-export async function likePostService({
+export async function toggleLikePostService({
   rawData,
   userId,
 }: {
@@ -231,49 +250,31 @@ export async function likePostService({
     };
   }
 
-  await likePost({
+  const userLiked = await checkIfUserLiked({
     postId: data.postId,
     userId,
   });
+
+  let addedLike: boolean;
+  if (userLiked) {
+    await dislikePost({
+      postId: data.postId,
+      userId,
+    });
+    addedLike = false;
+  } else {
+    await likePost({
+      postId: data.postId,
+      userId,
+    });
+    addedLike = true;
+  }
 
   return {
     status: 200,
     body: {
       title: "Post Liked",
       message: "Post liked successfully",
-    },
-  };
-}
-
-export async function dislikePostService({
-  rawData,
-  userId,
-}: {
-  rawData: unknown;
-  userId: User["id"];
-}) {
-  const { success, data } = likeOrDislikePostSchema.safeParse(rawData);
-
-  if (!success) {
-    return {
-      status: 400,
-      body: {
-        title: "Invalid Data",
-        message: "The provided data is invalid",
-      },
-    };
-  }
-
-  await dislikePost({
-    postId: data.postId,
-    userId,
-  });
-
-  return {
-    status: 200,
-    body: {
-      title: "Post Disliked",
-      message: "Post disliked successfully",
     },
   };
 }

@@ -4,7 +4,6 @@ import {
 	UseMutationOptions,
 	useQuery,
 	useQueryClient,
-	UseQueryResult,
 } from '@tanstack/react-query';
 
 // Lib
@@ -22,7 +21,6 @@ import { ErrorFormResponse } from '@repo/types/general';
 import {
 	CreateOrganizationResponse,
 	ListOrganizationsOrganizatorResponse,
-	ListOrganizationsUserResponse,
 } from '@repo/types/organization';
 import { DataWithFiles } from '@repo/types/upload';
 

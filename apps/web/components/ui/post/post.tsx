@@ -39,6 +39,7 @@ export const Post: React.FC<{
 		? images?.[singlePostImage.imageUrl]
 		: undefined;
 
+	console.log('Post like', post.postLikes);
 	return (
 		<div className="border-input-border bg-muted rounded-xl border px-8 py-6">
 			<div className="mb-8 flex gap-4">
@@ -156,7 +157,10 @@ export const Post: React.FC<{
 					</Link>
 				</div>
 
-				<PostLike count={post._count.postLikes} />
+				<PostLike
+					count={post._count.postLikes}
+					hasUserLiked={post.postLikes.length > 0}
+				/>
 				<Link
 					href={`/organization/post/${post.id}`}
 					className="flex items-center gap-4"

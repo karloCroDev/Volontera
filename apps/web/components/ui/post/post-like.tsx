@@ -1,16 +1,31 @@
 'use client';
 
 // External packages
-import { Heart } from 'lucide-react';
 import * as React from 'react';
+import { Heart } from 'lucide-react';
 
-export const PostLike: React.FC<{ count: number }> = ({ count }) => {
+// Hooks
+import { useToggleLike } from '@/hooks/data/post';
+import { Button } from '@/components/ui/button';
+import { twJoin } from 'tailwind-merge';
+
+export const PostLike: React.FC<{ count: number; hasUserLiked: boolean }> = ({
+	count,
+	hasUserLiked,
+}) => {
+	const { mutate } = useToggleLike();
+
 	return (
 		<div className="ml-auto flex items-center gap-4">
-			<Heart
-				//  fill="#f59f0a" className="text-primary"
-				className="text-background-foreground cursor-pointer"
-			/>
+			<Button variant="blank" onPress={() => {}}>
+				<Heart
+					fill="#f59f0a"
+					className={twJoin(
+						'cursor-pointer',
+						hasUserLiked ? 'text-primary' : 'text-background-foreground'
+					)}
+				/>
+			</Button>
 			<p className="font-semibold italic underline underline-offset-4">
 				{count}
 			</p>

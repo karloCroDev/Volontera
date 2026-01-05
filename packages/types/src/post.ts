@@ -5,6 +5,7 @@ import {
   PostImages,
   Organization,
   User,
+  PostLikes,
 } from "@repo/database";
 import { ServerHandleResponse, SuccessfulResponse } from "./general";
 
@@ -12,6 +13,7 @@ type SharedPostValues = Post & {
   organization: Organization;
   postImages: PostImages[];
   author: User;
+  postLikes: PostLikes[];
   _count: {
     postComments: number;
     postLikes: number;

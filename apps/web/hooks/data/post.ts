@@ -13,11 +13,10 @@ import {
 import {
 	createPost,
 	deletePost,
-	dislikePost,
-	likePost,
 	retrieveOrganizationPosts,
 	retrievePostData,
 	retrievePostWithComments,
+	toggleLike,
 	updatePost,
 } from '@/lib/data/post';
 
@@ -96,7 +95,7 @@ export const useDeletePost = (
 	});
 };
 
-export const useLikePost = (
+export const useToggleLike = (
 	options?: UseMutationOptions<
 		SuccessfulResponse,
 		ErrorToastResponse,
@@ -107,30 +106,8 @@ export const useLikePost = (
 	return useMutation({
 		...options,
 		mutationKey: ['like-post'],
-		mutationFn: (data: LikeOrDislikePostArgs) => likePost(data),
+		mutationFn: (data: LikeOrDislikePostArgs) => toggleLike(data),
 
-		onSuccess: async (...args) => {
-			await queryClient.invalidateQueries({
-				queryKey: ['posts'],
-				exact: false,
-			});
-			await options?.onSuccess?.(...args);
-		},
-	});
-};
-
-export const useDislikePost = (
-	options?: UseMutationOptions<
-		SuccessfulResponse,
-		ErrorToastResponse,
-		LikeOrDislikePostArgs
-	>
-) => {
-	const queryClient = useQueryClient();
-	return useMutation({
-		...options,
-		mutationKey: ['dislike-post'],
-		mutationFn: (data: LikeOrDislikePostArgs) => dislikePost(data),
 		onSuccess: async (...args) => {
 			await queryClient.invalidateQueries({
 				queryKey: ['posts'],

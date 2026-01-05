@@ -6,11 +6,10 @@ import { Router } from "express";
 import {
   createPostController,
   deletePostController,
-  dislikePostController,
-  likePostController,
   retrieveOrganizationPostsController,
   retrievePostDataController,
   retrievePostWithCommentsController,
+  toggleLikePostController,
   updatePostController,
 } from "@/controllers/post.controller";
 
@@ -38,7 +37,6 @@ postRoutes.get("/:organizationId", retrieveOrganizationPostsController);
 // Everyone
 postRoutes.get("/id/:postId", retrievePostWithCommentsController);
 
-postRoutes.patch("/like", likePostController);
-postRoutes.patch("/dislike", dislikePostController);
+postRoutes.patch("/toggle-like", toggleLikePostController);
 
 // postRoutes.route('/home')

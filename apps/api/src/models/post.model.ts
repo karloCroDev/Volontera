@@ -68,13 +68,22 @@ export async function retrievePostData(postId: Post["id"]) {
 }
 
 // Everyone
-export async function retrieveOrganizationPosts(
-  organizationId: Organization["id"]
-) {
+export async function retrieveOrganizationPosts({
+  userId,
+  organizationId,
+}: {
+  userId: User["id"];
+  organizationId: Organization["id"];
+}) {
   return prisma.post.findMany({
     include: {
       organization: true,
       postImages: true,
+      postLikes: {
+        where: {
+          userId,
+        },
+      },
       _count: {
         select: {
           postComments: true,
@@ -96,13 +105,24 @@ export async function retrieveOrganizationPosts(
   });
 }
 
-export async function retrievePostWithComments(postId: Post["id"]) {
+export async function retrievePostWithComments({
+  postId,
+  userId,
+}: {
+  postId: Post["id"];
+  userId: User["id"];
+}) {
   return prisma.post.findUnique({
     where: { id: postId },
     include: {
       organization: true,
       postImages: true,
       author: true,
+      postLikes: {
+        where: {
+          userId,
+        },
+      },
       _count: {
         select: {
           postComments: true,
@@ -122,32 +142,51 @@ export async function retrievePostWithComments(postId: Post["id"]) {
   });
 }
 
-type LikeOrDislikePostArgs = {
+export async function checkIfUserLiked({
+  postId,
+  userId,
+}: {
   postId: Post["id"];
   userId: User["id"];
-};
-
-export async function likePost({ postId, userId }: LikeOrDislikePostArgs) {
-  return prisma.postLikes.upsert({
+}) {
+  return prisma.postLikes.findUnique({
     where: {
       postId_userId: {
         postId,
         userId,
       },
     },
-    update: {},
-    create: {
+  });
+}
+export async function likePost({
+  postId,
+  userId,
+}: {
+  postId: Post["id"];
+  userId: User["id"];
+}) {
+  return prisma.postLikes.create({
+    data: {
       postId,
+
       userId,
     },
   });
 }
 
-export async function dislikePost({ postId, userId }: LikeOrDislikePostArgs) {
-  return prisma.postLikes.deleteMany({
+export async function dislikePost({
+  postId,
+  userId,
+}: {
+  postId: Post["id"];
+  userId: User["id"];
+}) {
+  return prisma.postLikes.delete({
     where: {
-      postId,
-      userId,
+      postId_userId: {
+        postId,
+        userId,
+      },
     },
   });
 }
