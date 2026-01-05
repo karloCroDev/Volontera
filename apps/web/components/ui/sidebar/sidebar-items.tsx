@@ -218,7 +218,7 @@ export const OrganizationSidebarItem: React.FC<{
 				variant="ghost"
 				size="xs"
 				href={`/organization/${organization.id}`}
-				className="relative flex w-full items-center gap-4 hover:opacity-70"
+				className="relative flex w-full items-center justify-start gap-4 hover:opacity-70"
 				iconLeft={
 					<Dot
 						className={twJoin(

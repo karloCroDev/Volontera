@@ -99,7 +99,8 @@ export const useToggleLike = (
 	options?: UseMutationOptions<
 		SuccessfulResponse,
 		ErrorToastResponse,
-		LikeOrDislikePostArgs
+		LikeOrDislikePostArgs,
+		{ previousPost: RetrieveOrganizationPostsResponse | undefined }
 	>
 ) => {
 	const queryClient = useQueryClient();

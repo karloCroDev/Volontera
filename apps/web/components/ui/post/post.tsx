@@ -20,6 +20,7 @@ import { RetrieveOrganizationPostsResponse } from '@repo/types/post';
 
 // Lib
 import { convertToFullname } from '@/lib/utils/convert-to-fullname';
+import Markdown from 'react-markdown';
 
 export const Post: React.FC<{
 	post: RetrieveOrganizationPostsResponse['posts'][0];
@@ -76,23 +77,32 @@ export const Post: React.FC<{
 				</div>
 			</div>
 			<h4 className="mb-4 text-lg font-semibold">{post.title}</h4>
-			<Collapsible
-				trigger={
-					<div className="group cursor-pointer">
-						<p className="cursor-pointer italic">{splittedContent[0]}</p>
 
-						<div className="flex items-baseline justify-center gap-4">
-							<p className="text-muted-foreground mt-2 text-center group-data-[state=open]:hidden">
-								Show more
-							</p>
-							<ChevronDown className="size-3 group-data-[state=open]:hidden" />
+			{splittedContent.length > 1 ? (
+				<Collapsible
+					trigger={
+						<div className="group cursor-pointer">
+							<div className="prose prose-custom">
+								<Markdown>{splittedContent[0]}</Markdown>
+							</div>
+
+							<div className="flex items-baseline justify-center gap-4">
+								<p className="text-muted-foreground mt-2 text-center group-data-[state=open]:hidden">
+									Show more
+								</p>
+								<ChevronDown className="size-3 group-data-[state=open]:hidden" />
+							</div>
 						</div>
-					</div>
-				}
-				contentProps={{
-					children: <p>{splittedContent.slice(1).join('.')}</p>,
-				}}
-			/>
+					}
+					contentProps={{
+						children: <Markdown>{splittedContent.slice(1).join('.')}</Markdown>,
+					}}
+				/>
+			) : (
+				<div className="prose prose-custom">
+					<Markdown>{splittedContent[0]}</Markdown>
+				</div>
+			)}
 
 			<div className="mt-4">
 				{post.postImages.length > 1 ? (
@@ -160,6 +170,7 @@ export const Post: React.FC<{
 				<PostLike
 					count={post._count.postLikes}
 					hasUserLiked={post.postLikes.length > 0}
+					postId={post.id}
 				/>
 				<Link
 					href={`/organization/post/${post.id}`}
