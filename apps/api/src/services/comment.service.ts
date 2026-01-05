@@ -1,0 +1,219 @@
+// Database
+import { User } from "@repo/database";
+
+// Models
+import {
+  checkIfUserLikedComment,
+  checkIfUserLikedReply,
+  createComment,
+  deleteComment,
+  dislikeComment,
+  dislikeReply,
+  likeComment,
+  likeReply,
+} from "@/models/comment.model";
+
+// Schemas
+import {
+  createCommentSchema,
+  createReplySchema,
+  deleteCommentSchema,
+  likeOrDislikeCommentSchema,
+  likeOrDislikeReplySchema,
+} from "@repo/schemas/comment";
+
+export async function createCommentService({
+  rawData,
+  userId,
+}: {
+  rawData: unknown;
+  userId: User["id"];
+}) {
+  const { success, data } = createCommentSchema.safeParse(rawData);
+
+  if (!success) {
+    return {
+      status: 400,
+      body: {
+        title: "Invalid data",
+        message: "The provided data is invalid.",
+      },
+    };
+  }
+
+  await createComment({
+    postId: data.postId,
+    userId,
+    content: data.content,
+  });
+
+  return {
+    status: 201,
+    body: {
+      title: "Comment Created",
+      message: "Comment created successfully",
+    },
+  };
+}
+
+export async function deleteCommentService({ rawData }: { rawData: unknown }) {
+  const { success, data } = deleteCommentSchema.safeParse(rawData);
+  if (!success) {
+    return {
+      status: 400,
+      body: {
+        title: "Invalid data",
+        message: "The provided data is invalid.",
+      },
+    };
+  }
+  await deleteComment(data.commentId);
+  return {
+    status: 200,
+    body: {
+      title: "Comment Deleted",
+      message: "Comment deleted successfully",
+    },
+  };
+}
+
+export async function toggleLikeCommentService({
+  rawData,
+  userId,
+}: {
+  rawData: unknown;
+  userId: User["id"];
+}) {
+  const { success, data } = likeOrDislikeCommentSchema.safeParse(rawData);
+
+  if (!success) {
+    return {
+      status: 400,
+      body: {
+        title: "Invalid Data",
+        message: "The provided data is invalid",
+      },
+    };
+  }
+
+  const userLiked = await checkIfUserLikedComment({
+    commentId: data.commentId,
+    userId,
+  });
+
+  if (userLiked) {
+    await dislikeComment({
+      commentId: data.commentId,
+      userId,
+    });
+  } else {
+    await likeComment({
+      commentId: data.commentId,
+      userId,
+    });
+  }
+
+  return {
+    status: 200,
+    body: {
+      title: "Post Liked",
+      message: "Post liked successfully",
+    },
+  };
+}
+
+export async function createReplyService({
+  rawData,
+  userId,
+}: {
+  rawData: unknown;
+  userId: User["id"];
+}) {
+  const { success, data } = createReplySchema.safeParse(rawData);
+  if (!success) {
+    return {
+      status: 400,
+      body: {
+        title: "Invalid data",
+        message: "The provided data is invalid.",
+      },
+    };
+  }
+
+  await createComment({
+    postId: data.commentId,
+    userId,
+    content: data.content,
+  });
+
+  return {
+    status: 201,
+    body: {
+      title: "Reply Created",
+      message: "Reply created successfully",
+    },
+  };
+}
+
+export async function deleteReplyService({ rawData }: { rawData: unknown }) {
+  const { success, data } = deleteCommentSchema.safeParse(rawData);
+  if (!success) {
+    return {
+      status: 400,
+      body: {
+        title: "Invalid data",
+        message: "The provided data is invalid.",
+      },
+    };
+  }
+  await deleteComment(data.commentId);
+  return {
+    status: 200,
+    body: {
+      title: "Reply Deleted",
+      message: "Reply deleted successfully",
+    },
+  };
+}
+
+export async function toggleLikeReplyService({
+  rawData,
+  userId,
+}: {
+  rawData: unknown;
+  userId: User["id"];
+}) {
+  const { success, data } = likeOrDislikeReplySchema.safeParse(rawData);
+  if (!success) {
+    return {
+      status: 400,
+      body: {
+        title: "Invalid Data",
+        message: "The provided data is invalid",
+      },
+    };
+  }
+  const userLiked = await checkIfUserLikedReply({
+    replyId: data.replyId,
+    userId,
+  });
+
+  if (userLiked) {
+    await dislikeReply({
+      replyId: data.replyId,
+      userId,
+    });
+  } else {
+    await likeReply({
+      replyId: data.replyId,
+      userId,
+    });
+  }
+  return {
+    status: 200,
+    body: {
+      title: "Reply Liked",
+      message: "Reply liked successfully",
+    },
+  };
+}

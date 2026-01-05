@@ -58,7 +58,7 @@ export const Comment: React.FC<
 					<p>{comment}</p>
 				</div>
 
-				<div className="ml-auto flex items-baseline gap-6 text-sm">
+				<div className="ml-auto flex items-center gap-6 text-sm">
 					<div className="flex items-center gap-2">
 						<p>{numberOfLikes}</p>
 						<Button variant="blank" className="p-0">
@@ -69,36 +69,34 @@ export const Comment: React.FC<
 						</Button>
 					</div>
 
-					<div className="flex items-center gap-2">
-						<p>Reply</p>
-						<Button
-							variant={
-								searchParams.get('commentId') === commentId
-									? 'primary'
-									: 'blank'
+					<Button
+						variant={
+							searchParams.get('commentId') === commentId ? 'primary' : 'ghost'
+						}
+						size="xs"
+						className="p-0 px-2 py-0.5"
+						isFullyRounded
+						onPress={() => {
+							const params = new URLSearchParams(searchParams.toString());
+							if (searchParams.get('commentId') === commentId) {
+								params.delete('commentId');
+							} else {
+								params.set('commentId', commentId);
 							}
-							className="p-0"
-							onPress={() => {
-								const params = new URLSearchParams(searchParams.toString());
-								if (searchParams.get('commentId') === commentId) {
-									params.delete('commentId');
-								} else {
-									params.set('commentId', commentId);
-								}
 
-								router.push(pathname + '?' + params.toString(), {
-									scroll: false,
-								});
-							}}
-						>
-							<ReplyIcon />
-						</Button>
-					</div>
-
-					<Button variant="blank" className="self-end p-0">
-						<Edit />
+							router.push(pathname + '?' + params.toString(), {
+								scroll: false,
+							});
+						}}
+						iconLeft={<ReplyIcon />}
+					>
+						Reply
 					</Button>
-					<Button variant="blank" className="self-end p-0">
+
+					<Button
+						variant="blank"
+						className="text-muted-foreground hover:text-destructive p-0"
+					>
 						<Trash2 />
 					</Button>
 				</div>
@@ -147,24 +145,12 @@ export const Reply: React.FC<CommentOrReplyProps> = ({
 					<p>{comment}</p>
 				</div>
 
-				<div className="ml-auto flex items-baseline gap-6 text-sm">
-					<div className="flex items-center gap-2">
-						<p>{numberOfLikes}</p>
-						<Button variant="blank" className="p-0">
-							<Heart
-								//  fill="#f59f0a" className="text-primary"
-								className="text-background-foreground cursor-pointer"
-							/>
-						</Button>
-					</div>
-
-					<Button variant="blank" className="self-end p-0">
-						<Edit />
-					</Button>
-					<Button variant="blank" className="self-end p-0">
-						<Trash2 />
-					</Button>
-				</div>
+				<Button
+					variant="blank"
+					className="text-muted-foreground hover:text-destructive ml-auto self-end p-0 text-sm"
+				>
+					<Trash2 />
+				</Button>
 			</div>
 		</div>
 	);

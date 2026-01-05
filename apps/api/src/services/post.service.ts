@@ -255,19 +255,16 @@ export async function toggleLikePostService({
     userId,
   });
 
-  let addedLike: boolean;
   if (userLiked) {
     await dislikePost({
       postId: data.postId,
       userId,
     });
-    addedLike = false;
   } else {
     await likePost({
       postId: data.postId,
       userId,
     });
-    addedLike = true;
   }
 
   return {
