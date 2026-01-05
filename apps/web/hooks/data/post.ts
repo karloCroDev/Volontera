@@ -27,7 +27,7 @@ import {
 	ErrorToastResponse,
 	SuccessfulResponse,
 } from '@repo/types/general';
-import { DataWithFile, DataWithFiles } from '@repo/types/upload';
+import { DataWithFiles } from '@repo/types/upload';
 
 // Schemas
 import {
@@ -43,27 +43,31 @@ import {
 } from '@repo/types/post';
 
 export const useCreatePost = (
+	organizationId: string,
 	options?: UseMutationOptions<
 		SuccessfulResponse,
 		ErrorFormResponse,
-		DataWithFile<CreatePostArgs>
+		Required<DataWithFiles<CreatePostArgs>>
 	>
 ) => {
 	const queryClient = useQueryClient();
 	return useMutation({
+		...options,
 		mutationKey: ['create-post'],
 		// mutation receives a single variable object { data, file }
 		mutationFn: (data: Required<DataWithFiles<CreatePostArgs>>) =>
 			createPost(data),
 		onSuccess: async (...args) => {
-			await queryClient.invalidateQueries({ queryKey: ['posts'] });
+			await queryClient.invalidateQueries({
+				queryKey: ['posts', organizationId],
+			});
 			await options?.onSuccess?.(...args);
 		},
-		...options,
 	});
 };
 
 export const useDeletePost = (
+	postId: DeletePostArgs['postId'],
 	options?: UseMutationOptions<
 		SuccessfulResponse,
 		ErrorToastResponse,
@@ -72,13 +76,23 @@ export const useDeletePost = (
 ) => {
 	const queryClient = useQueryClient();
 	return useMutation({
+		...options,
 		mutationKey: ['delete-post'],
-		mutationFn: (data: DeletePostArgs) => deletePost(data),
+
+		mutationFn: () => deletePost({ postId }),
 		onSuccess: async (...args) => {
-			await queryClient.invalidateQueries({ queryKey: ['posts'] });
+			queryClient.setQueriesData(
+				{ queryKey: ['posts'], exact: false }, // Targets any key starting with 'posts'
+				(oldData: RetrieveOrganizationPostsResponse | undefined) => {
+					if (!oldData) return oldData;
+					return {
+						...oldData,
+						posts: oldData.posts.filter((post) => post.id !== postId),
+					};
+				}
+			);
 			await options?.onSuccess?.(...args);
 		},
-		...options,
 	});
 };
 
@@ -91,13 +105,17 @@ export const useLikePost = (
 ) => {
 	const queryClient = useQueryClient();
 	return useMutation({
+		...options,
 		mutationKey: ['like-post'],
 		mutationFn: (data: LikeOrDislikePostArgs) => likePost(data),
+
 		onSuccess: async (...args) => {
-			await queryClient.invalidateQueries({ queryKey: ['posts'] });
+			await queryClient.invalidateQueries({
+				queryKey: ['posts'],
+				exact: false,
+			});
 			await options?.onSuccess?.(...args);
 		},
-		...options,
 	});
 };
 
@@ -110,13 +128,16 @@ export const useDislikePost = (
 ) => {
 	const queryClient = useQueryClient();
 	return useMutation({
+		...options,
 		mutationKey: ['dislike-post'],
 		mutationFn: (data: LikeOrDislikePostArgs) => dislikePost(data),
 		onSuccess: async (...args) => {
-			await queryClient.invalidateQueries({ queryKey: ['posts'] });
+			await queryClient.invalidateQueries({
+				queryKey: ['posts'],
+				exact: false,
+			});
 			await options?.onSuccess?.(...args);
 		},
-		...options,
 	});
 };
 
@@ -130,6 +151,7 @@ export const useRetrieveOrganizationPosts = (
 	return useSuspenseQuery({
 		queryKey: ['posts', organizationId],
 		queryFn: () => retrieveOrganizationPosts({ organizationId }),
+
 		...options,
 	});
 };
@@ -142,9 +164,9 @@ export const useRetrievePostWithComments = (
 	>
 ) => {
 	return useSuspenseQuery({
-		queryKey: ['posts', postId],
-		queryFn: () => retrievePostWithComments({ postId }),
 		...options,
+		queryKey: ['post-with-comments', postId],
+		queryFn: () => retrievePostWithComments({ postId }),
 	});
 };
 
@@ -157,14 +179,14 @@ export const useUpadatePost = (
 ) => {
 	const queryClient = useQueryClient();
 	return useMutation({
+		...options,
 		mutationKey: ['update-post'],
 		// mutation receives a single variable object { data, files }
 		mutationFn: (data: DataWithFiles<UpdatePostArgs>) => updatePost(data),
 		onSuccess: async (...args) => {
-			await queryClient.invalidateQueries({ queryKey: ['posts'] });
+			await queryClient.invalidateQueries({ queryKey: ['post-with-comments'] });
 			await options?.onSuccess?.(...args);
 		},
-		...options,
 	});
 };
 
@@ -173,8 +195,8 @@ export const useRetrievePostData = (
 	options?: Omit<UseQueryOptions<RetrievePostData>, 'queryKey' | 'queryFn'>
 ) => {
 	return useQuery({
+		...options,
 		queryKey: ['post-data', postId],
 		queryFn: () => retrievePostData({ postId }),
-		...options,
 	});
 };

@@ -90,6 +90,9 @@ export async function retrieveOrganizationPosts(
     where: {
       organizationId,
     },
+    orderBy: {
+      createdAt: "desc",
+    },
   });
 }
 

@@ -35,7 +35,7 @@ import { Error } from '@/components/ui/error';
 import { convertToFullname } from '@/lib/utils/convert-to-fullname';
 import { toast } from '@/lib/utils/toast';
 
-export const NewPostDialog = () => {
+export const CreatePostDialog = () => {
 	const [isOpen, setIsOpen] = React.useState(false);
 
 	const [images, setImages] = React.useState<ImageItemArgs>([]);
@@ -56,7 +56,8 @@ export const NewPostDialog = () => {
 		},
 	});
 
-	const { mutate, isPending } = useCreatePost();
+	const params = useParams<{ organizationId: string }>();
+	const { mutate, isPending } = useCreatePost(params.organizationId);
 
 	React.useEffect(() => {
 		const localImages = images.filter(isLocalImageItem);
@@ -75,7 +76,6 @@ export const NewPostDialog = () => {
 		);
 	}, [images, setValue]);
 
-	const params = useParams<{ organizationId: string }>();
 	const onSubmit = (data: Omit<CreatePostArgs, 'organizationId'>) => {
 		const localImages = images.filter(isLocalImageItem);
 

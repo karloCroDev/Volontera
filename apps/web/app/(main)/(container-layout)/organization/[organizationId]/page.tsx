@@ -14,7 +14,7 @@ import { AnchorAsButton } from '@/components/ui/anchor-as-button';
 import { OrganizationRoutingHeader } from '@/modules/main/organization/common/organization-routing-header';
 
 import { JoinDialog } from '@/modules/main/organization/common/join-dialog';
-import { NewPostDialog } from '@/modules/main/organization/home/new-post-dialog';
+import { CreatePostDialog } from '@/modules/main/organization/home/create-post-dialog';
 import { PostsMapping } from '@/modules/main/organization/home/posts-mapping';
 // Lib
 import { getOrganizationDetailsById } from '@/lib/server/organization';
@@ -191,7 +191,7 @@ export default async function OrganizationPage({
 			</div>
 
 			<OrganizationRoutingHeader />
-			<NewPostDialog />
+			<CreatePostDialog />
 
 			<PostsMapping posts={posts} />
 		</>

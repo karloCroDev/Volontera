@@ -12,7 +12,7 @@ import { toast } from '@/lib/utils/toast';
 export const DeletePostDialog: React.FC<{
 	postId: string;
 }> = ({ postId }) => {
-	const { mutate, isPending } = useDeletePost(); // TODO: Handle this so that I don't refetch all posts after deleting one (rn works with revalidation)
+	const { mutate, isPending } = useDeletePost(postId);
 
 	const [isOpen, setIsOpen] = React.useState(false);
 	return (
@@ -35,13 +35,23 @@ export const DeletePostDialog: React.FC<{
 					colorScheme="destructive"
 					onPress={() => {
 						mutate(
+							{ postId },
 							{
-								postId,
-							},
-							{
-								onSuccess: ({ title, message }) => {
-									toast({ title, content: message, variant: 'success' });
+								onSuccess: ({ message, title }) => {
+									toast({
+										title: title,
+										content: message,
+										variant: 'success',
+									});
+
 									setIsOpen(false);
+								},
+								onError: ({ message, title }) => {
+									toast({
+										title: title,
+										content: message,
+										variant: 'error',
+									});
 								},
 							}
 						);

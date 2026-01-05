@@ -53,7 +53,7 @@ export const PostsMapping: React.FC<{
 					/>
 				))
 			) : (
-				<p className="text-muted-foreground text-center">
+				<p className="text-muted-foreground col-span-2 text-center">
 					No posts have been created yet.
 				</p>
 			)}

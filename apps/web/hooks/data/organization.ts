@@ -39,7 +39,10 @@ export const useCreateOrganization = (
 		mutationFn: (data: DataWithFiles<CreateOrganizationArgs>) =>
 			createOrganization(data),
 		onSuccess: async (...args) => {
-			await queryClient.invalidateQueries({ queryKey: ['organization'] });
+			await queryClient.invalidateQueries({
+				queryKey: ['organization'],
+				exact: false,
+			});
 			await options?.onSuccess?.(...args);
 		},
 		...options,

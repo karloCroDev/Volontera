@@ -102,7 +102,7 @@ export const Post: React.FC<{
 
 							return (
 								<div
-									className="rouded-md border-input-border aspect-[4/3] max-h-[600px] w-full rounded border"
+									className="rouded-md border-input-border relative aspect-[4/3] max-h-[600px] w-full rounded border"
 									key={id}
 								>
 									<Image
@@ -118,12 +118,12 @@ export const Post: React.FC<{
 				) : (
 					post.postImages.length === 1 &&
 					singlePostImageSrc && (
-						<div className="rouded-md border-input-border mt-4 aspect-[4/3] max-h-[600px] w-full rounded border">
+						<div className="rouded-md border-input-border relative mt-4 aspect-[4/3] max-h-[600px] w-full rounded border">
 							<Image
 								src={singlePostImageSrc}
 								alt="Post image"
 								fill
-								className="object-cover"
+								className="object-contain"
 							/>
 						</div>
 					)

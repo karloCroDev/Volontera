@@ -82,6 +82,7 @@ export const useStartConversationOrStartAndSendDirectMessage = (
 		onSuccess: async (...args) => {
 			await queryClient.invalidateQueries({
 				queryKey: ['direct-messages'],
+				exact: false,
 			});
 			await options?.onSuccess?.(...args);
 		},

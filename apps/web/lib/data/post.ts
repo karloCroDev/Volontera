@@ -49,9 +49,7 @@ export async function retrieveOrganizationPosts({
 	organizationId,
 }: RetrieveOrganizationPostsArgs) {
 	try {
-		const res = await API().get('/post', {
-			params: { organizationId },
-		});
+		const res = await API().get(`/post/${organizationId}`);
 		return res.data;
 	} catch (err) {
 		catchError(err);
