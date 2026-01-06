@@ -19,11 +19,7 @@ import {
 } from '@/lib/data/comment';
 
 // Types
-import {
-	ErrorFormResponse,
-	ErrorToastResponse,
-	SuccessfulResponse,
-} from '@repo/types/general';
+import { ErrorToastResponse, SuccessfulResponse } from '@repo/types/general';
 
 // Schemas
 import { RetrieveOrganizationPostsResponse } from '@repo/types/post';
@@ -36,10 +32,9 @@ import {
 } from '@repo/schemas/comment';
 
 export const useCreateComment = (
-	organizationId: string,
 	options?: UseMutationOptions<
 		SuccessfulResponse,
-		ErrorFormResponse,
+		ErrorToastResponse,
 		CreateCommentArgs
 	>
 ) => {
@@ -51,7 +46,7 @@ export const useCreateComment = (
 		mutationFn: (data: CreateCommentArgs) => createComment({ data }),
 		onSuccess: async (...args) => {
 			await queryClient.invalidateQueries({
-				queryKey: ['comments', organizationId],
+				queryKey: ['comments'],
 			});
 			await options?.onSuccess?.(...args);
 		},
@@ -124,7 +119,7 @@ export const useRetrieveCommentReplies = (
 export const useCreateReply = (
 	options?: UseMutationOptions<
 		SuccessfulResponse,
-		ErrorFormResponse,
+		ErrorToastResponse,
 		CreateReplyArgs
 	>
 ) => {

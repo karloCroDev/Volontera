@@ -15,7 +15,7 @@ import {
 
 export async function createComment({ data }: { data: CreateCommentArgs }) {
 	try {
-		const res = await API().post('/post', data);
+		const res = await API().post('/comment', data);
 		return res.data;
 	} catch (err) {
 		catchError(err);

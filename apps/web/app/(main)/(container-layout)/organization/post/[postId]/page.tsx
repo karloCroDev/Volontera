@@ -32,6 +32,7 @@ export default async function PostWithComments({
 				})
 			: null;
 
+	console.log('POST WITH COMMENTS:', postWithComments.post.postComments);
 	return (
 		<>
 			<Post post={postWithComments.post} images={imageResponse?.urls} />
