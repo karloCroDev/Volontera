@@ -39,7 +39,8 @@ import { CommentDelete } from '@/modules/main/organization/post/comment-delete';
 export const Comment: React.FC<{
 	comment: PostCommentsResponse['comments'][0];
 	hasUserLiked: boolean;
-}> = ({ comment, hasUserLiked }) => {
+	pfpImages?: Record<string, string>;
+}> = ({ comment, hasUserLiked, pfpImages }) => {
 	const pathname = usePathname();
 	const params = useParams<{ postId: string }>();
 	const searchParams = useSearchParams();
@@ -117,7 +118,7 @@ export const Comment: React.FC<{
 			<div className="flex items-center gap-4">
 				<Avatar
 					imageProps={{
-						src: '',
+						src: pfpImages ? pfpImages[comment.author.image || ''] : undefined,
 					}}
 					colorScheme="gray"
 				>

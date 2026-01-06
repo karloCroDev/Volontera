@@ -10,6 +10,7 @@ import { Comment } from '@/modules/main/organization/post/comment';
 // Hooks
 import { useRetrievePostComments } from '@/hooks/data/comment';
 import { useSession } from '@/hooks/data/user';
+import { useGetImageFromKeys } from '@/hooks/data/image';
 
 // Types
 import { PostCommentsResponse } from '@repo/types/comment';
@@ -23,13 +24,21 @@ export const CommentsMapping: React.FC<{
 	});
 
 	const { data: user } = useSession();
-	console.log(comments);
+
+	const { data: pfpImages } = useGetImageFromKeys({
+		imageUrls:
+			data?.comments
+				.map((comment) => comment.author.image)
+				.filter((key) => key !== null && key !== undefined) || [],
+	});
+
 	// Kada budem implementirao infinite loading, paa za svaki slucaj
 	if (isLoading) {
-		return [...Array(8)].map((_, index) => (
+		return [...Array(4)].map((_, index) => (
 			<CommentOrReplySkeleton key={index} />
 		));
 	}
+
 	return data?.comments.map((comment) => (
 		<div
 			key={comment.id}
@@ -40,6 +49,7 @@ export const CommentsMapping: React.FC<{
 				hasUserLiked={comment.postCommentsLikes.some(
 					(like) => like.userId === user?.id
 				)}
+				pfpImages={pfpImages?.urls}
 			/>
 		</div>
 	));

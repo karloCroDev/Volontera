@@ -21,7 +21,8 @@ import { PostCommentRepliesResponse } from '@repo/types/comment';
 
 export const Reply: React.FC<{
 	reply: PostCommentRepliesResponse['replies'][0];
-}> = withReactQueryProvider(({ reply }) => {
+	pfpImages?: Record<string, string>;
+}> = withReactQueryProvider(({ reply, pfpImages }) => {
 	const { mutate } = useDeleteReply({
 		commentId: reply.commentId,
 		replyId: reply.id,
@@ -32,7 +33,7 @@ export const Reply: React.FC<{
 			<div className="flex flex-1 items-center gap-4">
 				<Avatar
 					imageProps={{
-						src: '',
+						src: pfpImages ? pfpImages[reply.author.image || ''] : undefined,
 					}}
 					colorScheme="gray"
 				>
