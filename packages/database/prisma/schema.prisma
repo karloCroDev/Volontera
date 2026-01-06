@@ -67,18 +67,23 @@ model User {
   accounts Accounts[]
 
   //  Relations
-  help                        Help[]
-  notifications               Notification[]
-  conversationParticipants    ConversationParticipants[]
-  directMessagesConversations DirectMessages[]
-  organizationFollowers       OrganizationFollowers[]
-  organizationAttendees       OrganizationAttendees[]
-  posts                       Post[]
-  postComments                PostComments[]
-  postLikes                   PostLikes[]
-  postCommentsReplies         PostCommentsReply[]
-  postCommentsLikes           PostCommentsLikes[]
-  postCommentsReplyLikes      PostCommentsReplyLikes[]
+  help                             Help[]
+  notifications                    Notification[]
+  conversationParticipants         ConversationParticipants[]
+  directMessagesConversations      DirectMessages[]
+  organizationFollowers            OrganizationFollowers[]
+  organizationAttendees            OrganizationAttendees[]
+  organizationMembers              OrganizationMember[]
+  organizationJoinRequestsSent     OrganizationJoinRequest[]  @relation("OrgJoinRequestRequester")
+  organizationJoinRequestsReviewed OrganizationJoinRequest[]  @relation("OrgJoinRequestReviewer")
+  posts                            Post[]
+  postComments                     PostComments[]
+  postLikes                        PostLikes[]
+  postCommentsReplies              PostCommentsReply[]
+  postCommentsLikes                PostCommentsLikes[]
+  postCommentsReplyLikes           PostCommentsReplyLikes[]
+
+  ownedOrganizations Organization[] @relation("OrganizationOwner")
 }
 
 model Accounts {
@@ -179,15 +184,68 @@ model Organization {
   avatarImage String
   name        String
   bio         String
-  ownerId     String // Msm da nije potrebno da linkam za ownera jer ne virujem da cu povuci obodvoje. 
+  ownerId     String
+  owner       User   @relation("OrganizationOwner", fields: [ownerId], references: [id], onDelete: Cascade)
 
   organizationFollowers OrganizationFollowers[]
   organizationAttendees OrganizationAttendees[]
   organizationInfo      OrganizationInfo?
 
+  organizationMembers      OrganizationMember[]
+  organizationJoinRequests OrganizationJoinRequest[]
+
   posts     Post[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+enum OrganizationMemberRole {
+  OWNER
+  ADMIN
+  MEMBER
+}
+
+enum OrganizationJoinRequestStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+model OrganizationMember {
+  id             String                 @id @default(cuid())
+  organization   Organization           @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  organizationId String
+  user           User                   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId         String
+  role           OrganizationMemberRole @default(MEMBER)
+  createdAt      DateTime               @default(now())
+  updatedAt      DateTime               @updatedAt
+
+  @@unique([organizationId, userId])
+  @@index([userId])
+  @@index([organizationId, role])
+}
+
+model OrganizationJoinRequest {
+  id             String                        @id @default(cuid())
+  organization   Organization                  @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  organizationId String
+  requester      User                          @relation("OrgJoinRequestRequester", fields: [requesterId], references: [id], onDelete: Cascade)
+  requesterId    String
+  title          String
+  content        String
+  status         OrganizationJoinRequestStatus @default(PENDING)
+
+  reviewedBy   User?   @relation("OrgJoinRequestReviewer", fields: [reviewedById], references: [id], onDelete: SetNull)
+  reviewedById String?
+
+  reviewedAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([organizationId, status, createdAt])
+  @@index([requesterId, status, createdAt])
 }
 
 model OrganizationInfo {
