@@ -2,13 +2,12 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { ChevronDown, MessageCircleMore } from 'lucide-react';
+import Markdown from 'react-markdown';
 
 // Components
 import { Avatar } from '@/components/ui/avatar';
 import { Collapsible } from '@/components/ui/collapsible';
 import { LinkAsButton } from '@/components/ui/link-as-button';
-
-// Modules
 import { PostLike } from '@/components/ui/post/post-like';
 import { SharePost } from '@/components/ui/post/share-post';
 import { EditPostDialog } from '@/components/ui/post/edit-post-dialog';
@@ -20,7 +19,6 @@ import { RetrieveOrganizationPostsResponse } from '@repo/types/post';
 
 // Lib
 import { convertToFullname } from '@/lib/utils/convert-to-fullname';
-import Markdown from 'react-markdown';
 
 export const Post: React.FC<{
 	post: RetrieveOrganizationPostsResponse['posts'][0];
@@ -172,18 +170,18 @@ export const Post: React.FC<{
 					hasUserLiked={post.postLikes.length > 0}
 					postId={post.id}
 				/>
-				<Link
+				<LinkAsButton
+					variant="ghost"
+					size="xs"
 					href={`/organization/post/${post.id}`}
-					className="flex items-center gap-4"
+					iconLeft={
+						<MessageCircleMore className="text-background-foreground cursor-pointer" />
+					}
 				>
-					<MessageCircleMore
-						//  fill="#f59f0a" className="text-primary"
-						className="text-background-foreground cursor-pointer"
-					/>
 					<p className="font-semibold italic underline underline-offset-4">
 						{post._count.postComments}
 					</p>
-				</Link>
+				</LinkAsButton>
 				<SharePost link={`/organization/post/${post.id}`} />
 			</div>
 		</div>

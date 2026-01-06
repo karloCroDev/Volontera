@@ -11,6 +11,9 @@ import {
   dislikeReply,
   likeComment,
   likeReply,
+  createReply,
+  deleteReply,
+  retrieveCommentReplies,
 } from "@/models/comment.model";
 
 // Schemas
@@ -20,6 +23,8 @@ import {
   deleteCommentSchema,
   likeOrDislikeCommentSchema,
   likeOrDislikeReplySchema,
+  deleteReplySchema,
+  retrieveCommentRepliesSchema,
 } from "@repo/schemas/comment";
 
 export async function createCommentService({
@@ -122,6 +127,35 @@ export async function toggleLikeCommentService({
   };
 }
 
+export async function retrieveCommentRepliesService({
+  rawData,
+}: {
+  rawData: unknown;
+}) {
+  const { success, data } = retrieveCommentRepliesSchema.safeParse(rawData);
+
+  if (!success) {
+    return {
+      status: 400,
+      body: {
+        title: "Invalid Data",
+        message: "The provided data is invalid",
+      },
+    };
+  }
+
+  const replies = await retrieveCommentReplies(data.commentId);
+
+  return {
+    status: 200,
+    body: {
+      title: "Replies Retrieved",
+      message: "Replies retrieved successfully",
+      replies,
+    },
+  };
+}
+
 export async function createReplyService({
   rawData,
   userId,
@@ -140,8 +174,8 @@ export async function createReplyService({
     };
   }
 
-  await createComment({
-    postId: data.commentId,
+  await createReply({
+    commentId: data.commentId,
     userId,
     content: data.content,
   });
@@ -156,7 +190,7 @@ export async function createReplyService({
 }
 
 export async function deleteReplyService({ rawData }: { rawData: unknown }) {
-  const { success, data } = deleteCommentSchema.safeParse(rawData);
+  const { success, data } = deleteReplySchema.safeParse(rawData);
   if (!success) {
     return {
       status: 400,
@@ -166,7 +200,7 @@ export async function deleteReplyService({ rawData }: { rawData: unknown }) {
       },
     };
   }
-  await deleteComment(data.commentId);
+  await deleteReply(data.replyId);
   return {
     status: 200,
     body: {

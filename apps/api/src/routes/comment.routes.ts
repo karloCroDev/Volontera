@@ -10,6 +10,7 @@ import {
   deleteReplyController,
   toggleLikeCommentController,
   toggleLikeReplyController,
+  retrieveCommentRepliesController,
 } from "@/controllers/comment.controller";
 
 export const commentRoutes = Router();
@@ -24,7 +25,9 @@ commentRoutes
   .patch(toggleLikeCommentController); // Toggle like for comment
 
 commentRoutes
-  .route("/reply")
-  .post(createReplyController)
+  .route("/reply/:replyId")
+  .get(retrieveCommentRepliesController)
   .delete(deleteReplyController)
-  .patch(toggleLikeReplyController); // Toggle like for reply
+  .patch(toggleLikeReplyController);
+
+commentRoutes.route("/reply").post(createReplyController);

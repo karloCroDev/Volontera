@@ -4,7 +4,6 @@ import { z } from "zod";
 // Comments
 export const createCommentSchema = z.object({
   postId: z.cuid(),
-  userId: z.cuid(),
   content: z.string().min(1).max(100),
 });
 export type CreateCommentArgs = z.infer<typeof createCommentSchema>;
@@ -16,7 +15,6 @@ export type DeleteCommentArgs = z.infer<typeof deleteCommentSchema>;
 
 export const likeOrDislikeCommentSchema = z.object({
   commentId: z.cuid(),
-  userId: z.cuid(),
 });
 export type LikeOrDislikeCommentArgs = z.infer<
   typeof likeOrDislikeCommentSchema
@@ -32,7 +30,7 @@ export type RetrieveCommentRepliesArgs = z.infer<
 
 export const createReplySchema = z.object({
   commentId: z.cuid(),
-  userId: z.cuid(),
+
   content: z.string().min(1).max(100),
 });
 export type CreateReplyArgs = z.infer<typeof createReplySchema>;
@@ -44,6 +42,5 @@ export type DeleteReplyArgs = z.infer<typeof deleteReplySchema>;
 
 export const likeOrDislikeReplySchema = z.object({
   replyId: z.cuid(),
-  userId: z.cuid(),
 });
 export type LikeOrDislikeReplyArgs = z.infer<typeof likeOrDislikeReplySchema>;

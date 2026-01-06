@@ -26,6 +26,7 @@ postRoutes
   .delete(organizationMiddleware, deletePostController)
   .patch(organizationMiddleware, updatePostController);
 
+// TODO: Adjust this after the middleware and change it so that it has the same strucutre as in the comment routes
 postRoutes.get(
   "/data/:postId",
   organizationMiddleware,

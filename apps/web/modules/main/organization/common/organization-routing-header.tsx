@@ -42,6 +42,7 @@ export const OrganizationRoutingHeader = () => {
 				<LinkAsButton
 					variant="ghost"
 					href={`/organization/${params.organizationId}/tasks`}
+					className={pathname.includes('/tasks') ? 'font-bold' : undefined}
 					size="sm"
 					iconRight={
 						pathname.includes('/tasks') && (

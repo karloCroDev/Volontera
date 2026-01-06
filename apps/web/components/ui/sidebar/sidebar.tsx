@@ -17,7 +17,7 @@ import {
 } from 'react-aria-components';
 import { twJoin } from 'tailwind-merge';
 import Link from 'next/link';
-import { useParams, usePathname } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 
 // Components
 import { Button } from '@/components/ui/button';
@@ -35,7 +35,6 @@ export const Sidebar: React.FC<{
 	const { desktopOpen, mobileOpen, setMobileOpen, setDesktopOpen } =
 		useSidebarContext();
 
-	const params = useParams();
 	const pathname = usePathname();
 
 	return (
