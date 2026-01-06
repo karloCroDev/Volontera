@@ -31,8 +31,10 @@ import {
 
 export async function retrievePostCommentsService({
   rawData,
+  userId,
 }: {
   rawData: unknown;
+  userId: User["id"];
 }) {
   const { success, data } = retrievePostCommentsSchema.safeParse(rawData);
 
@@ -46,7 +48,10 @@ export async function retrievePostCommentsService({
     };
   }
 
-  const comments = await retrievePostComments(data.postId);
+  const comments = await retrievePostComments({
+    postId: data.postId,
+    userId: userId,
+  });
 
   return {
     status: 200,
@@ -57,6 +62,7 @@ export async function retrievePostCommentsService({
     },
   };
 }
+
 export async function createCommentService({
   rawData,
   userId,
@@ -158,8 +164,10 @@ export async function toggleLikeCommentService({
 }
 
 export async function retrieveCommentRepliesService({
+  userId,
   rawData,
 }: {
+  userId: User["id"];
   rawData: unknown;
 }) {
   const { success, data } = retrieveCommentRepliesSchema.safeParse(rawData);
@@ -174,7 +182,10 @@ export async function retrieveCommentRepliesService({
     };
   }
 
-  const replies = await retrieveCommentReplies(data.commentId);
+  const replies = await retrieveCommentReplies({
+    commentId: data.commentId,
+    userId,
+  });
 
   return {
     status: 200,

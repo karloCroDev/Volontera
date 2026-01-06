@@ -93,25 +93,22 @@ export const useDeleteComment = (
 	});
 };
 
-export const useToggleLikeComments = (
+export const useToggleLikeComment = (
+	commentId: LikeOrDislikeCommentArgs['commentId'],
 	options?: UseMutationOptions<
 		SuccessfulResponse,
 		ErrorToastResponse,
-		LikeOrDislikeCommentArgs
-		// { previousPost: RetrieveOrganizationPostsResponse | undefined } Handle this better when I am going to implement optimistic updates
+		LikeOrDislikeCommentArgs,
+		{ previousPost: PostCommentsResponse }
 	>
 ) => {
-	const queryClient = useQueryClient();
 	return useMutation({
 		...options,
 		mutationKey: ['like-comment'],
-		mutationFn: (data: LikeOrDislikeCommentArgs) => toggleLikeComment(data),
+		mutationFn: () => toggleLikeComment({ commentId }),
 
 		onSuccess: async (...args) => {
-			await queryClient.invalidateQueries({
-				queryKey: ['comments'],
-				exact: false,
-			});
+			// Handling optimistic updates in the component
 			await options?.onSuccess?.(...args);
 		},
 	});

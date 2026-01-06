@@ -2,32 +2,111 @@
 
 // External packages
 import * as React from 'react';
+import { ChevronRight, Heart, Reply, Trash2 } from 'lucide-react';
+import {
+	useParams,
+	usePathname,
+	useRouter,
+	useSearchParams,
+} from 'next/navigation';
+import { useQueryClient } from '@tanstack/react-query';
+import { twJoin } from 'tailwind-merge';
 
 // Components
 import { Avatar } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
+import { Tag } from '@/components/ui/tag';
+import { Collapsible } from '@/components/ui/collapsible';
+
+// Modules
+import { RepliesMapping } from '@/modules/main/organization/post/replies-mapping';
 
 // Lib
 import { formatTime } from '@/lib/utils/time-adjustments';
 import { convertToFullname } from '@/lib/utils/convert-to-fullname';
 
-import { ChevronRight, Heart, Reply, Trash2 } from 'lucide-react';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+// Hooks
+import { useSession } from '@/hooks/data/user';
+import { useDeleteComment, useToggleLikeComment } from '@/hooks/data/comment';
+
+// Types
 import { PostCommentsResponse } from '@repo/types/comment';
-import { useDeleteComment } from '@/hooks/data/comment';
-import { Tag } from '@/components/ui/tag';
-import { Collapsible } from '@/components/ui/collapsible';
-import { RepliesMapping } from '@/modules/main/organization/post/replies-mapping';
+
+// Lib
+import { toast } from '@/lib/utils/toast';
 
 export const Comment: React.FC<{
 	comment: PostCommentsResponse['comments'][0];
-}> = ({ comment }) => {
+	hasUserLiked: boolean;
+}> = ({ comment, hasUserLiked }) => {
 	const pathname = usePathname();
+	const params = useParams<{ postId: string }>();
 	const searchParams = useSearchParams();
 	const router = useRouter();
 
 	const { mutate: mutateDeleteComment, isPending: isDeletingComment } =
 		useDeleteComment(comment.id);
+
+	const { data: user } = useSession();
+
+	const queryClient = useQueryClient();
+	const { mutate: mutateLikeComment } = useToggleLikeComment(comment.id, {
+		onMutate: async (likeStatus) => {
+			await queryClient.cancelQueries({ queryKey: ['posts'] });
+
+			const previousPost = queryClient.getQueryData([
+				'comments',
+			]) as PostCommentsResponse;
+
+			queryClient.setQueryData(
+				['comments', params.postId],
+				(old: PostCommentsResponse) => ({
+					...old,
+					comments: old.comments.map((comment) =>
+						comment.id === likeStatus.commentId
+							? {
+									...comment,
+									postCommentsLikes: comment.postCommentsLikes.find(
+										(like) => like.userId === user?.id
+									)
+										? comment.postCommentsLikes.filter(
+												(like) => like.userId !== user?.id
+											)
+										: [
+												...comment.postCommentsLikes,
+												{ userId: user?.id, commentId: comment.id },
+											],
+									_count: {
+										...comment._count,
+										postCommentsLikes: hasUserLiked
+											? comment._count.postCommentsLikes - 1
+											: comment._count.postCommentsLikes + 1,
+									},
+								}
+							: comment
+					),
+				})
+			);
+
+			// Return a context object with the snapshotted value
+			return { previousPost };
+		},
+
+		// 2. If the mutation fails:
+		onError: ({ message, title }, _, context) => {
+			queryClient.setQueryData(['posts'], context?.previousPost);
+			toast({
+				title,
+				content: message,
+				variant: 'error',
+			});
+		},
+
+		// 3. Always refetch after error or success to sync with server:
+		onSettled: () => {
+			queryClient.invalidateQueries({ queryKey: ['posts'], exact: false });
+		},
+	});
 	return (
 		<div className="border-b-input-border border-b py-4">
 			<div className="flex items-center gap-4">
@@ -57,10 +136,19 @@ export const Comment: React.FC<{
 				<div className="ml-auto flex items-center gap-6 text-sm">
 					<div className="flex items-center gap-2">
 						<p>{comment._count.postCommentsLikes}</p>
-						<Button variant="blank" className="p-0">
+						<Button
+							variant="blank"
+							className="p-0"
+							onPress={() => {
+								mutateLikeComment({ commentId: comment.id });
+							}}
+						>
 							<Heart
-								//  fill="#f59f0a" className="text-primary"
-								className="text-background-foreground cursor-pointer"
+								fill={hasUserLiked ? '#f59f0a' : 'none'}
+								className={twJoin(
+									'cursor-pointer',
+									hasUserLiked ? 'text-primary' : 'text-background-foreground'
+								)}
 							/>
 						</Button>
 					</div>

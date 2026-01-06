@@ -2,14 +2,15 @@ import {
   PostComments,
   User,
   PostCommentsReply,
-  PostLikes,
+  PostCommentsLikes,
+  PostCommentsReplyLikes,
 } from "@repo/database";
 import { ServerHandleResponse } from "./general";
 
 export type PostCommentsResponse = ServerHandleResponse<true> & {
   comments: (PostComments & {
     author: User;
-    postLikes: PostLikes[];
+    postCommentsLikes: PostCommentsLikes[];
     _count: {
       postCommentsLikes: number;
       postCommentsReplies: number;
@@ -20,6 +21,6 @@ export type PostCommentsResponse = ServerHandleResponse<true> & {
 export type PostCommentRepliesResponse = ServerHandleResponse<true> & {
   replies: (PostCommentsReply & {
     author: User;
-    postLikes: PostLikes[];
+    postCommentsReplyLikes: PostCommentsReplyLikes[];
   })[];
 };

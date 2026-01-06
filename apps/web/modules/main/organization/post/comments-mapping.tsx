@@ -2,11 +2,16 @@
 
 // External packages
 import * as React from 'react';
+import { useParams } from 'next/navigation';
 
 // Modules
 import { Comment } from '@/modules/main/organization/post/comment';
+
+// Hooks
 import { useRetrievePostComments } from '@/hooks/data/comment';
-import { useParams } from 'next/navigation';
+import { useSession } from '@/hooks/data/user';
+
+// Types
 import { PostCommentsResponse } from '@repo/types/comment';
 
 export const CommentsMapping: React.FC<{
@@ -17,6 +22,8 @@ export const CommentsMapping: React.FC<{
 		initialData: comments,
 	});
 
+	const { data: user } = useSession();
+	console.log(comments);
 	// Kada budem implementirao infinite loading, paa za svaki slucaj
 	if (isLoading) {
 		return [...Array(8)].map((_, index) => (
@@ -28,7 +35,12 @@ export const CommentsMapping: React.FC<{
 			key={comment.id}
 			className="no-scrollbar mt-4 max-h-[600px] overflow-scroll"
 		>
-			<Comment comment={comment} />
+			<Comment
+				comment={comment}
+				hasUserLiked={comment.postCommentsLikes.some(
+					(like) => like.userId === user?.id
+				)}
+			/>
 		</div>
 	));
 };

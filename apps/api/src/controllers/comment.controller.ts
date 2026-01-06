@@ -21,6 +21,7 @@ export async function retrievePostCommentsController(
   try {
     const result = await retrievePostCommentsService({
       rawData: req.params,
+      userId: req.user.userId,
     });
     return res.status(result.status).json(result.body);
   } catch (err) {
@@ -112,6 +113,7 @@ export async function retrieveCommentRepliesController(
   try {
     const result = await retrieveCommentRepliesService({
       rawData: req.params,
+      userId: req.user.userId,
     });
     return res.status(result.status).json(result.body);
   } catch (err) {

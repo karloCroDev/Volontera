@@ -116,7 +116,6 @@ export async function retrievePostDataService(rawData: unknown) {
   };
 }
 
-// I need to handle the ordeing of the images and upload as well
 export async function updatePostService(rawData: unknown) {
   const { success, data } = updatePostSchema.safeParse(rawData);
 

@@ -136,6 +136,11 @@ export async function retrievePostWithComments({
               password: true,
             },
           },
+          postCommentsLikes: {
+            where: {
+              userId,
+            },
+          },
           _count: {
             select: {
               postCommentsLikes: true,

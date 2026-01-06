@@ -8,7 +8,13 @@ import {
 } from "@repo/database";
 
 // Comments
-export async function retrievePostComments(postId: Post["id"]) {
+export async function retrievePostComments({
+  postId,
+  userId,
+}: {
+  postId: Post["id"];
+  userId: User["id"];
+}) {
   return prisma.postComments.findMany({
     where: {
       postId,
@@ -18,6 +24,11 @@ export async function retrievePostComments(postId: Post["id"]) {
       author: {
         omit: {
           password: true,
+        },
+      },
+      postCommentsLikes: {
+        where: {
+          userId,
         },
       },
       _count: {
@@ -107,7 +118,13 @@ export async function dislikeComment({
 }
 
 // Replies
-export async function retrieveCommentReplies(commentId: PostComments["id"]) {
+export async function retrieveCommentReplies({
+  commentId,
+  userId,
+}: {
+  commentId: PostComments["id"];
+  userId: User["id"];
+}) {
   return prisma.postCommentsReply.findMany({
     where: {
       commentId,
@@ -118,7 +135,11 @@ export async function retrieveCommentReplies(commentId: PostComments["id"]) {
           password: true,
         },
       },
-
+      postCommentsReplyLikes: {
+        where: {
+          userId,
+        },
+      },
       // _count: {
       //   select: {
       //     postCommentsReplyLikes: true,
