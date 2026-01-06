@@ -2,6 +2,14 @@
 import { z } from "zod";
 
 // Comments
+
+export const retrievePostCommentsSchema = z.object({
+  postId: z.cuid(),
+});
+export type RetrievePostCommentsArgs = z.infer<
+  typeof retrievePostCommentsSchema
+>;
+
 export const createCommentSchema = z.object({
   postId: z.cuid(),
   content: z.string().min(1).max(100),

@@ -8,10 +8,25 @@ import {
   deleteCommentService,
   deleteReplyService,
   retrieveCommentRepliesService,
+  retrievePostCommentsService,
   toggleLikeCommentService,
   toggleLikeReplyService,
 } from "@/services/comment.service";
 import { retrieveCommentReplies } from "@/models/comment.model";
+
+export async function retrievePostCommentsController(
+  req: Request,
+  res: Response
+) {
+  try {
+    const result = await retrievePostCommentsService({
+      rawData: req.params,
+    });
+    return res.status(result.status).json(result.body);
+  } catch (err) {
+    return res.status(500).json({ success: false, message: "Internal error" });
+  }
+}
 
 export async function createCommentController(req: Request, res: Response) {
   try {
@@ -29,7 +44,7 @@ export async function createCommentController(req: Request, res: Response) {
 export async function deleteCommentController(req: Request, res: Response) {
   try {
     const result = await deleteCommentService({
-      rawData: req.body,
+      rawData: req.params,
     });
 
     return res.status(result.status).json(result.body);

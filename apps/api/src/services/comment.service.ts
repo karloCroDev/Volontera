@@ -14,6 +14,7 @@ import {
   createReply,
   deleteReply,
   retrieveCommentReplies,
+  retrievePostComments,
 } from "@/models/comment.model";
 
 // Schemas
@@ -25,8 +26,37 @@ import {
   likeOrDislikeReplySchema,
   deleteReplySchema,
   retrieveCommentRepliesSchema,
+  retrievePostCommentsSchema,
 } from "@repo/schemas/comment";
 
+export async function retrievePostCommentsService({
+  rawData,
+}: {
+  rawData: unknown;
+}) {
+  const { success, data } = retrievePostCommentsSchema.safeParse(rawData);
+
+  if (!success) {
+    return {
+      status: 400,
+      body: {
+        title: "Invalid comment data",
+        message: "The provided data comment data is invalid",
+      },
+    };
+  }
+
+  const comments = await retrievePostComments(data.postId);
+
+  return {
+    status: 200,
+    body: {
+      title: "Comments Retrieved",
+      message: "Comments retrieved successfully",
+      comments,
+    },
+  };
+}
 export async function createCommentService({
   rawData,
   userId,

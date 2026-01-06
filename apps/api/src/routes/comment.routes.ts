@@ -11,18 +11,20 @@ import {
   toggleLikeCommentController,
   toggleLikeReplyController,
   retrieveCommentRepliesController,
+  retrievePostCommentsController,
 } from "@/controllers/comment.controller";
 
 export const commentRoutes = Router();
 
 commentRoutes.use(express.json());
 
-// TODO: This will be only accessible to admins of the organization, change this middleware
 commentRoutes
-  .route("/")
-  .post(createCommentController)
+  .route("/:postId")
+  .get(retrievePostCommentsController)
   .delete(deleteCommentController)
-  .patch(toggleLikeCommentController); // Toggle like for comment
+  .patch(toggleLikeCommentController);
+
+commentRoutes.post("/", createCommentController);
 
 commentRoutes
   .route("/reply/:replyId")

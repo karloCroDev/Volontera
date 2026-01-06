@@ -1,8 +1,10 @@
 'use client';
 
-import { Comment } from '@/modules/main/organization/post/comment';
 // External packages
 import * as React from 'react';
+
+// Modules
+import { Comment } from '@/modules/main/organization/post/comment';
 
 export const CommentsMapping = () => {
 	return [...Array(8)].map((_, indx) => (

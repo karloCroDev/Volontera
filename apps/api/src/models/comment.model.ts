@@ -7,7 +7,18 @@ import {
   PostCommentsReply,
 } from "@repo/database";
 
-// Creating the comments
+// Comments
+export async function retrievePostComments(postId: Post["id"]) {
+  return prisma.postComments.findMany({
+    where: {
+      postId,
+    },
+    include: {
+      author: true,
+    },
+  });
+}
+
 export async function createComment({
   content,
   postId,
@@ -89,6 +100,9 @@ export async function retrieveCommentReplies(commentId: PostComments["id"]) {
   return prisma.postCommentsReply.findMany({
     where: {
       commentId,
+    },
+    include: {
+      author: true,
     },
   });
 }
