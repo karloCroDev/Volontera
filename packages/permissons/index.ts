@@ -1,49 +1,34 @@
-// External packages
-import { AbilityBuilder } from "@casl/ability";
-import { createPrismaAbility } from "@casl/prisma";
+import { Organization, User } from "@repo/database";
+import {
+  AbilityBuilder,
+  createMongoAbility,
+  MongoAbility,
+} from "@casl/ability";
 
-// Database
-import { User } from "@repo/database";
+type OrganizationSubject = "Organization";
+// type TodoSubject = Todo['id'] | 'Todo';
 
-// type Actions = "manage" | "create" | "read" | "update" | "delete";
+type Permission = [
+  "read" | "create" | "update" | "delete",
+  OrganizationSubject,
+];
 
-export type AppAbility = ReturnType<typeof createPrismaAbility>;
-
-export function defineAbilityFor({
-  role,
-  subscriptionTier,
-  userId,
-}: {
-  role: User["role"];
-  userId: User["id"];
-  subscriptionTier: User["subscriptionTier"];
-}): AppAbility {
-  const { can, cannot, build } = new AbilityBuilder<AppAbility>(
-    createPrismaAbility
+export function getUserPermissions(user: User) {
+  const { build, can: allow } = new AbilityBuilder<MongoAbility<Permission>>(
+    createMongoAbility
   );
 
-  if (role === "ADMIN") {
-    can("manage", "all");
-  }
-
-  if (role === "USER") {
-    can("read", "Post");
-  }
-  if (role === "USER") {
-    can("read", "Post");
-    can("create", "Post");
-    can("update", "User", { id: userId });
-  }
-
-  if (role === "ORGANIZATION") {
-    can("read", "Organization", { id: "" });
-    can("read", "Post", {});
-  }
-  if (role === "ORGANIZATION" && subscriptionTier == "PRO") {
-    can("manage", "Organization", { id: "" });
-    can("create", "Post", {});
-    can("read", "Post");
+  if (user.role === "ORGANIZATION") {
+    allow("read", "Organization");
+    allow("create", "Organization");
+    allow("update", "Organization");
+    allow("delete", "Organization");
+  } else if (user.role === "USER") {
+    allow("read", "Organization");
+    allow("update", "Organization");
   }
 
   return build();
 }
+
+// Ako bude trebalo za organizacije i permissone onda koristi

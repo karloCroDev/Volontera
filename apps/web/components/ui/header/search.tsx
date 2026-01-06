@@ -2,7 +2,7 @@
 
 // External packages
 import * as React from 'react';
-import { ArrowRight, MessageCircle, SearchIcon } from 'lucide-react';
+import { ArrowRight, MessageCircle, SearchIcon, User } from 'lucide-react';
 
 // Hooks
 import { useIsMobile } from '@/hooks/utils/useIsMobile';
@@ -12,10 +12,26 @@ import { Dialog } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Avatar } from '@/components/ui/avatar';
-import { LinkAsButton } from '@/components/ui/link-as-button';
+
+// Hooks
+import { useSearch } from '@/hooks/data/search';
+import { useDebounce } from '@/hooks/utils/useDebounce';
+import { convertToFullname } from '@/lib/utils/convert-to-fullname';
+import Link from 'next/link';
 
 export const Search = () => {
 	const isMobile = useIsMobile();
+
+	const [query, setQuery] = React.useState('');
+
+	const debounedValue = useDebounce(query, 300);
+	const { data, isLoading } = useSearch(
+		{ query: debounedValue },
+		{
+			enabled: debounedValue.length > 0,
+			refetchOnWindowFocus: false,
+		}
+	);
 	return (
 		<>
 			<Dialog
@@ -34,7 +50,12 @@ export const Search = () => {
 				}
 			>
 				<div className="aspect-[4/3] overflow-y-scroll">
-					<Input iconLeft={<SearchIcon className="size-4" />} label="Search" />
+					<Input
+						iconLeft={<SearchIcon className="size-4" />}
+						label="Search"
+						value={query}
+						onChange={(e) => setQuery(e.target.value)}
+					/>
 					<hr className="bg-accent-foreground my-6 h-px border-0" />
 
 					<h4 className="text-md underline underline-offset-4">
@@ -42,17 +63,55 @@ export const Search = () => {
 					</h4>
 
 					<div className="mt-4 flex flex-col gap-4">
-						{[...Array(3)].map((_, indx) => (
-							<SearchOutput key={indx} typeHref="/home" />
-						))}
+						{isLoading &&
+							[...Array(2)].map((_, indx) => (
+								<SearchOutputSkeleton key={indx} />
+							))}
+						{data?.organizations && data.organizations.length > 0 ? (
+							data.organizations.map((organization) => (
+								<SearchOutput
+									key={organization.id}
+									type="organization"
+									name={organization.name}
+									info={organization.bio.substring(0, 20) + '...'}
+									mainLink={`/organization/${organization.id}`}
+									chatLink={`/organization/${organization.id}/messages`}
+								/>
+							))
+						) : (
+							<p className="text-muted-foreground text-center">
+								No organizations found
+							</p>
+						)}
 					</div>
 
 					<h4 className="text-md mt-6 underline underline-offset-4">People</h4>
 					<div className="mt-4 flex flex-col gap-4">
-						{[...Array(3)].map((_, indx) => (
-							<SearchOutputSkeleton key={indx} />
-							// <SearchOutput key={indx} typeHref="/home" />
-						))}
+						{isLoading &&
+							[...Array(2)].map((_, indx) => (
+								<SearchOutputSkeleton key={indx} />
+							))}
+
+						{data?.users && data.users.length > 0 ? (
+							data.users.map((user) => (
+								<SearchOutput
+									key={user.id}
+									type="user"
+									name={convertToFullname({
+										firstname: user.firstName,
+										lastname: user.lastName,
+									})}
+									info={user.email}
+									mainLink={`/profile/${user.id}`}
+									// TODO: See how I handled if there is no conversation ID, but the message still works
+									chatLink={`/direct-messages?user=${user.id}&conversationId`}
+								/>
+							))
+						) : (
+							<p className="text-muted-foreground text-center">
+								No users found
+							</p>
+						)}
 					</div>
 				</div>
 			</Dialog>
@@ -61,9 +120,12 @@ export const Search = () => {
 };
 
 const SearchOutput: React.FC<{
-	type?: 'User' | 'Organization';
-	typeHref: string;
-}> = ({ typeHref, type }) => {
+	type: 'user' | 'organization';
+	mainLink: string;
+	chatLink: string;
+	name: string;
+	info: string;
+}> = ({ mainLink, chatLink, type, name, info }) => {
 	return (
 		<div className="border-input-border flex items-center gap-4 rounded-lg border px-5 py-3">
 			<Avatar
@@ -77,17 +139,23 @@ const SearchOutput: React.FC<{
 			</Avatar>
 
 			<div>
-				<p>Ante horvat</p>
-				<p className="text-muted-foreground text-xs">{type} | ante@test.com</p>
+				<p>{name}</p>
+				<p className="text-muted-foreground text-xs">{info}</p>
 			</div>
 
+			{/* Ovdje se ne koristi LinkAsButton kako bi se zatvorio dialog (iz tog samo razloga),pa je konstrukcija link -> button*/}
 			<div className="ml-auto flex gap-4">
-				<Button className="p-2" variant="outline" colorScheme="yellow">
-					<MessageCircle />
-				</Button>
-				<LinkAsButton href={typeHref} className="p-2">
-					<ArrowRight />
-				</LinkAsButton>
+				<Link href={chatLink}>
+					<Button className="p-2" variant="outline" colorScheme="yellow">
+						<MessageCircle />
+					</Button>
+				</Link>
+
+				<Link href={mainLink}>
+					<Button className="p-2">
+						{type === 'user' ? <User /> : <ArrowRight />}
+					</Button>
+				</Link>
 			</div>
 		</div>
 	);

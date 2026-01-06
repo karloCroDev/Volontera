@@ -1,23 +1,44 @@
 // External packages
-import * as React from 'react';
-import { ChevronDown, MessageCircleMore } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
+import { ChevronDown, MessageCircleMore } from 'lucide-react';
+import Markdown from 'react-markdown';
 
 // Components
 import { Avatar } from '@/components/ui/avatar';
 import { Collapsible } from '@/components/ui/collapsible';
 import { LinkAsButton } from '@/components/ui/link-as-button';
-
-// Modules
 import { PostLike } from '@/components/ui/post/post-like';
 import { SharePost } from '@/components/ui/post/share-post';
-import { EditPost } from '@/components/ui/post/edit-post';
+import { EditPostDialog } from '@/components/ui/post/edit-post-dialog';
+import { DeletePostDialog } from '@/components/ui/post/delete-post-dialog';
+import { Carousel } from '@/components/ui/carousel';
+
+// Types
+import { RetrieveOrganizationPostsResponse } from '@repo/types/post';
+
+// Lib
+import { convertToFullname } from '@/lib/utils/convert-to-fullname';
 
 export const Post: React.FC<{
-	title: string;
-	content: string;
-}> = ({ title, content }) => {
-	const splittedContent = content.split('.');
+	post: RetrieveOrganizationPostsResponse['posts'][0];
+	isInsideOrganization?: boolean;
+	images?: Record<string, string>;
+	hasAnAdminAccess?: boolean;
+}> = ({
+	/* eslint react/prop-types: 0 */
+	images,
+	post,
+	isInsideOrganization = false,
+	hasAnAdminAccess = false,
+}) => {
+	const splittedContent = post.content.split('.');
+	const singlePostImage = post.postImages[0];
+	const singlePostImageSrc = singlePostImage
+		? images?.[singlePostImage.imageUrl]
+		: undefined;
+
+	console.log('Post like', post.postLikes);
 	return (
 		<div className="border-input-border bg-muted rounded-xl border px-8 py-6">
 			<div className="mb-8 flex gap-4">
@@ -25,65 +46,143 @@ export const Post: React.FC<{
 					<Avatar
 						colorScheme="gray"
 						imageProps={{
-							src: '',
+							src: images?.[post.organization.avatarImage],
 						}}
 					>
-						Organization X
+						{post.organization.name}
 					</Avatar>
 
 					<div>
-						<p>Organization X</p>
+						<p>{post.organization.name}</p>
 						<p className="text-muted-foreground text-sm">20 attendees</p>
 					</div>
 				</div>
 
-				<LinkAsButton
-					href="/home/explore"
-					colorScheme="yellow"
-					size="sm"
-					className="ml-auto"
-				>
-					Explore{' '}
-				</LinkAsButton>
-				<EditPost />
+				<div className="ml-auto flex gap-2">
+					{hasAnAdminAccess && <DeletePostDialog postId={post.id} />}
+					{!isInsideOrganization && (
+						<LinkAsButton
+							href={`/organization/${post.organizationId}`}
+							colorScheme="yellow"
+							size="sm"
+							className="ml-auto"
+						>
+							Explore
+						</LinkAsButton>
+					)}
+
+					{hasAnAdminAccess && <EditPostDialog postId={post.id} />}
+				</div>
 			</div>
-			<h4 className="mb-4 text-lg font-semibold">{title}</h4>
-			<Collapsible
-				trigger={
-					<div className="group cursor-pointer">
-						<p className="cursor-pointer italic">{splittedContent[0]}</p>
+			<h4 className="mb-4 text-lg font-semibold">{post.title}</h4>
 
-						<div className="flex items-baseline justify-center gap-4">
-							<p className="text-muted-foreground mt-2 text-center group-data-[state=open]:hidden">
-								Show more
-							</p>
-							<ChevronDown className="size-3 group-data-[state=open]:hidden" />
+			{splittedContent.length > 1 ? (
+				<Collapsible
+					trigger={
+						<div className="group cursor-pointer">
+							<div className="prose prose-custom">
+								<Markdown>{splittedContent[0]}</Markdown>
+							</div>
+
+							<div className="flex items-baseline justify-center gap-4">
+								<p className="text-muted-foreground mt-2 text-center group-data-[state=open]:hidden">
+									Show more
+								</p>
+								<ChevronDown className="size-3 group-data-[state=open]:hidden" />
+							</div>
 						</div>
-					</div>
-				}
-				contentProps={{
-					children: <p>{splittedContent.slice(1).join('.')}</p>,
-				}}
-			/>
+					}
+					contentProps={{
+						children: <Markdown>{splittedContent.slice(1).join('.')}</Markdown>,
+					}}
+				/>
+			) : (
+				<div className="prose prose-custom">
+					<Markdown>{splittedContent[0]}</Markdown>
+				</div>
+			)}
 
-			<div className="rouded-md border-input-border mt-4 aspect-[4/3] max-h-[600px] w-full rounded border" />
+			<div className="mt-4">
+				{post.postImages.length > 1 ? (
+					<Carousel
+						slides={post.postImages.map(({ imageUrl, id }) => {
+							const src = images?.[imageUrl];
+							if (!src) return null;
+
+							return (
+								<div
+									className="rouded-md border-input-border relative aspect-[4/3] max-h-[600px] w-full rounded border"
+									key={id}
+								>
+									<Image
+										src={src}
+										alt="Post image"
+										fill
+										className="object-contain"
+									/>
+								</div>
+							);
+						})}
+					/>
+				) : (
+					post.postImages.length === 1 &&
+					singlePostImageSrc && (
+						<div className="rouded-md border-input-border relative mt-4 aspect-[4/3] max-h-[600px] w-full rounded border">
+							<Image
+								src={singlePostImageSrc}
+								alt="Post image"
+								fill
+								className="object-contain"
+							/>
+						</div>
+					)
+				)}
+			</div>
 
 			<div className="mt-6 flex items-center gap-8">
-				<p className="text-muted-foreground">
-					Written by: <span className="italic">Ivan Horvat, Ana Horvat</span>
-				</p>
+				<div className="flex items-center gap-2">
+					Written by:
+					<Avatar
+						imageProps={{
+							src: post.author.image ? images?.[post.author.image] : undefined,
+						}}
+						size="xs"
+						className="ml-2"
+					>
+						{convertToFullname({
+							firstname: post.author.firstName,
+							lastname: post.author.lastName,
+						})}
+					</Avatar>
+					<Link
+						href={`/profile/${post.authorId}`}
+						className="text-muted-foreground text-sm underline-offset-4 hover:underline"
+					>
+						{convertToFullname({
+							firstname: post.author.firstName,
+							lastname: post.author.lastName,
+						})}
+					</Link>
+				</div>
 
-				<PostLike />
-				<Link href="/post/123" className="flex items-center gap-4">
-					<MessageCircleMore
-						//  fill="#f59f0a" className="text-primary"
-						className="text-background-foreground cursor-pointer"
-					/>
+				<PostLike
+					count={post._count.postLikes}
+					hasUserLiked={post.postLikes.length > 0}
+					postId={post.id}
+				/>
+				<LinkAsButton
+					variant="ghost"
+					size="xs"
+					href={`/organization/post/${post.id}`}
+					iconLeft={
+						<MessageCircleMore className="text-background-foreground cursor-pointer" />
+					}
+				>
 					<p className="font-semibold italic underline underline-offset-4">
-						20
+						{post._count.postComments}
 					</p>
-				</Link>
-				<SharePost link="xx" />
+				</LinkAsButton>
+				<SharePost link={`/organization/post/${post.id}`} />
 			</div>
 		</div>
 	);

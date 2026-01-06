@@ -5,7 +5,6 @@ import {
   deleteAccountService,
   resetPasswordInAppService,
 } from "@/services/settings.service";
-import { logout } from "@/controllers/auth.controller";
 
 export async function changeProfileInfo(req: Request, res: Response) {
   try {

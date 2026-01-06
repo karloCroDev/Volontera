@@ -2,14 +2,17 @@
 
 // External packages
 import * as React from 'react';
+import { ChevronRight } from 'lucide-react';
+import { Button } from 'react-aria-components';
 
 // Components
 import { Collapsible } from '@/components/ui/collapsible';
-import { InformationContainer } from '@/modules/main/public-profile/information-container';
-import { ChevronRight } from 'lucide-react';
-import { Button } from 'react-aria-components';
 import { Post } from '@/components/ui/post/post';
 
+// Modules
+import { InformationContainer } from '@/modules/main/public-profile/information-container';
+
+// TODO: Fetch this separately so that I don't have to fetch everything in the same fetch
 export const ListPosts = () => {
 	return (
 		<InformationContainer>

@@ -3,7 +3,7 @@ import { CheckCheck } from 'lucide-react';
 import { twJoin, twMerge } from 'tailwind-merge';
 
 // Lib
-import { adjustMessageTime } from '@/lib/utils/time-adjustments';
+import { formatTime } from '@/lib/utils/time-adjustments';
 
 export const Message: React.FC<
 	React.ComponentPropsWithoutRef<'div'> & {
@@ -52,7 +52,7 @@ export const Message: React.FC<
 					</div>
 					<div className="mt-2 flex items-center justify-between">
 						<p className="text-muted-foreground text-xs lg:text-sm">
-							{adjustMessageTime(date)}
+							{formatTime(date)}
 						</p>
 						<CheckCheck className="text-muted-foreground size-4" />
 					</div>

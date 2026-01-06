@@ -1,4 +1,4 @@
-export function adjustMessageTime(date: Date) {
+export function formatTime(date: Date) {
 	const hours = new Date(date).getHours().toString().padStart(2, '0');
 	const minutes = new Date(date).getMinutes().toString().padStart(2, '0');
 	const day = new Date(date).getDate();

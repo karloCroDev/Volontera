@@ -10,7 +10,7 @@ import {
   hasRoleMiddleware,
   organizationMiddleware,
 } from "@/middleware/role-middleware";
-import { onboardingProcessMiddleware } from "@/middleware/onbaording-middleware";
+import { onboardingProcessMiddleware } from "@/middleware/onboarding-middleware";
 import { userMiddleware } from "@/middleware/role-middleware";
 
 // Lib
@@ -29,6 +29,10 @@ import { paymentRoutes } from "@/routes/payment.routes";
 import { notificationRoutes } from "@/routes/notification.routes";
 import { initalizeRedisClient } from "@/config/redis";
 import { imageRoutes } from "@/routes/image.routes";
+import { organizationRoutes } from "@/routes/organization.routes";
+import { searchRoutes } from "@/routes/search.routes";
+import { postRoutes } from "@/routes/post.routes";
+import { commentRoutes } from "@/routes/comment.routes";
 
 // Security middleware
 app.use(helmet());
@@ -67,6 +71,10 @@ app.use(
   directMessagesRoutes
 );
 app.use("/image", imageRoutes);
+app.use("/organization", authMiddleware, hasRoleMiddleware, organizationRoutes);
+app.use("/search", authMiddleware, hasRoleMiddleware, searchRoutes);
+app.use("/post", authMiddleware, hasRoleMiddleware, postRoutes);
+app.use("/comment", authMiddleware, hasRoleMiddleware, commentRoutes);
 
 // Test
 app.get("/protected-user", authMiddleware, userMiddleware, (req, res) => {

@@ -3,6 +3,7 @@
 // External packages
 import { ArrowLeft } from 'lucide-react';
 import { useSearchParams } from 'next/navigation';
+import Link from 'next/link';
 
 // Components
 import { Avatar } from '@/components/ui/avatar';
@@ -12,11 +13,13 @@ import { LinkAsButton } from '@/components/ui/link-as-button';
 // Hooks
 import { useGetUser } from '@/hooks/data/user';
 
+// Modules
+import { useSocketContext } from '@/modules/main/direct-messages/SocketContext';
+
 // Lib
 import { withReactQueryProvider } from '@/lib/utils/react-query';
 import { convertToFullname } from '@/lib/utils/convert-to-fullname';
-import { useSocketContext } from '@/modules/main/direct-messages/SocketContext';
-import { adjustMessageTime } from '@/lib/utils/time-adjustments';
+import { formatTime } from '@/lib/utils/time-adjustments';
 
 export const UsersInfoHeader = withReactQueryProvider(() => {
 	const params = useSearchParams();
@@ -35,19 +38,20 @@ export const UsersInfoHeader = withReactQueryProvider(() => {
 					<ArrowLeft />
 				</LinkAsButton>
 
-				<Avatar
-					imageProps={{
-						src: user?.image || undefined,
-					}}
-					size="xl"
-				>
-					{convertToFullname({
-						firstname: user.firstName,
-						lastname: user.lastName,
-					})}
-				</Avatar>
-
-				<div>
+				<Link href={`/profile/${user.id}`}>
+					<Avatar
+						imageProps={{
+							src: user?.image || undefined,
+						}}
+						size="xl"
+					>
+						{convertToFullname({
+							firstname: user.firstName,
+							lastname: user.lastName,
+						})}
+					</Avatar>
+				</Link>
+				<Link href={`/profile/${user.id}`}>
 					{user && (
 						<h4 className="text-lg lg:text-xl">
 							{convertToFullname({
@@ -61,10 +65,10 @@ export const UsersInfoHeader = withReactQueryProvider(() => {
 						<p className="text-muted-foreground">
 							{onlineUsers.includes(user.id)
 								? 'Currently online'
-								: ` Last online: ${adjustMessageTime(new Date(user.updatedAt))}`}
+								: ` Last online: ${formatTime(new Date(user.updatedAt))}`}
 						</p>
 					)}
-				</div>
+				</Link>
 				<DotWithLabel
 					className="ml-auto"
 					label={onlineUsers.includes(user.id) ? 'Online' : 'Offline'}

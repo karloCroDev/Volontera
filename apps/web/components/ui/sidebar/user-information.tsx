@@ -30,11 +30,11 @@ import { useLogout } from '@/hooks/data/user';
 import { withReactQueryProvider } from '@/lib/utils/react-query';
 
 // Types
-import { SessionSuccessResponse } from '@repo/types/auth';
+import { UserResponse } from '@repo/types/user';
 import { convertToFullname } from '@/lib/utils/convert-to-fullname';
 
 export const UserInformation: React.FC<{
-	user: SessionSuccessResponse;
+	user: UserResponse;
 }> = withReactQueryProvider(({ user }) => {
 	const router = useRouter();
 	const { desktopOpen } = useSidebarContext();
@@ -45,12 +45,19 @@ export const UserInformation: React.FC<{
 		user.subscriptionTier[0]?.toUpperCase() +
 		user.subscriptionTier.slice(1).toLowerCase();
 
-	console.log(user);
+	const userRole =
+		user.role![0]?.toUpperCase() + user.role!.slice(1).toLowerCase();
 	return (
 		<>
-			<p className="text-muted-foreground mb-3 mt-auto text-start">
-				{desktopOpen ? `Current plan: ${subscriptionTier}` : subscriptionTier}
-			</p>
+			<div className="mb-3 mt-auto">
+				<p className="text-muted-foreground text-start">
+					{desktopOpen ? `Current plan: ${subscriptionTier}` : subscriptionTier}
+				</p>
+				<p className="text-muted-foreground text-start">
+					{desktopOpen ? `Type: ${userRole}` : userRole}
+				</p>
+			</div>
+
 			<DialogTrigger>
 				{desktopOpen ? (
 					<AriaButton className="border-input-border bg-muted hover:bg-muted/80 flex h-fit w-full cursor-pointer items-center gap-4 rounded-lg border p-3 outline-none sm:w-3/4 md:w-3/5 lg:w-full">
@@ -130,7 +137,7 @@ export const UserInformation: React.FC<{
 							<ul>
 								<li>
 									<LinkAsButton
-										href="/public-profile"
+										href={`/profile/${user.id}`}
 										variant="ghost"
 										iconLeft={<CircleUserRound className="size-4" />}
 										size="sm"

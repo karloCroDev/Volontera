@@ -11,11 +11,11 @@ import {
 import { clientSession, logout, getUserById } from '@/lib/data/user';
 
 // Types
-import { SessionSuccessResponse } from '@repo/types/auth';
+import { UserResponse } from '@repo/types/user';
 import { ServerHandleResponse } from '@repo/types/general';
 
 export const useSession = () => {
-	return useQuery<SessionSuccessResponse, ServerHandleResponse<false>>({
+	return useQuery<UserResponse, ServerHandleResponse<false>>({
 		queryKey: ['session'],
 		queryFn: cache(clientSession),
 		staleTime: 5 * 60 * 1000,
@@ -36,7 +36,7 @@ export const useLogout = (options?: UseMutationOptions<void, Error, void>) => {
 };
 
 export const useGetUser = (userId: string) => {
-	return useQuery<SessionSuccessResponse, ServerHandleResponse<false>>({
+	return useQuery<UserResponse, ServerHandleResponse<false>>({
 		queryKey: [userId],
 		queryFn: () => getUserById(userId),
 	});

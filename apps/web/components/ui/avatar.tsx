@@ -27,7 +27,7 @@ export const Avatar: React.FC<
 			{...rest}
 			className={twMerge(
 				'relative rounded-full',
-				size === 'xs' && 'size-6',
+				size === 'xs' && 'size-6 text-xs',
 				size === 'sm' && 'size-8',
 				size === 'md' && 'size-10',
 				size === 'lg' && 'text-md size-14',
@@ -44,6 +44,10 @@ export const Avatar: React.FC<
 				alt={imageProps?.alt || 'Representation of users profile picture'}
 				className={twMerge(
 					'size-full rounded-full object-cover',
+					colorScheme === 'gray' && 'bg-secondary-background',
+					colorScheme === 'black' && 'bg-muted',
+					colorScheme === 'orange' && 'bg-primary',
+					colorScheme === 'yellow' && 'bg-accent',
 					imageProps.className
 				)}
 			/>
@@ -55,7 +59,6 @@ export const Avatar: React.FC<
 					colorScheme === 'orange' && 'bg-primary text-background',
 					colorScheme === 'yellow' && 'bg-accent text-background-foreground'
 				)}
-				delayMs={500}
 			>
 				{children
 					?.toString()

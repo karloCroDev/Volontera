@@ -2,6 +2,7 @@ import { prisma } from "./client";
 import { faker } from "@faker-js/faker";
 
 async function main() {
+  await prisma.user.deleteMany();
   await prisma.user.createMany({
     data: [...Array(10)].map((_, i) => ({
       email: faker.internet.email(),

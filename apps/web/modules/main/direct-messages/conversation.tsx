@@ -12,7 +12,7 @@ import { Avatar } from '@/components/ui/avatar';
 // Hooks
 import { useGetDirectMessagesConversationById } from '@/hooks/data/direct-messages';
 import { useSession } from '@/hooks/data/user';
-import { useGetImageFromKey } from '@/hooks/data/image';
+import { useGetImageFromKeys } from '@/hooks/data/image';
 
 // Lib
 import { withReactQueryProvider } from '@/lib/utils/react-query';
@@ -24,6 +24,7 @@ import { useSocketContext } from '@/modules/main/direct-messages/SocketContext';
 // Types
 import { EmitNewChat } from '@repo/types/sockets';
 import { MessageImages } from '@/modules/main/direct-messages/message-images';
+import Link from 'next/link';
 
 export const Conversation = withReactQueryProvider(() => {
 	const searchParams = useSearchParams();
@@ -57,7 +58,7 @@ export const Conversation = withReactQueryProvider(() => {
 		};
 	}, [messages, setMessages, socketGlobal]);
 
-	const { data: userImages } = useGetImageFromKey(
+	const { data: userImages } = useGetImageFromKeys(
 		{
 			imageUrls:
 				messages
@@ -89,18 +90,20 @@ export const Conversation = withReactQueryProvider(() => {
 							variant={message.author.id === user?.id ? 'primary' : 'secondary'}
 							date={new Date(message.createdAt)}
 							avatar={
-								<Avatar
-									imageProps={{
-										src: message.author.image
-											? userImages?.urls[message.author.image]
-											: '',
-									}}
-								>
-									{convertToFullname({
-										firstname: message.author.firstName,
-										lastname: message.author.lastName,
-									})}
-								</Avatar>
+								<Link href={`/profile/${message.author.id}`}>
+									<Avatar
+										imageProps={{
+											src: message.author.image
+												? userImages?.urls[message.author.image]
+												: '',
+										}}
+									>
+										{convertToFullname({
+											firstname: message.author.firstName,
+											lastname: message.author.lastName,
+										})}
+									</Avatar>
+								</Link>
 							}
 							images={
 								message.directMessagesImages[0]?.imageUrl && (

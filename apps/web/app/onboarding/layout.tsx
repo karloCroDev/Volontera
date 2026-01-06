@@ -8,7 +8,7 @@ import { Layout, LayoutColumn } from '@/components/ui/layout-grid';
 import { ProgressTracker } from '@/modules/onboarding/progress-tracker';
 
 // Lib
-import { getSession } from '@/lib/server/auth';
+import { getSession } from '@/lib/server/user';
 
 // Karlo: TODO: Mobile view not the prettiest one!
 export default async function OnboardingLayout({
@@ -18,6 +18,7 @@ export default async function OnboardingLayout({
 }) {
 	const user = await getSession();
 
+	console.log(user);
 	if (!user.success) redirect('/auth/login');
 	if (user.success && user.onboardingFinished) redirect('/home');
 

@@ -17,6 +17,7 @@ import {
 } from 'react-aria-components';
 import { twJoin } from 'tailwind-merge';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
 // Components
 import { Button } from '@/components/ui/button';
@@ -26,13 +27,16 @@ import {
 	Organizations,
 	SidebarItem,
 } from '@/components/ui/sidebar/sidebar-items';
-import { SessionSuccessResponse } from '@repo/types/auth';
+import { UserResponse } from '@repo/types/user';
 
 export const Sidebar: React.FC<{
-	user: SessionSuccessResponse;
+	user: UserResponse;
 }> = ({ /* eslint react/prop-types: 0 */ user }) => {
 	const { desktopOpen, mobileOpen, setMobileOpen, setDesktopOpen } =
 		useSidebarContext();
+
+	const pathname = usePathname();
+
 	return (
 		<>
 			<aside
@@ -60,11 +64,19 @@ export const Sidebar: React.FC<{
 				<div className={`flex flex-col ${desktopOpen ? 'gap-4' : 'gap-6'}`}>
 					<Link href="/home">
 						{desktopOpen ? (
-							<SidebarItem iconLeft={<Home className="size-5" />} isSelected>
+							<SidebarItem
+								iconLeft={<Home className="size-5" />}
+								isSelected={pathname.includes('/home')}
+							>
 								Home
 							</SidebarItem>
 						) : (
-							<SidebarItem isSelected size="lg" isFullyRounded className="p-4">
+							<SidebarItem
+								isSelected={pathname.includes('/home')}
+								size="lg"
+								isFullyRounded
+								className="p-4"
+							>
 								<Home className="size-8" />
 							</SidebarItem>
 						)}
@@ -73,33 +85,57 @@ export const Sidebar: React.FC<{
 
 					<Link href="/direct-messages">
 						{desktopOpen ? (
-							<SidebarItem iconLeft={<MessageCircleMore className="size-5" />}>
+							<SidebarItem
+								iconLeft={<MessageCircleMore className="size-5" />}
+								isSelected={pathname.includes('/direct-messages')}
+							>
 								Direct messages
 							</SidebarItem>
 						) : (
-							<SidebarItem size="lg" isFullyRounded className="p-4">
+							<SidebarItem
+								size="lg"
+								isFullyRounded
+								className="p-4"
+								isSelected={pathname.includes('/direct-messages')}
+							>
 								<MessageCircleMore className="size-8" />
 							</SidebarItem>
 						)}
 					</Link>
 					<Link href="/settings">
 						{desktopOpen ? (
-							<SidebarItem iconLeft={<Settings className="size-5" />}>
+							<SidebarItem
+								iconLeft={<Settings className="size-5" />}
+								isSelected={pathname.includes('/settings')}
+							>
 								Settings
 							</SidebarItem>
 						) : (
-							<SidebarItem size="lg" isFullyRounded className="p-4">
+							<SidebarItem
+								size="lg"
+								isFullyRounded
+								className="p-4"
+								isSelected={pathname.includes('/settings')}
+							>
 								<Settings className="size-8" />
 							</SidebarItem>
 						)}
 					</Link>
 					<Link href="/help">
 						{desktopOpen ? (
-							<SidebarItem iconLeft={<HelpCircle className="size-5" />}>
+							<SidebarItem
+								iconLeft={<HelpCircle className="size-5" />}
+								isSelected={pathname.includes('/help')}
+							>
 								Help
 							</SidebarItem>
 						) : (
-							<SidebarItem size="lg" isFullyRounded className="p-4">
+							<SidebarItem
+								size="lg"
+								isFullyRounded
+								className="p-4"
+								isSelected={pathname.includes('/help')}
+							>
 								<HelpCircle className="size-8" />
 							</SidebarItem>
 						)}
@@ -132,12 +168,12 @@ export const Sidebar: React.FC<{
 								</Button>
 							</div>
 
-							<div>
-								<div className="flex w-3/4 flex-1 flex-col gap-4 md:w-3/5">
+							<div className="flex w-3/4 flex-col gap-2 md:w-3/5">
+								<div className="flex flex-1 flex-col gap-4">
 									<Link href="/home">
 										<SidebarItem
 											iconLeft={<Home className="size-5" />}
-											isSelected
+											isSelected={pathname.includes('/home')}
 										>
 											Home
 										</SidebarItem>
@@ -148,17 +184,24 @@ export const Sidebar: React.FC<{
 								<Link href="/direct-messages">
 									<SidebarItem
 										iconLeft={<MessageCircleMore className="size-5" />}
+										isSelected={pathname.includes('/direct-messages')}
 									>
 										Direct messages
 									</SidebarItem>
 								</Link>
 								<Link href="/settings">
-									<SidebarItem iconLeft={<Settings className="size-5" />}>
+									<SidebarItem
+										iconLeft={<Settings className="size-5" />}
+										isSelected={pathname.includes('/settings')}
+									>
 										Settings
 									</SidebarItem>
 								</Link>
 								<Link href="/help">
-									<SidebarItem iconLeft={<HelpCircle className="size-5" />}>
+									<SidebarItem
+										iconLeft={<HelpCircle className="size-5" />}
+										isSelected={pathname.includes('/help')}
+									>
 										Help
 									</SidebarItem>
 								</Link>
