@@ -2,7 +2,7 @@
 
 // External packages
 import * as React from 'react';
-import { ChevronRight, Heart, Reply, Trash2 } from 'lucide-react';
+import { ChevronRight, Heart, Reply } from 'lucide-react';
 import {
 	useParams,
 	usePathname,
@@ -27,13 +27,14 @@ import { convertToFullname } from '@/lib/utils/convert-to-fullname';
 
 // Hooks
 import { useSession } from '@/hooks/data/user';
-import { useDeleteComment, useToggleLikeComment } from '@/hooks/data/comment';
+import { useToggleLikeComment } from '@/hooks/data/comment';
 
 // Types
 import { PostCommentsResponse } from '@repo/types/comment';
 
 // Lib
 import { toast } from '@/lib/utils/toast';
+import { CommentDelete } from '@/modules/main/organization/post/comment-delete';
 
 export const Comment: React.FC<{
 	comment: PostCommentsResponse['comments'][0];
@@ -44,15 +45,18 @@ export const Comment: React.FC<{
 	const searchParams = useSearchParams();
 	const router = useRouter();
 
-	const { mutate: mutateDeleteComment, isPending: isDeletingComment } =
-		useDeleteComment(comment.id);
+	// Ažuriram cache nakon brisanja komentara
 
 	const { data: user } = useSession();
 
 	const queryClient = useQueryClient();
+
+	// Optimistic update za like/dislike komentara
 	const { mutate: mutateLikeComment } = useToggleLikeComment(comment.id, {
 		onMutate: async (likeStatus) => {
-			await queryClient.cancelQueries({ queryKey: ['posts'] });
+			await queryClient.cancelQueries({
+				queryKey: ['comments', params.postId],
+			});
 
 			const previousPost = queryClient.getQueryData([
 				'comments',
@@ -88,13 +92,14 @@ export const Comment: React.FC<{
 				})
 			);
 
-			// Return a context object with the snapshotted value
 			return { previousPost };
 		},
 
-		// 2. If the mutation fails:
 		onError: ({ message, title }, _, context) => {
-			queryClient.setQueryData(['posts'], context?.previousPost);
+			queryClient.setQueryData(
+				['comments', params.postId],
+				context?.previousPost
+			);
 			toast({
 				title,
 				content: message,
@@ -102,11 +107,11 @@ export const Comment: React.FC<{
 			});
 		},
 
-		// 3. Always refetch after error or success to sync with server:
 		onSettled: () => {
-			queryClient.invalidateQueries({ queryKey: ['posts'], exact: false });
+			queryClient.invalidateQueries({ queryKey: ['comments', params.postId] });
 		},
 	});
+
 	return (
 		<div className="border-b-input-border border-b py-4">
 			<div className="flex items-center gap-4">
@@ -135,7 +140,7 @@ export const Comment: React.FC<{
 
 				<div className="ml-auto flex items-center gap-6 text-sm">
 					<div className="flex items-center gap-2">
-						<p>{comment._count.postCommentsLikes}</p>
+						<p suppressHydrationWarning>{comment._count.postCommentsLikes}</p>
 						<Button
 							variant="blank"
 							className="p-0"
@@ -164,8 +169,16 @@ export const Comment: React.FC<{
 							const params = new URLSearchParams(searchParams.toString());
 							if (searchParams.get('commentId') === comment.id) {
 								params.delete('commentId');
+								params.delete('replyTo');
 							} else {
 								params.set('commentId', comment.id);
+								params.set(
+									'replyTo',
+									convertToFullname({
+										firstname: comment.author.firstName || '',
+										lastname: comment.author.lastName || '',
+									})
+								);
 							}
 
 							router.push(pathname + '?' + params.toString(), {
@@ -177,16 +190,9 @@ export const Comment: React.FC<{
 						Reply
 					</Button>
 
-					<Button
-						variant="blank"
-						className="text-muted-foreground hover:text-destructive p-0"
-						onPress={() => {
-							mutateDeleteComment();
-						}}
-						isLoading={isDeletingComment}
-					>
-						<Trash2 />
-					</Button>
+					{user?.id === comment.author.id && (
+						<CommentDelete commentId={comment.id} />
+					)}
 				</div>
 			</div>
 
@@ -195,7 +201,10 @@ export const Comment: React.FC<{
 					<Collapsible
 						trigger={
 							<div className="group">
-								<Tag className="flex cursor-pointer items-center gap-4">
+								<Tag
+									className="flex cursor-pointer items-center gap-4"
+									suppressHydrationWarning
+								>
 									See {comment._count.postCommentsReplies}
 									{comment._count.postCommentsReplies === 1
 										? ' reply'
@@ -205,7 +214,12 @@ export const Comment: React.FC<{
 							</div>
 						}
 						contentProps={{
-							children: <RepliesMapping commentId={comment.id} />,
+							children: (
+								<RepliesMapping
+									commentId={comment.id}
+									repliesCount={comment._count.postCommentsReplies}
+								/>
+							),
 						}}
 					/>
 				</div>

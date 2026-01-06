@@ -8,11 +8,27 @@ import { Dialog } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { useDeletePost } from '@/hooks/data/post';
 import { toast } from '@/lib/utils/toast';
+import { RetrieveOrganizationPostsResponse } from '@repo/types/post';
+import { useQueryClient } from '@tanstack/react-query';
 
 export const DeletePostDialog: React.FC<{
 	postId: string;
 }> = ({ postId }) => {
-	const { mutate, isPending } = useDeletePost(postId);
+	const queryClient = useQueryClient();
+	const { mutate, isPending } = useDeletePost(postId, {
+		onSuccess: () => {
+			queryClient.setQueriesData(
+				{ queryKey: ['posts'], exact: false }, // Targets any key starting with 'posts'
+				(oldData: RetrieveOrganizationPostsResponse | undefined) => {
+					if (!oldData) return oldData;
+					return {
+						...oldData,
+						posts: oldData.posts.filter((post) => post.id !== postId),
+					};
+				}
+			);
+		},
+	});
 
 	const [isOpen, setIsOpen] = React.useState(false);
 	return (

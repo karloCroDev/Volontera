@@ -118,7 +118,11 @@ export const CommentTextArea = withReactQueryProvider(() => {
 					<ResizableTextArea
 						textAreaProps={field}
 						error={errors.content?.message}
-						label={`Enter your message ${commentId ? 'reply' : 'comment'}...`}
+						label={
+							commentId
+								? `Write a reply to ${searchParams.get('replyTo')}`
+								: 'Enter a new comment'
+						}
 						className="border-input-border mt-12 gap-4 border"
 						iconsLeft={
 							user && (

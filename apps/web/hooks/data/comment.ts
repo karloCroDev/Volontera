@@ -67,6 +67,7 @@ export const useCreateComment = (
 		onSuccess: async (...args) => {
 			await queryClient.invalidateQueries({
 				queryKey: ['comments'],
+				exact: false,
 			});
 			await options?.onSuccess?.(...args);
 		},
@@ -75,7 +76,12 @@ export const useCreateComment = (
 
 export const useDeleteComment = (
 	commentId: DeleteCommentArgs['commentId'],
-	options?: UseMutationOptions<SuccessfulResponse, ErrorToastResponse>
+	options?: UseMutationOptions<
+		SuccessfulResponse,
+		ErrorToastResponse,
+		void,
+		{ previousPost: PostCommentsResponse }
+	>
 ) => {
 	const queryClient = useQueryClient();
 	return useMutation({
@@ -144,7 +150,7 @@ export const useCreateReply = (
 		mutationFn: (data: CreateReplyArgs) => createReply(data),
 		onSuccess: async (...args) => {
 			await queryClient.invalidateQueries({
-				queryKey: ['replies'],
+				queryKey: ['replies', args[1].commentId],
 				exact: false,
 			});
 			await options?.onSuccess?.(...args);
@@ -153,12 +159,14 @@ export const useCreateReply = (
 };
 
 export const useDeleteReply = (
-	replyId: DeleteReplyArgs['replyId'],
-	options?: UseMutationOptions<
-		SuccessfulResponse,
-		ErrorToastResponse,
-		DeleteReplyArgs
-	>
+	{
+		replyId,
+		commentId,
+	}: {
+		replyId: DeleteReplyArgs['replyId'];
+		commentId: string;
+	},
+	options?: UseMutationOptions<SuccessfulResponse, ErrorToastResponse>
 ) => {
 	const queryClient = useQueryClient();
 	return useMutation({
@@ -167,8 +175,7 @@ export const useDeleteReply = (
 		mutationFn: () => deleteReply({ replyId }),
 		onSuccess: async (...args) => {
 			await queryClient.invalidateQueries({
-				queryKey: ['replies'],
-				exact: false,
+				queryKey: ['replies', commentId],
 			});
 			await options?.onSuccess?.(...args);
 		},

@@ -31,9 +31,6 @@ export const PostLike: React.FC<{
 
 	const params = useParams<{ organizationId: string }>();
 
-	// Optimistic update za like/dislike. Uglavnom kada želim prikazati instant feedback korisniku da je lajkao ili dislajkao post.
-
-	// TODO: Currently, this won't work in home or if it is a single post (yeah)
 	const { mutate } = useToggleLike({
 		onMutate: async (likeStatus) => {
 			await queryClient.cancelQueries({ queryKey: ['posts'] });
@@ -75,7 +72,6 @@ export const PostLike: React.FC<{
 			return { previousPost };
 		},
 
-		// 2. If the mutation fails:
 		onError: ({ message, title }, _, context) => {
 			queryClient.setQueryData(['posts'], context?.previousPost);
 			toast({
@@ -85,7 +81,6 @@ export const PostLike: React.FC<{
 			});
 		},
 
-		// 3. Always refetch after error or success to sync with server:
 		onSettled: () => {
 			queryClient.invalidateQueries({ queryKey: ['posts'], exact: false });
 		},

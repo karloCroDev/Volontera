@@ -65,6 +65,7 @@ export const useCreatePost = (
 	});
 };
 
+// Optimistic update za brisanje posta (implementiran unutar componenata)
 export const useDeletePost = (
 	postId: DeletePostArgs['postId'],
 	options?: UseMutationOptions<
@@ -73,25 +74,10 @@ export const useDeletePost = (
 		DeletePostArgs
 	>
 ) => {
-	const queryClient = useQueryClient();
 	return useMutation({
 		...options,
 		mutationKey: ['delete-post'],
-
 		mutationFn: () => deletePost({ postId }),
-		onSuccess: async (...args) => {
-			queryClient.setQueriesData(
-				{ queryKey: ['posts'], exact: false }, // Targets any key starting with 'posts'
-				(oldData: RetrieveOrganizationPostsResponse | undefined) => {
-					if (!oldData) return oldData;
-					return {
-						...oldData,
-						posts: oldData.posts.filter((post) => post.id !== postId),
-					};
-				}
-			);
-			await options?.onSuccess?.(...args);
-		},
 	});
 };
 
