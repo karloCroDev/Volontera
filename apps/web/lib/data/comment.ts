@@ -11,7 +11,19 @@ import {
 	LikeOrDislikeCommentArgs,
 	LikeOrDislikeReplyArgs,
 	RetrieveCommentRepliesArgs,
+	RetrievePostCommentsArgs,
 } from '@repo/schemas/comment';
+
+export async function retrievePostCommentsSchema({
+	postId,
+}: RetrievePostCommentsArgs) {
+	try {
+		const res = await API().get(`/comment${postId}`);
+		return res.data;
+	} catch (err) {
+		catchError(err);
+	}
+}
 
 export async function createComment({ data }: { data: CreateCommentArgs }) {
 	try {

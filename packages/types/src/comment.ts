@@ -1,13 +1,21 @@
-import { PostComments, User, PostCommentsReply } from "@repo/database";
-import { SuccessfulResponse } from "general";
+import {
+  PostComments,
+  User,
+  PostCommentsReply,
+  PostLikes,
+} from "@repo/database";
+import { ServerHandleResponse } from "./general";
 
-export type PostCommentsResponse = SuccessfulResponse & {
+export type PostCommentsResponse = ServerHandleResponse<true> & {
   comments: (PostComments & {
     author: User;
+    postLikes: PostLikes[];
   })[];
 };
-export type PostCommentRepliesResponse = SuccessfulResponse & {
+
+export type PostCommentRepliesResponse = ServerHandleResponse<true> & {
   replies: (PostCommentsReply & {
     author: User;
+    postLikes: PostLikes[];
   })[];
 };

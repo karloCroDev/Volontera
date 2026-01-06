@@ -40,7 +40,13 @@ export default async function PostWithComments({
 			<div className="border-input-border bg-muted max-h- relative w-full rounded-xl border px-5 py-6">
 				<h4 className="text-lg font-semibold italic lg:text-xl">Comments</h4>
 				<hr className="bg-input-border my-2 h-px w-full border-0" />
-				<CommentsMapping />
+				<CommentsMapping
+					comments={{
+						message: postWithComments.message,
+						comments: postWithComments.post.postComments,
+						success: postWithComments.success,
+					}}
+				/>
 				<CommentTextArea />
 			</div>
 		</>

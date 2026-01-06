@@ -27,11 +27,14 @@ export type RetrieveOrganizationPostsResponse = ServerHandleResponse<true> & {
 export type RetrievePostWithComments = ServerHandleResponse<true> & {
   post: Post &
     SharedPostValues & {
-      postComments: PostComments[];
+      postComments: (PostComments & {
+        postLikes: PostLikes[];
+        author: User;
+      })[];
     };
 };
 
-export type RetrievePostData = SuccessfulResponse & {
+export type RetrievePostData = ServerHandleResponse<true> & {
   post: Post & {
     postImages: PostImages[];
   };

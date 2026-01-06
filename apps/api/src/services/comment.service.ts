@@ -40,7 +40,7 @@ export async function retrievePostCommentsService({
     return {
       status: 400,
       body: {
-        title: "Invalid comment data",
+        success: false,
         message: "The provided data comment data is invalid",
       },
     };
@@ -51,7 +51,7 @@ export async function retrievePostCommentsService({
   return {
     status: 200,
     body: {
-      title: "Comments Retrieved",
+      success: true,
       message: "Comments retrieved successfully",
       comments,
     },
@@ -168,7 +168,7 @@ export async function retrieveCommentRepliesService({
     return {
       status: 400,
       body: {
-        title: "Invalid Data",
+        success: false,
         message: "The provided data is invalid",
       },
     };
@@ -179,7 +179,7 @@ export async function retrieveCommentRepliesService({
   return {
     status: 200,
     body: {
-      title: "Replies Retrieved",
+      success: true,
       message: "Replies retrieved successfully",
       replies,
     },

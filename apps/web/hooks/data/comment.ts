@@ -5,6 +5,8 @@ import {
 	useQuery,
 	useQueryClient,
 	UseQueryOptions,
+	useSuspenseQuery,
+	UseSuspenseQueryOptions,
 } from '@tanstack/react-query';
 
 // Lib
@@ -14,22 +16,40 @@ import {
 	deleteComment,
 	deleteReply,
 	toggleLikeComment,
-	toggleLikeReply,
 	retrieveCommentReplies,
+	retrievePostComments,
 } from '@/lib/data/comment';
 
 // Types
 import { ErrorToastResponse, SuccessfulResponse } from '@repo/types/general';
 
 // Schemas
-import { RetrieveOrganizationPostsResponse } from '@repo/types/post';
+import {
+	PostCommentsResponse,
+	PostCommentRepliesResponse,
+} from '@repo/types/comment';
 import {
 	CreateCommentArgs,
 	CreateReplyArgs,
 	DeleteCommentArgs,
 	DeleteReplyArgs,
 	LikeOrDislikeCommentArgs,
+	RetrievePostCommentsArgs,
 } from '@repo/schemas/comment';
+
+export const useRetrievePostComments = (
+	postId: RetrievePostCommentsArgs['postId'],
+	options?: Omit<
+		UseSuspenseQueryOptions<PostCommentsResponse>,
+		'queryKey' | 'queryFn'
+	>
+) => {
+	return useSuspenseQuery({
+		queryKey: ['comments', postId],
+		queryFn: () => retrievePostComments({ postId }),
+		...options,
+	});
+};
 
 export const useCreateComment = (
 	options?: UseMutationOptions<
@@ -104,7 +124,7 @@ export const useToggleLikeComments = (
 export const useRetrieveCommentReplies = (
 	commentId: string,
 	options?: Omit<
-		UseQueryOptions<RetrieveOrganizationPostsResponse>,
+		UseQueryOptions<PostCommentRepliesResponse>,
 		'queryKey' | 'queryFn'
 	>
 ) => {
