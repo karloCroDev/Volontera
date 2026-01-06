@@ -75,11 +75,7 @@ export const useCreateComment = (
 
 export const useDeleteComment = (
 	commentId: DeleteCommentArgs['commentId'],
-	options?: UseMutationOptions<
-		SuccessfulResponse,
-		ErrorToastResponse,
-		DeleteCommentArgs
-	>
+	options?: UseMutationOptions<SuccessfulResponse, ErrorToastResponse>
 ) => {
 	const queryClient = useQueryClient();
 	return useMutation({

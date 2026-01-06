@@ -18,9 +18,10 @@ export const commentRoutes = Router();
 
 commentRoutes.use(express.json());
 
+commentRoutes.route("/:postId").get(retrievePostCommentsController);
+
 commentRoutes
-  .route("/:postId")
-  .get(retrievePostCommentsController)
+  .route("/:commentId")
   .delete(deleteCommentController)
   .patch(toggleLikeCommentController);
 
@@ -28,8 +29,8 @@ commentRoutes.post("/", createCommentController);
 
 commentRoutes
   .route("/reply/:replyId")
-  .get(retrieveCommentRepliesController)
   .delete(deleteReplyController)
   .patch(toggleLikeReplyController);
 
+commentRoutes.route("/reply/:commentId").get(retrieveCommentRepliesController);
 commentRoutes.route("/reply").post(createReplyController);

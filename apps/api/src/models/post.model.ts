@@ -136,7 +136,12 @@ export async function retrievePostWithComments({
               password: true,
             },
           },
-          postCommentsLikes: true,
+          _count: {
+            select: {
+              postCommentsLikes: true,
+              postCommentsReplies: true,
+            },
+          },
         },
       },
     },

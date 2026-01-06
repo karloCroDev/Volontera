@@ -10,6 +10,10 @@ export type PostCommentsResponse = ServerHandleResponse<true> & {
   comments: (PostComments & {
     author: User;
     postLikes: PostLikes[];
+    _count: {
+      postCommentsLikes: number;
+      postCommentsReplies: number;
+    };
   })[];
 };
 

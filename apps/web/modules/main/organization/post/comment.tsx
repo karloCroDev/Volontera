@@ -11,27 +11,23 @@ import { Button } from '@/components/ui/button';
 import { formatTime } from '@/lib/utils/time-adjustments';
 import { convertToFullname } from '@/lib/utils/convert-to-fullname';
 
-import {
-	ChevronRight,
-	Edit,
-	Heart,
-	Reply as ReplyIcon,
-	Trash2,
-} from 'lucide-react';
+import { ChevronRight, Heart, Reply, Trash2 } from 'lucide-react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { PostCommentsResponse } from '@repo/types/comment';
+import { useDeleteComment } from '@/hooks/data/comment';
+import { Tag } from '@/components/ui/tag';
+import { Collapsible } from '@/components/ui/collapsible';
+import { RepliesMapping } from '@/modules/main/organization/post/replies-mapping';
 
-type CommentOrReplyProps = {
-	numberOfLikes: number;
-	comment: string;
-	// user: SessionSuccessResponse; // Change the type of user when setting the session data
-};
 export const Comment: React.FC<{
 	comment: PostCommentsResponse['comments'][0];
 }> = ({ comment }) => {
 	const pathname = usePathname();
 	const searchParams = useSearchParams();
 	const router = useRouter();
+
+	const { mutate: mutateDeleteComment, isPending: isDeletingComment } =
+		useDeleteComment(comment.id);
 	return (
 		<div className="border-b-input-border border-b py-4">
 			<div className="flex items-center gap-4">
@@ -60,7 +56,7 @@ export const Comment: React.FC<{
 
 				<div className="ml-auto flex items-center gap-6 text-sm">
 					<div className="flex items-center gap-2">
-						{/* <p>{numberOfLikes}</p> */}
+						<p>{comment._count.postCommentsLikes}</p>
 						<Button variant="blank" className="p-0">
 							<Heart
 								//  fill="#f59f0a" className="text-primary"
@@ -88,7 +84,7 @@ export const Comment: React.FC<{
 								scroll: false,
 							});
 						}}
-						iconLeft={<ReplyIcon />}
+						iconLeft={<Reply />}
 					>
 						Reply
 					</Button>
@@ -96,62 +92,36 @@ export const Comment: React.FC<{
 					<Button
 						variant="blank"
 						className="text-muted-foreground hover:text-destructive p-0"
+						onPress={() => {
+							mutateDeleteComment();
+						}}
+						isLoading={isDeletingComment}
 					>
 						<Trash2 />
 					</Button>
 				</div>
 			</div>
 
-			{/* {comment._count.replies && (
+			{comment._count.postCommentsReplies > 0 && (
 				<div className="mt-4">
 					<Collapsible
 						trigger={
 							<div className="group">
 								<Tag className="flex cursor-pointer items-center gap-4">
-									See {numberOfReplies} replies{' '}
+									See {comment._count.postCommentsReplies}
+									{comment._count.postCommentsReplies === 1
+										? ' reply'
+										: ' replies'}
 									<ChevronRight className="size-4 transition-transform group-data-[state=open]:-rotate-90" />
 								</Tag>
 							</div>
 						}
 						contentProps={{
-							children: <Reply numberOfLikes={8} comment="Woah" />,
+							children: <RepliesMapping commentId={comment.id} />,
 						}}
 					/>
 				</div>
-			)} */}
-		</div>
-	);
-};
-
-export const Reply: React.FC<CommentOrReplyProps> = ({
-	numberOfLikes,
-	comment,
-}) => {
-	return (
-		<div className="ml-8 flex items-center gap-4 py-6">
-			<div className="bg-muted-foreground h-full min-h-16 w-px" />
-			<div className="flex flex-1 items-center gap-4">
-				<Avatar
-					imageProps={{
-						src: '',
-					}}
-					colorScheme="gray"
-				>
-					Ana Horvat
-				</Avatar>
-
-				<div>
-					<p className="text-muted-foreground text-xs">Karlo grgic | 1yr ago</p>
-					<p>{comment}</p>
-				</div>
-
-				<Button
-					variant="blank"
-					className="text-muted-foreground hover:text-destructive ml-auto self-end p-0 text-sm"
-				>
-					<Trash2 />
-				</Button>
-			</div>
+			)}
 		</div>
 	);
 };

@@ -13,8 +13,19 @@ export async function retrievePostComments(postId: Post["id"]) {
     where: {
       postId,
     },
+
     include: {
-      author: true,
+      author: {
+        omit: {
+          password: true,
+        },
+      },
+      _count: {
+        select: {
+          postCommentsLikes: true,
+          postCommentsReplies: true,
+        },
+      },
     },
   });
 }
@@ -102,7 +113,18 @@ export async function retrieveCommentReplies(commentId: PostComments["id"]) {
       commentId,
     },
     include: {
-      author: true,
+      author: {
+        omit: {
+          password: true,
+        },
+      },
+
+      // _count: {
+      //   select: {
+      //     postCommentsReplyLikes: true,
+      //   },
+      // },
+      // TODO: See if I am going to handle likes for replies
     },
   });
 }

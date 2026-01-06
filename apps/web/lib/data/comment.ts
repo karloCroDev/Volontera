@@ -14,11 +14,11 @@ import {
 	RetrievePostCommentsArgs,
 } from '@repo/schemas/comment';
 
-export async function retrievePostCommentsSchema({
+export async function retrievePostComments({
 	postId,
 }: RetrievePostCommentsArgs) {
 	try {
-		const res = await API().get(`/comment${postId}`);
+		const res = await API().get(`/comment/${postId}`);
 		return res.data;
 	} catch (err) {
 		catchError(err);
@@ -36,7 +36,7 @@ export async function createComment({ data }: { data: CreateCommentArgs }) {
 
 export async function deleteComment({ commentId }: DeleteCommentArgs) {
 	try {
-		const res = await API().delete(`/comment${commentId}`);
+		const res = await API().delete(`/comment/${commentId}`);
 		return res.data;
 	} catch (err) {
 		catchError(err);
