@@ -11,45 +11,36 @@ import {
 
 // Lib
 import { generateTokenAndSetCookie } from "@/lib/set-token-cookie";
-import { HTTP_STATUS } from "@/lib/utils/http-status-codes";
+import { handleServerErrorResponse } from "@/lib/utils/error-response";
 
-export async function login(req: Request, res: Response) {
+export async function loginController(req: Request, res: Response) {
   try {
     const result = await loginService(req.body);
     return res.status(result.status).json(result.body);
   } catch (err) {
-    console.error(err);
-    return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
-      message: err instanceof Error ? err.message : "Internal Server Error",
-    });
+    handleServerErrorResponse(res, err);
   }
 }
 
-export async function register(req: Request, res: Response) {
+export async function registerController(req: Request, res: Response) {
   try {
     const result = await registerService(req.body);
     return res.status(result.status).json(result.body);
   } catch (err) {
-    console.error(err);
-    return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
-      message: err instanceof Error ? err.message : "Internal Server Error",
-    });
+    handleServerErrorResponse(res, err);
   }
 }
 
-export async function resetVerifyToken(req: Request, res: Response) {
+export async function resetVerifyTokenController(req: Request, res: Response) {
   try {
     const result = await resetVerifyTokenService(req.body);
     return res.status(result.status).json(result.body);
   } catch (err) {
-    console.error(err);
-    return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
-      message: err instanceof Error ? err.message : "Internal Server Error",
-    });
+    handleServerErrorResponse(res, err);
   }
 }
 
-export async function verifyToken(req: Request, res: Response) {
+export async function verifyTokenController(req: Request, res: Response) {
   try {
     const result = await verifyOtpService(req.body);
 
@@ -66,33 +57,24 @@ export async function verifyToken(req: Request, res: Response) {
 
     return res.status(result.status).json(result.body);
   } catch (err) {
-    console.error(err);
-    return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
-      message: err instanceof Error ? err.message : "Internal Server Error",
-    });
+    handleServerErrorResponse(res, err);
   }
 }
 
-export async function resetPassword(req: Request, res: Response) {
+export async function resetPasswordController(req: Request, res: Response) {
   try {
     const result = await resetPasswordService(req.body);
     return res.status(result.status).json(result.body);
   } catch (err) {
-    console.error(err);
-    return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
-      message: err instanceof Error ? err.message : "Internal Server Error",
-    });
+    handleServerErrorResponse(res, err);
   }
 }
 
-export async function forgetPassword(req: Request, res: Response) {
+export async function forgetPasswordController(req: Request, res: Response) {
   try {
     const result = await forgotPasswordService(req.body);
     return res.status(result.status).json(result.body);
   } catch (err) {
-    console.error(err);
-    return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
-      message: err instanceof Error ? err.message : "Internal Server Error",
-    });
+    handleServerErrorResponse(res, err);
   }
 }

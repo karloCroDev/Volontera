@@ -4,31 +4,80 @@ import { Router } from "express";
 
 // Controllers
 import {
-  forgetPassword,
-  login,
-  register,
-  resetPassword,
-  resetVerifyToken,
-  verifyToken,
+  forgetPasswordController,
+  loginController,
+  registerController,
+  resetPasswordController,
+  resetVerifyTokenController,
+  verifyTokenController,
 } from "@/controllers/auth.controller";
 
 // Lib
 import { generateTokenAndSetCookie } from "@/lib/set-token-cookie";
-
-// Lib
 import { oAuthGoogleHandle } from "@/config/oAuth-google";
+import {
+  loginSchema,
+  registerSchema,
+  resetPasswordSchema,
+} from "@repo/schemas/auth";
+
+// Middleware
+import { validate } from "@/middleware/validate.middleware";
 
 export const authRoutes = Router();
 
 authRoutes.use(express.json());
 
-authRoutes.post("/register", register);
-authRoutes.post("/login", login);
-authRoutes.post("/forgot-password", forgetPassword);
-authRoutes.post("/reset-password", resetPassword);
-authRoutes.post("/verify-token", verifyToken);
-authRoutes.post("/reset-verify-token", resetVerifyToken);
+authRoutes.post(
+  "/register",
+  validate({
+    schema: registerSchema,
+    responseOutput: "form",
+  }),
+  registerController
+);
+authRoutes.post(
+  "/login",
+  validate({
+    schema: loginSchema,
+    responseOutput: "form",
+  }),
+  loginController
+);
+authRoutes.post(
+  "/forgot-password",
+  validate({
+    schema: loginSchema,
+    responseOutput: "form",
+  }),
+  forgetPasswordController
+);
+authRoutes.post(
+  "/reset-password",
+  validate({
+    schema: resetPasswordSchema,
+    responseOutput: "form",
+  }),
+  resetPasswordController
+);
+authRoutes.post(
+  "/verify-token",
+  validate({
+    schema: loginSchema,
+    responseOutput: "form",
+  }),
+  verifyTokenController
+);
+authRoutes.post(
+  "/reset-verify-token",
+  validate({
+    schema: loginSchema,
+    responseOutput: "form",
+  }),
+  resetVerifyTokenController
+);
 
+// TODO: Rewrite this so that this part using three layer structure
 // Google OAuth sign in method
 authRoutes.get(
   "/google",

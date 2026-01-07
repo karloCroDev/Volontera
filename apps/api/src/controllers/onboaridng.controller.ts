@@ -9,8 +9,8 @@ import {
 } from "@/services/onboarding.service";
 
 // Lib
-import { HTTP_STATUS } from "@/lib/utils/http-status-codes";
 import { generateTokenAndSetCookie } from "@/lib/set-token-cookie";
+import { handleServerErrorResponse } from "@/lib/utils/error-response";
 
 export async function appType(req: Request, res: Response) {
   try {
@@ -30,10 +30,7 @@ export async function appType(req: Request, res: Response) {
 
     return res.status(result.status).json(result.body);
   } catch (err) {
-    console.error(err);
-    return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
-      message: err instanceof Error ? err.message : "Internal Server Error",
-    });
+    handleServerErrorResponse(res, err);
   }
 }
 
@@ -56,10 +53,7 @@ export async function additionalInformation(req: Request, res: Response) {
 
     return res.status(result.status).json(result.body);
   } catch (err) {
-    console.error(err);
-    return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
-      message: err instanceof Error ? err.message : "Internal Server Error",
-    });
+    handleServerErrorResponse(res, err);
   }
 }
 
@@ -79,9 +73,6 @@ export async function skipAdditionalInformation(req: Request, res: Response) {
     }
     return res.status(result.status).json(result.body);
   } catch (err) {
-    console.error(err);
-    return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
-      message: err instanceof Error ? err.message : "Internal Server Error",
-    });
+    handleServerErrorResponse(res, err);
   }
 }

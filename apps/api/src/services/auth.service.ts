@@ -8,13 +8,17 @@ import { resend } from "@/config/resend";
 
 // Shared utils
 import {
+  ForgotPasswordArgs,
   forgotPasswordSchema,
   LoginArgs,
   loginSchema,
+  RegisterArgs,
   registerSchema,
   resetEmail,
+  ResetEmailArgs,
   resetPasswordSchema,
   verifyEmail,
+  VerifyEmailArgs,
 } from "@repo/schemas/auth";
 
 // Models
@@ -31,18 +35,12 @@ import {
 
 // Lib
 import { verifyUser } from "@/lib/verify-user";
-import { getImagePresignedUrls } from "@/lib/aws-s3-functions";
 
 // Transactional emails
 import { ForgotPassword } from "@repo/transactional/forgot-password";
 import { RecentLogin } from "@repo/transactional/recent-login";
 
-export async function loginService(rawData: LoginArgs) {
-  const { data, success } = loginSchema.safeParse(rawData);
-  if (!success) {
-    return { status: 400, body: { message: "Provided data is incorrect" } };
-  }
-
+export async function loginService(data: LoginArgs) {
   const user = await findUserByEmail(data.email);
   if (!user) {
     return { status: 400, body: { message: "Invalid email" } };
@@ -73,17 +71,13 @@ export async function loginService(rawData: LoginArgs) {
   };
 }
 
-export async function registerService(rawData: unknown) {
-  const { success, data } = registerSchema.safeParse(rawData);
-
-  if (!success) {
-    return {
-      status: 400,
-      body: { message: "Provided data is incorrect" },
-    };
-  }
-
-  const existing = await findUserByEmail(data.email);
+export async function registerService({
+  email,
+  firstName,
+  lastName,
+  password,
+}: RegisterArgs) {
+  const existing = await findUserByEmail(email);
   if (existing) {
     return {
       status: 400,
@@ -91,14 +85,14 @@ export async function registerService(rawData: unknown) {
     };
   }
 
-  const hashedPassword = bcrypt.hashSync(data.password, 10);
+  const hashedPassword = bcrypt.hashSync(password, 10);
 
-  const { hashedOtp, expireDate } = await verifyUser(data.email);
+  const { hashedOtp, expireDate } = await verifyUser(email);
 
   await createUser({
-    firstName: data.firstName,
-    lastName: data.lastName,
-    email: data.email,
+    firstName: firstName,
+    lastName: lastName,
+    email: email,
     password: hashedPassword,
     verificationToken: hashedOtp ?? null,
     verificationTokenExpiresAt: expireDate ?? null,
@@ -113,21 +107,12 @@ export async function registerService(rawData: unknown) {
   };
 }
 
-export async function forgotPasswordService(rawData: unknown) {
-  const { success, data } = forgotPasswordSchema.safeParse(rawData);
-
-  if (!success) {
-    return {
-      status: 400,
-      body: { message: "Invalid data" },
-    };
-  }
-
+export async function forgotPasswordService({ email }: ForgotPasswordArgs) {
   const resetToken = crypto.randomBytes(20).toString("hex");
   const resetTokenExpireDate: bigint = BigInt(Date.now() + 60 * 60 * 1000); // 1 hour
 
   const user = await updateResetPasswordToken({
-    email: data.email,
+    email,
     resetToken,
     resetTokenExpireDate,
   });
@@ -143,10 +128,11 @@ export async function forgotPasswordService(rawData: unknown) {
 
   const { error } = await resend.emails.send({
     from: process.env.RESEND_FROM!,
-    to: data.email,
+    to: email,
     subject: "Reset your password",
     react: createElement(ForgotPassword, { link: resetLink }),
   });
+
   if (error) {
     return {
       status: 400,
@@ -199,20 +185,14 @@ export async function resetPasswordService(rawData: unknown) {
   };
 }
 
-export async function verifyOtpService(rawData: unknown) {
-  const { success, data } = verifyEmail.safeParse(rawData);
-
-  if (!success) {
-    return { status: 400, body: { message: "Invalid data" } };
-  }
-
-  const user = await findUserForOtpVerification(data.email);
+export async function verifyOtpService({ code, email }: VerifyEmailArgs) {
+  const user = await findUserForOtpVerification(email);
 
   if (!user || !user.verificationToken) {
     return { status: 400, body: { message: "Invalid code" } };
   }
 
-  const isValidOtp = await bcrypt.compare(data.code, user.verificationToken);
+  const isValidOtp = await bcrypt.compare(code, user.verificationToken);
 
   if (!isValidOtp) {
     return { status: 400, body: { message: "Invalid code" } };
@@ -222,7 +202,7 @@ export async function verifyOtpService(rawData: unknown) {
 
   await resend.emails.send({
     from: process.env.RESEND_FROM!,
-    to: data.email,
+    to: email,
     subject: "Recent login notification",
     react: createElement(RecentLogin, {
       firstName: user.firstName,
@@ -236,17 +216,11 @@ export async function verifyOtpService(rawData: unknown) {
   };
 }
 
-export async function resetVerifyTokenService(rawData: unknown) {
-  const { success, data } = resetEmail.safeParse(rawData);
-
-  if (!success) {
-    return { status: 400, body: { message: "Invalid data" } };
-  }
-
-  const { hashedOtp, expireDate } = await verifyUser(data.email);
+export async function resetVerifyTokenService({ email }: ResetEmailArgs) {
+  const { hashedOtp, expireDate } = await verifyUser(email);
 
   const { count } = await updateVerificationToken({
-    email: data.email,
+    email,
     hashedOtp: hashedOtp ?? null,
     expireDate: expireDate ?? null,
   });
