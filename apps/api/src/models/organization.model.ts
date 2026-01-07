@@ -25,9 +25,9 @@ export async function listOrganizationsOrganizator(userId: User["id"]) {
 
         // Attending organization
         {
-          organizationAttendees: {
+          organizationMembers: {
             some: {
-              attendeeUserId: userId,
+              userId,
             },
           },
         },
@@ -55,9 +55,9 @@ export async function listOrganizationsOrganizatorGrouped(userId: User["id"]) {
       }),
       prisma.organization.findMany({
         where: {
-          organizationAttendees: {
+          organizationMembers: {
             some: {
-              attendeeUserId: userId,
+              userId,
             },
           },
         },
@@ -127,9 +127,9 @@ export async function listOrganizationsUser(userId: User["id"]) {
       }),
       prisma.organization.findMany({
         where: {
-          organizationAttendees: {
+          organizationMembers: {
             some: {
-              attendeeUserId: userId,
+              userId,
             },
           },
         },
@@ -162,7 +162,7 @@ export async function getOrganizationDetailsById(organizationId: string) {
       id: organizationId,
     },
     include: {
-      organizationAttendees: true,
+      organizationMembers: true,
       organizationFollowers: true,
       organizationInfo: {
         include: {
@@ -187,6 +187,7 @@ export async function sendRequestToJoinOrganization({
     data: {
       ...data,
       requesterId: userId,
+      status: "PENDING",
     },
   });
 }

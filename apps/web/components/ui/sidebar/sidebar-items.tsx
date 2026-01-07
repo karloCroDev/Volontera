@@ -68,9 +68,9 @@ export const Organizations = () => {
 					...organizations.attendingOrganizations
 						.map((org) => org.avatarImage)
 						.filter(Boolean),
-					...organizations.ownedOrganizations
-						.map((org) => org.avatarImage)
-						.filter(Boolean),
+					...(organizations?.ownedOrganizations
+						?.map((org) => org.avatarImage)
+						.filter(Boolean) || []),
 					...organizations.followingOrganizations
 						.map((org) => org.avatarImage)
 						.filter(Boolean),

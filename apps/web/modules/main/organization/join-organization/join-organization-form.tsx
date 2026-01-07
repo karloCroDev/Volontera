@@ -4,27 +4,33 @@
 import * as React from 'react';
 import { Form } from 'react-aria-components';
 import { Controller, useForm } from 'react-hook-form';
+import { useParams, useRouter } from 'next/navigation';
 
 // Components
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { TextEditor } from '@/components/ui/text-editor/text-editor';
+import { Error } from '@/components/ui/error';
+
+// Hooks
+import { useSendRequestToJoinOrganization } from '@/hooks/data/organization';
+
+// Scheams
 import {
 	sendRequestToJoinOrganizationSchema,
 	SendRequestToJoinOrganizationArgs,
 } from '@repo/schemas/organization';
-import { useParams } from 'next/navigation';
-import { useSendRequestToJoinOrganization } from '@/hooks/data/organization';
+
+// Lib
 import { toast } from '@/lib/utils/toast';
-import { Error } from '@/components/ui/error';
 import { withReactQueryProvider } from '@/lib/utils/react-query';
 
 export const JoinOrganizationForm: React.FC<{
 	externalForm: string | null;
 }> = withReactQueryProvider(({ externalForm }) => {
 	const params = useParams<{ organizationId: string }>();
-
+	const router = useRouter();
 	const {
 		handleSubmit,
 		control,
@@ -53,6 +59,7 @@ export const JoinOrganizationForm: React.FC<{
 						content: message,
 						variant: 'success',
 					});
+					router.push(`/organization/${data.organizationId}`);
 				},
 				onError: (err) => {
 					setError('root', err);

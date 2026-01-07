@@ -72,7 +72,6 @@ model User {
   conversationParticipants         ConversationParticipants[]
   directMessagesConversations      DirectMessages[]
   organizationFollowers            OrganizationFollowers[]
-  organizationAttendees            OrganizationAttendees[]
   organizationMembers              OrganizationMember[]
   organizationJoinRequestsSent     OrganizationJoinRequest[]  @relation("OrgJoinRequestRequester")
   organizationJoinRequestsReviewed OrganizationJoinRequest[]  @relation("OrgJoinRequestReviewer")
@@ -187,10 +186,8 @@ model Organization {
   ownerId     String
   owner       User   @relation("OrganizationOwner", fields: [ownerId], references: [id], onDelete: Cascade)
 
-  organizationFollowers OrganizationFollowers[]
-  organizationAttendees OrganizationAttendees[]
-  organizationInfo      OrganizationInfo?
-
+  organizationFollowers    OrganizationFollowers[]
+  organizationInfo         OrganizationInfo?
   organizationMembers      OrganizationMember[]
   organizationJoinRequests OrganizationJoinRequest[]
 
@@ -263,7 +260,6 @@ model OrganizationInfo {
   updatedAt        DateTime          @updatedAt
 
   organizationFollowers OrganizationFollowers[]
-  organizationAttendees OrganizationAttendees[]
 }
 
 // Additional fields that can be for the organznizaton
@@ -277,18 +273,6 @@ model OrganizationFollowers {
   updatedAt          DateTime         @updatedAt
   organization       Organization?    @relation(fields: [organizationId], references: [id])
   organizationId     String?
-}
-
-model OrganizationAttendees {
-  id                 String           @id @default(cuid())
-  organizationInfo   OrganizationInfo @relation(fields: [organizationInfoId], references: [id], onDelete: Cascade)
-  organizationInfoId String
-  attendeeUser       User             @relation(fields: [attendeeUserId], references: [id], onDelete: Cascade)
-  attendeeUserId     String
-  organization       Organization?    @relation(fields: [organizationId], references: [id])
-  organizationId     String?
-  createdAt          DateTime         @default(now())
-  updatedAt          DateTime         @updatedAt
 }
 
 model AdditionalLinks {

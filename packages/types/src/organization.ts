@@ -1,6 +1,6 @@
 // Database
 import {
-  OrganizationAttendees,
+  OrganizationMember,
   OrganizationInfo,
   Organization,
   OrganizationFollowers,
@@ -18,7 +18,7 @@ export type GetOrganizationDetailsByIdResponse = ServerHandleResponse<true> & {
       additionalLinks: AdditionalLinks[];
     };
     organizationFollowers: OrganizationFollowers[];
-    organizationAttendees: OrganizationAttendees[];
+    organizationMembers: OrganizationMember[];
   };
 };
 
