@@ -33,6 +33,7 @@ import { organizationRoutes } from "@/routes/organization.routes";
 import { searchRoutes } from "@/routes/search.routes";
 import { postRoutes } from "@/routes/post.routes";
 import { commentRoutes } from "@/routes/comment.routes";
+import { organizationManagmentRoutes } from "@/routes/organization-managment.routes";
 
 // Security middleware
 app.use(helmet());
@@ -72,10 +73,15 @@ app.use(
 );
 app.use("/image", imageRoutes);
 app.use("/organization", authMiddleware, hasRoleMiddleware, organizationRoutes);
+app.use(
+  "/organization-managment",
+  authMiddleware,
+  hasRoleMiddleware,
+  organizationManagmentRoutes
+);
 app.use("/search", authMiddleware, hasRoleMiddleware, searchRoutes);
 app.use("/post", authMiddleware, hasRoleMiddleware, postRoutes);
 app.use("/comment", authMiddleware, hasRoleMiddleware, commentRoutes);
-
 // Test
 app.get("/protected-user", authMiddleware, userMiddleware, (req, res) => {
   res.json({ message: "Awesome you accessed the proteced route" });
