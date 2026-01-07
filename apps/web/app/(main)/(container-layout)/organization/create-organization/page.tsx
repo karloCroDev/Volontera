@@ -9,7 +9,6 @@ import { redirect } from 'next/navigation';
 export default async function CreateOrganizationPage() {
 	const user = await getSession();
 
-	// TODO: Fix this all with casl!!!!
 	if (!user.success) redirect('/user/login');
 
 	if (user.role !== 'ORGANIZATION') redirect('/home');

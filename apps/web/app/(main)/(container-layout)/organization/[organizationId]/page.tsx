@@ -4,7 +4,6 @@ import Image from 'next/image';
 
 // Components
 import { Avatar } from '@/components/ui/avatar';
-import { Post } from '@/components/ui/post/post';
 import { Tag } from '@/components/ui/tag';
 import { SharePost } from '@/components/ui/post/share-post';
 import { Button } from '@/components/ui/button';
@@ -13,13 +12,13 @@ import { AnchorAsButton } from '@/components/ui/anchor-as-button';
 // Modules
 import { OrganizationRoutingHeader } from '@/modules/main/organization/common/organization-routing-header';
 
-import { JoinDialog } from '@/modules/main/organization/common/join-organization-dialog';
 import { CreatePostDialog } from '@/modules/main/organization/home/create-post-dialog';
 import { PostsMapping } from '@/modules/main/organization/home/posts-mapping';
 // Lib
 import { getOrganizationDetailsById } from '@/lib/server/organization';
 import { getImageFromKey } from '@/lib/server/image';
 import { retrieveOrganizationPosts } from '@/lib/server/post';
+import { LinkAsButton } from '@/components/ui/link-as-button';
 
 export default async function OrganizationPage({
 	params,
@@ -81,7 +80,13 @@ export default async function OrganizationPage({
 							<Button colorScheme="yellow" size="md">
 								Follow
 							</Button>
-							<JoinDialog />
+							<LinkAsButton
+								colorScheme="orange"
+								size="md"
+								href={`/organization/${organizationId}/join-organization`}
+							>
+								Join
+							</LinkAsButton>
 						</div>
 					</div>
 					<h1 className="mt-4 text-xl font-medium md:text-2xl lg:text-3xl">

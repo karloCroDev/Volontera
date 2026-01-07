@@ -1,5 +1,4 @@
 // Modules
-import { Comment } from '@/modules/main/organization/post/comment';
 import { CommentTextArea } from '@/modules/main/organization/post/comment-text-area';
 
 // Components

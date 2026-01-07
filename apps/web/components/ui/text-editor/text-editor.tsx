@@ -35,7 +35,7 @@ export const TextEditor: React.FC<
 		value: string;
 		setValue: React.Dispatch<React.SetStateAction<string>>;
 		textEditorProps?: React.ComponentPropsWithoutRef<'div'> &
-			EditorContentProps;
+			Omit<EditorContentProps, 'editor'>;
 		hasAnImage?: boolean;
 		images?: ImageItemArgs;
 		setImages?: React.Dispatch<React.SetStateAction<ImageItemArgs>>;

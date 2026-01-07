@@ -22,12 +22,15 @@ import {
 
 // Types
 import { ErrorFormResponse, SuccessfulResponse } from '@repo/types/general';
-import { ListOrganizationsOrganizatorResponse } from '@repo/types/organization';
+import {
+	CreateOrganizationResponse,
+	ListOrganizationsOrganizatorResponse,
+} from '@repo/types/organization';
 import { DataWithFiles } from '@repo/types/upload';
 
 export const useCreateOrganization = (
 	options?: UseMutationOptions<
-		SuccessfulResponse,
+		CreateOrganizationResponse,
 		ErrorFormResponse,
 		DataWithFiles<CreateOrganizationArgs>
 	>

@@ -8,7 +8,7 @@ import {
   PostLikes,
 } from "@repo/database";
 import { ServerHandleResponse, SuccessfulResponse } from "./general";
-
+import { PostCommentsResponse } from "./comment";
 type SharedPostValues = Post & {
   organization: Organization;
   postImages: PostImages[];
@@ -27,10 +27,7 @@ export type RetrieveOrganizationPostsResponse = ServerHandleResponse<true> & {
 export type RetrievePostWithComments = ServerHandleResponse<true> & {
   post: Post &
     SharedPostValues & {
-      postComments: (PostComments & {
-        postLikes: PostLikes[];
-        author: User;
-      })[];
+      postComments: PostCommentsResponse["comments"];
     };
 };
 
