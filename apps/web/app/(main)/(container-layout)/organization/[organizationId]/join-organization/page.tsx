@@ -3,11 +3,14 @@ import { redirect } from 'next/navigation';
 
 // Components
 import { Heading } from '@/components/ui/heading';
+import { Layout, LayoutColumn } from '@/components/ui/layout-grid';
+
+// Lib
 import { getOrganizationDetailsById } from '@/lib/server/organization';
 import { getSession } from '@/lib/server/user';
 
 // Modules
-import { JoinOrganizationForm } from '@/modules/main/join-organization/join-organization-form';
+import { JoinOrganizationForm } from '@/modules/main/organization/join-organization/join-organization-form';
 
 export default async function JoinOrganizationPage({
 	params,
@@ -19,7 +22,7 @@ export default async function JoinOrganizationPage({
 
 	if (!user.success) redirect('/user/login');
 
-	// if (user.role !== 'USER') redirect('/home'); // TODO: Uncommen this when I am ready
+	if (user.role !== 'USER') redirect('/home');
 
 	const organization = await getOrganizationDetailsById(organizationId);
 
@@ -33,11 +36,30 @@ export default async function JoinOrganizationPage({
 			>
 				Let&apos;s join {organization.organization.name} organization
 			</Heading>
-			<JoinOrganizationForm
-				externalForm={
-					organization.organization.organizationInfo.externalFormLink
-				}
-			/>
+
+			<Layout>
+				<LayoutColumn
+					start={{
+						base: 1,
+						// Malo od manje centra (bolje izgleda)
+						md: 4,
+						xl: 3,
+					}}
+					end={{
+						base: 13,
+						// Malo od manje centra (bolje izgleda)
+						md: 10,
+						xl: 9,
+					}}
+					className="flex flex-col"
+				>
+					<JoinOrganizationForm
+						externalForm={
+							organization.organization.organizationInfo.externalFormLink
+						}
+					/>
+				</LayoutColumn>
+			</Layout>
 		</>
 	);
 }

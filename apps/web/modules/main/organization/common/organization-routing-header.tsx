@@ -1,10 +1,11 @@
 'use client';
 
+// External packages
+import { useParams, usePathname } from 'next/navigation';
+
 // Components
 import { Dot } from '@/components/ui/dot';
 import { LinkAsButton } from '@/components/ui/link-as-button';
-import { useParams, usePathname } from 'next/navigation';
-import { useRouter } from 'next/router';
 
 export const OrganizationRoutingHeader = () => {
 	const pathname = usePathname();

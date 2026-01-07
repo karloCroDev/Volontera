@@ -49,6 +49,6 @@ organizationRoutes.get(
 
 organizationRoutes.post(
   "/send-request-to-join-organization",
-  // userMiddleware, // TODO: Enable when ready
+  userMiddleware,
   sendRequestToJoinOrganizationController
 );
