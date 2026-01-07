@@ -14,7 +14,7 @@ import {
 } from '@/lib/data/organization';
 
 // Schemas
-import { CreateOrganizationArgs } from '@repo/schemas/create-organization';
+import { CreateOrganizationArgs } from '@repo/schemas/organization';
 
 // Types
 import { ErrorFormResponse } from '@repo/types/general';

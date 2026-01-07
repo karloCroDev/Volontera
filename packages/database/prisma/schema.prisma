@@ -244,6 +244,7 @@ model OrganizationJoinRequest {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  @@unique([organizationId, requesterId])
   @@index([organizationId, status, createdAt])
   @@index([requesterId, status, createdAt])
 }

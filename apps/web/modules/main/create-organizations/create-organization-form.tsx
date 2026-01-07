@@ -26,7 +26,7 @@ import { toast } from '@/lib/utils/toast';
 import {
 	CreateOrganizationArgs,
 	createOrganizationSchema,
-} from '@repo/schemas/create-organization';
+} from '@repo/schemas/organization';
 import { useCreateOrganization } from '@/hooks/data/organization';
 
 export const CreateOrganizationForm = () => {

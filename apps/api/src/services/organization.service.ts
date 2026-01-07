@@ -5,12 +5,14 @@ import {
   getOrganizationDetailsById,
   listOrganizationsOrganizatorGrouped,
   listOrganizationsUser,
+  sendRequestToJoinOrganization,
 } from "@/models/organization.model";
 import { User } from "@repo/database";
 import {
   createOrganizationSchema,
   getOrganizationDetailsByIdSchema,
-} from "@repo/schemas/create-organization";
+  sendRequestToJoinOrganizationSchema,
+} from "@repo/schemas/organization";
 
 export async function createOrganizationService({
   rawData,
@@ -123,6 +125,40 @@ export async function listOrganizationsOrganizatorService(
       ownedOrganizations,
       followingOrganizations,
       attendingOrganizations,
+    },
+  };
+}
+
+export async function sendRequestToJoinOrganizationService({
+  rawData,
+  userId,
+}: {
+  rawData: unknown;
+  userId: User["id"];
+}) {
+  const { success, data } =
+    sendRequestToJoinOrganizationSchema.safeParse(rawData);
+
+  if (!success) {
+    return {
+      status: 400,
+      body: {
+        title: "Invalid provided data",
+        message: "The provided data is invalid",
+      },
+    };
+  }
+
+  await sendRequestToJoinOrganization({
+    data,
+    userId,
+  });
+
+  return {
+    status: 200,
+    body: {
+      title: "Request Sent",
+      message: "Your request to join the organization has been sent",
     },
   };
 }

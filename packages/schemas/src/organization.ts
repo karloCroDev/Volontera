@@ -32,3 +32,13 @@ export const getOrganizationDetailsByIdSchema = z.object({
 export type GetOrganizationDetailsByIdArgs = z.infer<
   typeof getOrganizationDetailsByIdSchema
 >;
+
+export const sendRequestToJoinOrganizationSchema = z.object({
+  organizationId: z.cuid(),
+  title: z.string().min(1).max(20),
+  content: z.string().min(1).max(200),
+});
+
+export type SendRequestToJoinOrganizationArgs = z.infer<
+  typeof sendRequestToJoinOrganizationSchema
+>;

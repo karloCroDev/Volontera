@@ -2,7 +2,10 @@
 import { prisma, User } from "@repo/database";
 
 // Types
-import { CreateOrganizationArgs } from "@repo/schemas/create-organization";
+import {
+  CreateOrganizationArgs,
+  SendRequestToJoinOrganizationArgs,
+} from "@repo/schemas/organization";
 
 // Owners only
 export async function listOrganizationsOrganizator(userId: User["id"]) {
@@ -169,6 +172,21 @@ export async function getOrganizationDetailsById(organizationId: string) {
 
       // Vrati po hijewrarhiji korisnike i onda displayamo na frontendu (admini organizacije, vlasnik i neke korisnike)
       // owner: true,
+    },
+  });
+}
+
+export async function sendRequestToJoinOrganization({
+  data,
+  userId,
+}: {
+  data: SendRequestToJoinOrganizationArgs;
+  userId: User["id"];
+}) {
+  return prisma.organizationJoinRequest.create({
+    data: {
+      ...data,
+      requesterId: userId,
     },
   });
 }

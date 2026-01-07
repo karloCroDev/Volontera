@@ -3,7 +3,7 @@ import { API } from '@/lib/utils/axios-client';
 import { catchError } from '@/lib/utils/error';
 
 // Schemas
-import { CreateOrganizationArgs } from '@repo/schemas/create-organization';
+import { CreateOrganizationArgs } from '@repo/schemas/organization';
 import { DataWithFiles } from '@repo/types/upload';
 
 export async function createOrganization({

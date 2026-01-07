@@ -7,6 +7,7 @@ import {
   getOrganizationDetailsByIdService,
   listOrganizationsOrganizatorService,
   listOrganizationsUserService,
+  sendRequestToJoinOrganizationService,
 } from "@/services/organization.service";
 
 export async function createOrganizationController(
@@ -55,6 +56,22 @@ export async function listOrganizationsUserController(
 ) {
   try {
     const result = await listOrganizationsUserService(req.user.userId);
+    return res.status(result.status).json(result.body);
+  } catch (err) {
+    return res.status(500).json({ success: false, message: "Internal error" });
+  }
+}
+
+export async function sendRequestToJoinOrganizationController(
+  req: Request,
+  res: Response
+) {
+  try {
+    const result = await sendRequestToJoinOrganizationService({
+      rawData: req.body,
+      userId: req.user.userId,
+    });
+
     return res.status(result.status).json(result.body);
   } catch (err) {
     return res.status(500).json({ success: false, message: "Internal error" });

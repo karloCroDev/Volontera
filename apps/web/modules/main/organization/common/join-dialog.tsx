@@ -2,16 +2,39 @@
 
 // External packages
 import * as React from 'react';
+import { Form } from 'react-aria-components';
+import { Controller, useForm } from 'react-hook-form';
 
 // Components
 import { Dialog } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
-import { Form } from 'react-aria-components';
+import { TextEditor } from '@/components/ui/text-editor/text-editor';
+import {
+	sendRequestToJoinOrganizationSchema,
+	SendRequestToJoinOrganizationArgs,
+} from '@repo/schemas/organization';
+import { useParams } from 'next/navigation';
 
 export const JoinDialog = () => {
+	const params = useParams<{ organizationId: string }>();
+	const {
+		handleSubmit,
+		control,
+		formState: { errors },
+	} = useForm<SendRequestToJoinOrganizationArgs>({
+		context: sendRequestToJoinOrganizationSchema,
+		defaultValues: {
+			organizationId: params.organizationId,
+			title: '',
+			content: '',
+		},
+	});
+
+	const onSubmit = (data: SendRequestToJoinOrganizationArgs) => {
+		// mutate
+	};
 	return (
 		<Dialog
 			triggerChildren={
@@ -24,14 +47,40 @@ export const JoinDialog = () => {
 			title="Join Organization"
 			subtitle="Please write a motivational letter to why you should join the organization"
 		>
-			<Form className="no-scrollbar flex max-h-[600px] flex-col gap-4 overflow-y-scroll">
+			<Form
+				className="no-scrollbar flex max-h-[600px] flex-col gap-4 overflow-y-scroll"
+				onSubmit={handleSubmit(onSubmit)}
+			>
 				<div>
 					<Label className="mb-2">Title</Label>
-					<Input label="Enter your post title" />
+
+					<Controller
+						control={control}
+						name="title"
+						render={({ field }) => (
+							<Input {...field} label="Enter your post title" />
+						)}
+					/>
 				</div>
 				<div>
 					<Label className="mb-2">Motivational Letter</Label>
-					<Textarea label="Enter your motivational letter" />
+					<Controller
+						control={control}
+						name="content"
+						render={({ field }) => (
+							<TextEditor
+								className="mt-2"
+								label="Enter your motivational letter content"
+								value={field.value}
+								setValue={(next) => {
+									const nextValue =
+										typeof next === 'function' ? next(field.value) : next;
+									field.onChange(nextValue);
+								}}
+								error={errors.content?.message}
+							/>
+						)}
+					/>
 				</div>
 
 				{/* Only if there is a link for google docs! */}

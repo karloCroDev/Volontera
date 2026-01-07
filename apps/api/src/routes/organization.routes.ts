@@ -8,6 +8,7 @@ import {
   getOrganizationDetailsByIdController,
   listOrganizationsOrganizatorController,
   listOrganizationsUserController,
+  sendRequestToJoinOrganizationController,
 } from "@/controllers/organization.controller";
 
 // Middleware
@@ -44,4 +45,10 @@ organizationRoutes.get(
 organizationRoutes.get(
   "/id/:organizationId",
   getOrganizationDetailsByIdController
+);
+
+organizationRoutes.post(
+  "/send-request-to-join-organization",
+  userMiddleware,
+  sendRequestToJoinOrganizationController
 );
