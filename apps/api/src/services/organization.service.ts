@@ -143,7 +143,6 @@ export async function sendRequestToJoinOrganizationService({
     return {
       status: 400,
       body: {
-        title: "Invalid provided data",
         message: "The provided data is invalid",
       },
     };

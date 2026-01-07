@@ -11,22 +11,23 @@ import {
 	createOrganization,
 	listOrganizationsOrganizator,
 	listOrganizationsUser,
+	sendRequestToJoinOrganization,
 } from '@/lib/data/organization';
 
 // Schemas
-import { CreateOrganizationArgs } from '@repo/schemas/organization';
+import {
+	CreateOrganizationArgs,
+	SendRequestToJoinOrganizationArgs,
+} from '@repo/schemas/organization';
 
 // Types
-import { ErrorFormResponse } from '@repo/types/general';
-import {
-	CreateOrganizationResponse,
-	ListOrganizationsOrganizatorResponse,
-} from '@repo/types/organization';
+import { ErrorFormResponse, SuccessfulResponse } from '@repo/types/general';
+import { ListOrganizationsOrganizatorResponse } from '@repo/types/organization';
 import { DataWithFiles } from '@repo/types/upload';
 
 export const useCreateOrganization = (
 	options?: UseMutationOptions<
-		CreateOrganizationResponse,
+		SuccessfulResponse,
 		ErrorFormResponse,
 		DataWithFiles<CreateOrganizationArgs>
 	>
@@ -58,3 +59,26 @@ export function useListOrganizations(role?: string) {
 		refetchOnWindowFocus: false,
 	});
 }
+
+export const useSendRequestToJoinOrganization = (
+	options?: UseMutationOptions<
+		SuccessfulResponse,
+		ErrorFormResponse,
+		SendRequestToJoinOrganizationArgs
+	>
+) => {
+	const queryClient = useQueryClient();
+	return useMutation({
+		mutationKey: ['send-request-to-join-organization'],
+		mutationFn: (data: SendRequestToJoinOrganizationArgs) =>
+			sendRequestToJoinOrganization(data),
+		onSuccess: async (...args) => {
+			await queryClient.invalidateQueries({
+				queryKey: ['organization'],
+				exact: false,
+			});
+			await options?.onSuccess?.(...args);
+		},
+		...options,
+	});
+};

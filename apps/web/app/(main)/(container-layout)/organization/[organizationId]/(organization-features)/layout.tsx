@@ -2,7 +2,7 @@
 import { Avatar } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { OrganizationRoutingHeader } from '@/modules/main/organization/common/organization-routing-header';
-import { JoinDialog } from '@/modules/main/organization/common/join-dialog';
+import { JoinDialog } from '@/modules/main/organization/common/join-organization-dialog';
 
 export default async function OrganizationFeaturesLayout({
 	children,

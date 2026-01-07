@@ -16,13 +16,18 @@ import {
 	SendRequestToJoinOrganizationArgs,
 } from '@repo/schemas/organization';
 import { useParams } from 'next/navigation';
+import { useSendRequestToJoinOrganization } from '@/hooks/data/organization';
+import { toast } from '@/lib/utils/toast';
+import { Error } from '@/components/ui/error';
 
 export const JoinDialog = () => {
 	const params = useParams<{ organizationId: string }>();
+
 	const {
 		handleSubmit,
 		control,
 		formState: { errors },
+		setError,
 	} = useForm<SendRequestToJoinOrganizationArgs>({
 		context: sendRequestToJoinOrganizationSchema,
 		defaultValues: {
@@ -32,9 +37,28 @@ export const JoinDialog = () => {
 		},
 	});
 
+	const { mutate, isPending } = useSendRequestToJoinOrganization();
 	const onSubmit = (data: SendRequestToJoinOrganizationArgs) => {
-		// mutate
+		mutate(
+			{
+				...data,
+				organizationId: data.organizationId,
+			},
+			{
+				onSuccess: ({ message, title }) => {
+					toast({
+						title,
+						content: message,
+						variant: 'success',
+					});
+				},
+				onError: (err) => {
+					setError('root', err);
+				},
+			}
+		);
 	};
+
 	return (
 		<Dialog
 			triggerChildren={
@@ -92,12 +116,17 @@ export const JoinDialog = () => {
 						className="border-input-border aspect-[4/3] w-full rounded-lg border"
 					/>
 				</div>
-
-				<Button type="submit" className="self-end" size="md">
+				{errors.root?.message && <Error>{errors.root.message}</Error>}
+				<Button
+					type="submit"
+					className="self-end"
+					size="md"
+					isDisabled={isPending}
+					isLoading={isPending}
+				>
 					Submit
 				</Button>
 			</Form>
-			{/* TODO: Try to embedd a google docs form */}
 		</Dialog>
 	);
 };

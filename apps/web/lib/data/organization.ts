@@ -3,7 +3,10 @@ import { API } from '@/lib/utils/axios-client';
 import { catchError } from '@/lib/utils/error';
 
 // Schemas
-import { CreateOrganizationArgs } from '@repo/schemas/organization';
+import {
+	CreateOrganizationArgs,
+	SendRequestToJoinOrganizationArgs,
+} from '@repo/schemas/organization';
 import { DataWithFiles } from '@repo/types/upload';
 
 export async function createOrganization({
@@ -45,6 +48,20 @@ export async function listOrganizationsUser() {
 export async function listOrganizationsOrganizator() {
 	try {
 		const res = await API().get('/organization/list-organizations-organizator');
+		return res.data;
+	} catch (err) {
+		catchError(err);
+	}
+}
+
+export async function sendRequestToJoinOrganization(
+	data: SendRequestToJoinOrganizationArgs
+) {
+	try {
+		const res = await API().post(
+			'/organization/send-request-to-join-organization',
+			data
+		);
 		return res.data;
 	} catch (err) {
 		catchError(err);

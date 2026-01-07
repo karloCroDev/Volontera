@@ -13,7 +13,7 @@ import { AnchorAsButton } from '@/components/ui/anchor-as-button';
 // Modules
 import { OrganizationRoutingHeader } from '@/modules/main/organization/common/organization-routing-header';
 
-import { JoinDialog } from '@/modules/main/organization/common/join-dialog';
+import { JoinDialog } from '@/modules/main/organization/common/join-organization-dialog';
 import { CreatePostDialog } from '@/modules/main/organization/home/create-post-dialog';
 import { PostsMapping } from '@/modules/main/organization/home/posts-mapping';
 // Lib
