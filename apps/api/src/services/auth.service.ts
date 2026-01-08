@@ -9,15 +9,10 @@ import { resend } from "@/config/resend";
 // Shared utils
 import {
   ForgotPasswordArgs,
-  forgotPasswordSchema,
   LoginArgs,
-  loginSchema,
   RegisterArgs,
-  registerSchema,
-  resetEmail,
   ResetEmailArgs,
   resetPasswordSchema,
-  verifyEmail,
   VerifyEmailArgs,
 } from "@repo/schemas/auth";
 

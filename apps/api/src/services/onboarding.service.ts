@@ -16,7 +16,6 @@ import {
 
 // Schemas
 import {
-  additionalInformationSchema,
   AdditionalFormArgs,
   AppTypeSchemaArgs,
 } from "@repo/schemas/onboarding";

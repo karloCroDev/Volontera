@@ -14,22 +14,16 @@ import {
 
 // Database
 import { User } from "@repo/database";
-import { RetrievePostCommentsArgs } from "@repo/schemas/comment";
 
-// Schemas
+// Schema types
+import { RetrievePostCommentsArgs } from "@repo/schemas/comment";
 import {
   CreatePostArgs,
-  createPostSchema,
   DeletePostArgs,
-  deletePostSchema,
   LikeOrDislikePostArgs,
-  likeOrDislikePostSchema,
   RetrieveOrganizationPostsArgs,
-  retrieveOrganizationPostsSchema,
-  retrievePost,
   RetrievePostArgs,
   UpdatePostArgs,
-  updatePostSchema,
 } from "@repo/schemas/post";
 
 // Organization admins only

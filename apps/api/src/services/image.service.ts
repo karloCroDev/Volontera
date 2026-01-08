@@ -1,6 +1,5 @@
 // Lib
 import { getImagePresignedUrls } from "@/lib/aws-s3-functions";
-import { Image } from "@google/genai";
 
 // Schemas
 import { ImageKeysSchemaArgs } from "@repo/schemas/image";

@@ -3,7 +3,12 @@ import { Request, Response } from "express";
 
 // Services
 import { searchUsersService } from "@/services/search.service";
+
+// Schema types
 import { SearchUserArgs } from "@repo/schemas/search";
+
+// Lib
+import { handleServerErrorResponse } from "@/lib/utils/error-response";
 
 export async function searchUsersController(req: Request, res: Response) {
   try {
@@ -14,6 +19,6 @@ export async function searchUsersController(req: Request, res: Response) {
 
     return res.status(result.status).json(result.body);
   } catch (err) {
-    return res.status(500).json({ success: false, message: "Internal error" });
+    handleServerErrorResponse(res, err);
   }
 }

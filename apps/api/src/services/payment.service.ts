@@ -11,6 +11,8 @@ import {
   removeSubscription,
   updateSubscription,
 } from "@/models/payment.model";
+
+// Schema types
 import { CreateCheckoutSessionArgs } from "@repo/schemas/payment";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);

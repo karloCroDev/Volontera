@@ -5,7 +5,7 @@ import { searchUsers } from "@/models/search.model";
 import { User } from "@repo/database";
 
 // Schemas
-import { searchUserSchema, SearchUserArgs } from "@repo/schemas/search";
+import { SearchUserArgs } from "@repo/schemas/search";
 
 export async function searchUsersService({
   data,

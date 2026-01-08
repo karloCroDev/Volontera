@@ -1,10 +1,15 @@
 // External packages
 import { Request, Response } from "express";
+
+// Services
 import {
   changeProfileInfoService,
   deleteAccountService,
   resetPasswordInAppService,
 } from "@/services/settings.service";
+
+// Lib
+import { handleServerErrorResponse } from "@/lib/utils/error-response";
 
 export async function changeProfileInfo(req: Request, res: Response) {
   try {
@@ -15,7 +20,7 @@ export async function changeProfileInfo(req: Request, res: Response) {
 
     return res.status(result.status).json(result.body);
   } catch (err) {
-    return res.status(500).json({ success: false, message: "Internal error" });
+    handleServerErrorResponse(res, err);
   }
 }
 
@@ -28,7 +33,7 @@ export async function resetPasswordInApp(req: Request, res: Response) {
 
     return res.status(result.status).json(result.body);
   } catch (err) {
-    return res.status(500).json({ success: false, message: "Internal error" });
+    handleServerErrorResponse(res, err);
   }
 }
 
@@ -44,6 +49,6 @@ export async function deleteAccount(req: Request, res: Response) {
 
     return res.status(result.status).json(result.body);
   } catch (err) {
-    return res.status(500).json({ success: false, message: "Internal error" });
+    handleServerErrorResponse(res, err);
   }
 }

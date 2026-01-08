@@ -1,5 +1,7 @@
 // Schemas
 import { createUploadUrl } from "@/lib/aws-s3-functions";
+
+// Models
 import {
   createOrganization,
   getOrganizationDetailsById,
@@ -7,7 +9,11 @@ import {
   listOrganizationsUser,
   sendRequestToJoinOrganization,
 } from "@/models/organization.model";
+
+// Database
 import { User } from "@repo/database";
+
+// Schema types
 import {
   CreateOrganizationArgs,
   GetOrganizationDetailsByIdArgs,

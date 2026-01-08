@@ -11,6 +11,8 @@ import {
   retrievePostWithCommentsService,
   updatePostService,
 } from "@/services/post.service";
+
+// Schema types
 import {
   RetrieveOrganizationPostsArgs,
   RetrievePostArgs,

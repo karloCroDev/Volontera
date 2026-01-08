@@ -16,7 +16,10 @@ export async function appType(req: Request, res: Response) {
   try {
     const { userId } = req.user;
 
-    const result = await appTypeService(req.body, userId);
+    const result = await appTypeService({
+      data: req.body,
+      userId: userId,
+    });
 
     if (result.body.role) {
       generateTokenAndSetCookie({
@@ -37,7 +40,10 @@ export async function appType(req: Request, res: Response) {
 export async function additionalInformation(req: Request, res: Response) {
   try {
     const { userId } = req.user;
-    const result = await additionalInformationService(req.body, userId);
+    const result = await additionalInformationService({
+      data: req.body,
+      userId: userId,
+    });
 
     if (result.body.user) {
       generateTokenAndSetCookie({

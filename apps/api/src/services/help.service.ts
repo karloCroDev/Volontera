@@ -3,13 +3,15 @@ import { User } from "@repo/database";
 
 // Lib
 import { getLlmResponse, safetyCheckLlmReponse } from "@/lib/llm-response";
+
+// Models
 import {
   addUsersQuestionWithLLMResponse,
   deleteMessages,
   retrieveHelpMessages,
 } from "@/models/help-model";
 
-// Schemas
+// Schema types
 import { HelpConversationSchemaArgs } from "@repo/schemas/help";
 
 export async function addQuestionService({

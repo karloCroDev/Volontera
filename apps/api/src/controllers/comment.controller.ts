@@ -13,7 +13,7 @@ import {
   toggleLikeReplyService,
 } from "@/services/comment.service";
 
-// Schemas
+// Schema types
 import {
   DeleteCommentArgs,
   DeleteReplyArgs,

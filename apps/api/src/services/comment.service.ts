@@ -17,16 +17,8 @@ import {
   retrievePostComments,
 } from "@/models/comment.model";
 
-// Schemas
+// Schema types
 import {
-  createCommentSchema,
-  createReplySchema,
-  deleteCommentSchema,
-  likeOrDislikeCommentSchema,
-  likeOrDislikeReplySchema,
-  deleteReplySchema,
-  retrieveCommentRepliesSchema,
-  retrievePostCommentsSchema,
   CreateCommentArgs,
   CreateReplyArgs,
   DeleteCommentArgs,

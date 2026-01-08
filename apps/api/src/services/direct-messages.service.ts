@@ -10,13 +10,15 @@ import { createUploadUrl } from "@/lib/aws-s3-functions";
 // Database
 import { User } from "@repo/database";
 
-// Schemas
+// Schema types
 import {
   SearchArgs,
   PresignDirectMessageImagesArgs,
   ConversationArgs,
   CreateDirectMessageArgs,
 } from "@repo/schemas/direct-messages";
+
+// Websockets
 import { getReceiverSocketId, io } from "@/ws/socket";
 
 export async function presignDirectMessageImagesService({
