@@ -15,6 +15,7 @@ export default async function CreateOrganizationPage() {
 
 	if (user.role !== 'ORGANIZATION') redirect('/home');
 
+	console.log(user);
 	return (
 		<>
 			<Heading
@@ -24,25 +25,7 @@ export default async function CreateOrganizationPage() {
 				Let&apos;s create new organization
 			</Heading>
 
-			<Layout>
-				<LayoutColumn
-					start={{
-						base: 1,
-						// Malo od manje centra (bolje izgleda)
-						md: 4,
-						xl: 3,
-					}}
-					end={{
-						base: 13,
-						// Malo od manje centra (bolje izgleda)
-						md: 10,
-						xl: 9,
-					}}
-					className="flex flex-col"
-				>
-					<CreateOrganizationForm />
-				</LayoutColumn>
-			</Layout>
+			<CreateOrganizationForm />
 		</>
 	);
 }

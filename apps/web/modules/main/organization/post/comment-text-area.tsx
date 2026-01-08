@@ -33,6 +33,7 @@ import { toast } from '@/lib/utils/toast';
 
 // Types
 import { SuccessfulResponse } from '@repo/types/general';
+import { zodResolver } from '@hookform/resolvers/zod';
 
 type FormProps = Omit<
 	CreateReplyArgs | CreateCommentArgs,
@@ -57,9 +58,9 @@ export const CommentTextArea = withReactQueryProvider(() => {
 		formState: { errors },
 		reset,
 	} = useForm<FormProps>({
-		context: commentId
-			? createReplySchema.omit({ commentId: true })
-			: createCommentSchema.omit({ postId: true }),
+		resolver: commentId
+			? zodResolver(createReplySchema.omit({ commentId: true }))
+			: zodResolver(createCommentSchema.omit({ postId: true })),
 		defaultValues: {
 			content: '',
 		},

@@ -31,6 +31,7 @@ export default async function OrganizationPage({
 	const organizationDetailsById =
 		await getOrganizationDetailsById(organizationId);
 
+	console.log(organizationDetailsById);
 	if (!organizationDetailsById.success) notFound();
 
 	const avatarKey = organizationDetailsById.organization.avatarImage;
@@ -51,6 +52,7 @@ export default async function OrganizationPage({
 
 	const posts = await retrieveOrganizationPosts({ organizationId });
 
+	console.log(posts);
 	if (!posts.success) notFound();
 	return (
 		<>

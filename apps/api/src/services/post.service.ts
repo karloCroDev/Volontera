@@ -125,10 +125,10 @@ export async function retrieveOrganizationPostsService({
     userId,
   });
 
-  return toastResponseOutput({
-    status: 200,
+  return serverFetchOutput({
     message: "Posts retrieved successfully",
-    title: "Posts Retrieved",
+    status: 200,
+    success: true,
     data: { posts },
   });
 }

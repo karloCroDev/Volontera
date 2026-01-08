@@ -26,6 +26,7 @@ import { useRetrievePostData, useUpadatePost } from '@/hooks/data/post';
 import { useGetImageFromKeys } from '@/hooks/data/image';
 import { useRouter } from 'next/navigation';
 import { toast } from '@/lib/utils/toast';
+import { zodResolver } from '@hookform/resolvers/zod';
 
 export const EditPostDialog: React.FC<{
 	postId: string;
@@ -44,7 +45,7 @@ export const EditPostDialog: React.FC<{
 		setValue,
 		formState: { errors },
 	} = useForm<UpdatePostArgs>({
-		context: updatePostSchema.omit({ postId: true }),
+		resolver: zodResolver(updatePostSchema),
 		defaultValues: {
 			title: '',
 			content: '',

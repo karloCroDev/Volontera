@@ -17,6 +17,8 @@ export const RepliesMapping: React.FC<{
 }> = ({ commentId, repliesCount }) => {
 	// Ova sekcija je samo fetchana kada se collapsible otvori, zato ovaj dio isključivo fetcham na client umjesto servera. Također, replyjeva nije puno, pa nije problem da ne mijenjam cache već da isključivo fetcham podatke za te replyjeve, zbog toga ovdje nije implemtirani optimistic updateovi.
 	const { data, isLoading } = useRetrieveCommentReplies(commentId);
+
+	console.log(data);
 	const { data: pfpImages } = useGetImageFromKeys({
 		imageUrls:
 			data?.replies

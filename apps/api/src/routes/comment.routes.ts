@@ -36,7 +36,7 @@ commentRoutes.use(express.json());
 commentRoutes.route("/:postId").get(
   validate({
     schema: retrievePostCommentsSchema,
-    responseOutput: "get",
+    responseOutput: "server",
     type: "params",
   }),
   retrievePostCommentsController
@@ -93,7 +93,7 @@ commentRoutes
 commentRoutes.route("/reply/:commentId").get(
   validate({
     schema: retrieveCommentRepliesSchema,
-    responseOutput: "get",
+    responseOutput: "server",
     type: "params",
   }),
   retrieveCommentRepliesController

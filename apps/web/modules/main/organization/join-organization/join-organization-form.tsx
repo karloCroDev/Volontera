@@ -12,6 +12,7 @@ import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { TextEditor } from '@/components/ui/text-editor/text-editor';
 import { Error } from '@/components/ui/error';
+import { Layout, LayoutColumn } from '@/components/ui/layout-grid';
 
 // Hooks
 import { useSendRequestToJoinOrganization } from '@/hooks/data/organization';
@@ -25,6 +26,7 @@ import {
 // Lib
 import { toast } from '@/lib/utils/toast';
 import { withReactQueryProvider } from '@/lib/utils/react-query';
+import { zodResolver } from '@hookform/resolvers/zod';
 
 export const JoinOrganizationForm: React.FC<{
 	externalForm: string | null;
@@ -37,7 +39,7 @@ export const JoinOrganizationForm: React.FC<{
 		formState: { errors },
 		setError,
 	} = useForm<SendRequestToJoinOrganizationArgs>({
-		context: sendRequestToJoinOrganizationSchema,
+		resolver: zodResolver(sendRequestToJoinOrganizationSchema),
 		defaultValues: {
 			organizationId: params.organizationId,
 			title: '',
@@ -69,65 +71,87 @@ export const JoinOrganizationForm: React.FC<{
 	};
 
 	return (
-		<Form
-			className="no-scrollbar flex flex-col gap-4 overflow-y-scroll"
-			onSubmit={handleSubmit(onSubmit)}
-		>
-			<div>
-				<Label className="mb-2">Title</Label>
-
-				<Controller
-					control={control}
-					name="title"
-					render={({ field }) => (
-						<Input {...field} label="Enter your post title" />
-					)}
-				/>
-			</div>
-			<div>
-				<Label className="mb-2">Motivational Letter</Label>
-				<Controller
-					control={control}
-					name="content"
-					render={({ field }) => (
-						<TextEditor
-							textEditorProps={{
-								className: 'min-h-80',
-							}}
-							label="Enter your motivational letter content"
-							value={field.value}
-							setValue={(next) => {
-								const nextValue =
-									typeof next === 'function' ? next(field.value) : next;
-								field.onChange(nextValue);
-							}}
-							error={errors.content?.message}
-						/>
-					)}
-				/>
-			</div>
-
-			{/* Only if there is a link for google docs! */}
-			{externalForm && (
-				<div>
-					<Label className="mb-4">Additional Information</Label>
-
-					<iframe
-						src={externalForm}
-						className="border-input-border aspect-video w-full rounded-lg border"
-					/>
-				</div>
-			)}
-			{errors.root?.message && <Error>{errors.root.message}</Error>}
-			<Button
-				type="submit"
-				className="self-end"
-				size="md"
-				isDisabled={isPending}
-				isLoading={isPending}
+		<Layout>
+			<LayoutColumn
+				start={{
+					base: 1,
+					// Malo od manje centra (bolje izgleda)
+					md: 4,
+					xl: 3,
+				}}
+				end={{
+					base: 13,
+					// Malo od manje centra (bolje izgleda)
+					md: 10,
+					xl: 9,
+				}}
+				className="flex flex-col"
 			>
-				Submit
-			</Button>
-		</Form>
+				<Form
+					className="no-scrollbar flex flex-col gap-4 overflow-y-scroll"
+					onSubmit={handleSubmit(onSubmit)}
+				>
+					<div>
+						<Label className="mb-2">Title</Label>
+
+						<Controller
+							control={control}
+							name="title"
+							render={({ field }) => (
+								<Input
+									{...field}
+									label="Enter your post title"
+									error={errors.title?.message}
+								/>
+							)}
+						/>
+					</div>
+					<div>
+						<Label className="mb-2">Motivational Letter</Label>
+						<Controller
+							control={control}
+							name="content"
+							render={({ field }) => (
+								<TextEditor
+									textEditorProps={{
+										className: 'min-h-80',
+									}}
+									label="Enter your motivational letter content"
+									value={field.value}
+									setValue={(next) => {
+										const nextValue =
+											typeof next === 'function' ? next(field.value) : next;
+										field.onChange(nextValue);
+									}}
+									error={errors.content?.message}
+								/>
+							)}
+						/>
+					</div>
+
+					{/* Only if there is a link for google docs! */}
+					{externalForm && (
+						<div>
+							<Label className="mb-4">Additional Information</Label>
+
+							<iframe
+								src={externalForm}
+								className="border-input-border aspect-video w-full rounded-lg border"
+							/>
+						</div>
+					)}
+					{errors.root?.message && <Error>{errors.root.message}</Error>}
+					<Button
+						type="submit"
+						className="self-end"
+						size="md"
+						isDisabled={isPending}
+						isLoading={isPending}
+					>
+						Submit
+					</Button>
+				</Form>
+			</LayoutColumn>
+		</Layout>
 	);
 });

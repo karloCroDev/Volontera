@@ -42,10 +42,6 @@ organizationRoutes.post(
 organizationRoutes.get(
   "/list-organizations-organizator",
   organizationMiddleware,
-  validate({
-    schema: getOrganizationDetailsByIdSchema,
-    responseOutput: "server",
-  }),
   listOrganizationsOrganizatorController
 );
 

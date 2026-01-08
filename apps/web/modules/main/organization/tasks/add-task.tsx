@@ -40,7 +40,7 @@ export const AddTask = () => {
 					<DatePicker
 						onChange={(val) => {
 							if (!val) return;
-							const formatted = `${String(val.year).padStart(2, '0')}-${String(val.month).padStart(2, '0')}-${val.day}`;
+							const formatted = `${String(val.year).padStart(2, '0')}-${String(val.month).padStart(2, '0')}-${String(val.day).padStart(2, '0')}`;
 							// onChange(formatted);
 						}}
 					/>

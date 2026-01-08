@@ -37,29 +37,11 @@ export default async function JoinOrganizationPage({
 				Let&apos;s join {organization.organization.name} organization
 			</Heading>
 
-			<Layout>
-				<LayoutColumn
-					start={{
-						base: 1,
-						// Malo od manje centra (bolje izgleda)
-						md: 4,
-						xl: 3,
-					}}
-					end={{
-						base: 13,
-						// Malo od manje centra (bolje izgleda)
-						md: 10,
-						xl: 9,
-					}}
-					className="flex flex-col"
-				>
-					<JoinOrganizationForm
-						externalForm={
-							organization.organization.organizationInfo.externalFormLink
-						}
-					/>
-				</LayoutColumn>
-			</Layout>
+			<JoinOrganizationForm
+				externalForm={
+					organization.organization.organizationInfo.externalFormLink
+				}
+			/>
 		</>
 	);
 }

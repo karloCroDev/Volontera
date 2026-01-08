@@ -29,6 +29,12 @@ import {
   RetrievePostCommentsArgs,
 } from "@repo/schemas/comment";
 
+// Lib
+import {
+  serverFetchOutput,
+  toastResponseOutput,
+} from "@/lib/utils/service-output";
+
 export async function retrievePostCommentsService({
   data,
   userId,
@@ -41,14 +47,12 @@ export async function retrievePostCommentsService({
     userId,
   });
 
-  return {
+  return serverFetchOutput({
     status: 200,
-    body: {
-      success: true,
-      message: "Comments retrieved successfully",
-      comments,
-    },
-  };
+    message: "Comments retrieved successfully",
+    data: { comments },
+    success: true,
+  });
 }
 
 export async function createCommentService({
@@ -64,13 +68,11 @@ export async function createCommentService({
     content: data.content,
   });
 
-  return {
+  return toastResponseOutput({
     status: 200,
-    body: {
-      title: "Comment Created",
-      message: "Comment created successfully",
-    },
-  };
+    title: "Comment Created",
+    message: "Comment created successfully",
+  });
 }
 
 // TODO: Add user id to this model
@@ -85,13 +87,12 @@ export async function deleteCommentService({
     commentId: data.commentId,
     userId,
   });
-  return {
+
+  return toastResponseOutput({
     status: 200,
-    body: {
-      title: "Comment Deleted",
-      message: "Comment deleted successfully",
-    },
-  };
+    title: "Comment Deleted",
+    message: "Comment deleted successfully",
+  });
 }
 
 export async function toggleLikeCommentService({
@@ -118,13 +119,13 @@ export async function toggleLikeCommentService({
     });
   }
 
-  return {
+  return toastResponseOutput({
     status: 200,
-    body: {
-      title: "Post Liked",
-      message: "Post liked successfully",
-    },
-  };
+    title: userLiked ? "Comment Liked" : "Comment Disliked",
+    message: userLiked
+      ? "Comment liked successfully"
+      : "Comment disliked successfully",
+  });
 }
 
 export async function retrieveCommentRepliesService({
@@ -139,14 +140,12 @@ export async function retrieveCommentRepliesService({
     userId,
   });
 
-  return {
+  return toastResponseOutput({
     status: 200,
-    body: {
-      success: true,
-      message: "Replies retrieved successfully",
-      replies,
-    },
-  };
+    title: "Replies Retrieved",
+    message: "Replies retrieved successfully",
+    data: { replies },
+  });
 }
 
 export async function createReplyService({
@@ -162,13 +161,11 @@ export async function createReplyService({
     content: data.content,
   });
 
-  return {
-    status: 201,
-    body: {
-      title: "Reply Created",
-      message: "Reply created successfully",
-    },
-  };
+  return toastResponseOutput({
+    status: 200,
+    title: "Reply Created",
+    message: "Reply created successfully",
+  });
 }
 
 export async function deleteReplyService({
@@ -182,13 +179,12 @@ export async function deleteReplyService({
     replyId: data.replyId,
     userId,
   });
-  return {
+
+  return toastResponseOutput({
     status: 200,
-    body: {
-      title: "Reply Deleted",
-      message: "Reply deleted successfully",
-    },
-  };
+    title: "Reply Deleted",
+    message: "Reply deleted successfully",
+  });
 }
 
 export async function toggleLikeReplyService({
@@ -214,11 +210,11 @@ export async function toggleLikeReplyService({
       userId,
     });
   }
-  return {
+  return toastResponseOutput({
     status: 200,
-    body: {
-      title: "Reply Liked",
-      message: "Reply liked successfully",
-    },
-  };
+    title: userLiked ? "Reply Liked" : "Reply Disliked",
+    message: userLiked
+      ? "Reply liked successfully"
+      : "Reply disliked successfully",
+  });
 }

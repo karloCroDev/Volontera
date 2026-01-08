@@ -2,12 +2,14 @@
 import { API } from '@/lib/utils/axios-client';
 import { catchError } from '@/lib/utils/error';
 
-// Repo
+// Types
 import { DataWithFile } from '@repo/types/upload';
-import { AppType } from '@repo/types/onboarding';
-import { AdditionalFormArgs } from '@repo/schemas/onboarding';
+import {
+	AdditionalFormArgs,
+	AppTypeSchemaArgs,
+} from '@repo/schemas/onboarding';
 
-export async function appType(data: AppType) {
+export async function appType(data: AppTypeSchemaArgs) {
 	try {
 		const res = await API().post('onboarding/app-type', data);
 		return res.data;

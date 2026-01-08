@@ -20,7 +20,7 @@ export const createOrganizationSchema = z.object({
       })
     )
     .optional(),
-  assignPredefinedTasks: z.boolean().default(false),
+  assignPredefinedTasks: z.boolean(),
 });
 
 export type CreateOrganizationArgs = z.infer<typeof createOrganizationSchema>;
