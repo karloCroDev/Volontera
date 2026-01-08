@@ -73,7 +73,7 @@ export async function demoteOrPromoteOrganizationMemberController(
 ) {
   try {
     const result = await demoteOrPromoteOrganizationMemberService({
-      data: req.params as DemoteOrPromoteOrganizationMemberArgs,
+      data: req.body,
       userId: req.user.userId,
     });
     return res.status(result.status).json(result.body);
@@ -88,7 +88,7 @@ export async function acceptOrDeclineUsersRequestToJoinOrganizationController(
 ) {
   try {
     const result = await acceptOrDeclineUsersRequestToJoinOrganizationService({
-      data: req.params as AcceptOrDeclineUsersRequestToJoinOrganizationArgs,
+      data: req.body,
       userId: req.user.userId,
     });
     return res.status(result.status).json(result.body);

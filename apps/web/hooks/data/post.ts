@@ -115,7 +115,6 @@ export const useRetrieveOrganizationPosts = (
 	return useSuspenseQuery({
 		queryKey: ['posts', organizationId],
 		queryFn: () => retrieveOrganizationPosts({ organizationId }),
-
 		...options,
 	});
 };

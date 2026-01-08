@@ -11,9 +11,17 @@ import {
   demoteOrPromoteOrganizationMemberController,
 } from "@/controllers/organization-managment.controller";
 
+// Schemas
+import {
+  acceptOrDeclineUsersRequestToJoinOrganizationSchema,
+  demoteOrPromoteOrganizationMemberSchema,
+  retirveAllRequestsToJoinOrganizationSchema,
+  retrieveAllUsersInOrganizationSchema,
+  retrieveOrganizationMemberSchema,
+} from "@repo/schemas/organization-managment";
 // Middleware
-
 import { organizationRolesMiddleware } from "@/middleware/organization-roles-middleware";
+import { validate } from "@/middleware/validate.middleware";
 
 export const organizationManagmentRoutes = Router();
 
@@ -21,29 +29,52 @@ organizationManagmentRoutes.use(express.json());
 
 organizationManagmentRoutes.get(
   "/requests/:organizationId",
+  validate({
+    schema: retirveAllRequestsToJoinOrganizationSchema,
+    type: "params",
+    responseOutput: "server",
+  }),
   organizationRolesMiddleware(),
   retrieveAllRequestsToJoinOrganizationController
 );
 
 organizationManagmentRoutes.get(
   "/users/:organizationId",
+  validate({
+    schema: retrieveAllUsersInOrganizationSchema,
+    type: "params",
+    responseOutput: "server",
+  }),
   organizationRolesMiddleware(),
   retrieveAllUsersInOrganizationController
 );
 organizationManagmentRoutes.get(
   "/member/:organizationId",
-  organizationRolesMiddleware(),
+  validate({
+    schema: retrieveOrganizationMemberSchema,
+    type: "params",
+    responseOutput: "server",
+  }),
+  organizationRolesMiddleware(["MEMBER", "ADMIN"]),
   retrieveOrganizationMemberController
 );
 
 organizationManagmentRoutes.post(
   "/accept-decline-request",
+  validate({
+    schema: acceptOrDeclineUsersRequestToJoinOrganizationSchema,
+    responseOutput: "toast",
+  }),
   organizationRolesMiddleware(),
   acceptOrDeclineUsersRequestToJoinOrganizationController
 );
 
 organizationManagmentRoutes.post(
   "/demote-promote-member",
+  validate({
+    schema: demoteOrPromoteOrganizationMemberSchema,
+    responseOutput: "toast",
+  }),
   organizationRolesMiddleware(),
   demoteOrPromoteOrganizationMemberController
 );

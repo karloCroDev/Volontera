@@ -1,5 +1,8 @@
 // Lib
-import { serverFetchOutput } from "@/lib/utils/service-output";
+import {
+  serverFetchOutput,
+  toastResponseOutput,
+} from "@/lib/utils/service-output";
 
 // Models
 import {
@@ -61,9 +64,9 @@ export async function acceptOrDeclineUsersRequestToJoinOrganizationService({
     requesterId: userId,
   });
 
-  return serverFetchOutput({
+  return toastResponseOutput({
+    title: "Requests Updated",
     message: "User's request to join organization updated successfully",
-    success: true,
     status: 200,
   });
 }
@@ -80,10 +83,9 @@ export async function demoteOrPromoteOrganizationMemberService({
     userId,
   });
 
-  return serverFetchOutput({
+  return toastResponseOutput({
     message: "Organization member role updated successfully",
-    success: true,
-
+    title: "Member Role Updated",
     status: 200,
   });
 }

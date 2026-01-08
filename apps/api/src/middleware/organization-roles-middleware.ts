@@ -30,8 +30,7 @@ export function organizationRolesMiddleware(
       return next();
     }
 
-    // Ako su specificirane role koje su potrebne za pristup ruti, provjeri da li korisnik ima neku od tih rola
-
+    // Ako nisu specificirane role, onda ne moze nijedan korisnik osim organizacije pristupiti
     if (!aquiredRoles) {
       return res.status(400).json({
         message: "Bad Request: No roles specified for access",
