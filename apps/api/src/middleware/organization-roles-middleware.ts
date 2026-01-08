@@ -1,36 +1,41 @@
-// // External packages
-// import { retrieveOrganizationMember } from "@/models/organization-managment.model";
-// import { Request, Response, NextFunction } from "express";
+// External packages
+import { Request, Response, NextFunction } from "express";
 
-// export async function organizationAdminMiddleware(
-//   req: Request,
-//   res: Response,
-//   next: NextFunction
-// ) {
-//   const { userId } = req.user;
+// Models
+import { retrieveOrganizationMember } from "@/models/organization-managment.model";
 
-//   const organizationMember = await retrieveOrganizationMember(
-//     req.params.organizationId,
-//     userId
-//   );
+// Database
+import { Organization, OrganizationMember } from "@repo/database";
 
-//   next();
-// }
+export async function organizationRolesMiddleware(
+  aquiredRoles: OrganizationMember["role"][]
+) {
+  // TODO: Redis will be sigma sigma and cache this!!
+  return async (req: Request, res: Response, next: NextFunction) => {
+    const { userId } = req.user;
+    const member = await retrieveOrganizationMember({
+      organizationId: req.params.organizationId as Organization["id"],
+      userId: userId,
+    });
 
-// export async function organizationOwnerMiddleware(
-//   req: Request,
-//   res: Response,
-//   next: NextFunction
-// ) {
-//   const { userId } = req.user;
-//     const organizationMember = await retrieveOrganizationMember(
-//         {
-//             organizationId: req.params.organizationId,
-//             userId,
-//         }
+    if (!member) {
+      return res.status(400).json({
+        message: "Forbidden: Not a member of the organization",
+        success: false,
+      });
+    }
 
-//   );
-//     if (organizationMember?.role !== "OWNER") {}
+    if (member.role === "OWNER") {
+      return next();
+    }
 
-//     next()
-// }
+    if (!aquiredRoles.includes(member.role)) {
+      return res.status(400).json({
+        message: "Forbidden: Insufficient organization role",
+        success: false,
+      });
+    }
+
+    return next();
+  };
+}

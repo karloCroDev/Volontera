@@ -1,5 +1,10 @@
 // Database
-import { Organization, prisma } from "@repo/database";
+import {
+  Organization,
+  OrganizationJoinRequest,
+  OrganizationMember,
+  prisma,
+} from "@repo/database";
 
 export async function retirveAllRequestsToJoinOrganization(
   organizationId: Organization["id"]
@@ -28,7 +33,47 @@ export async function retrieveAllUsersInOrganization(
   });
 }
 
-// TODO: Cache this because I am going to use it a lot inside the organization
+export async function acceptOrDeclineUsersRequestToJoinOrganization({
+  organizationId,
+  requesterId,
+  status,
+}: {
+  organizationId: Organization["id"];
+  requesterId: string;
+  status: OrganizationJoinRequest["status"];
+}) {
+  return prisma.organizationJoinRequest.updateMany({
+    where: {
+      organizationId,
+      requesterId,
+      status: "PENDING",
+    },
+    data: {
+      status,
+    },
+  });
+}
+
+export async function demoteOrPromoteOrganizationMember({
+  organizationId,
+  userId,
+  role,
+}: {
+  organizationId: Organization["id"];
+  userId: string;
+  role: OrganizationMember["role"];
+}) {
+  return prisma.organizationMember.updateMany({
+    where: {
+      organizationId,
+      userId,
+    },
+    data: {
+      role,
+    },
+  });
+}
+
 export async function retrieveOrganizationMember({
   organizationId,
   userId,
