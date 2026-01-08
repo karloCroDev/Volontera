@@ -7,33 +7,43 @@ import {
   retrieveAllRequestsToJoinOrganizationController,
   retrieveAllUsersInOrganizationController,
   retrieveOrganizationMemberController,
+  acceptOrDeclineUsersRequestToJoinOrganizationController,
+  demoteOrPromoteOrganizationMemberController,
 } from "@/controllers/organization-managment.controller";
 
 // Middleware
-import {
-  organizationMiddleware,
-  userMiddleware,
-} from "@/middleware/role-middleware";
+
+import { organizationRolesMiddleware } from "@/middleware/organization-roles-middleware";
 
 export const organizationManagmentRoutes = Router();
 
 organizationManagmentRoutes.use(express.json());
 
-// TODO: Change these middlewares
-
 organizationManagmentRoutes.get(
-  "/requests",
-  organizationMiddleware,
+  "/requests/:organizationId",
+  organizationRolesMiddleware(),
   retrieveAllRequestsToJoinOrganizationController
 );
 
 organizationManagmentRoutes.get(
-  "/users",
-  organizationMiddleware,
+  "/users/:organizationId",
+  organizationRolesMiddleware(),
   retrieveAllUsersInOrganizationController
 );
 organizationManagmentRoutes.get(
-  "/member",
-  organizationMiddleware,
+  "/member/:organizationId",
+  organizationRolesMiddleware(),
   retrieveOrganizationMemberController
+);
+
+organizationManagmentRoutes.post(
+  "/accept-decline-request",
+  organizationRolesMiddleware(),
+  acceptOrDeclineUsersRequestToJoinOrganizationController
+);
+
+organizationManagmentRoutes.post(
+  "/demote-promote-member",
+  organizationRolesMiddleware(),
+  demoteOrPromoteOrganizationMemberController
 );

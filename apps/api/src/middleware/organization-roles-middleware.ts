@@ -7,8 +7,8 @@ import { retrieveOrganizationMember } from "@/models/organization-managment.mode
 // Database
 import { Organization, OrganizationMember } from "@repo/database";
 
-export async function organizationRolesMiddleware(
-  aquiredRoles: OrganizationMember["role"][]
+export function organizationRolesMiddleware(
+  aquiredRoles?: OrganizationMember["role"][]
 ) {
   // TODO: Redis will be sigma sigma and cache this!!
   return async (req: Request, res: Response, next: NextFunction) => {
@@ -25,8 +25,18 @@ export async function organizationRolesMiddleware(
       });
     }
 
+    // Owner uvijek ima pristup svemu unutar organizacije
     if (member.role === "OWNER") {
       return next();
+    }
+
+    // Ako su specificirane role koje su potrebne za pristup ruti, provjeri da li korisnik ima neku od tih rola
+
+    if (!aquiredRoles) {
+      return res.status(400).json({
+        message: "Bad Request: No roles specified for access",
+        success: false,
+      });
     }
 
     if (!aquiredRoles.includes(member.role)) {

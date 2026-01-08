@@ -1,8 +1,13 @@
-// Schemas
+// Lib
+import { serverFetchOutput } from "@/lib/utils/service-output";
+
+// Models
 import {
   retrieveOrganizationMember,
   retirveAllRequestsToJoinOrganization,
   retrieveAllUsersInOrganization,
+  demoteOrPromoteOrganizationMember,
+  acceptOrDeclineUsersRequestToJoinOrganization,
 } from "@/models/organization-managment.model";
 
 // Database
@@ -10,97 +15,96 @@ import { User } from "@repo/database";
 
 // Schemas
 import {
-  retirveAllRequestsToJoinOrganizationSchema,
-  retrieveAllUsersInOrganizationSchema,
-  retrieveOrganizationMemberSchema,
+  AcceptOrDeclineUsersRequestToJoinOrganizationArgs,
+  DemoteOrPromoteOrganizationMemberArgs,
+  RetirveAllRequestsToJoinOrganizationArgs,
+  RetrieveAllUsersInOrganizationArgs,
+  RetrieveOrganizationMemberArgs,
 } from "@repo/schemas/organization-managment";
 
+// Samo vlasnik (managanje korisnika) (owner)
 export async function retirveAllRequestsToJoinOrganizationService({
-  rawData,
-}: {
-  rawData: unknown;
-}) {
-  const { success, data } =
-    retirveAllRequestsToJoinOrganizationSchema.safeParse(rawData);
+  organizationId,
+}: RetirveAllRequestsToJoinOrganizationArgs) {
+  const requests = await retirveAllRequestsToJoinOrganization(organizationId);
 
-  if (!success) {
-    return {
-      status: 400,
-      body: {
-        success: false,
-        message: "The provided data is invalid",
-      },
-    };
-  }
-  const requests = await retirveAllRequestsToJoinOrganization(
-    data.organizationId
-  );
-
-  return {
+  return serverFetchOutput({
     status: 200,
-    body: {
-      success: true,
-      message: "Requests retrieved successfully",
-      requests,
-    },
-  };
+    success: true,
+    message: "Requests retrieved successfully",
+    data: { requests },
+  });
 }
 
 export async function retrieveAllUsersInOrganizationService({
-  rawData,
-}: {
-  rawData: unknown;
-}) {
-  const { success, data } =
-    retrieveAllUsersInOrganizationSchema.safeParse(rawData);
+  organizationId,
+}: RetrieveAllUsersInOrganizationArgs) {
+  const requests = await retrieveAllUsersInOrganization(organizationId);
 
-  if (!success) {
-    return {
-      status: 400,
-      body: {
-        success: false,
-        message: "The provided data is invalid",
-      },
-    };
-  }
-  const requests = await retrieveAllUsersInOrganization(data.organizationId);
-
-  return {
+  return serverFetchOutput({
     status: 200,
-    body: {
-      success: true,
-      message: "Requests retrieved successfully",
-      requests,
-    },
-  };
+    success: true,
+    message: "Users retrieved successfully",
+    data: { requests },
+  });
 }
 
-export async function retrieveOrganizationMemberService({
-  rawData,
+export async function acceptOrDeclineUsersRequestToJoinOrganizationService({
+  data,
   userId,
 }: {
-  rawData: unknown;
+  data: AcceptOrDeclineUsersRequestToJoinOrganizationArgs;
   userId: User["id"];
 }) {
-  const { success, data } = retrieveOrganizationMemberSchema.safeParse(rawData);
+  await acceptOrDeclineUsersRequestToJoinOrganization({
+    ...data,
+    requesterId: userId,
+  });
 
-  if (!success) {
-    return {
-      status: 400,
-      body: {
-        message: "The provided data is invalid",
-      },
-    };
-  }
-  const organizationMember = await retrieveOrganizationMember({
-    organizationId: data.organizationId,
+  return serverFetchOutput({
+    message: "User's request to join organization updated successfully",
+    success: true,
+    status: 200,
+  });
+}
+
+export async function demoteOrPromoteOrganizationMemberService({
+  data,
+  userId,
+}: {
+  data: DemoteOrPromoteOrganizationMemberArgs;
+  userId: User["id"];
+}) {
+  await demoteOrPromoteOrganizationMember({
+    ...data,
     userId,
   });
 
-  return {
+  return serverFetchOutput({
+    message: "Organization member role updated successfully",
+    success: true,
+
     status: 200,
-    body: {
-      organizationMember,
-    },
-  };
+  });
+}
+
+// Svi korisnici ("member" i "admin") unutar organizacije mogu dohvatiti informacije o samom sebi
+export async function retrieveOrganizationMemberService({
+  data,
+  userId,
+}: {
+  data: RetrieveOrganizationMemberArgs;
+  userId: User["id"];
+}) {
+  const organizationMember = await retrieveOrganizationMember({
+    ...data,
+    userId,
+  });
+
+  return serverFetchOutput({
+    message: "Organization member retrieved successfully",
+    success: true,
+    data: { organizationMember },
+    status: 200,
+  });
 }

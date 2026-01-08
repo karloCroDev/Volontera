@@ -3,23 +3,37 @@ import { Request, Response } from "express";
 
 // Services
 import {
+  acceptOrDeclineUsersRequestToJoinOrganizationService,
+  demoteOrPromoteOrganizationMemberService,
   retirveAllRequestsToJoinOrganizationService,
   retrieveAllUsersInOrganizationService,
   retrieveOrganizationMemberService,
 } from "@/services/organization-managment.service";
+
+// Schema types
+import {
+  AcceptOrDeclineUsersRequestToJoinOrganizationArgs,
+  DemoteOrPromoteOrganizationMemberArgs,
+  RetirveAllRequestsToJoinOrganizationArgs,
+  RetrieveAllUsersInOrganizationArgs,
+  RetrieveOrganizationMemberArgs,
+} from "@repo/schemas/organization-managment";
+
+// Lib
+import { handleServerErrorResponse } from "@/lib/utils/error-response";
 
 export async function retrieveAllRequestsToJoinOrganizationController(
   req: Request,
   res: Response
 ) {
   try {
-    const result = await retirveAllRequestsToJoinOrganizationService({
-      rawData: req.params,
-    });
+    const result = await retirveAllRequestsToJoinOrganizationService(
+      req.params as RetirveAllRequestsToJoinOrganizationArgs
+    );
 
     return res.status(result.status).json(result.body);
   } catch (err) {
-    return res.status(500).json({ success: false, message: "Internal error" });
+    handleServerErrorResponse(res, err);
   }
 }
 
@@ -28,13 +42,13 @@ export async function retrieveAllUsersInOrganizationController(
   res: Response
 ) {
   try {
-    const result = await retrieveAllUsersInOrganizationService({
-      rawData: req.params,
-    });
+    const result = await retrieveAllUsersInOrganizationService(
+      req.params as RetrieveAllUsersInOrganizationArgs
+    );
 
     return res.status(result.status).json(result.body);
   } catch (err) {
-    return res.status(500).json({ success: false, message: "Internal error" });
+    handleServerErrorResponse(res, err);
   }
 }
 
@@ -44,11 +58,41 @@ export async function retrieveOrganizationMemberController(
 ) {
   try {
     const result = await retrieveOrganizationMemberService({
-      rawData: req.params,
+      data: req.params as RetrieveOrganizationMemberArgs,
       userId: req.user.userId,
     });
     return res.status(result.status).json(result.body);
   } catch (err) {
-    return res.status(500).json({ success: false, message: "Internal error" });
+    handleServerErrorResponse(res, err);
+  }
+}
+
+export async function demoteOrPromoteOrganizationMemberController(
+  req: Request,
+  res: Response
+) {
+  try {
+    const result = await demoteOrPromoteOrganizationMemberService({
+      data: req.params as DemoteOrPromoteOrganizationMemberArgs,
+      userId: req.user.userId,
+    });
+    return res.status(result.status).json(result.body);
+  } catch (err) {
+    handleServerErrorResponse(res, err);
+  }
+}
+
+export async function acceptOrDeclineUsersRequestToJoinOrganizationController(
+  req: Request,
+  res: Response
+) {
+  try {
+    const result = await acceptOrDeclineUsersRequestToJoinOrganizationService({
+      data: req.params as AcceptOrDeclineUsersRequestToJoinOrganizationArgs,
+      userId: req.user.userId,
+    });
+    return res.status(result.status).json(result.body);
+  } catch (err) {
+    handleServerErrorResponse(res, err);
   }
 }
