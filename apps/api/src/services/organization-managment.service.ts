@@ -15,6 +15,8 @@ import {
   retrieveOrganizationMemberSchema,
 } from "@repo/schemas/organization-managment";
 
+// TODO: Odmah iduce paaa cu to napraviti
+
 export async function retirveAllRequestsToJoinOrganizationService({
   rawData,
 }: {

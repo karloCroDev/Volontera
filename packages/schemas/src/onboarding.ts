@@ -23,3 +23,8 @@ export const additionalInformationSchema = z
   );
 
 export type AdditionalFormArgs = z.infer<typeof additionalInformationSchema>;
+
+export const appTypeSchema = z.object({
+  appType: z.enum(["USER", "ORGANIZATION"]),
+});
+export type AppTypeSchemaArgs = z.infer<typeof appTypeSchema>;

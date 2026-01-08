@@ -11,6 +11,7 @@ import {
   removeSubscription,
   updateSubscription,
 } from "@/models/payment.model";
+import { CreateCheckoutSessionArgs } from "@repo/schemas/payment";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
@@ -139,33 +140,23 @@ export async function webhookService({
 
 export async function checkoutService({
   userId,
-  priceId,
+  data,
 }: {
   userId: User["id"];
-  priceId: string;
+  data: CreateCheckoutSessionArgs;
 }) {
-  console.log(priceId);
-  if (typeof priceId !== "string") {
-    return {
-      status: 400,
-      body: {
-        title: "Your url for link isn't created successfuly",
-        message: "Invalid priceId",
-      },
-    };
-  }
   const session = await stripe.checkout.sessions.create({
     mode: "subscription",
     success_url: `${process.env.WEB_URL}/select-plan/success`,
     cancel_url: `${process.env.WEB_URL}/select-plan/cancel`,
     line_items: [
       {
-        price: priceId,
+        price: data.priceId,
         quantity: 1,
       },
     ],
 
-    client_reference_id: userId, // <-- THIS IS THE IMPORTANT PART
+    client_reference_id: userId,
   });
 
   return {

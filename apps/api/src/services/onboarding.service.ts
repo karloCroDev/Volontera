@@ -15,48 +15,43 @@ import {
 } from "@/models/onboarding.model";
 
 // Schemas
-import { additionalInformationSchema } from "@repo/schemas/onboarding";
+import {
+  additionalInformationSchema,
+  AdditionalFormArgs,
+  AppTypeSchemaArgs,
+} from "@repo/schemas/onboarding";
 
 // Transactional emails
 import { WelcomeEmail } from "@repo/transactional/welcome-email";
 
-// Types
-import { AppType } from "@repo/types/onboarding";
-
-export async function additionalInformationService(
-  rawData: unknown,
-  userId: string
-) {
-  const { success, data } = additionalInformationSchema.safeParse(rawData);
-
-  if (!success) {
-    return {
-      status: 400,
-      body: {
-        message: "Invalid data provided",
-        title: "Please provide the correct data",
-      },
-    };
-  }
-
-  const payload: Partial<User> = {};
-
-  if (data.bio) payload.bio = data.bio;
-  if (data.DOB) payload.DOB = data.DOB;
+export async function additionalInformationService({
+  data,
+  userId,
+}: {
+  data: AdditionalFormArgs;
+  userId: User["id"];
+}) {
+  const imagePayload: Partial<User> = {};
 
   if (data.image?.deleteImage) {
     await deleteImage(data.image.deleteImage);
-
-    payload.image = "";
+    imagePayload.image = null;
   }
+
   let presignedURL = "";
   if (data.image) {
     const imageURL = await createUploadUrl(data.image);
-    payload.image = imageURL.key;
+    imagePayload.image = imageURL.key;
     presignedURL = imageURL.url;
   }
 
-  await updateUserOnboarding({ data: payload, userId });
+  await updateUserOnboarding({
+    data: {
+      ...data,
+      image: imagePayload.image,
+    },
+    userId,
+  });
 
   const user = await findUserById(userId);
 
@@ -82,7 +77,7 @@ export async function additionalInformationService(
   };
 }
 
-export async function skipAdditionalInformationService(userId: string) {
+export async function skipAdditionalInformationService(userId: User["id"]) {
   await finishOnboarding(userId);
 
   const user = await findUserById(userId);
@@ -108,24 +103,21 @@ export async function skipAdditionalInformationService(userId: string) {
   };
 }
 
-export async function appTypeService(rawType: unknown, userId: string) {
-  const type = rawType as AppType;
-
-  if (type !== "USER" && type !== "ORGANIZATION") {
-    return {
-      status: 400,
-      body: { message: "Invalid app type provided" },
-    };
-  }
-
-  await updateUserAppType({ type, userId });
+export async function appTypeService({
+  data,
+  userId,
+}: {
+  data: AppTypeSchemaArgs;
+  userId: User["id"];
+}) {
+  await updateUserAppType({ type: data.appType, userId });
 
   return {
     status: 200,
     body: {
       title: "App type saved",
       message: "Your app type has been saved successfully",
-      role: type,
+      role: data.appType,
     },
   };
 }

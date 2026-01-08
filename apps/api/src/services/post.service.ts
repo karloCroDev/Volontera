@@ -14,36 +14,32 @@ import {
 
 // Database
 import { User } from "@repo/database";
+import { RetrievePostCommentsArgs } from "@repo/schemas/comment";
 
 // Schemas
 import {
+  CreatePostArgs,
   createPostSchema,
+  DeletePostArgs,
   deletePostSchema,
+  LikeOrDislikePostArgs,
   likeOrDislikePostSchema,
+  RetrieveOrganizationPostsArgs,
   retrieveOrganizationPostsSchema,
   retrievePost,
+  RetrievePostArgs,
+  UpdatePostArgs,
   updatePostSchema,
 } from "@repo/schemas/post";
 
 // Organization admins only
 export async function createPostService({
-  rawData,
+  data,
   userId,
 }: {
-  rawData: unknown;
+  data: CreatePostArgs;
   userId: User["id"];
 }) {
-  const { success, data } = createPostSchema.safeParse(rawData);
-
-  if (!success) {
-    return {
-      status: 400,
-      body: {
-        message: "Invalid post data",
-      },
-    };
-  }
-
   // TODO: If I am reusing this then make a function
   const uploadImages = await Promise.all(
     data.images.map((image) => createUploadUrl(image))
@@ -67,19 +63,7 @@ export async function createPostService({
   };
 }
 
-export async function deletePostService(rawData: string) {
-  const { success, data } = deletePostSchema.safeParse(rawData);
-
-  if (!success) {
-    return {
-      status: 400,
-      body: {
-        title: "Invalid Data",
-        message: "Invalid delete post data",
-      },
-    };
-  }
-
+export async function deletePostService(data: DeletePostArgs) {
   await deletePost(data.postId);
 
   return {
@@ -91,20 +75,8 @@ export async function deletePostService(rawData: string) {
   };
 }
 
-export async function retrievePostDataService(rawData: unknown) {
-  const { success, data } = retrievePost.safeParse(rawData);
-
-  if (!success) {
-    return {
-      status: 400,
-      body: {
-        message: "The provided data is invalid",
-        success: false,
-      },
-    };
-  }
-
-  const post = await retrievePostData(data.postId);
+export async function retrievePostDataService({ postId }: RetrievePostArgs) {
+  const post = await retrievePostData(postId);
 
   return {
     status: 200,
@@ -116,19 +88,7 @@ export async function retrievePostDataService(rawData: unknown) {
   };
 }
 
-export async function updatePostService(rawData: unknown) {
-  const { success, data } = updatePostSchema.safeParse(rawData);
-
-  if (!success) {
-    return {
-      status: 400,
-      body: {
-        title: "Invalid Data",
-        message: "Invalid post data",
-      },
-    };
-  }
-
+export async function updatePostService(data: UpdatePostArgs) {
   let presignedUrls: string[] = [];
   const images = await Promise.all(
     data.images.map(async (img) => {
@@ -164,24 +124,12 @@ export async function updatePostService(rawData: unknown) {
 
 // Everyone
 export async function retrieveOrganizationPostsService({
-  rawData,
+  data,
   userId,
 }: {
-  rawData: unknown;
+  data: RetrieveOrganizationPostsArgs;
   userId: string;
 }) {
-  const { success, data } = retrieveOrganizationPostsSchema.safeParse(rawData);
-
-  if (!success) {
-    return {
-      status: 400,
-      body: {
-        message: "The provided data is invalid",
-        success: false,
-      },
-    };
-  }
-
   const posts = await retrieveOrganizationPosts({
     organizationId: data.organizationId,
     userId,
@@ -198,23 +146,12 @@ export async function retrieveOrganizationPostsService({
 }
 
 export async function retrievePostWithCommentsService({
-  rawData,
+  data,
   userId,
 }: {
-  rawData: unknown;
+  data: RetrievePostCommentsArgs;
   userId: string;
 }) {
-  const { success, data } = retrievePost.safeParse(rawData);
-
-  if (!success) {
-    return {
-      status: 400,
-      body: {
-        message: "The provided data is invalid",
-        success: false,
-      },
-    };
-  }
   const post = await retrievePostWithComments({
     postId: data.postId,
     userId,
@@ -231,24 +168,12 @@ export async function retrievePostWithCommentsService({
 }
 
 export async function toggleLikePostService({
-  rawData,
+  data,
   userId,
 }: {
-  rawData: unknown;
+  data: LikeOrDislikePostArgs;
   userId: User["id"];
 }) {
-  const { success, data } = likeOrDislikePostSchema.safeParse(rawData);
-
-  if (!success) {
-    return {
-      status: 400,
-      body: {
-        title: "Invalid Data",
-        message: "The provided data is invalid",
-      },
-    };
-  }
-
   const userLiked = await checkIfUserLiked({
     postId: data.postId,
     userId,

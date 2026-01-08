@@ -5,26 +5,15 @@ import { searchUsers } from "@/models/search.model";
 import { User } from "@repo/database";
 
 // Schemas
-import { searchUserSchema } from "@repo/schemas/search";
+import { searchUserSchema, SearchUserArgs } from "@repo/schemas/search";
 
 export async function searchUsersService({
-  rawData,
+  data,
   userId,
 }: {
-  rawData: unknown;
+  data: SearchUserArgs;
   userId: User["id"];
 }) {
-  const { success, data } = searchUserSchema.safeParse(rawData);
-
-  if (!success) {
-    return {
-      status: 400,
-      body: {
-        message: "Invalid request data",
-      },
-    };
-  }
-
   const { organizations, users } = await searchUsers({
     query: data.query,
     userId,

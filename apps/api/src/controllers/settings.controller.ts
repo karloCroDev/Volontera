@@ -9,7 +9,7 @@ import {
 export async function changeProfileInfo(req: Request, res: Response) {
   try {
     const result = await changeProfileInfoService({
-      rawData: req.body,
+      data: req.body,
       userId: req.user.userId,
     });
 
@@ -22,7 +22,7 @@ export async function changeProfileInfo(req: Request, res: Response) {
 export async function resetPasswordInApp(req: Request, res: Response) {
   try {
     const result = await resetPasswordInAppService({
-      rawData: req.body,
+      data: req.body,
       userId: req.user.userId,
     });
 

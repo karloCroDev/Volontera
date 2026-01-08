@@ -9,29 +9,18 @@ import {
 } from "@/models/organization.model";
 import { User } from "@repo/database";
 import {
-  createOrganizationSchema,
-  getOrganizationDetailsByIdSchema,
-  sendRequestToJoinOrganizationSchema,
+  CreateOrganizationArgs,
+  GetOrganizationDetailsByIdArgs,
+  SendRequestToJoinOrganizationArgs,
 } from "@repo/schemas/organization";
 
 export async function createOrganizationService({
-  rawData,
+  data,
   userId,
 }: {
-  rawData: unknown;
+  data: CreateOrganizationArgs;
   userId: User["id"];
 }) {
-  const { success, data } = createOrganizationSchema.safeParse(rawData);
-
-  if (!success) {
-    return {
-      status: 400,
-      body: {
-        message: "The provided data is invalid",
-      },
-    };
-  }
-
   const organizationAvatarUploadUrl = await createUploadUrl(
     data.organization_avatar_image
   );
@@ -61,20 +50,10 @@ export async function createOrganizationService({
   };
 }
 
-export async function getOrganizationDetailsByIdService(rawData: unknown) {
-  const { success, data } = getOrganizationDetailsByIdSchema.safeParse(rawData);
-
-  if (!success) {
-    return {
-      status: 400,
-      body: {
-        message: "The provided data is invalid",
-        success: false,
-      },
-    };
-  }
-
-  const organization = await getOrganizationDetailsById(data.organizationId);
+export async function getOrganizationDetailsByIdService({
+  organizationId,
+}: GetOrganizationDetailsByIdArgs) {
+  const organization = await getOrganizationDetailsById(organizationId);
 
   if (!organization) {
     return {
@@ -111,7 +90,7 @@ export async function listOrganizationsUserService(userId: User["id"]) {
 }
 
 export async function listOrganizationsOrganizatorService(
-  organizatorId: User["id"]
+  organizatorId: User["id"] // Ovo je isto korisnik koji ima isti id
 ) {
   const { ownedOrganizations, followingOrganizations, attendingOrganizations } =
     await listOrganizationsOrganizatorGrouped(organizatorId);
@@ -130,24 +109,12 @@ export async function listOrganizationsOrganizatorService(
 }
 
 export async function sendRequestToJoinOrganizationService({
-  rawData,
+  data,
   userId,
 }: {
-  rawData: unknown;
+  data: SendRequestToJoinOrganizationArgs;
   userId: User["id"];
 }) {
-  const { success, data } =
-    sendRequestToJoinOrganizationSchema.safeParse(rawData);
-
-  if (!success) {
-    return {
-      status: 400,
-      body: {
-        message: "The provided data is invalid",
-      },
-    };
-  }
-
   await sendRequestToJoinOrganization({
     data,
     userId,

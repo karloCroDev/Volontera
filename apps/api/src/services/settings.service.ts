@@ -10,8 +10,8 @@ import { createUploadUrl, deleteImage } from "@/lib/aws-s3-functions";
 
 // Schemas
 import {
-  resetPasswordSettingsSchema,
-  settingsSchema,
+  ResetPasswordSettingsArgs,
+  SettingsArgs,
 } from "@repo/schemas/settings";
 
 // Models
@@ -30,45 +30,33 @@ import { resend } from "@/config/resend";
 import { DeletedAccount } from "@repo/transactional/deleted-account";
 
 export async function changeProfileInfoService({
-  rawData,
+  data,
   userId,
 }: {
-  rawData: unknown;
+  data: SettingsArgs;
   userId: string;
 }) {
-  const { success, data } = settingsSchema.safeParse(rawData);
-
-  if (!success) {
-    return {
-      status: 400,
-      body: {
-        message: "Invalid data provided",
-      },
-    };
-  }
-  const payload: Partial<User> = {};
-
-  if (data.firstName) payload.firstName = data.firstName;
-  if (data.lastName) payload.lastName = data.lastName;
-  if (data.DOB) payload.DOB = data.DOB;
-  if (data.workOrSchool) payload.workOrSchool = data.workOrSchool;
-  if (data.bio) payload.bio = data.bio;
-  if (data.address) payload.address = data.address;
+  const imagePayload: Partial<User> = {};
 
   if (data.image?.deleteImage) {
     await deleteImage(data.image.deleteImage);
-
-    payload.image = "";
+    imagePayload.image = "";
   }
+
   let presignedURL = "";
   if (data.image) {
     const imageURL = await createUploadUrl(data.image);
-    payload.image = imageURL.key;
+    imagePayload.image = imageURL.key;
     presignedURL = imageURL.url;
   }
 
-  await updateUsersInformation({ data: payload, userId });
-
+  await updateUsersInformation({
+    data: {
+      ...data,
+      image: imagePayload.image,
+    },
+    userId,
+  });
   return {
     status: 200,
     body: {
@@ -80,23 +68,12 @@ export async function changeProfileInfoService({
 }
 
 export async function resetPasswordInAppService({
-  rawData,
+  data,
   userId,
 }: {
   userId: string;
-  rawData: unknown;
+  data: ResetPasswordSettingsArgs;
 }) {
-  const { success, data } = resetPasswordSettingsSchema.safeParse(rawData);
-
-  if (!success) {
-    return {
-      status: 400,
-      body: {
-        message: "Invalid data provided",
-      },
-    };
-  }
-
   // Fetch user
   const currentPasswordInUse = await getUsersOldPassword(userId);
   if (!currentPasswordInUse) {
