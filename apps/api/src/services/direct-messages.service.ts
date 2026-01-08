@@ -20,6 +20,10 @@ import {
 
 // Websockets
 import { getReceiverSocketId, io } from "@/ws/socket";
+import {
+  serverFetchOutput,
+  toastResponseOutput,
+} from "@/lib/utils/service-output";
 
 export async function presignDirectMessageImagesService({
   images: dataImages,
@@ -34,14 +38,12 @@ export async function presignDirectMessageImagesService({
     )
   );
 
-  return {
+  return serverFetchOutput({
     status: 200,
-    body: {
-      message: "Successfully generated presigned URLs",
-      success: true,
-      images,
-    },
-  };
+    message: "Successfully generated presigned URLs",
+    success: true,
+    data: { images },
+  });
 }
 
 export async function searchAllUsersWithQueryService({
@@ -62,14 +64,12 @@ export async function searchAllUsersWithQueryService({
   // TODO: When I implement the real search, make small algrithm
   // TODO: Pagniate this?
 
-  return {
+  return toastResponseOutput({
     status: 200,
-    body: {
-      title: "Users retrieved successfully",
-      message: "Users retrieved successfully",
-      users,
-    },
-  };
+    title: "Users retrieved successfully",
+    message: "Users retrieved successfully",
+    data: { users },
+  });
 }
 
 export async function listAllDirectMessagesConversationsService(
@@ -77,19 +77,19 @@ export async function listAllDirectMessagesConversationsService(
 ) {
   const conversations = await listAllDirectMessagesConversation(userId);
 
-  return {
+  return toastResponseOutput({
     status: 200,
-    body: {
-      title: "Direct messages conversations retrieved",
-      message: "Direct messages conversations retrieved successfully",
+    title: "Direct messages conversations retrieved",
+    message: "Direct messages conversations retrieved successfully",
+    data: {
       conversations: conversations.map((conversation) => ({
         ...conversation,
         participant: conversation.participants.find(
-          (participant) => participant.userId !== userId // Uzimam podatke od drugog korisnika (ne o sebi)
+          (participant) => participant.userId !== userId
         )!.user,
       })),
     },
-  };
+  });
 }
 
 export async function getDirectMessagesConversationByIdService({
@@ -97,14 +97,12 @@ export async function getDirectMessagesConversationByIdService({
 }: ConversationArgs) {
   const conversation = await getDirectMessagesConversationById(conversationId);
 
-  return {
+  return toastResponseOutput({
     status: 200,
-    body: {
-      title: "Direct messages conversation retrieved",
-      message: "Direct messages conversation retrieved successfully",
-      conversation,
-    },
-  };
+    message: "Conversation retrieved successfully",
+    title: "Conversation retrieved successfully",
+    data: { conversation },
+  });
 }
 
 export async function startConversationOrStartAndSendDirectMessageService({
@@ -127,18 +125,16 @@ export async function startConversationOrStartAndSendDirectMessageService({
 
   const receiverSocketId = getReceiverSocketId(data.particpantId);
 
-  // Kreiranje poruke korisniku
+  // Prikazivanje poruke korisniku
   if (receiverSocketId) io.to(receiverSocketId).emit("new-chat", message);
 
-  // Kreiranje poruke sebi
+  // Prikazivanje poruke sebi
   if (senderSocketId) io.to(senderSocketId).emit("new-chat", message);
 
-  return {
+  return toastResponseOutput({
     status: 200,
-    body: {
-      title: "Message is sent",
-      message: "Message is successfully sent to the wanted user",
-      conversationId: conversation.id,
-    },
-  };
+    title: "Message is sent",
+    message: "Message is successfully sent to the wanted user",
+    data: { conversationId: conversation.id },
+  });
 }

@@ -22,6 +22,7 @@ import {
 
 // Transactional emails
 import { WelcomeEmail } from "@repo/transactional/welcome-email";
+import { toastResponseOutput } from "@/lib/utils/service-output";
 
 export async function additionalInformationService({
   data,
@@ -65,15 +66,12 @@ export async function additionalInformationService({
     });
   }
 
-  return {
+  return toastResponseOutput({
     status: 200,
-    body: {
-      title: "Account created",
-      message: "Additional information saved successfully",
-      user,
-      presignedURL,
-    },
-  };
+    title: "Account created",
+    message: "Additional information saved successfully",
+    data: { user, presignedURL },
+  });
 }
 
 export async function skipAdditionalInformationService(userId: User["id"]) {
@@ -92,14 +90,12 @@ export async function skipAdditionalInformationService(userId: User["id"]) {
     });
   }
 
-  return {
+  return toastResponseOutput({
     status: 200,
-    body: {
-      title: "Account created",
-      message: "Onboarding finished successfully",
-      user,
-    },
-  };
+    title: "Account created",
+    message: "Onboarding finished successfully",
+    data: { user },
+  });
 }
 
 export async function appTypeService({
@@ -111,12 +107,10 @@ export async function appTypeService({
 }) {
   await updateUserAppType({ type: data.appType, userId });
 
-  return {
+  return toastResponseOutput({
     status: 200,
-    body: {
-      title: "App type saved",
-      message: "Your app type has been saved successfully",
-      role: data.appType,
-    },
-  };
+    title: "App type saved",
+    message: "Your app type has been saved successfully",
+    data: { role: data.appType },
+  });
 }

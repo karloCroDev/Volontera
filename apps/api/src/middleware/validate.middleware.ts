@@ -10,7 +10,7 @@ export function validate<T>({
 }: {
   schema: ZodType<T>;
   type?: "body" | "query" | "params";
-  responseOutput?: "get" | "toast" | "form";
+  responseOutput?: "server" | "toast" | "form";
 }) {
   return (req: Request, res: Response, next: NextFunction) => {
     const result = schema.safeParse(req[type]);
@@ -18,7 +18,7 @@ export function validate<T>({
     if (!result.success) {
       //   console.log("Validation result:", zodErrorDetecter(result.error));  Koristiti za debugiranje kod korisništejna controllera
       switch (responseOutput) {
-        case "get":
+        case "server":
           return res
             .status(400)
             .json({ success: false, message: "Invalid request data" });

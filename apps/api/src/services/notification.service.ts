@@ -26,6 +26,7 @@ import { resend } from "@/config/resend";
 
 // Transactionl emails
 import { Notification } from "@repo/transactional/notification";
+import { toastResponseOutput } from "@/lib/utils/service-output";
 
 export async function getUserNotificationsService(userId: User["id"]) {
   const notifications = await retrieveUserNotifications(userId);
@@ -123,11 +124,9 @@ export async function deleteNotificationsService({
     });
   }
 
-  return {
+  return toastResponseOutput({
     status: 200,
-    body: {
-      title: "Notifications deleted",
-      message: "Notifications deleted successfully",
-    },
-  };
+    title: "Notifications deleted",
+    message: "Notifications deleted successfully",
+  });
 }

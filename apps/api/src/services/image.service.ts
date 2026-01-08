@@ -1,5 +1,6 @@
 // Lib
 import { getImagePresignedUrls } from "@/lib/aws-s3-functions";
+import { toastResponseOutput } from "@/lib/utils/service-output";
 
 // Schemas
 import { ImageKeysSchemaArgs } from "@repo/schemas/image";
@@ -17,12 +18,10 @@ export async function getImageFromKeyService({
     )
   );
 
-  return {
+  return toastResponseOutput({
+    message: "Successfully generated image URLs from upload",
+    title: "Image URLs generated",
     status: 200,
-    body: {
-      title: "Image URLs",
-      message: "Successfuly get image url from the keys",
-      urls,
-    },
-  };
+    data: { urls },
+  });
 }

@@ -9,11 +9,7 @@ import { AdditionalFormArgs } from '@repo/schemas/onboarding';
 
 export async function appType(data: AppType) {
 	try {
-		const res = await API({
-			headers: {
-				'Content-Type': 'text/plain',
-			},
-		}).post('onboarding/app-type', data);
+		const res = await API().post('onboarding/app-type', data);
 		return res.data;
 	} catch (err) {
 		catchError(err);

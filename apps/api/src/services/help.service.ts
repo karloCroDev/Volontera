@@ -13,6 +13,7 @@ import {
 
 // Schema types
 import { HelpConversationSchemaArgs } from "@repo/schemas/help";
+import { toastResponseOutput } from "@/lib/utils/service-output";
 
 export async function addQuestionService({
   data,
@@ -27,14 +28,12 @@ export async function addQuestionService({
   const regex =
     /(\b(?:hate|violence|drugs|terrorism|porn|illegal activities|suicide|self-harm)\b)/i;
 
-  const innapropriateContent = {
+  const innapropriateContent = toastResponseOutput({
     status: 400,
-    body: {
-      title: "Inappropriate content detected",
-      message:
-        "Your message contains inappropriate content and cannot be processed.",
-    },
-  };
+    message: "Inappropriate content detected",
+    title: "Inappropriate content detected",
+  });
+
   if (regex.test(data.message)) {
     return innapropriateContent;
   }
@@ -64,13 +63,12 @@ export async function addQuestionService({
     llmResponse,
   });
 
-  return {
+  toastResponseOutput({
     status: 200,
-    body: {
-      message: "Message sent successfully",
-      llmResponse,
-    },
-  };
+    message: "Message sent successfully",
+    title: "Message sent successfully",
+    data: { llmResponse },
+  });
 }
 
 export async function getHelpMessagesService(userId: string) {
