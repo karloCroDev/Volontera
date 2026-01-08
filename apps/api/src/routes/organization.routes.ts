@@ -16,6 +16,14 @@ import {
   organizationMiddleware,
   userMiddleware,
 } from "@/middleware/role-middleware";
+import { validate } from "@/middleware/validate.middleware";
+
+// Schemas
+import {
+  getOrganizationDetailsByIdSchema,
+  createOrganizationSchema,
+  sendRequestToJoinOrganizationSchema,
+} from "@repo/schemas/organization";
 
 export const organizationRoutes = Router();
 
@@ -25,11 +33,19 @@ organizationRoutes.use(express.json());
 organizationRoutes.post(
   "/create-organization",
   organizationMiddleware,
+  validate({
+    schema: createOrganizationSchema,
+    responseOutput: "form",
+  }),
   createOrganizationController
 );
 organizationRoutes.get(
   "/list-organizations-organizator",
   organizationMiddleware,
+  validate({
+    schema: getOrganizationDetailsByIdSchema,
+    responseOutput: "server",
+  }),
   listOrganizationsOrganizatorController
 );
 
@@ -44,11 +60,20 @@ organizationRoutes.get(
 // TODO: Set this with id, so that it doesn't mess with other routes
 organizationRoutes.get(
   "/id/:organizationId",
+  validate({
+    schema: getOrganizationDetailsByIdSchema,
+    responseOutput: "server",
+    type: "params",
+  }),
   getOrganizationDetailsByIdController
 );
 
 organizationRoutes.post(
   "/send-request-to-join-organization",
   userMiddleware,
+  validate({
+    schema: sendRequestToJoinOrganizationSchema,
+    responseOutput: "form",
+  }),
   sendRequestToJoinOrganizationController
 );

@@ -1,6 +1,10 @@
 // Models
 import { createUploadUrl } from "@/lib/aws-s3-functions";
 import {
+  serverFetchOutput,
+  toastResponseOutput,
+} from "@/lib/utils/service-output";
+import {
   checkIfUserLiked,
   createPost,
   deletePost,
@@ -47,39 +51,33 @@ export async function createPostService({
     organizationId: data.organizationId,
   });
 
-  return {
+  return toastResponseOutput({
     status: 200,
-    body: {
-      title: "Successfuly created post",
-      message: "Post created successfully",
-      presignedUrls: uploadImages.map((img) => img.url),
-    },
-  };
+    message: "Post created successfully",
+    title: "Successfuly created post",
+    data: { presignedUrls: uploadImages.map((img) => img.url) },
+  });
 }
 
 export async function deletePostService(data: DeletePostArgs) {
   await deletePost(data.postId);
 
-  return {
+  return toastResponseOutput({
     status: 200,
-    body: {
-      title: "Post Deleted",
-      message: "Post deleted successfully",
-    },
-  };
+    message: "Post deleted successfully",
+    title: "Post Deleted",
+  });
 }
 
 export async function retrievePostDataService({ postId }: RetrievePostArgs) {
   const post = await retrievePostData(postId);
 
-  return {
+  return toastResponseOutput({
     status: 200,
-    body: {
-      message: "Post data retrieved successfully",
-      success: true,
-      post,
-    },
-  };
+    message: "Post data retrieved successfully",
+    title: "Post Data Retrieved",
+    data: { post },
+  });
 }
 
 export async function updatePostService(data: UpdatePostArgs) {
@@ -106,14 +104,12 @@ export async function updatePostService(data: UpdatePostArgs) {
     images,
   });
 
-  return {
+  return toastResponseOutput({
     status: 200,
-    body: {
-      title: "Successfuly updated post",
-      message: "Post updated successfully",
-      presignedUrls,
-    },
-  };
+    message: "Post updated successfully",
+    title: "Successfuly updated post",
+    data: { presignedUrls },
+  });
 }
 
 // Everyone
@@ -129,14 +125,12 @@ export async function retrieveOrganizationPostsService({
     userId,
   });
 
-  return {
+  return toastResponseOutput({
     status: 200,
-    body: {
-      message: "Posts retrieved successfully",
-      success: true,
-      posts,
-    },
-  };
+    message: "Posts retrieved successfully",
+    title: "Posts Retrieved",
+    data: { posts },
+  });
 }
 
 export async function retrievePostWithCommentsService({
@@ -151,14 +145,12 @@ export async function retrievePostWithCommentsService({
     userId,
   });
 
-  return {
+  return serverFetchOutput({
     status: 200,
-    body: {
-      message: "Post with comments retrieved successfully",
-      success: true,
-      post,
-    },
-  };
+    message: "Post with comments retrieved successfully",
+    success: true,
+    data: { post },
+  });
 }
 
 export async function toggleLikePostService({
@@ -185,11 +177,11 @@ export async function toggleLikePostService({
     });
   }
 
-  return {
+  return toastResponseOutput({
     status: 200,
-    body: {
-      title: "Post Liked",
-      message: "Post liked successfully",
-    },
-  };
+    message: userLiked
+      ? "Post disliked successfully"
+      : "Post liked successfully",
+    title: userLiked ? "Post Disliked" : "Post Liked",
+  });
 }

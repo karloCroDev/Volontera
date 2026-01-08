@@ -42,10 +42,10 @@ onboardingRoutes.post(
 );
 onboardingRoutes.post(
   "/skip-additional-information",
+  hasRoleMiddleware,
   validate({
     schema: appTypeSchema,
     responseOutput: "toast",
   }),
-  hasRoleMiddleware,
   skipAdditionalInformation
 );

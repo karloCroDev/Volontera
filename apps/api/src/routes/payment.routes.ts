@@ -13,6 +13,8 @@ import {
 // Middleware
 import { authMiddleware } from "@/middleware/auth-middleware";
 import { hasRoleMiddleware } from "@/middleware/role-middleware";
+import { validate } from "@/middleware/validate.middleware";
+import { createCheckoutSessionSchema } from "@repo/schemas/payment";
 
 export const paymentRoutes = Router();
 
@@ -23,11 +25,14 @@ paymentRoutes.post(
   stripePayment
 );
 
-paymentRoutes.use(express.text());
 paymentRoutes.post(
   "/checkout",
   authMiddleware,
   hasRoleMiddleware,
+  validate({
+    responseOutput: "toast",
+    schema: createCheckoutSessionSchema,
+  }),
   stripeCheckout
 );
 

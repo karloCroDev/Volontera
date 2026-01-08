@@ -1,5 +1,9 @@
 // Schemas
 import { createUploadUrl } from "@/lib/aws-s3-functions";
+import {
+  serverFetchOutput,
+  toastResponseOutput,
+} from "@/lib/utils/service-output";
 
 // Models
 import {
@@ -44,16 +48,16 @@ export async function createOrganizationService({
     },
   });
 
-  return {
-    status: 201,
-    body: {
-      title: "Organization Created",
-      message: "Organization created successfully",
+  return toastResponseOutput({
+    status: 200,
+    message: "Organization created successfully",
+    title: "Organization Created",
+    data: {
       organizationId: organization.id,
       imageAvatar: organizationAvatarUploadUrl.url,
       imageCover: organizationCoverUploadUrl.url,
     },
-  };
+  });
 }
 
 export async function getOrganizationDetailsByIdService({
@@ -62,37 +66,34 @@ export async function getOrganizationDetailsByIdService({
   const organization = await getOrganizationDetailsById(organizationId);
 
   if (!organization) {
-    return {
-      status: 404,
-      body: {
-        title: "Organization Not Found",
-        success: false,
-        message: "No organization found with the provided ID",
-      },
-    };
+    return serverFetchOutput({
+      status: 400,
+      success: false,
+      message: "Organization not found",
+    });
   }
 
-  return {
+  return serverFetchOutput({
     status: 200,
-    body: {
-      message: "Organization details retrieved successfully",
-      success: true,
-      organization,
-    },
-  };
+    success: true,
+    message: "Organization details retrieved successfully",
+    data: { organization },
+  });
 }
 
 export async function listOrganizationsUserService(userId: User["id"]) {
   const { attendingOrganizations, followingOrganizations } =
     await listOrganizationsUser(userId);
-  return {
+
+  return serverFetchOutput({
     status: 200,
-    body: {
-      message: "Organizations retrieved successfully",
+    success: true,
+    message: "Organizations retrieved successfully",
+    data: {
       attendingOrganizations,
       followingOrganizations,
     },
-  };
+  });
 }
 
 export async function listOrganizationsOrganizatorService(
@@ -101,17 +102,16 @@ export async function listOrganizationsOrganizatorService(
   const { ownedOrganizations, followingOrganizations, attendingOrganizations } =
     await listOrganizationsOrganizatorGrouped(organizatorId);
 
-  console.log(ownedOrganizations);
-  return {
+  return serverFetchOutput({
     status: 200,
-    body: {
-      title: "Organizations Retrieved",
-      message: "Organizations retrieved successfully",
+    success: true,
+    message: "Organizations retrieved successfully",
+    data: {
       ownedOrganizations,
       followingOrganizations,
       attendingOrganizations,
     },
-  };
+  });
 }
 
 export async function sendRequestToJoinOrganizationService({
@@ -126,11 +126,9 @@ export async function sendRequestToJoinOrganizationService({
     userId,
   });
 
-  return {
+  return toastResponseOutput({
     status: 200,
-    body: {
-      title: "Request Sent",
-      message: "Your request to join the organization has been sent",
-    },
-  };
+    title: "Request Sent",
+    message: "Your request to join the organization has been sent",
+  });
 }

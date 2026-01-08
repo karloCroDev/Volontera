@@ -14,6 +14,7 @@ import {
 
 // Schema types
 import { CreateCheckoutSessionArgs } from "@repo/schemas/payment";
+import { toastResponseOutput } from "@/lib/utils/service-output";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
@@ -25,10 +26,11 @@ export async function webhookService({
   body: unknown;
 }) {
   if (typeof body !== "string" && !(body instanceof Buffer)) {
-    return {
+    return toastResponseOutput({
       status: 400,
-      body: { success: false, message: "Invalid body format" },
-    };
+      title: "Invalid body format",
+      message: "The webhook body must be a string or Buffer",
+    });
   }
 
   const event = stripe.webhooks.constructEvent(
@@ -134,10 +136,11 @@ export async function webhookService({
       console.log(`Unhandled event type: ${event.type}`);
   }
 
-  return {
+  return toastResponseOutput({
     status: 200,
-    body: { success: true, message: "Event processed successfully" },
-  };
+    title: "Webhook processed",
+    message: "Webhook event has been processed successfully",
+  });
 }
 
 export async function checkoutService({
@@ -161,26 +164,22 @@ export async function checkoutService({
     client_reference_id: userId,
   });
 
-  return {
+  return toastResponseOutput({
     status: 200,
-    body: {
-      title: "Your url for link is created successfuly",
-      message: "Successfully created the url",
-      url: session.url,
-    },
-  };
+    title: "Your url for link is created successfuly",
+    message: "Successfully created the url",
+    data: { url: session.url },
+  });
 }
 
 export async function billingService({ userId }: { userId: User["id"] }) {
   const customerId = await getCustomerId(userId);
   if (!customerId) {
-    return {
+    return toastResponseOutput({
       status: 400,
-      body: {
-        success: false,
-        message: "Customer ID not found",
-      },
-    };
+      title: "Customer ID not found",
+      message: "Customer ID not found",
+    });
   }
 
   const session = await stripe.billingPortal.sessions.create({

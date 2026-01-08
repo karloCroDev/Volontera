@@ -1,4 +1,5 @@
 // Models
+import { toastResponseOutput } from "@/lib/utils/service-output";
 import { searchUsers } from "@/models/search.model";
 
 // Database
@@ -19,12 +20,10 @@ export async function searchUsersService({
     userId,
   });
 
-  return {
+  return toastResponseOutput({
     status: 200,
-    body: {
-      message: "Search results fetched successfully",
-      organizations,
-      users,
-    },
-  };
+    message: "Search results fetched successfully",
+    title: "Search Completed",
+    data: { organizations, users },
+  });
 }
