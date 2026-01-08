@@ -34,36 +34,36 @@ import { verifyUser } from "@/lib/verify-user";
 // Transactional emails
 import { ForgotPassword } from "@repo/transactional/forgot-password";
 import { RecentLogin } from "@repo/transactional/recent-login";
+import { formOutput, toastResponseOutput } from "@/lib/utils/service-output";
+import { User } from "@repo/database";
 
 export async function loginService(data: LoginArgs) {
   const user = await findUserByEmail(data.email);
   if (!user) {
-    return { status: 400, body: { message: "Invalid email" } };
+    return formOutput({ status: 400, message: "Invalid email" });
   }
 
   const passwordIsValid = bcrypt.compareSync(data.password, user.password);
   if (!passwordIsValid) {
-    return { status: 400, body: { message: "Invalid password" } };
+    return formOutput({
+      message: "Invalid password",
+      status: 400,
+    });
   }
 
   const { hashedOtp, expireDate } = await verifyUser(data.email);
 
-  const updatedUser = await updateVerificationData({
+  await updateVerificationData({
     email: data.email,
     verificationToken: hashedOtp ?? null,
     verificationTokenExpiresAt: expireDate ?? null,
   });
-  if (!updatedUser) {
-    return { status: 400, body: { message: "Error with email" } };
-  }
 
-  return {
+  return toastResponseOutput({
     status: 200,
-    body: {
-      title: "Success",
-      message: "Checkout your email inbox for verification code",
-    },
-  };
+    title: "Success",
+    message: "Checkout your email inbox for verification code",
+  });
 }
 
 export async function registerService({
@@ -74,10 +74,10 @@ export async function registerService({
 }: RegisterArgs) {
   const existing = await findUserByEmail(email);
   if (existing) {
-    return {
+    return formOutput({
       status: 400,
-      body: { message: "Already existing user, please login!" },
-    };
+      message: "Already existing user, please login!",
+    });
   }
 
   const hashedPassword = bcrypt.hashSync(password, 10);
@@ -93,13 +93,11 @@ export async function registerService({
     verificationTokenExpiresAt: expireDate ?? null,
   });
 
-  return {
+  return toastResponseOutput({
     status: 200,
-    body: {
-      title: "Success",
-      message: "Checkout your email inbox for verification code",
-    },
-  };
+    title: "Success",
+    message: "Checkout your email inbox for verification code",
+  });
 }
 
 export async function forgotPasswordService({ email }: ForgotPasswordArgs) {
@@ -129,29 +127,27 @@ export async function forgotPasswordService({ email }: ForgotPasswordArgs) {
   });
 
   if (error) {
-    return {
+    return formOutput({
+      message: "Error sending email",
       status: 400,
-      body: { message: "Error sending email" },
-    };
+    });
   }
 
-  return {
+  return toastResponseOutput({
     status: 200,
-    body: {
-      title: "Forgot password link is sent",
-      message: "Forgot password link is sent",
-    },
-  };
+    title: "Forgot password link is sent",
+    message: "Forgot password link is sent",
+  });
 }
 
 export async function resetPasswordService(rawData: unknown) {
   const parsed = resetPasswordSchema.safeParse(rawData);
 
   if (!parsed.success) {
-    return {
+    return formOutput({
       status: 400,
-      body: { message: "Invalid data" },
-    };
+      message: "Invalid data",
+    });
   }
 
   const data = parsed.data;
@@ -165,32 +161,43 @@ export async function resetPasswordService(rawData: unknown) {
   });
 
   if (!user) {
-    return {
+    return formOutput({
       status: 400,
-      body: { message: "Invalid token" },
-    };
+      message: "Invalid token",
+    });
   }
 
-  return {
+  return toastResponseOutput({
     status: 200,
-    body: {
-      title: "Success",
-      message: "Your password is successfully updated!",
-    },
-  };
+    title: "Password Reset Successful",
+    message: "Your password has been successfully reset.",
+  });
 }
 
-export async function verifyOtpService({ code, email }: VerifyEmailArgs) {
+export type VerifyOtpServiceResult =
+  | { status: number; body: { message: string } }
+  | { status: number; body: { message: string; user: User } };
+
+export async function verifyOtpService({
+  code,
+  email,
+}: VerifyEmailArgs): Promise<VerifyOtpServiceResult> {
   const user = await findUserForOtpVerification(email);
 
   if (!user || !user.verificationToken) {
-    return { status: 400, body: { message: "Invalid code" } };
+    return formOutput({
+      status: 400,
+      message: "Invalid code",
+    });
   }
 
   const isValidOtp = await bcrypt.compare(code, user.verificationToken);
 
   if (!isValidOtp) {
-    return { status: 400, body: { message: "Invalid code" } };
+    return formOutput({
+      status: 400,
+      message: "Invalid code",
+    });
   }
 
   await clearOtpVerification(user.id);
@@ -205,10 +212,11 @@ export async function verifyOtpService({ code, email }: VerifyEmailArgs) {
     }),
   });
 
-  return {
+  return formOutput({
     status: 200,
-    body: { message: "User verified successfully", user },
-  };
+    message: "User verified successfully",
+    data: { user },
+  });
 }
 
 export async function resetVerifyTokenService({ email }: ResetEmailArgs) {
@@ -221,11 +229,14 @@ export async function resetVerifyTokenService({ email }: ResetEmailArgs) {
   });
 
   if (count === 0) {
-    return { status: 400, body: { message: "Error with email" } };
+    return formOutput({
+      status: 400,
+      message: "Error with email",
+    });
   }
 
-  return {
+  return formOutput({
     status: 200,
-    body: { message: "Verification code refreshed successfully" },
-  };
+    message: "Verification code refreshed successfully",
+  });
 }

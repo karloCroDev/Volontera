@@ -10,7 +10,7 @@ import {
   additionalInformation,
   skipAdditionalInformation,
   appType,
-} from "@/controllers/onboaridng.controller";
+} from "@/controllers/onboarding.controller";
 
 // Schemas
 import {

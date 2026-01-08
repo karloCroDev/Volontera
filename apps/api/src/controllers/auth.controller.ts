@@ -1,5 +1,6 @@
 // External packages
 import { Request, Response } from "express";
+import type { VerifyEmailArgs } from "@repo/schemas/auth";
 import {
   resetPasswordService,
   forgotPasswordService,
@@ -7,6 +8,7 @@ import {
   registerService,
   resetVerifyTokenService,
   verifyOtpService,
+  type VerifyOtpServiceResult,
 } from "@/services/auth.service";
 
 // Lib
@@ -42,17 +44,21 @@ export async function resetVerifyTokenController(req: Request, res: Response) {
 
 export async function verifyTokenController(req: Request, res: Response) {
   try {
-    const result = await verifyOtpService(req.body);
+    const result: VerifyOtpServiceResult = await verifyOtpService(
+      req.body as VerifyEmailArgs
+    );
 
-    if (result && result.body.user) {
+    if ("user" in result.body) {
+      const { user, ...bodyWithoutUser } = result.body;
+
       generateTokenAndSetCookie({
         res,
-        userId: result.body.user.id,
-        role: result.body.user.role,
-        onboardingFinished: result.body.user.onboardingFinished,
+        userId: user.id,
+        role: user.role,
+        onboardingFinished: user.onboardingFinished,
       });
-      // Prevent sending user data in response (detailed explaination in additionalInformation controller)
-      delete (result.body as any).user;
+
+      return res.status(result.status).json(bodyWithoutUser);
     }
 
     return res.status(result.status).json(result.body);
