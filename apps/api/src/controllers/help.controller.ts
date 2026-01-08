@@ -11,7 +11,7 @@ import {
 export async function addQuestionController(req: Request, res: Response) {
   try {
     const result = await addQuestionService({
-      rawData: req.body,
+      data: req.body,
       userId: req.user.userId,
       role: req.user.role!, // TODO: I know that role exists because of hasRoleMiddleware, try to fix this
     });

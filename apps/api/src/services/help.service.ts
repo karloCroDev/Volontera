@@ -10,29 +10,17 @@ import {
 } from "@/models/help-model";
 
 // Schemas
-import { helpConversationSchema } from "@repo/schemas/help";
+import { HelpConversationSchemaArgs } from "@repo/schemas/help";
 
 export async function addQuestionService({
-  rawData,
+  data,
   userId,
   role,
 }: {
-  rawData: unknown;
+  data: HelpConversationSchemaArgs;
   userId: string;
   role: Required<User["role"]>;
 }) {
-  const { success, data } = helpConversationSchema.safeParse(rawData);
-
-  if (!success) {
-    return {
-      status: 400,
-      body: {
-        title: "Invalid data, cannot send this data",
-        message: "Invalid data",
-      },
-    };
-  }
-
   // 1 line of defense
   const regex =
     /(\b(?:hate|violence|drugs|terrorism|porn|illegal activities|suicide|self-harm)\b)/i;
@@ -54,7 +42,7 @@ export async function addQuestionService({
     role === "USER"
       ? "You are a helpful AI assistant that has context about this application [app] and tries to assist and navigate users throughout the application. Awesome so here are the app features once the users is logged in."
       : role === "ORGANIZATION"
-        ? "You are a helpful AI assistant that has context about this application [app] and tries to assist and navigate organizations throughout the application. Awesome so here are the app features once the organization is logged in."
+        ? "You are a helpful AI assistant that has context about this application [app] and tries to assist and navigate organizators throughout the application. Awesome so here are the app features once the organization is logged in."
         : "Your admin you have full access to the application and its features, including the questons and answers";
 
   // Mitiganiting jailbreaks (lighweight model for checking the )
@@ -98,6 +86,7 @@ export async function getHelpMessagesService(userId: string) {
     },
   };
 }
+
 export async function deleteConversationService(userId: User["id"]) {
   const deleteConversation = await deleteMessages(userId);
   const existed = deleteConversation.count > 0;

@@ -17,8 +17,8 @@ import { findUserById } from "@/models/user.model";
 
 // Schemas
 import {
-  createNotificationSchema,
-  notificationIdsSchema,
+  CreateNotificationArgs,
+  NotificationIdsArgs,
 } from "@repo/schemas/notification";
 
 // Config
@@ -32,7 +32,6 @@ export async function getUserNotificationsService(userId: User["id"]) {
   return {
     status: 200,
     body: {
-      title: "Notifications retrieved",
       message: "User notifications retrieved successfully",
       success: true,
       notifications,
@@ -93,24 +92,12 @@ export async function markNotificationAsReadService(userId: User["id"]) {
 }
 
 export async function createNotificationService({
-  rawData,
+  data,
   userId,
 }: {
+  data: CreateNotificationArgs;
   userId: User["id"];
-  rawData: unknown;
 }) {
-  const { success, data } = createNotificationSchema.safeParse(rawData);
-
-  if (!success) {
-    return {
-      status: 400,
-      body: {
-        title: "Invalid data, cannot create notification",
-        message: "Invalid data",
-      },
-    };
-  }
-
   await createNotification({
     userId,
     content: data.content,
@@ -125,23 +112,14 @@ export async function createNotificationService({
   };
 }
 
-export async function deleteNotificationsService(rawData: unknown) {
-  const { success, data } = notificationIdsSchema.safeParse(rawData);
-  if (!success) {
-    return {
-      status: 400,
-      body: {
-        title: "Invalid data, cannot delete notification",
-        message: "Invalid data",
-      },
-    };
-  }
-
-  if (data.notificationIds.length === 1) {
-    await deleteOneNotification({ notificationId: data.notificationIds[0]! });
+export async function deleteNotificationsService({
+  notificationIds,
+}: NotificationIdsArgs) {
+  if (notificationIds.length === 1) {
+    await deleteOneNotification({ notificationId: notificationIds[0]! });
   } else {
     await deleteNotifications({
-      notificationsIds: data.notificationIds,
+      notificationIds,
     });
   }
 

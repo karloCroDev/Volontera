@@ -27,30 +27,26 @@ import {
   deleteReplySchema,
   retrieveCommentRepliesSchema,
   retrievePostCommentsSchema,
+  CreateCommentArgs,
+  CreateReplyArgs,
+  DeleteCommentArgs,
+  DeleteReplyArgs,
+  LikeOrDislikeCommentArgs,
+  LikeOrDislikeReplyArgs,
+  RetrieveCommentRepliesArgs,
+  RetrievePostCommentsArgs,
 } from "@repo/schemas/comment";
 
 export async function retrievePostCommentsService({
-  rawData,
+  data,
   userId,
 }: {
-  rawData: unknown;
+  data: RetrievePostCommentsArgs;
   userId: User["id"];
 }) {
-  const { success, data } = retrievePostCommentsSchema.safeParse(rawData);
-
-  if (!success) {
-    return {
-      status: 400,
-      body: {
-        success: false,
-        message: "The provided data comment data is invalid",
-      },
-    };
-  }
-
   const comments = await retrievePostComments({
     postId: data.postId,
-    userId: userId,
+    userId,
   });
 
   return {
@@ -64,24 +60,12 @@ export async function retrievePostCommentsService({
 }
 
 export async function createCommentService({
-  rawData,
   userId,
+  data,
 }: {
-  rawData: unknown;
+  data: CreateCommentArgs;
   userId: User["id"];
 }) {
-  const { success, data } = createCommentSchema.safeParse(rawData);
-
-  if (!success) {
-    return {
-      status: 400,
-      body: {
-        title: "Invalid data",
-        message: "The provided data is invalid.",
-      },
-    };
-  }
-
   await createComment({
     postId: data.postId,
     userId,
@@ -89,7 +73,7 @@ export async function createCommentService({
   });
 
   return {
-    status: 201,
+    status: 200,
     body: {
       title: "Comment Created",
       message: "Comment created successfully",
@@ -97,18 +81,18 @@ export async function createCommentService({
   };
 }
 
-export async function deleteCommentService({ rawData }: { rawData: unknown }) {
-  const { success, data } = deleteCommentSchema.safeParse(rawData);
-  if (!success) {
-    return {
-      status: 400,
-      body: {
-        title: "Invalid data",
-        message: "The provided data is invalid.",
-      },
-    };
-  }
-  await deleteComment(data.commentId);
+// TODO: Add user id to this model
+export async function deleteCommentService({
+  data,
+  userId,
+}: {
+  data: DeleteCommentArgs;
+  userId: User["id"];
+}) {
+  await deleteComment({
+    commentId: data.commentId,
+    userId,
+  });
   return {
     status: 200,
     body: {
@@ -119,24 +103,12 @@ export async function deleteCommentService({ rawData }: { rawData: unknown }) {
 }
 
 export async function toggleLikeCommentService({
-  rawData,
+  data,
   userId,
 }: {
-  rawData: unknown;
+  data: LikeOrDislikeCommentArgs;
   userId: User["id"];
 }) {
-  const { success, data } = likeOrDislikeCommentSchema.safeParse(rawData);
-
-  if (!success) {
-    return {
-      status: 400,
-      body: {
-        title: "Invalid Data",
-        message: "The provided data is invalid",
-      },
-    };
-  }
-
   const userLiked = await checkIfUserLikedComment({
     commentId: data.commentId,
     userId,
@@ -165,23 +137,11 @@ export async function toggleLikeCommentService({
 
 export async function retrieveCommentRepliesService({
   userId,
-  rawData,
+  data,
 }: {
+  data: RetrieveCommentRepliesArgs;
   userId: User["id"];
-  rawData: unknown;
 }) {
-  const { success, data } = retrieveCommentRepliesSchema.safeParse(rawData);
-
-  if (!success) {
-    return {
-      status: 400,
-      body: {
-        success: false,
-        message: "The provided data is invalid",
-      },
-    };
-  }
-
   const replies = await retrieveCommentReplies({
     commentId: data.commentId,
     userId,
@@ -198,23 +158,12 @@ export async function retrieveCommentRepliesService({
 }
 
 export async function createReplyService({
-  rawData,
+  data,
   userId,
 }: {
-  rawData: unknown;
+  data: CreateReplyArgs;
   userId: User["id"];
 }) {
-  const { success, data } = createReplySchema.safeParse(rawData);
-  if (!success) {
-    return {
-      status: 400,
-      body: {
-        title: "Invalid data",
-        message: "The provided data is invalid.",
-      },
-    };
-  }
-
   await createReply({
     commentId: data.commentId,
     userId,
@@ -230,18 +179,17 @@ export async function createReplyService({
   };
 }
 
-export async function deleteReplyService({ rawData }: { rawData: unknown }) {
-  const { success, data } = deleteReplySchema.safeParse(rawData);
-  if (!success) {
-    return {
-      status: 400,
-      body: {
-        title: "Invalid data",
-        message: "The provided data is invalid.",
-      },
-    };
-  }
-  await deleteReply(data.replyId);
+export async function deleteReplyService({
+  data,
+  userId,
+}: {
+  data: DeleteReplyArgs;
+  userId: User["id"];
+}) {
+  await deleteReply({
+    replyId: data.replyId,
+    userId,
+  });
   return {
     status: 200,
     body: {
@@ -252,22 +200,12 @@ export async function deleteReplyService({ rawData }: { rawData: unknown }) {
 }
 
 export async function toggleLikeReplyService({
-  rawData,
+  data,
   userId,
 }: {
-  rawData: unknown;
+  data: LikeOrDislikeReplyArgs;
   userId: User["id"];
 }) {
-  const { success, data } = likeOrDislikeReplySchema.safeParse(rawData);
-  if (!success) {
-    return {
-      status: 400,
-      body: {
-        title: "Invalid Data",
-        message: "The provided data is invalid",
-      },
-    };
-  }
   const userLiked = await checkIfUserLikedReply({
     replyId: data.replyId,
     userId,

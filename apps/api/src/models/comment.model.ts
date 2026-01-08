@@ -59,10 +59,17 @@ export async function createComment({
   });
 }
 
-export async function deleteComment(commentId: PostComments["id"]) {
+export async function deleteComment({
+  commentId,
+  userId,
+}: {
+  commentId: PostComments["id"];
+  userId: User["id"];
+}) {
   return prisma.postComments.delete({
     where: {
       id: commentId,
+      authorId: userId,
     },
   });
 }
@@ -168,10 +175,17 @@ export async function createReply({
   });
 }
 
-export async function deleteReply(replyId: PostCommentsReply["id"]) {
+export async function deleteReply({
+  replyId,
+  userId,
+}: {
+  replyId: PostCommentsReply["id"];
+  userId: User["id"];
+}) {
   return prisma.postCommentsReply.delete({
     where: {
       id: replyId,
+      authorId: userId,
     },
   });
 }

@@ -10,13 +10,16 @@ import {
   startConversationOrStartAndSendDirectMessageService,
 } from "@/services/direct-messages.service";
 
+// Schema types
+import { ConversationArgs, SearchArgs } from "@repo/schemas/direct-messages";
+
 export async function searchAllUsersWithQueryController(
   req: Request,
   res: Response
 ) {
   try {
     const result = await searchAllUsersWithQueryService({
-      rawData: req.params,
+      data: req.params as SearchArgs,
       userId: req.user.userId,
     });
     return res.status(result.status).json(result.body);
@@ -30,7 +33,9 @@ export async function getDirectMessagesConversationByIdServiceController(
   res: Response
 ) {
   try {
-    const result = await getDirectMessagesConversationByIdService(req.params);
+    const result = await getDirectMessagesConversationByIdService(
+      req.params as ConversationArgs
+    );
     return res.status(result.status).json(result.body);
   } catch (error) {
     return res.status(500).json({ success: false, message: "Internal error" });
@@ -57,7 +62,7 @@ export async function startConversationOrStartAndSendDirectMessageController(
 ) {
   try {
     const result = await startConversationOrStartAndSendDirectMessageService({
-      rawData: req.body,
+      data: req.body,
       userId: req.user.userId,
     });
     return res.status(result.status).json(result.body);
@@ -71,10 +76,7 @@ export async function presignDirectMessageImagesController(
   res: Response
 ) {
   try {
-    const result = await presignDirectMessageImagesService({
-      rawData: req.body,
-      userId: req.user.userId,
-    });
+    const result = await presignDirectMessageImagesService(req.body);
     return res.status(result.status).json(result.body);
   } catch (error) {
     return res.status(500).json({ success: false, message: "Internal error" });

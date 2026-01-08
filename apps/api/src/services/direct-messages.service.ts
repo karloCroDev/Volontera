@@ -12,37 +12,18 @@ import { User } from "@repo/database";
 
 // Schemas
 import {
-  searchSchema,
-  conversationSchema,
-  createDirectMessageSchema,
-  presignDirectMessageImagesSchema,
+  SearchArgs,
+  PresignDirectMessageImagesArgs,
+  ConversationArgs,
+  CreateDirectMessageArgs,
 } from "@repo/schemas/direct-messages";
 import { getReceiverSocketId, io } from "@/ws/socket";
-import { EmitNewChat } from "@repo/types/sockets";
 
 export async function presignDirectMessageImagesService({
-  rawData,
-  userId,
-}: {
-  rawData: unknown;
-  userId: User["id"];
-}) {
-  // userId currently unused, but keeps auth context for future limits/rate-limits
-  const { success, data } = presignDirectMessageImagesSchema.safeParse(rawData);
-
-  if (!success) {
-    return {
-      status: 400,
-      body: {
-        title: "Invalid data",
-        message: "Invalid data",
-        success: false,
-      },
-    };
-  }
-
+  images: dataImages,
+}: PresignDirectMessageImagesArgs) {
   const images = await Promise.all(
-    data.images.map(async (image) =>
+    dataImages.map(async (image) =>
       createUploadUrl({
         contentType: image.contentType,
         filename: image.filename,
@@ -54,7 +35,6 @@ export async function presignDirectMessageImagesService({
   return {
     status: 200,
     body: {
-      title: "Presigned URLs",
       message: "Successfully generated presigned URLs",
       success: true,
       images,
@@ -63,24 +43,12 @@ export async function presignDirectMessageImagesService({
 }
 
 export async function searchAllUsersWithQueryService({
-  rawData,
+  data,
   userId,
 }: {
-  rawData: unknown;
+  data: SearchArgs;
   userId: User["id"];
 }) {
-  const { data, success } = searchSchema.safeParse(rawData);
-
-  if (!success) {
-    return {
-      status: 400,
-      body: {
-        title: "Invalid data, cannot create notification",
-        message: "Invalid data",
-      },
-    };
-  }
-
   const users = await searchAllUsers({
     query: data.query,
     userId,
@@ -122,24 +90,10 @@ export async function listAllDirectMessagesConversationsService(
   };
 }
 
-export async function getDirectMessagesConversationByIdService(
-  rawData: unknown
-) {
-  const { data, success } = conversationSchema.safeParse(rawData);
-
-  if (!success) {
-    return {
-      status: 400,
-      body: {
-        title: "Invalid data, cannot get conversation",
-        message: "Invalid data",
-      },
-    };
-  }
-
-  const conversation = await getDirectMessagesConversationById(
-    data.conversationId
-  );
+export async function getDirectMessagesConversationByIdService({
+  conversationId,
+}: ConversationArgs) {
+  const conversation = await getDirectMessagesConversationById(conversationId);
 
   return {
     status: 200,
@@ -152,23 +106,12 @@ export async function getDirectMessagesConversationByIdService(
 }
 
 export async function startConversationOrStartAndSendDirectMessageService({
-  rawData,
   userId,
+  data,
 }: {
-  rawData: unknown;
+  data: CreateDirectMessageArgs;
   userId: User["id"];
 }) {
-  const { success, data } = createDirectMessageSchema.safeParse(rawData);
-  if (!success) {
-    return {
-      status: 400,
-      body: {
-        title: "Invalid data, cannot create notification",
-        message: "Invalid data",
-      },
-    };
-  }
-
   // TODO: Vidi je li trebam ionako ista vratiti na frontu
   const { conversation, message } =
     await startConversationOrStartAndSendDirectMessage({
@@ -183,12 +126,10 @@ export async function startConversationOrStartAndSendDirectMessageService({
   const receiverSocketId = getReceiverSocketId(data.particpantId);
 
   // Kreiranje poruke korisniku
-  if (receiverSocketId)
-    io.to(receiverSocketId).emit<EmitNewChat>("new-chat", message);
+  if (receiverSocketId) io.to(receiverSocketId).emit("new-chat", message);
 
   // Kreiranje poruke sebi
-  if (senderSocketId)
-    io.to(senderSocketId).emit<EmitNewChat>("new-chat", message);
+  if (senderSocketId) io.to(senderSocketId).emit("new-chat", message);
 
   return {
     status: 200,
