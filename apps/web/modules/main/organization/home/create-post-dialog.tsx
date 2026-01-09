@@ -32,7 +32,7 @@ import { TextEditor } from '@/components/ui/text-editor/text-editor';
 import { Error } from '@/components/ui/error';
 
 // Lib
-import { convertToFullname } from '@/lib/utils/convert-to-fullname';
+import { convertToFullname } from '@/lib/utils/converter';
 import { toast } from '@/lib/utils/toast';
 
 export const CreatePostDialog = () => {

@@ -17,8 +17,8 @@ import {
 	AcceptOrDeclineUsersRequestToJoinOrganizationArgs,
 	DemoteOrPromoteOrganizationMemberArgs,
 	RetirveAllRequestsToJoinOrganizationArgs,
-	RetrieveAllUsersInOrganizationArgs,
 	RetrieveOrganizationMemberArgs,
+	RetrieveAllMembersInOrganizationArgs,
 } from '@repo/schemas/organization-managment';
 import {
 	acceptOrDeclineUsersRequestToJoinOrganization,
@@ -29,7 +29,6 @@ import {
 } from '@/lib/data/organization-managment';
 import {
 	RetirveAllRequestsToJoinOrganizationResponse,
-	RetrieveAllUsersInOrganizationResponse,
 	RetrieveOrganizationMemberResponse,
 } from '@repo/types/organization-managment';
 import { ErrorToastResponse, SuccessfulResponse } from '@repo/types/general';
@@ -94,14 +93,14 @@ export const useRetrieveOrganizationMember = (
 	});
 };
 
-export const useRetrieveAllUsersInOrganization = (
-	data: RetrieveAllUsersInOrganizationArgs,
+export const useRetrieveAllMembersInOrganization = (
+	data: RetrieveAllMembersInOrganizationArgs,
 	options?: Omit<
-		UseQueryOptions<RetrieveAllUsersInOrganizationResponse>,
+		UseQueryOptions<RetrieveAllMembersInOrganizationArgs>,
 		'queryKey' | 'queryFn'
 	>
 ) => {
-	return useQuery<RetrieveAllUsersInOrganizationResponse>({
+	return useQuery<RetrieveAllMembersInOrganizationArgs>({
 		queryKey: ['organization-users', data.organizationId],
 		queryFn: () => retrieveAllUsersInOrganization(data),
 		...options,

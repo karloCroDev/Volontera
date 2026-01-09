@@ -7,7 +7,7 @@ import {
 	AcceptOrDeclineUsersRequestToJoinOrganizationArgs,
 	DemoteOrPromoteOrganizationMemberArgs,
 	RetirveAllRequestsToJoinOrganizationArgs,
-	RetrieveAllUsersInOrganizationArgs,
+	RetrieveAllMembersInOrganizationArgs,
 	RetrieveOrganizationMemberArgs,
 } from '@repo/schemas/organization-managment';
 
@@ -26,7 +26,7 @@ export async function retrieveAllRequestsToJoinOrganization({
 
 export async function retrieveAllUsersInOrganization({
 	organizationId,
-}: RetrieveAllUsersInOrganizationArgs) {
+}: RetrieveAllMembersInOrganizationArgs) {
 	try {
 		const res = await API().get(
 			`/organization-managment/users/${organizationId}`

@@ -31,7 +31,7 @@ import { withReactQueryProvider } from '@/lib/utils/react-query';
 
 // Types
 import { UserResponse } from '@repo/types/user';
-import { convertToFullname } from '@/lib/utils/convert-to-fullname';
+import { convertToFullname, convertToPascalCase } from '@/lib/utils/converter';
 
 export const UserInformation: React.FC<{
 	user: UserResponse;
@@ -41,20 +41,18 @@ export const UserInformation: React.FC<{
 
 	const { mutate, isPending } = useLogout();
 
-	const subscriptionTier =
-		user.subscriptionTier[0]?.toUpperCase() +
-		user.subscriptionTier.slice(1).toLowerCase();
-
-	const userRole =
-		user.role![0]?.toUpperCase() + user.role!.slice(1).toLowerCase();
 	return (
 		<>
 			<div className="mb-3 mt-auto">
 				<p className="text-muted-foreground text-start">
-					{desktopOpen ? `Current plan: ${subscriptionTier}` : subscriptionTier}
+					{desktopOpen
+						? `Current plan: ${convertToPascalCase(user.subscriptionTier)}`
+						: convertToPascalCase(user.subscriptionTier)}
 				</p>
 				<p className="text-muted-foreground text-start">
-					{desktopOpen ? `Type: ${userRole}` : userRole}
+					{desktopOpen
+						? `Type: ${convertToPascalCase(user.role!)}`
+						: convertToPascalCase(user.role!)}
 				</p>
 			</div>
 

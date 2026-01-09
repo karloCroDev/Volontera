@@ -16,7 +16,7 @@ import {
   acceptOrDeclineUsersRequestToJoinOrganizationSchema,
   demoteOrPromoteOrganizationMemberSchema,
   retirveAllRequestsToJoinOrganizationSchema,
-  retrieveAllUsersInOrganizationSchema,
+  retrieveAllMembersInOrganizationSchema,
   retrieveOrganizationMemberSchema,
 } from "@repo/schemas/organization-managment";
 // Middleware
@@ -41,7 +41,7 @@ organizationManagmentRoutes.get(
 organizationManagmentRoutes.get(
   "/users/:organizationId",
   validate({
-    schema: retrieveAllUsersInOrganizationSchema,
+    schema: retrieveAllMembersInOrganizationSchema,
     type: "params",
     responseOutput: "server",
   }),

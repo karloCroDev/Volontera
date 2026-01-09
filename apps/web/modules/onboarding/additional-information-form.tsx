@@ -29,7 +29,11 @@ import {
 // Lib
 import { withReactQueryProvider } from '@/lib/utils/react-query';
 import { toast } from '@/lib/utils/toast';
-import { convertToFullname } from '@/lib/utils/convert-to-fullname';
+import {
+	convertCalendarDate,
+	convertToFullname,
+	convertToPascalCase,
+} from '@/lib/utils/converter';
 
 // Schemas
 import {
@@ -184,7 +188,8 @@ export const AdditionalInformationForm = withReactQueryProvider(() => {
 						<DatePicker
 							onChange={(val) => {
 								if (!val) return;
-								const formatted = `${String(val.year).padStart(2, '0')}-${String(val.month).padStart(2, '0')}-${String(val.day).padStart(2, '0')}`;
+
+								const formatted = convertCalendarDate(val);
 								onChange(formatted);
 							}}
 						/>

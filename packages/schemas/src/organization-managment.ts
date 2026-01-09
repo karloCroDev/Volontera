@@ -8,12 +8,12 @@ export type RetirveAllRequestsToJoinOrganizationArgs = z.infer<
   typeof retirveAllRequestsToJoinOrganizationSchema
 >;
 
-export const retrieveAllUsersInOrganizationSchema = z.object({
+export const retrieveAllMembersInOrganizationSchema = z.object({
   organizationId: z.cuid(),
 });
 
-export type RetrieveAllUsersInOrganizationArgs = z.infer<
-  typeof retrieveAllUsersInOrganizationSchema
+export type RetrieveAllMembersInOrganizationArgs = z.infer<
+  typeof retrieveAllMembersInOrganizationSchema
 >;
 
 export const retrieveOrganizationMemberSchema = z.object({

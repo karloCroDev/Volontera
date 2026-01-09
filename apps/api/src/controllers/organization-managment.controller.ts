@@ -6,16 +6,14 @@ import {
   acceptOrDeclineUsersRequestToJoinOrganizationService,
   demoteOrPromoteOrganizationMemberService,
   retirveAllRequestsToJoinOrganizationService,
-  retrieveAllUsersInOrganizationService,
+  retrieveAllMembersInOrganizationService,
   retrieveOrganizationMemberService,
 } from "@/services/organization-managment.service";
 
 // Schema types
 import {
-  AcceptOrDeclineUsersRequestToJoinOrganizationArgs,
-  DemoteOrPromoteOrganizationMemberArgs,
   RetirveAllRequestsToJoinOrganizationArgs,
-  RetrieveAllUsersInOrganizationArgs,
+  RetrieveAllMembersInOrganizationArgs,
   RetrieveOrganizationMemberArgs,
 } from "@repo/schemas/organization-managment";
 
@@ -42,9 +40,10 @@ export async function retrieveAllUsersInOrganizationController(
   res: Response
 ) {
   try {
-    const result = await retrieveAllUsersInOrganizationService(
-      req.params as RetrieveAllUsersInOrganizationArgs
-    );
+    const result = await retrieveAllMembersInOrganizationService({
+      data: req.params as RetrieveAllMembersInOrganizationArgs,
+      userId: req.user.userId,
+    });
 
     return res.status(result.status).json(result.body);
   } catch (err) {

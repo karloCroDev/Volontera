@@ -16,7 +16,7 @@ import { Avatar } from '@/components/ui/avatar';
 // Hooks
 import { useSearch } from '@/hooks/data/search';
 import { useDebounce } from '@/hooks/utils/useDebounce';
-import { convertToFullname } from '@/lib/utils/convert-to-fullname';
+import { convertToFullname } from '@/lib/utils/converter';
 import Link from 'next/link';
 
 export const Search = () => {

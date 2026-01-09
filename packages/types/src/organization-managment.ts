@@ -5,17 +5,17 @@ import {
 } from "@repo/database";
 import { ServerHandleResponse } from "./general";
 
-export type RetrieveAllUsersInOrganizationResponse =
+export type RetrieveAllMembersInOrganizationResponse =
   ServerHandleResponse<true> & {
     requests: ({
-      requseter: Omit<User, "password">;
-    } & OrganizationJoinRequest)[];
+      user: Omit<User, "password">;
+    } & OrganizationMember)[];
   };
 
 export type RetirveAllRequestsToJoinOrganizationResponse =
   ServerHandleResponse<true> & {
     requests: ({
-      user: Omit<User, "password">;
+      requester: Omit<User, "password">;
     } & OrganizationJoinRequest)[];
   };
 

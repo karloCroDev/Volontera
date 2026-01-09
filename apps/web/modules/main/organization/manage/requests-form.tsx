@@ -25,14 +25,21 @@ import { useDeleteNotifications } from '@/hooks/data/notification';
 import { toast } from '@/lib/utils/toast';
 import { withReactQueryProvider } from '@/lib/utils/react-query';
 import { IRevalidateTag } from '@/lib/server/revalidation';
+import { RetirveAllRequestsToJoinOrganizationResponse } from '@repo/types/organization-managment';
+import { convertToFullname } from '@/lib/utils/converter';
+import Markdown from 'react-markdown';
 
-export const RequestsForm = () => {
+export const RequestsForm: React.FC<{
+	requests: RetirveAllRequestsToJoinOrganizationResponse;
+}> = ({ requests }) => {
 	const [ids, setIds] = React.useState<NotificationIdsArgs['notificationIds']>(
 		[]
 	);
 	const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 	};
+
+	console.log(requests);
 	return (
 		<Form
 			className="border-input-border min-h-1/2 max-h-3/4 overflow-scroll rounded-xl border py-4"
@@ -75,10 +82,13 @@ export const RequestsForm = () => {
 			<Accordion
 				defaultValue="item-0"
 				type="single"
-				items={[...Array(3)].map((_, indx) => ({
-					value: `item-${indx}`,
+				items={requests.requests.map((request) => ({
+					value: request.id,
 					trigger: (
-						<div className="border-input-border flex w-full items-center gap-4 border-t px-6 py-3 lg:gap-6">
+						<div
+							className="border-input-border flex w-full items-center gap-4 border-t px-6 py-3 lg:gap-6"
+							key={request.id}
+						>
 							<Checkbox
 								className="group"
 								// isSelected={ids.includes(notification.id)}
@@ -105,11 +115,17 @@ export const RequestsForm = () => {
 										src: '',
 									}}
 								>
-									AAA
+									{convertToFullname({
+										firstname: request.requester.firstName || '',
+										lastname: request.requester.lastName || '',
+									})}
 								</Avatar>
 
 								<p className="text-muted-foreground text-sm underline-offset-2 hover:underline">
-									AAA
+									{convertToFullname({
+										firstname: request.requester.firstName || '',
+										lastname: request.requester.lastName || '',
+									})}
 								</p>
 							</Link>
 
@@ -120,7 +136,8 @@ export const RequestsForm = () => {
 						children: (
 							<div className="p-4">
 								{/* <p>{notification.content}</p> */}
-								AAAAH
+
+								<Markdown>{request.content}</Markdown>
 							</div>
 						),
 					},

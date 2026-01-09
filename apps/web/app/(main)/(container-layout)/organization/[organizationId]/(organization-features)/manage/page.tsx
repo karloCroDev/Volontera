@@ -41,13 +41,13 @@ export default async function ManagePage({
 				Requests
 			</h2>
 
-			<RequestsForm />
+			<RequestsForm requests={requests} />
 
 			<h2 className="mb-6 mt-10 text-xl underline underline-offset-4 lg:text-2xl">
 				Current users (26)
 			</h2>
 
-			<CurrentUsersForm />
+			<CurrentUsersForm users={users} />
 		</>
 	);
 }

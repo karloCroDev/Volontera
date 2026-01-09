@@ -8,7 +8,7 @@ import {
 import {
   retrieveOrganizationMember,
   retirveAllRequestsToJoinOrganization,
-  retrieveAllUsersInOrganization,
+  retrieveAllMembersInOrganization,
   demoteOrPromoteOrganizationMember,
   acceptOrDeclineUsersRequestToJoinOrganization,
 } from "@/models/organization-managment.model";
@@ -21,7 +21,7 @@ import {
   AcceptOrDeclineUsersRequestToJoinOrganizationArgs,
   DemoteOrPromoteOrganizationMemberArgs,
   RetirveAllRequestsToJoinOrganizationArgs,
-  RetrieveAllUsersInOrganizationArgs,
+  RetrieveAllMembersInOrganizationArgs,
   RetrieveOrganizationMemberArgs,
 } from "@repo/schemas/organization-managment";
 
@@ -39,10 +39,17 @@ export async function retirveAllRequestsToJoinOrganizationService({
   });
 }
 
-export async function retrieveAllUsersInOrganizationService({
-  organizationId,
-}: RetrieveAllUsersInOrganizationArgs) {
-  const requests = await retrieveAllUsersInOrganization(organizationId);
+export async function retrieveAllMembersInOrganizationService({
+  data,
+  userId,
+}: {
+  data: RetrieveAllMembersInOrganizationArgs;
+  userId: User["id"];
+}) {
+  const requests = await retrieveAllMembersInOrganization({
+    organizationId: data.organizationId,
+    userId,
+  });
 
   return serverFetchOutput({
     status: 200,

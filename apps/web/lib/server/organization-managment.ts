@@ -5,7 +5,7 @@ import { serverFetch } from '@/lib/utils/server-fetch';
 import { ServerHandleResponse } from '@repo/types/general';
 import {
 	RetirveAllRequestsToJoinOrganizationResponse,
-	RetrieveAllUsersInOrganizationResponse,
+	RetrieveAllMembersInOrganizationResponse,
 	RetrieveOrganizationMemberResponse,
 } from '@repo/types/organization-managment';
 
@@ -21,7 +21,7 @@ export async function retrieveOrganizationMember(
 export async function retrieveAllUsersInOrganization(
 	organizationId: string
 ): Promise<
-	RetrieveAllUsersInOrganizationResponse | ServerHandleResponse<false>
+	RetrieveAllMembersInOrganizationResponse | ServerHandleResponse<false>
 > {
 	return await serverFetch({
 		url: `organization-managment/users/${organizationId}`,

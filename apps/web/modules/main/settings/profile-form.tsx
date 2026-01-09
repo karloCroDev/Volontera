@@ -22,7 +22,7 @@ import { SettingsArgs } from '@repo/schemas/settings';
 // Lib
 import { withReactQueryProvider } from '@/lib/utils/react-query';
 import { Input } from '@/components/ui/input';
-import { convertToFullname } from '@/lib/utils/convert-to-fullname';
+import { convertToFullname } from '@/lib/utils/converter';
 
 export const ProfileForm: React.FC<{
 	currentImage: File | undefined;

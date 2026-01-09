@@ -12,7 +12,7 @@ import { Button } from '@/components/ui/button';
 import { useDeleteReply } from '@/hooks/data/comment';
 
 // Lib
-import { convertToFullname } from '@/lib/utils/convert-to-fullname';
+import { convertToFullname } from '@/lib/utils/converter';
 import { withReactQueryProvider } from '@/lib/utils/react-query';
 import { formatTime } from '@/lib/utils/time-adjustments';
 

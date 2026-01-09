@@ -20,12 +20,19 @@ export async function retirveAllRequestsToJoinOrganization(
   });
 }
 
-export async function retrieveAllUsersInOrganization(
-  organizationId: Organization["id"]
-) {
+export async function retrieveAllMembersInOrganization({
+  organizationId,
+  userId,
+}: {
+  organizationId: Organization["id"];
+  userId: string;
+}) {
   return prisma.organizationMember.findMany({
     where: {
       organizationId,
+      // NOT: {
+      //   userId,
+      // },
     },
     include: {
       user: true,

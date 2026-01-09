@@ -10,7 +10,7 @@ import { getSession } from '@/lib/server/user';
 
 // Modules
 import { MessageForm } from '@/modules/main/direct-messages/message-form';
-import { convertToFullname } from '@/lib/utils/convert-to-fullname';
+import { convertToFullname } from '@/lib/utils/converter';
 
 export default async function GroupChatPage() {
 	const user = await getSession();

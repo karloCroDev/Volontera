@@ -12,7 +12,7 @@ import { ListPosts } from '@/modules/main/public-profile/list-posts';
 
 // Lib
 import { getUserData, getSession } from '@/lib/server/user';
-import { convertToFullname } from '@/lib/utils/convert-to-fullname';
+import { convertToFullname, convertToPascalCase } from '@/lib/utils/converter';
 import { ListOrganizations } from '@/modules/main/public-profile/list-organization';
 
 export default async function PublicProfilePage({
@@ -50,8 +50,9 @@ export default async function PublicProfilePage({
 							lastname: user.lastName,
 						})}
 					</h1>
+
 					<p className="text-muted-foreground">
-						{user.role![0] + user.role!.slice(1).toLowerCase()}
+						{convertToPascalCase(user.role!)}
 					</p>
 				</div>
 
