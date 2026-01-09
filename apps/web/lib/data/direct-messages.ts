@@ -7,9 +7,8 @@ import {
 	SearchArgs,
 	ConversationArgs,
 	MessageArgs,
-	CreateDirectMessageArgs,
-	PresignDirectMessageImagesArgs,
 } from '@repo/schemas/direct-messages';
+import { PresignImagesSchemaArgs } from '@repo/schemas/image';
 
 // Types
 import { DataWithFiles } from '@repo/types/upload';
@@ -52,9 +51,9 @@ export async function startConversationOrStartAndSendDirectMessage({
 
 		// Dobivam presigned URL-ove i keyve slika, te uploadam slike
 		if (data.images && data.images.length && files && files.length) {
-			const presignRes = await API().post('direct-messages/presign-images', {
+			const presignRes = await API().post('image/presign-images', {
 				images: data.images,
-			} satisfies PresignDirectMessageImagesArgs);
+			} as PresignImagesSchemaArgs);
 
 			// Uploadam slike
 			if (presignRes.data?.images) {

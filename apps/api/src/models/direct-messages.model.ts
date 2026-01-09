@@ -110,6 +110,7 @@ export async function updateDirectMessagesConversationLastMessage({
     },
   });
 }
+
 export async function createDirectMessagesConversation({
   participantIds,
 }: {
@@ -130,24 +131,6 @@ export async function createDirectMessagesConversation({
           user: true,
         },
       },
-    },
-  });
-}
-
-export async function createMessageInDirectMessagesConversation({
-  conversationId,
-  authorId,
-  content,
-}: {
-  conversationId: DirectMessagesConversations["id"];
-  authorId: User["id"];
-  content: string;
-}) {
-  return prisma.directMessages.create({
-    data: {
-      conversationId,
-      authorId,
-      content,
     },
   });
 }

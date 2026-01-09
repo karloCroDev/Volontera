@@ -1,0 +1,55 @@
+// Database
+import {
+  Organization,
+  OrganizationGroupChat,
+  OrganizationGroupChatMessage,
+  prisma,
+  User,
+} from "@repo/database";
+
+export async function retrieveAllOrganizationGroupChatMessages(
+  organizationId: Organization["id"]
+) {
+  return prisma.organizationGroupChat.findMany({
+    where: {
+      organizationId,
+    },
+    include: {
+      messages: {
+        include: {
+          organizationGroupChatMessageImages: true,
+        },
+      },
+    },
+  });
+}
+
+export async function createOrganizationGroupChatMessage({
+  content,
+  groupChatId,
+  senderId,
+  imageKeys,
+}: {
+  groupChatId: OrganizationGroupChat["id"];
+  senderId: User["id"];
+  content: OrganizationGroupChatMessage["content"];
+  imageKeys?: string[];
+}) {
+  return prisma.organizationGroupChatMessage.create({
+    data: {
+      content,
+      authorId: senderId,
+      groupChatId: groupChatId,
+      organizationGroupChatMessageImages: {
+        createMany:
+          imageKeys && imageKeys.length > 0
+            ? {
+                data: imageKeys.map((key) => ({
+                  imageUrl: key,
+                })),
+              }
+            : undefined,
+      },
+    },
+  });
+}
