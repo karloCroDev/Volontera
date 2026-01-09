@@ -18,6 +18,7 @@ import { PostsMapping } from '@/modules/main/organization/home/posts-mapping';
 // Lib
 import { getOrganizationDetailsById } from '@/lib/server/organization';
 import { retrieveOrganizationPosts } from '@/lib/server/post';
+import { retrieveOrganizationMember } from '@/lib/server/organization-managment';
 
 export default async function OrganizationPage({
 	params,
@@ -27,14 +28,15 @@ export default async function OrganizationPage({
 	}>;
 }) {
 	const { organizationId } = await params;
-	const organizationDetailsById =
-		await getOrganizationDetailsById(organizationId);
+	const [organizationDetailsById, posts, member] = await Promise.all([
+		getOrganizationDetailsById(organizationId),
+		retrieveOrganizationPosts(organizationId),
+		retrieveOrganizationMember(organizationId),
+	]);
 
-	if (!organizationDetailsById.success) notFound();
+	if (!organizationDetailsById.success || !posts.success) notFound();
+	console.log('member', member);
 
-	const posts = await retrieveOrganizationPosts({ organizationId });
-
-	if (!posts.success) notFound();
 	return (
 		<>
 			<div className="border-input-border relative -mx-4 -my-6 rounded-xl px-5 py-4 md:m-0 md:border">
@@ -178,8 +180,10 @@ export default async function OrganizationPage({
 				</div>
 			</div>
 
-			<OrganizationRoutingHeader />
-			<CreatePostDialog />
+			{member.success && <OrganizationRoutingHeader member={member} />}
+			{member.success &&
+				(member.organizationMember.role === 'ADMIN' ||
+					member.organizationMember.role === 'OWNER') && <CreatePostDialog />}
 
 			<PostsMapping posts={posts} />
 		</>

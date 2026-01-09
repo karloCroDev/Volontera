@@ -1,15 +1,23 @@
 'use client';
 
 // External packages
+
+import * as React from 'react';
 import { useParams, usePathname } from 'next/navigation';
 
 // Components
 import { Dot } from '@/components/ui/dot';
 import { LinkAsButton } from '@/components/ui/link-as-button';
 
-export const OrganizationRoutingHeader = () => {
+// Types
+import { RetrieveOrganizationMemberResponse } from '@repo/types/organization-managment';
+
+export const OrganizationRoutingHeader: React.FC<{
+	member: RetrieveOrganizationMemberResponse; // Handleam na serveru validaciju je li zapravo korisnik unutar organizacije (kako bi passao ovdje ispravne podatke). Zbog toga ovdje samo onda handleam adminovu (vlasnikovu rutu)
+}> = ({ member }) => {
 	const pathname = usePathname();
 	const params = useParams<{ organizationId: string }>();
+
 	return (
 		<div className="bg-background sticky -top-10 z-20 -mx-4 mb-6 lg:mx-0">
 			<div className="text-md no-scrollbar mt-10 flex gap-4 overflow-x-scroll whitespace-nowrap px-2 md:text-lg">
@@ -26,7 +34,8 @@ export const OrganizationRoutingHeader = () => {
 				>
 					Posts
 				</LinkAsButton>
-				{/* Add separators */}
+				<div className="bg-input-border w-px self-stretch" />
+				{/* Members */}
 				<LinkAsButton
 					variant="ghost"
 					href={`/organization/${params.organizationId}/group-chat`}
@@ -40,6 +49,8 @@ export const OrganizationRoutingHeader = () => {
 				>
 					Group chat
 				</LinkAsButton>
+				<div className="bg-input-border w-px self-stretch" />
+
 				<LinkAsButton
 					variant="ghost"
 					href={`/organization/${params.organizationId}/tasks`}
@@ -53,21 +64,27 @@ export const OrganizationRoutingHeader = () => {
 				>
 					Tasks
 				</LinkAsButton>
-
 				{/* Group admin */}
-				<LinkAsButton
-					variant="ghost"
-					href={`/organization/${params.organizationId}/manage`}
-					size="sm"
-					className={pathname.includes('/manage') ? 'font-bold' : undefined}
-					iconRight={
-						pathname.includes('/manage') && (
-							<Dot size="md" className="absolute right-0 top-0" />
-						)
-					}
-				>
-					Manage attendees
-				</LinkAsButton>
+
+				{member.organizationMember.role === 'OWNER' && (
+					<>
+						<div className="bg-input-border w-px self-stretch" />
+
+						<LinkAsButton
+							variant="ghost"
+							href={`/organization/${params.organizationId}/manage`}
+							size="sm"
+							className={pathname.includes('/manage') ? 'font-bold' : undefined}
+							iconRight={
+								pathname.includes('/manage') && (
+									<Dot size="md" className="absolute right-0 top-0" />
+								)
+							}
+						>
+							Manage attendees
+						</LinkAsButton>
+					</>
+				)}
 			</div>
 
 			<hr className="bg-input-border mt-4 h-px w-full flex-shrink-0 border-0" />

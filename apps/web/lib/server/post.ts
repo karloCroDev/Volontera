@@ -14,11 +14,9 @@ import {
 	RetrievePostWithComments,
 } from '@repo/types/post';
 
-export async function retrieveOrganizationPosts({
-	organizationId,
-}: RetrieveOrganizationPostsArgs): Promise<
-	RetrieveOrganizationPostsResponse | ServerHandleResponse<false>
-> {
+export async function retrieveOrganizationPosts(
+	organizationId: RetrieveOrganizationPostsArgs['organizationId']
+): Promise<RetrieveOrganizationPostsResponse | ServerHandleResponse<false>> {
 	return await serverFetch({
 		url: `post/${organizationId}`,
 		init: {

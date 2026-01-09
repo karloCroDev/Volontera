@@ -1,5 +1,6 @@
 // External packages
 import { notFound } from 'next/navigation';
+import { UserLock } from 'lucide-react';
 
 // Components
 import { Avatar } from '@/components/ui/avatar';
@@ -9,6 +10,7 @@ import { LinkAsButton } from '@/components/ui/link-as-button';
 
 // Lib
 import { getOrganizationDetailsById } from '@/lib/server/organization';
+import { retrieveOrganizationMember } from '@/lib/server/organization-managment';
 
 export default async function OrganizationFeaturesLayout({
 	params,
@@ -19,8 +21,10 @@ export default async function OrganizationFeaturesLayout({
 }) {
 	const { organizationId } = await params;
 
-	const organizationDetailsById =
-		await getOrganizationDetailsById(organizationId);
+	const [organizationDetailsById, member] = await Promise.all([
+		await getOrganizationDetailsById(organizationId),
+		await retrieveOrganizationMember(organizationId),
+	]);
 
 	if (!organizationDetailsById.success) {
 		notFound();
@@ -61,8 +65,20 @@ export default async function OrganizationFeaturesLayout({
 				</div>
 			</div>
 
-			<OrganizationRoutingHeader />
-			{children}
+			{!member.success || !member.organizationMember.role ? (
+				<>
+					<UserLock className="text-muted-foreground mx-auto mt-20 size-16" />
+					<h4 className="text-muted-foreground mt-8 text-balance text-center text-lg">
+						You haven&apos;t joined the organization yet. Please join to access
+						the organization features
+					</h4>
+				</>
+			) : (
+				<>
+					<OrganizationRoutingHeader member={member} />
+					{children}
+				</>
+			)}
 		</>
 	);
 }

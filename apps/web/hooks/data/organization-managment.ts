@@ -9,9 +9,6 @@ import {
 	UseSuspenseQueryOptions,
 } from '@tanstack/react-query';
 
-// Lib
-import { cache } from 'react';
-
 // Schemas
 import {
 	AcceptOrDeclineUsersRequestToJoinOrganizationArgs,

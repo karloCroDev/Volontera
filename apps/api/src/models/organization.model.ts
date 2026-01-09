@@ -55,11 +55,16 @@ export async function listOrganizationsOrganizatorGrouped(userId: User["id"]) {
       }),
       prisma.organization.findMany({
         where: {
-          organizationMembers: {
-            some: {
-              userId,
+          AND: [
+            { ownerId: { not: userId } },
+            {
+              organizationMembers: {
+                some: {
+                  userId,
+                },
+              },
             },
-          },
+          ],
         },
       }),
     ]);

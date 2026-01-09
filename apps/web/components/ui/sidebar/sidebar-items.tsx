@@ -124,9 +124,12 @@ export const Organizations = () => {
 								</li>
 							)}
 						</ul>
-						<p className="text-md ml-2 mt-4 text-start font-medium underline underline-offset-4">
-							Managing
-						</p>
+
+						{organizations?.ownedOrganizations && (
+							<p className="text-md ml-2 mt-4 text-start font-medium underline underline-offset-4">
+								Managing
+							</p>
+						)}
 						<ul className="border-input-border ml-4 mt-4 border-t">
 							{organizations?.ownedOrganizations &&
 								(organizations.ownedOrganizations.length > 0 ? (
