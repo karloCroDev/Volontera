@@ -8,10 +8,13 @@ import {
   deleteConversationService,
 } from "@/services/help.service";
 
+// Lib
+import { handleServerErrorResponse } from "@/lib/utils/error-response";
+
 export async function addQuestionController(req: Request, res: Response) {
   try {
     const result = await addQuestionService({
-      rawData: req.body,
+      data: req.body,
       userId: req.user.userId,
       role: req.user.role!, // TODO: I know that role exists because of hasRoleMiddleware, try to fix this
     });
@@ -19,7 +22,7 @@ export async function addQuestionController(req: Request, res: Response) {
     return res.status(result.status).json(result.body);
   } catch (err) {
     console.error(err);
-    return res.status(500).json({ success: false, message: "Internal error" });
+    handleServerErrorResponse(res, err);
   }
 }
 
@@ -29,7 +32,7 @@ export async function getHelpMessagesController(req: Request, res: Response) {
 
     return res.status(result.status).json(result.body);
   } catch (err) {
-    return res.status(500).json({ success: false, message: "Internal error" });
+    handleServerErrorResponse(res, err);
   }
 }
 
@@ -42,6 +45,6 @@ export async function deleteHelpMessagesController(
 
     return res.status(result.status).json(result.body);
   } catch (err) {
-    return res.status(500).json({ success: false, message: "Internal error" });
+    handleServerErrorResponse(res, err);
   }
 }

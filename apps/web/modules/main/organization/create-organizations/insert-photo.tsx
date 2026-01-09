@@ -5,6 +5,8 @@ import * as React from 'react';
 import { Camera, X } from 'lucide-react';
 import Image from 'next/image';
 import { Input as AriaInput } from 'react-aria-components';
+
+// Components
 import { Button } from '@/components/ui/button';
 
 export const InsertPhoto: React.FC<

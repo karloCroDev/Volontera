@@ -8,6 +8,9 @@ import { JwtUser } from "@/@types/jwt";
 // Database
 import { prisma } from "@repo/database";
 
+// Models
+import { upsertOAuthUser, addAccountToOAuthUser } from "@/models/auth.model";
+
 export const oAuthGoogleHandle = passport.use(
   new GoogleStrategy(
     {
@@ -47,26 +50,17 @@ export const oAuthGoogleHandle = passport.use(
           )
             return done(null, false);
 
-          user = await prisma.user.upsert({
-            where: { email: profile.emails[0].value || "" },
-            update: {},
-            create: {
-              email: profile.emails[0].value,
-              firstName: profile.displayName,
-              lastName: "",
-              // image: profile.photos?.[0].value, // See if I want to store this locally (probably not)
-              password: "", // or generate a random string if needed
-            },
+          user = await upsertOAuthUser({
+            email: profile.emails[0].value,
+            firstName: profile.displayName,
           });
 
-          await prisma.accounts.create({
-            data: {
-              provider: "google",
-              providerId: profile.id,
-              accessToken,
-              refreshToken,
-              userId: user.id,
-            },
+          await addAccountToOAuthUser({
+            provider: "google",
+            providerId: profile.id,
+            accessToken,
+            refreshToken,
+            userId: user.id,
           });
         }
 
@@ -74,7 +68,6 @@ export const oAuthGoogleHandle = passport.use(
           userId: user.id,
           role: user.role,
           onboardingFinished: user.onboardingFinished,
-          // subscriptionTier: user.subscriptionTier,
         } as JwtUser);
       } catch (err) {
         return done(err);

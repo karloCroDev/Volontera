@@ -10,8 +10,8 @@ import { createUploadUrl, deleteImage } from "@/lib/aws-s3-functions";
 
 // Schemas
 import {
-  resetPasswordSettingsSchema,
-  settingsSchema,
+  ResetPasswordSettingsArgs,
+  SettingsArgs,
 } from "@repo/schemas/settings";
 
 // Models
@@ -28,109 +28,83 @@ import { resend } from "@/config/resend";
 
 // Transactional emails
 import { DeletedAccount } from "@repo/transactional/deleted-account";
+import { formOutput, toastResponseOutput } from "@/lib/utils/service-output";
 
 export async function changeProfileInfoService({
-  rawData,
+  data,
   userId,
 }: {
-  rawData: unknown;
+  data: SettingsArgs;
   userId: string;
 }) {
-  const { success, data } = settingsSchema.safeParse(rawData);
-
-  if (!success) {
-    return {
-      status: 400,
-      body: {
-        message: "Invalid data provided",
-      },
-    };
-  }
-  const payload: Partial<User> = {};
-
-  if (data.firstName) payload.firstName = data.firstName;
-  if (data.lastName) payload.lastName = data.lastName;
-  if (data.DOB) payload.DOB = data.DOB;
-  if (data.workOrSchool) payload.workOrSchool = data.workOrSchool;
-  if (data.bio) payload.bio = data.bio;
-  if (data.address) payload.address = data.address;
+  const imagePayload: Partial<User> = {};
 
   if (data.image?.deleteImage) {
     await deleteImage(data.image.deleteImage);
-
-    payload.image = "";
+    imagePayload.image = "";
   }
+
   let presignedURL = "";
   if (data.image) {
     const imageURL = await createUploadUrl(data.image);
-    payload.image = imageURL.key;
+    imagePayload.image = imageURL.key;
     presignedURL = imageURL.url;
   }
 
-  await updateUsersInformation({ data: payload, userId });
-
-  return {
-    status: 200,
-    body: {
-      title: "Profile updated",
-      message: "Your profile information has been updated successfully",
-      presignedURL,
+  await updateUsersInformation({
+    data: {
+      ...data,
+      image: imagePayload.image,
     },
-  };
+    userId,
+  });
+
+  return toastResponseOutput({
+    status: 200,
+    message: "Your profile information has been updated successfully",
+    title: "Profile updated",
+    data: { presignedURL },
+  });
 }
 
 export async function resetPasswordInAppService({
-  rawData,
+  data,
   userId,
 }: {
   userId: string;
-  rawData: unknown;
+  data: ResetPasswordSettingsArgs;
 }) {
-  const { success, data } = resetPasswordSettingsSchema.safeParse(rawData);
-
-  if (!success) {
-    return {
-      status: 400,
-      body: {
-        message: "Invalid data provided",
-      },
-    };
-  }
-
-  // Fetch user
+  // Dohvaćam korisnika
   const currentPasswordInUse = await getUsersOldPassword(userId);
+
   if (!currentPasswordInUse) {
-    return {
+    return formOutput({
       status: 400,
-      body: {
-        message: "You cannot change password for this account (social login)",
-      },
-    };
+
+      message: "You cannot change password for this account (social login)",
+    });
   }
 
-  // Verify current password
+  // Provjeravam je li trenutna lozinka točna
   const matches = await bcrypt.compare(
     data.currentPassword,
     currentPasswordInUse
   );
+
   if (!matches) {
-    return {
+    return formOutput({
       status: 400,
-      body: {
-        message: "Current password does not match with our records",
-      },
-    };
+      message: "Current password does not match with our records",
+    });
   }
 
-  // Ensure new password is not the same as current password
+  // I provjeravam je li nova lozinka različita od stare
   const isSame = await bcrypt.compare(data.newPassword, currentPasswordInUse);
   if (isSame) {
-    return {
+    return formOutput({
       status: 400,
-      body: {
-        message: "New password cannot be the same as the current password",
-      },
-    };
+      message: "New password cannot be the same as the current password",
+    });
   }
 
   // Hash new password
@@ -141,13 +115,11 @@ export async function resetPasswordInAppService({
     userId,
   });
 
-  return {
+  return toastResponseOutput({
     status: 200,
-    body: {
-      title: "Password changed successfully",
-      message: "You have successfully changed your password",
-    },
-  };
+    message: "You have successfully changed your password",
+    title: "Password changed successfully",
+  });
 }
 
 export async function deleteAccountService({ userId }: { userId: User["id"] }) {
@@ -167,19 +139,15 @@ export async function deleteAccountService({ userId }: { userId: User["id"] }) {
   }
 
   if (!deletedAccount) {
-    return {
+    return formOutput({
       status: 400,
-      body: {
-        message: "Failed to delete account",
-      },
-    };
+      message: "Failed to delete account",
+    });
   }
 
-  return {
+  return toastResponseOutput({
     status: 200,
-    body: {
-      title: "Account deleted",
-      message: "Your account has been deleted successfully",
-    },
-  };
+    message: "Your account has been deleted successfully",
+    title: "Account deleted",
+  });
 }

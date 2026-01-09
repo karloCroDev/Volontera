@@ -34,13 +34,13 @@ export async function hasUnreadNotifications({
 }
 
 export async function deleteNotifications({
-  notificationsIds,
+  notificationIds,
 }: {
-  notificationsIds: Notification["id"][];
+  notificationIds: Notification["id"][];
 }) {
   return await prisma.notification.deleteMany({
     where: {
-      id: { in: notificationsIds },
+      id: { in: notificationIds },
     },
   });
 }

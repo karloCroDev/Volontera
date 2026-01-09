@@ -5,6 +5,8 @@ import * as React from 'react';
 import { Checkbox, Form } from 'react-aria-components';
 import { ChevronDown } from 'lucide-react';
 import Link from 'next/link';
+import Markdown from 'react-markdown';
+import { useParams } from 'next/navigation';
 
 // Components
 import { Button } from '@/components/ui/button';
@@ -12,104 +14,154 @@ import { CheckboxVisually, CheckboxWithLabel } from '@/components/ui/checkbox';
 import { Avatar } from '@/components/ui/avatar';
 import { Accordion } from '@/components/ui/accordion';
 
-// Types
-import { NotificationResponse } from '@repo/types/notification';
-
-// Schemas
-import { NotificationIdsArgs } from '@repo/schemas/notification';
-
-// Hokks
-import { useDeleteNotifications } from '@/hooks/data/notification';
+// Hooks
+import { useAcceptOrDeclineUsersRequestToJoinOrganization } from '@/hooks/data/organization-managment';
 
 // Lib
-import { toast } from '@/lib/utils/toast';
-import { withReactQueryProvider } from '@/lib/utils/react-query';
-import { IRevalidateTag } from '@/lib/server/revalidation';
+import { convertToFullname } from '@/lib/utils/converter';
 
-export const RequestsForm = () => {
-	const [ids, setIds] = React.useState<NotificationIdsArgs['notificationIds']>(
-		[]
-	);
-	const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-		e.preventDefault();
+// Types
+import { RetirveAllRequestsToJoinOrganizationResponse } from '@repo/types/organization-managment';
+import { AcceptOrDeclineUsersRequestToJoinOrganizationArgs } from '@repo/schemas/organization-managment';
+import { toast } from '@/lib/utils/toast';
+import { IRevalidateTag } from '@/lib/server/revalidation';
+import { useGetImageFromKeys } from '@/hooks/data/image';
+
+export const RequestsForm: React.FC<{
+	requests: RetirveAllRequestsToJoinOrganizationResponse;
+}> = ({ requests }) => {
+	const [ids, setIds] = React.useState<
+		AcceptOrDeclineUsersRequestToJoinOrganizationArgs['requesterIds']
+	>([]);
+
+	const params = useParams<{ organizationId: string }>();
+
+	const { mutate } = useAcceptOrDeclineUsersRequestToJoinOrganization();
+	const { data: images } = useGetImageFromKeys({
+		imageUrls: requests.requests
+			.map((request) => request.requester.image)
+			.filter((image) => image !== null),
+	});
+
+	const onSubmit = (
+		status: AcceptOrDeclineUsersRequestToJoinOrganizationArgs['status']
+	) => {
+		mutate(
+			{
+				requesterIds: ids,
+				organizationId: params.organizationId,
+				status,
+			},
+			{
+				onSuccess({ message, title }) {
+					toast({
+						title,
+						content: message,
+						variant: 'success',
+					});
+					IRevalidateTag('organization-join-requests');
+					IRevalidateTag('organization-members');
+				},
+				onError({ title, message }) {
+					toast({
+						title,
+						content: message,
+						variant: 'error',
+					});
+				},
+			}
+		);
 	};
+
 	return (
-		<Form
-			className="border-input-border min-h-1/2 max-h-3/4 overflow-scroll rounded-xl border py-4"
-			onSubmit={onSubmit}
-		>
+		<div className="border-input-border min-h-1/2 max-h-3/4 overflow-scroll rounded-xl border py-4">
 			<div className="mb-4 flex items-center justify-between px-6">
 				<CheckboxWithLabel
 					checkboxVisuallyProps={{
 						size: 'lg',
 					}}
 					onChange={(val) => {
-						// return val ? setIds(notifications.map((n) => n.id)) : setIds([]);
+						return val
+							? setIds(requests.requests.map((n) => n.requester.id))
+							: setIds([]);
 					}}
 				>
 					Select all
 				</CheckboxWithLabel>
 
-				<div className="flex gap-4">
-					<Button
-						colorScheme="success"
-						size="sm"
-						isFullyRounded
-						// isLoading={isPending}
-						type="submit"
-					>
-						Accept
-					</Button>
-					<Button
-						colorScheme="destructive"
-						size="sm"
-						isFullyRounded
-						// isLoading={isPending}
-						type="submit"
-					>
-						Decline
-					</Button>
-				</div>
+				{ids.length > 0 && (
+					<div className="flex gap-4">
+						<Button
+							colorScheme="success"
+							size="xs"
+							isFullyRounded
+							// isLoading={isPending}
+							onPress={() => onSubmit('APPROVED')}
+						>
+							Approve
+						</Button>
+						<Button
+							colorScheme="destructive"
+							size="xs"
+							isFullyRounded
+							// isLoading={isPending}
+							onPress={() => onSubmit('REJECTED')}
+							type="submit"
+						>
+							Reject
+						</Button>
+					</div>
+				)}
 			</div>
 
 			<Accordion
-				defaultValue="item-0"
-				type="single"
-				items={[...Array(3)].map((_, indx) => ({
-					value: `item-${indx}`,
+				type="multiple"
+				items={requests.requests.map((request) => ({
+					value: `item-${request.id}`,
 					trigger: (
-						<div className="border-input-border flex w-full items-center gap-4 border-t px-6 py-3 lg:gap-6">
+						<div
+							className="border-input-border flex w-full items-center gap-4 border-t px-6 py-3 lg:gap-6"
+							key={request.id}
+						>
 							<Checkbox
 								className="group"
-								// isSelected={ids.includes(notification.id)}
+								isSelected={ids.includes(request.requester.id)}
 								onChange={(val) => {
-									// if (val) {
-									// 	setIds((prev) => [...prev, notification.id]);
-									// } else {
-									// 	setIds((prev) =>
-									// 		prev.filter((id) => id !== notification.id)
-									// 	);
-									// }
+									if (val) {
+										setIds((prev) => [...prev, request.requester.id]);
+									} else {
+										setIds((prev) =>
+											prev.filter((id) => id !== request.requester.id)
+										);
+									}
 								}}
 							>
-								<CheckboxVisually
-									// variant={notification.isRead ? 'suiccess' : 'secondary'}
-									variant="secondary"
-								/>
+								<CheckboxVisually variant="secondary" />
 							</Checkbox>
 
-							<Link href="/" className="flex items-center gap-4">
+							<Link
+								href={`/profile/${request.requester.id}`}
+								className="flex items-center gap-4"
+							>
 								<Avatar
 									size="sm"
 									imageProps={{
-										src: '',
+										src: request.requester.image
+											? images?.urls[request.requester.image]
+											: undefined,
 									}}
 								>
-									AAA
+									{convertToFullname({
+										firstname: request.requester.firstName || '',
+										lastname: request.requester.lastName || '',
+									})}
 								</Avatar>
 
 								<p className="text-muted-foreground text-sm underline-offset-2 hover:underline">
-									AAA
+									{convertToFullname({
+										firstname: request.requester.firstName || '',
+										lastname: request.requester.lastName || '',
+									})}
 								</p>
 							</Link>
 
@@ -119,13 +171,15 @@ export const RequestsForm = () => {
 					contentProps: {
 						children: (
 							<div className="p-4">
-								{/* <p>{notification.content}</p> */}
-								AAAAH
+								<h4 className="mb-4 text-lg font-semibold underline underline-offset-4">
+									{request.title}
+								</h4>
+								<Markdown>{request.content}</Markdown>
 							</div>
 						),
 					},
 				}))}
 			/>
-		</Form>
+		</div>
 	);
 };

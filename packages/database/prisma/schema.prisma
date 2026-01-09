@@ -67,23 +67,22 @@ model User {
   accounts Accounts[]
 
   //  Relations
-  help                             Help[]
-  notifications                    Notification[]
-  conversationParticipants         ConversationParticipants[]
-  directMessagesConversations      DirectMessages[]
-  organizationFollowers            OrganizationFollowers[]
-  organizationAttendees            OrganizationAttendees[]
-  organizationMembers              OrganizationMember[]
-  organizationJoinRequestsSent     OrganizationJoinRequest[]  @relation("OrgJoinRequestRequester")
-  organizationJoinRequestsReviewed OrganizationJoinRequest[]  @relation("OrgJoinRequestReviewer")
-  posts                            Post[]
-  postComments                     PostComments[]
-  postLikes                        PostLikes[]
-  postCommentsReplies              PostCommentsReply[]
-  postCommentsLikes                PostCommentsLikes[]
-  postCommentsReplyLikes           PostCommentsReplyLikes[]
+  help                         Help[]
+  notifications                Notification[]
+  conversationParticipants     ConversationParticipants[]
+  directMessagesConversations  DirectMessages[]
+  organizationFollowers        OrganizationFollowers[]
+  organizationMembers          OrganizationMember[]
+  organizationJoinRequestsSent OrganizationJoinRequest[]
+  posts                        Post[]
+  postComments                 PostComments[]
+  postLikes                    PostLikes[]
+  postCommentsReplies          PostCommentsReply[]
+  postCommentsLikes            PostCommentsLikes[]
+  postCommentsReplyLikes       PostCommentsReplyLikes[]
 
-  ownedOrganizations Organization[] @relation("OrganizationOwner")
+  ownedOrganizations            Organization[]                 @relation("OrganizationOwner")
+  organizationGroupChatMessages OrganizationGroupChatMessage[]
 }
 
 model Accounts {
@@ -187,10 +186,8 @@ model Organization {
   ownerId     String
   owner       User   @relation("OrganizationOwner", fields: [ownerId], references: [id], onDelete: Cascade)
 
-  organizationFollowers OrganizationFollowers[]
-  organizationAttendees OrganizationAttendees[]
-  organizationInfo      OrganizationInfo?
-
+  organizationFollowers    OrganizationFollowers[]
+  organizationInfo         OrganizationInfo?
   organizationMembers      OrganizationMember[]
   organizationJoinRequests OrganizationJoinRequest[]
 
@@ -212,14 +209,15 @@ enum OrganizationJoinRequestStatus {
 }
 
 model OrganizationMember {
-  id             String                 @id @default(cuid())
-  organization   Organization           @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  organizationId String
-  user           User                   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId         String
-  role           OrganizationMemberRole @default(MEMBER)
-  createdAt      DateTime               @default(now())
-  updatedAt      DateTime               @updatedAt
+  id                   String                            @id @default(cuid())
+  organization         Organization                      @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  organizationId       String
+  user                 User                              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId               String
+  role                 OrganizationMemberRole            @default(MEMBER)
+  createdAt            DateTime                          @default(now())
+  updatedAt            DateTime                          @updatedAt
+  taskCardInformations OrganizationTaskCardInformation[] @relation("TaskCardMembersAssigned")
 
   @@unique([organizationId, userId])
   @@index([userId])
@@ -230,20 +228,16 @@ model OrganizationJoinRequest {
   id             String                        @id @default(cuid())
   organization   Organization                  @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   organizationId String
-  requester      User                          @relation("OrgJoinRequestRequester", fields: [requesterId], references: [id], onDelete: Cascade)
+  requester      User                          @relation(fields: [requesterId], references: [id], onDelete: Cascade)
   requesterId    String
   title          String
   content        String
   status         OrganizationJoinRequestStatus @default(PENDING)
 
-  reviewedBy   User?   @relation("OrgJoinRequestReviewer", fields: [reviewedById], references: [id], onDelete: SetNull)
-  reviewedById String?
-
-  reviewedAt DateTime?
-
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  @@unique([organizationId, requesterId])
   @@index([organizationId, status, createdAt])
   @@index([requesterId, status, createdAt])
 }
@@ -262,7 +256,6 @@ model OrganizationInfo {
   updatedAt        DateTime          @updatedAt
 
   organizationFollowers OrganizationFollowers[]
-  organizationAttendees OrganizationAttendees[]
 }
 
 // Additional fields that can be for the organznizaton
@@ -276,18 +269,6 @@ model OrganizationFollowers {
   updatedAt          DateTime         @updatedAt
   organization       Organization?    @relation(fields: [organizationId], references: [id])
   organizationId     String?
-}
-
-model OrganizationAttendees {
-  id                 String           @id @default(cuid())
-  organizationInfo   OrganizationInfo @relation(fields: [organizationInfoId], references: [id], onDelete: Cascade)
-  organizationInfoId String
-  attendeeUser       User             @relation(fields: [attendeeUserId], references: [id], onDelete: Cascade)
-  attendeeUserId     String
-  organization       Organization?    @relation(fields: [organizationId], references: [id])
-  organizationId     String?
-  createdAt          DateTime         @default(now())
-  updatedAt          DateTime         @updatedAt
 }
 
 model AdditionalLinks {
@@ -391,4 +372,88 @@ model PostCommentsReplyLikes {
   updatedAt DateTime @updatedAt
 
   @@unique([replyId, userId])
+}
+
+model OrganizationGroupChat {
+  id             String                         @id @default(cuid())
+  organizationId String
+  messages       OrganizationGroupChatMessage[]
+  createdAt      DateTime                       @default(now())
+  updatedAt      DateTime                       @updatedAt
+}
+
+model OrganizationGroupChatMessage {
+  id                                 String                              @id @default(cuid())
+  organizationGroupChat              OrganizationGroupChat               @relation(fields: [groupChatId], references: [id], onDelete: Cascade)
+  groupChatId                        String
+  author                             User                                @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  authorId                           String
+  content                            String
+  organizationGroupChatMessageImages OrganizationGroupChatMessageImage[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([groupChatId, createdAt])
+}
+
+model OrganizationGroupChatMessageImage {
+  id        String                       @id @default(cuid())
+  message   OrganizationGroupChatMessage @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  messageId String
+  imageUrl  String // URL of the image stored in s3
+  createdAt DateTime                     @default(now())
+  updatedAt DateTime                     @updatedAt
+}
+
+enum OrganizationTaskStatus {
+  FAILURE
+  PENDING
+  COMPLETED
+}
+
+model OrganizationTasks {
+  id                    String                 @id @default(cuid())
+  organizationId        String
+  organizationTaskCards OrganizationTaskCard[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model OrganizationTaskCard {
+  id                 String                 @id @default(cuid())
+  organizationTask   OrganizationTasks      @relation(fields: [organizationTaskId], references: [id], onDelete: Cascade)
+  organizationTaskId String
+  title              String
+  description        String
+  dueDate            DateTime?
+  status             OrganizationTaskStatus @default(PENDING)
+
+  createdAt                        DateTime                          @default(now())
+  updatedAt                        DateTime                          @updatedAt
+  organizationTaskCardInformations OrganizationTaskCardInformation[]
+}
+
+model OrganizationTaskCardInformation {
+  id                            String                          @id @default(cuid())
+  organizationTaskCard          OrganizationTaskCard            @relation(fields: [organizationTaskCardId], references: [id], onDelete: Cascade)
+  organizationTaskCardId        String
+  description                   String
+  organizationTaskCardQuestions OrganizationTaskCardQuestions[]
+  membersAssigned               OrganizationMember[]            @relation("TaskCardMembersAssigned")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model OrganizationTaskCardQuestions {
+  id                                String                          @id @default(cuid())
+  organizationTaskCardInformation   OrganizationTaskCardInformation @relation(fields: [organizationTaskCardInformationId], references: [id], onDelete: Cascade)
+  organizationTaskCardInformationId String
+  question                          String
+  answer                            String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

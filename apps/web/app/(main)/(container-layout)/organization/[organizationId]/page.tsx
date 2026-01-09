@@ -4,22 +4,21 @@ import Image from 'next/image';
 
 // Components
 import { Avatar } from '@/components/ui/avatar';
-import { Post } from '@/components/ui/post/post';
 import { Tag } from '@/components/ui/tag';
 import { SharePost } from '@/components/ui/post/share-post';
 import { Button } from '@/components/ui/button';
 import { AnchorAsButton } from '@/components/ui/anchor-as-button';
+import { LinkAsButton } from '@/components/ui/link-as-button';
 
 // Modules
 import { OrganizationRoutingHeader } from '@/modules/main/organization/common/organization-routing-header';
-
-import { JoinDialog } from '@/modules/main/organization/common/join-dialog';
 import { CreatePostDialog } from '@/modules/main/organization/home/create-post-dialog';
 import { PostsMapping } from '@/modules/main/organization/home/posts-mapping';
+
 // Lib
 import { getOrganizationDetailsById } from '@/lib/server/organization';
-import { getImageFromKey } from '@/lib/server/image';
 import { retrieveOrganizationPosts } from '@/lib/server/post';
+import { retrieveOrganizationMember } from '@/lib/server/organization-managment';
 
 export default async function OrganizationPage({
 	params,
@@ -29,30 +28,15 @@ export default async function OrganizationPage({
 	}>;
 }) {
 	const { organizationId } = await params;
-	const organizationDetailsById =
-		await getOrganizationDetailsById(organizationId);
+	const [organizationDetailsById, posts, member] = await Promise.all([
+		getOrganizationDetailsById(organizationId),
+		retrieveOrganizationPosts(organizationId),
+		retrieveOrganizationMember(organizationId),
+	]);
 
-	if (!organizationDetailsById.success) notFound();
+	if (!organizationDetailsById.success || !posts.success) notFound();
+	console.log('member', member);
 
-	const avatarKey = organizationDetailsById.organization.avatarImage;
-	const coverKey =
-		organizationDetailsById.organization.organizationInfo.coverImage;
-	const imageKeys = [avatarKey, coverKey].filter(Boolean);
-
-	const imageResponse = imageKeys.length
-		? await getImageFromKey({ imageUrls: imageKeys })
-		: null;
-
-	const organizationAvatarImage = imageResponse?.urls
-		? imageResponse.urls[avatarKey]
-		: '';
-	const organizationCoverImage = imageResponse?.urls
-		? imageResponse.urls[coverKey]
-		: '';
-
-	const posts = await retrieveOrganizationPosts({ organizationId });
-
-	if (!posts.success) notFound();
 	return (
 		<>
 			<div className="border-input-border relative -mx-4 -my-6 rounded-xl px-5 py-4 md:m-0 md:border">
@@ -68,7 +52,7 @@ export default async function OrganizationPage({
 						<div className="flex w-fit flex-col items-center">
 							<Avatar
 								imageProps={{
-									src: organizationAvatarImage,
+									src: organizationDetailsById.organization.avatarImage,
 								}}
 								colorScheme="gray"
 								size="2xl"
@@ -81,7 +65,13 @@ export default async function OrganizationPage({
 							<Button colorScheme="yellow" size="md">
 								Follow
 							</Button>
-							<JoinDialog />
+							<LinkAsButton
+								colorScheme="orange"
+								size="md"
+								href={`/organization/${organizationId}/join-organization`}
+							>
+								Join
+							</LinkAsButton>
 						</div>
 					</div>
 					<h1 className="mt-4 text-xl font-medium md:text-2xl lg:text-3xl">
@@ -179,19 +169,21 @@ export default async function OrganizationPage({
 				</div>
 
 				<div className="absolute left-0 top-0 -z-[1] h-64 w-full overflow-hidden md:rounded-t-xl">
-					{organizationCoverImage && (
-						<Image
-							src={organizationCoverImage}
-							alt="Cover image url"
-							fill
-							className="object-cover"
-						/>
-					)}
+					<Image
+						src={
+							organizationDetailsById.organization.organizationInfo.coverImage
+						}
+						alt="Cover image url"
+						fill
+						className="object-cover"
+					/>
 				</div>
 			</div>
 
-			<OrganizationRoutingHeader />
-			<CreatePostDialog />
+			{member.success && <OrganizationRoutingHeader member={member} />}
+			{member.success &&
+				(member.organizationMember.role === 'ADMIN' ||
+					member.organizationMember.role === 'OWNER') && <CreatePostDialog />}
 
 			<PostsMapping posts={posts} />
 		</>

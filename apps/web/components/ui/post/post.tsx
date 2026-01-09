@@ -18,7 +18,7 @@ import { Carousel } from '@/components/ui/carousel';
 import { RetrieveOrganizationPostsResponse } from '@repo/types/post';
 
 // Lib
-import { convertToFullname } from '@/lib/utils/convert-to-fullname';
+import { convertToFullname } from '@/lib/utils/converter';
 
 export const Post: React.FC<{
 	post: RetrieveOrganizationPostsResponse['posts'][0];

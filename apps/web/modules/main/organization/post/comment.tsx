@@ -23,7 +23,7 @@ import { RepliesMapping } from '@/modules/main/organization/post/replies-mapping
 
 // Lib
 import { formatTime } from '@/lib/utils/time-adjustments';
-import { convertToFullname } from '@/lib/utils/convert-to-fullname';
+import { convertToFullname } from '@/lib/utils/converter';
 
 // Hooks
 import { useSession } from '@/hooks/data/user';

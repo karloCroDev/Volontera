@@ -12,12 +12,12 @@ import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Layout, LayoutColumn } from '@/components/ui/layout-grid';
 import { RadioIconVisual } from '@/components/ui/radio';
+import { Layout, LayoutColumn } from '@/components/ui/layout-grid';
 
 // Modules
-import { InsertPhoto } from '@/modules/main/create-organizations/insert-photo';
-import { PreviewForm } from '@/modules/main/create-organizations/preview-form';
+import { InsertPhoto } from '@/modules/main/organization/create-organizations/insert-photo';
+import { PreviewForm } from '@/modules/main/organization/create-organizations/preview-form';
 
 // Lib
 import { toast } from '@/lib/utils/toast';
@@ -26,11 +26,11 @@ import { toast } from '@/lib/utils/toast';
 import {
 	CreateOrganizationArgs,
 	createOrganizationSchema,
-} from '@repo/schemas/create-organization';
+} from '@repo/schemas/organization';
 import { useCreateOrganization } from '@/hooks/data/organization';
+import { Error } from '@/components/ui/error';
 
 export const CreateOrganizationForm = () => {
-	// TODO: Decide where to put this, under the creation of new board or here
 	const [assignTasks, setAssignTasks] = React.useState(false);
 	const [avatarFile, setAvatarFile] = React.useState<File | undefined>();
 	const [coverFile, setCoverFile] = React.useState<File | undefined>();
@@ -44,7 +44,7 @@ export const CreateOrganizationForm = () => {
 		watch,
 		formState: { errors, isDirty },
 	} = useForm<CreateOrganizationArgs>({
-		context: zodResolver(createOrganizationSchema),
+		resolver: zodResolver(createOrganizationSchema),
 		defaultValues: {
 			organization_avatar_image: undefined,
 			organization_cover_image: undefined,
@@ -381,6 +381,8 @@ export const CreateOrganizationForm = () => {
 									</RadioGroup>
 								</div>
 							</div>
+
+							<Error>{errors.root?.message}</Error>
 						</div>
 						<hr className="bg-input-border my-8 h-px w-full border-0" />
 

@@ -17,6 +17,7 @@ import { SettingsArgs } from '@repo/schemas/settings';
 
 // Lib
 import { withReactQueryProvider } from '@/lib/utils/react-query';
+import { convertCalendarDate } from '@/lib/utils/converter';
 
 // Hpoks
 import { useSession } from '@/hooks/data/user';
@@ -34,7 +35,7 @@ export const PersonalInformationForm = withReactQueryProvider(() => {
 
 	const { data: user } = useSession();
 
-	console.log(user?.address);
+	console.log(user?.DOB);
 	return (
 		<div className="border-input-border mt-10 flex flex-col justify-between gap-8 rounded-md border p-6 lg:p-8 xl:flex-row 2xl:p-10">
 			<div className="flex justify-between xl:flex-col">
@@ -65,7 +66,9 @@ export const PersonalInformationForm = withReactQueryProvider(() => {
 											value={user?.DOB ? parseDate(user.DOB) : undefined}
 											onChange={(val) => {
 												if (!val) return;
-												const formatted = `${String(val.year).padStart(2, '0')}-${String(val.month).padStart(2, '0')}-${val.day}`;
+
+												const formatted = convertCalendarDate(val);
+												onChange(formatted);
 												onChange(formatted);
 											}}
 										/>

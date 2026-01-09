@@ -1,6 +1,10 @@
 // Models
 import { createUploadUrl } from "@/lib/aws-s3-functions";
 import {
+  serverFetchOutput,
+  toastResponseOutput,
+} from "@/lib/utils/service-output";
+import {
   checkIfUserLiked,
   createPost,
   deletePost,
@@ -15,35 +19,25 @@ import {
 // Database
 import { User } from "@repo/database";
 
-// Schemas
+// Schema types
+import { RetrievePostCommentsArgs } from "@repo/schemas/comment";
 import {
-  createPostSchema,
-  deletePostSchema,
-  likeOrDislikePostSchema,
-  retrieveOrganizationPostsSchema,
-  retrievePost,
-  updatePostSchema,
+  CreatePostArgs,
+  DeletePostArgs,
+  LikeOrDislikePostArgs,
+  RetrieveOrganizationPostsArgs,
+  RetrievePostArgs,
+  UpdatePostArgs,
 } from "@repo/schemas/post";
 
 // Organization admins only
 export async function createPostService({
-  rawData,
+  data,
   userId,
 }: {
-  rawData: unknown;
+  data: CreatePostArgs;
   userId: User["id"];
 }) {
-  const { success, data } = createPostSchema.safeParse(rawData);
-
-  if (!success) {
-    return {
-      status: 400,
-      body: {
-        message: "Invalid post data",
-      },
-    };
-  }
-
   // TODO: If I am reusing this then make a function
   const uploadImages = await Promise.all(
     data.images.map((image) => createUploadUrl(image))
@@ -57,78 +51,36 @@ export async function createPostService({
     organizationId: data.organizationId,
   });
 
-  return {
+  return toastResponseOutput({
     status: 200,
-    body: {
-      title: "Successfuly created post",
-      message: "Post created successfully",
-      presignedUrls: uploadImages.map((img) => img.url),
-    },
-  };
+    message: "Post created successfully",
+    title: "Successfuly created post",
+    data: { presignedUrls: uploadImages.map((img) => img.url) },
+  });
 }
 
-export async function deletePostService(rawData: string) {
-  const { success, data } = deletePostSchema.safeParse(rawData);
-
-  if (!success) {
-    return {
-      status: 400,
-      body: {
-        title: "Invalid Data",
-        message: "Invalid delete post data",
-      },
-    };
-  }
-
+export async function deletePostService(data: DeletePostArgs) {
   await deletePost(data.postId);
 
-  return {
+  return toastResponseOutput({
     status: 200,
-    body: {
-      title: "Post Deleted",
-      message: "Post deleted successfully",
-    },
-  };
+    message: "Post deleted successfully",
+    title: "Post Deleted",
+  });
 }
 
-export async function retrievePostDataService(rawData: unknown) {
-  const { success, data } = retrievePost.safeParse(rawData);
+export async function retrievePostDataService({ postId }: RetrievePostArgs) {
+  const post = await retrievePostData(postId);
 
-  if (!success) {
-    return {
-      status: 400,
-      body: {
-        message: "The provided data is invalid",
-        success: false,
-      },
-    };
-  }
-
-  const post = await retrievePostData(data.postId);
-
-  return {
+  return toastResponseOutput({
     status: 200,
-    body: {
-      message: "Post data retrieved successfully",
-      success: true,
-      post,
-    },
-  };
+    message: "Post data retrieved successfully",
+    title: "Post Data Retrieved",
+    data: { post },
+  });
 }
 
-export async function updatePostService(rawData: unknown) {
-  const { success, data } = updatePostSchema.safeParse(rawData);
-
-  if (!success) {
-    return {
-      status: 400,
-      body: {
-        title: "Invalid Data",
-        message: "Invalid post data",
-      },
-    };
-  }
-
+export async function updatePostService(data: UpdatePostArgs) {
   let presignedUrls: string[] = [];
   const images = await Promise.all(
     data.images.map(async (img) => {
@@ -152,103 +104,62 @@ export async function updatePostService(rawData: unknown) {
     images,
   });
 
-  return {
+  return toastResponseOutput({
     status: 200,
-    body: {
-      title: "Successfuly updated post",
-      message: "Post updated successfully",
-      presignedUrls,
-    },
-  };
+    message: "Post updated successfully",
+    title: "Successfuly updated post",
+    data: { presignedUrls },
+  });
 }
 
 // Everyone
 export async function retrieveOrganizationPostsService({
-  rawData,
+  data,
   userId,
 }: {
-  rawData: unknown;
+  data: RetrieveOrganizationPostsArgs;
   userId: string;
 }) {
-  const { success, data } = retrieveOrganizationPostsSchema.safeParse(rawData);
-
-  if (!success) {
-    return {
-      status: 400,
-      body: {
-        message: "The provided data is invalid",
-        success: false,
-      },
-    };
-  }
-
   const posts = await retrieveOrganizationPosts({
     organizationId: data.organizationId,
     userId,
   });
 
-  return {
+  return serverFetchOutput({
+    message: "Posts retrieved successfully",
     status: 200,
-    body: {
-      message: "Posts retrieved successfully",
-      success: true,
-      posts,
-    },
-  };
+    success: true,
+    data: { posts },
+  });
 }
 
 export async function retrievePostWithCommentsService({
-  rawData,
+  data,
   userId,
 }: {
-  rawData: unknown;
+  data: RetrievePostCommentsArgs;
   userId: string;
 }) {
-  const { success, data } = retrievePost.safeParse(rawData);
-
-  if (!success) {
-    return {
-      status: 400,
-      body: {
-        message: "The provided data is invalid",
-        success: false,
-      },
-    };
-  }
   const post = await retrievePostWithComments({
     postId: data.postId,
     userId,
   });
 
-  return {
+  return serverFetchOutput({
     status: 200,
-    body: {
-      message: "Post with comments retrieved successfully",
-      success: true,
-      post,
-    },
-  };
+    message: "Post with comments retrieved successfully",
+    success: true,
+    data: { post },
+  });
 }
 
 export async function toggleLikePostService({
-  rawData,
+  data,
   userId,
 }: {
-  rawData: unknown;
+  data: LikeOrDislikePostArgs;
   userId: User["id"];
 }) {
-  const { success, data } = likeOrDislikePostSchema.safeParse(rawData);
-
-  if (!success) {
-    return {
-      status: 400,
-      body: {
-        title: "Invalid Data",
-        message: "The provided data is invalid",
-      },
-    };
-  }
-
   const userLiked = await checkIfUserLiked({
     postId: data.postId,
     userId,
@@ -266,11 +177,11 @@ export async function toggleLikePostService({
     });
   }
 
-  return {
+  return toastResponseOutput({
     status: 200,
-    body: {
-      title: "Post Liked",
-      message: "Post liked successfully",
-    },
-  };
+    message: userLiked
+      ? "Post disliked successfully"
+      : "Post liked successfully",
+    title: userLiked ? "Post Disliked" : "Post Liked",
+  });
 }

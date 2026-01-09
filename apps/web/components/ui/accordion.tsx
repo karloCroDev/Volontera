@@ -6,7 +6,7 @@ import * as RadixAccordion from '@radix-ui/react-accordion';
 import { twMerge } from 'tailwind-merge';
 
 export const Accordion: React.FC<
-	RadixAccordion.AccordionSingleProps & {
+	RadixAccordion.AccordionMultipleProps & {
 		items: {
 			value: string;
 			trigger: React.ReactNode;

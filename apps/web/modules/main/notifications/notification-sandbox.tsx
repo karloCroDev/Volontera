@@ -36,7 +36,6 @@ export const NotificationSandbox: React.FC<{
 	console.log(ids);
 	const { mutate, isPending } = useDeleteNotifications();
 
-	console.log(notifications);
 	const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 		mutate(
@@ -91,8 +90,7 @@ export const NotificationSandbox: React.FC<{
 			</div>
 
 			<Accordion
-				defaultValue="item-0"
-				type="single"
+				type="multiple"
 				items={
 					notifications.length > 0
 						? notifications.map((notification) => ({

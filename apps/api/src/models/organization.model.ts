@@ -2,7 +2,10 @@
 import { prisma, User } from "@repo/database";
 
 // Types
-import { CreateOrganizationArgs } from "@repo/schemas/create-organization";
+import {
+  CreateOrganizationArgs,
+  SendRequestToJoinOrganizationArgs,
+} from "@repo/schemas/organization";
 
 // Owners only
 export async function listOrganizationsOrganizator(userId: User["id"]) {
@@ -22,9 +25,9 @@ export async function listOrganizationsOrganizator(userId: User["id"]) {
 
         // Attending organization
         {
-          organizationAttendees: {
+          organizationMembers: {
             some: {
-              attendeeUserId: userId,
+              userId,
             },
           },
         },
@@ -52,11 +55,16 @@ export async function listOrganizationsOrganizatorGrouped(userId: User["id"]) {
       }),
       prisma.organization.findMany({
         where: {
-          organizationAttendees: {
-            some: {
-              attendeeUserId: userId,
+          AND: [
+            { ownerId: { not: userId } },
+            {
+              organizationMembers: {
+                some: {
+                  userId,
+                },
+              },
             },
-          },
+          ],
         },
       }),
     ]);
@@ -105,6 +113,12 @@ export async function createOrganization({
             : undefined,
         },
       },
+      organizationMembers: {
+        create: {
+          userId,
+          role: "OWNER",
+        },
+      },
     },
   });
 }
@@ -124,9 +138,9 @@ export async function listOrganizationsUser(userId: User["id"]) {
       }),
       prisma.organization.findMany({
         where: {
-          organizationAttendees: {
+          organizationMembers: {
             some: {
-              attendeeUserId: userId,
+              userId,
             },
           },
         },
@@ -159,7 +173,7 @@ export async function getOrganizationDetailsById(organizationId: string) {
       id: organizationId,
     },
     include: {
-      organizationAttendees: true,
+      organizationMembers: true,
       organizationFollowers: true,
       organizationInfo: {
         include: {
@@ -169,6 +183,22 @@ export async function getOrganizationDetailsById(organizationId: string) {
 
       // Vrati po hijewrarhiji korisnike i onda displayamo na frontendu (admini organizacije, vlasnik i neke korisnike)
       // owner: true,
+    },
+  });
+}
+
+export async function sendRequestToJoinOrganization({
+  data,
+  userId,
+}: {
+  data: SendRequestToJoinOrganizationArgs;
+  userId: User["id"];
+}) {
+  return prisma.organizationJoinRequest.create({
+    data: {
+      ...data,
+      requesterId: userId,
+      status: "PENDING",
     },
   });
 }

@@ -7,7 +7,9 @@ import {
   getOrganizationDetailsByIdService,
   listOrganizationsOrganizatorService,
   listOrganizationsUserService,
+  sendRequestToJoinOrganizationService,
 } from "@/services/organization.service";
+import { GetOrganizationDetailsByIdArgs } from "@repo/schemas/organization";
 
 export async function createOrganizationController(
   req: Request,
@@ -15,7 +17,7 @@ export async function createOrganizationController(
 ) {
   try {
     const result = await createOrganizationService({
-      rawData: req.body,
+      data: req.body,
       userId: req.user.userId,
     });
 
@@ -30,7 +32,9 @@ export async function getOrganizationDetailsByIdController(
   res: Response
 ) {
   try {
-    const result = await getOrganizationDetailsByIdService(req.params);
+    const result = await getOrganizationDetailsByIdService(
+      req.params as GetOrganizationDetailsByIdArgs
+    );
     return res.status(result.status).json(result.body);
   } catch (err) {
     return res.status(500).json({ success: false, message: "Internal error" });
@@ -55,6 +59,22 @@ export async function listOrganizationsUserController(
 ) {
   try {
     const result = await listOrganizationsUserService(req.user.userId);
+    return res.status(result.status).json(result.body);
+  } catch (err) {
+    return res.status(500).json({ success: false, message: "Internal error" });
+  }
+}
+
+export async function sendRequestToJoinOrganizationController(
+  req: Request,
+  res: Response
+) {
+  try {
+    const result = await sendRequestToJoinOrganizationService({
+      data: req.body,
+      userId: req.user.userId,
+    });
+
     return res.status(result.status).json(result.body);
   } catch (err) {
     return res.status(500).json({ success: false, message: "Internal error" });

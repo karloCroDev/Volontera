@@ -18,7 +18,7 @@ import { useSocketContext } from '@/modules/main/direct-messages/SocketContext';
 
 // Lib
 import { withReactQueryProvider } from '@/lib/utils/react-query';
-import { convertToFullname } from '@/lib/utils/convert-to-fullname';
+import { convertToFullname } from '@/lib/utils/converter';
 import { formatTime } from '@/lib/utils/time-adjustments';
 
 export const UsersInfoHeader = withReactQueryProvider(() => {

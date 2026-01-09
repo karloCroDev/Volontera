@@ -14,6 +14,7 @@ import { DatePicker } from '@/components/ui/date-picker';
 import { Tag } from '@/components/ui/tag';
 import { Avatar } from '@/components/ui/avatar';
 import { CheckboxVisually } from '@/components/ui/checkbox';
+import { convertCalendarDate } from '@/lib/utils/converter';
 
 export const AddTask = () => {
 	const [assignedMemberIds, setAssignedMemberIds] = React.useState<string[]>([
@@ -40,7 +41,9 @@ export const AddTask = () => {
 					<DatePicker
 						onChange={(val) => {
 							if (!val) return;
-							const formatted = `${String(val.year).padStart(2, '0')}-${String(val.month).padStart(2, '0')}-${val.day}`;
+
+							const formatted = convertCalendarDate(val);
+
 							// onChange(formatted);
 						}}
 					/>

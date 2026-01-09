@@ -8,6 +8,9 @@ import {
   billingService,
 } from "@/services/payment.service";
 
+// Lib
+import { handleServerErrorResponse } from "@/lib/utils/error-response";
+
 export async function stripePayment(req: Request, res: Response) {
   try {
     const sig = req.headers["stripe-signature"];
@@ -24,10 +27,7 @@ export async function stripePayment(req: Request, res: Response) {
     });
     return res.status(result.status).json(result.body);
   } catch (err) {
-    console.error(err);
-    return res.status(500).json({
-      message: err instanceof Error ? err.message : "Internal Server Error",
-    });
+    handleServerErrorResponse(res, err);
   }
 }
 
@@ -36,14 +36,11 @@ export async function stripeCheckout(req: Request, res: Response) {
     const { userId } = req.user;
     const result = await checkoutService({
       userId,
-      priceId: req.body,
+      data: req.body,
     });
     return res.status(result.status).json(result.body);
   } catch (err) {
-    console.error(err);
-    return res.status(500).json({
-      message: err instanceof Error ? err.message : "Internal Server Error",
-    });
+    handleServerErrorResponse(res, err);
   }
 }
 
@@ -53,9 +50,6 @@ export async function billing(req: Request, res: Response) {
     const result = await billingService({ userId });
     return res.status(result.status).json(result.body);
   } catch (err) {
-    console.error(err);
-    return res.status(500).json({
-      message: err instanceof Error ? err.message : "Internal Server Error",
-    });
+    handleServerErrorResponse(res, err);
   }
 }

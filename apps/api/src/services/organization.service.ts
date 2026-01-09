@@ -1,35 +1,36 @@
 // Schemas
-import { createUploadUrl } from "@/lib/aws-s3-functions";
+import { createUploadUrl, getImagePresignedUrls } from "@/lib/aws-s3-functions";
+import {
+  serverFetchOutput,
+  toastResponseOutput,
+} from "@/lib/utils/service-output";
+
+// Models
 import {
   createOrganization,
   getOrganizationDetailsById,
   listOrganizationsOrganizatorGrouped,
   listOrganizationsUser,
+  sendRequestToJoinOrganization,
 } from "@/models/organization.model";
+
+// Database
 import { User } from "@repo/database";
+
+// Schema types
 import {
-  createOrganizationSchema,
-  getOrganizationDetailsByIdSchema,
-} from "@repo/schemas/create-organization";
+  CreateOrganizationArgs,
+  GetOrganizationDetailsByIdArgs,
+  SendRequestToJoinOrganizationArgs,
+} from "@repo/schemas/organization";
 
 export async function createOrganizationService({
-  rawData,
+  data,
   userId,
 }: {
-  rawData: unknown;
+  data: CreateOrganizationArgs;
   userId: User["id"];
 }) {
-  const { success, data } = createOrganizationSchema.safeParse(rawData);
-
-  if (!success) {
-    return {
-      status: 400,
-      body: {
-        message: "The provided data is invalid",
-      },
-    };
-  }
-
   const organizationAvatarUploadUrl = await createUploadUrl(
     data.organization_avatar_image
   );
@@ -47,82 +48,102 @@ export async function createOrganizationService({
     },
   });
 
-  return {
-    status: 201,
-    body: {
-      title: "Organization Created",
-      message: "Organization created successfully",
+  return toastResponseOutput({
+    status: 200,
+    message: "Organization created successfully",
+    title: "Organization Created",
+    data: {
       organizationId: organization.id,
       imageAvatar: organizationAvatarUploadUrl.url,
       imageCover: organizationCoverUploadUrl.url,
     },
-  };
+  });
 }
 
-export async function getOrganizationDetailsByIdService(rawData: unknown) {
-  const { success, data } = getOrganizationDetailsByIdSchema.safeParse(rawData);
-
-  if (!success) {
-    return {
-      status: 400,
-      body: {
-        message: "The provided data is invalid",
-        success: false,
-      },
-    };
-  }
-
-  const organization = await getOrganizationDetailsById(data.organizationId);
+export async function getOrganizationDetailsByIdService({
+  organizationId,
+}: GetOrganizationDetailsByIdArgs) {
+  const organization = await getOrganizationDetailsById(organizationId);
 
   if (!organization) {
-    return {
-      status: 404,
-      body: {
-        title: "Organization Not Found",
-        success: false,
-        message: "No organization found with the provided ID",
-      },
-    };
+    return serverFetchOutput({
+      status: 400,
+      success: false,
+      message: "Organization not found",
+    });
   }
 
-  return {
+  return serverFetchOutput({
     status: 200,
-    body: {
-      message: "Organization details retrieved successfully",
-      success: true,
-      organization,
+    success: true,
+    message: "Organization details retrieved successfully",
+    data: {
+      organization: {
+        ...organization,
+
+        // Samo dvije slike pa je jednostavnije da ovako handleam na licu mjesta
+        avatarImage: await getImagePresignedUrls(organization.avatarImage),
+        organizationInfo: {
+          ...organization.organizationInfo,
+          coverImage: organization.organizationInfo
+            ? await getImagePresignedUrls(
+                organization.organizationInfo.coverImage
+              )
+            : null,
+        },
+      },
     },
-  };
+  });
 }
 
 export async function listOrganizationsUserService(userId: User["id"]) {
   const { attendingOrganizations, followingOrganizations } =
     await listOrganizationsUser(userId);
-  return {
+
+  return serverFetchOutput({
     status: 200,
-    body: {
-      message: "Organizations retrieved successfully",
+    success: true,
+    message: "Organizations retrieved successfully",
+    data: {
       attendingOrganizations,
       followingOrganizations,
     },
-  };
+  });
 }
 
 export async function listOrganizationsOrganizatorService(
-  organizatorId: User["id"]
+  organizatorId: User["id"] // Ovo je isto korisnik koji ima isti id
 ) {
   const { ownedOrganizations, followingOrganizations, attendingOrganizations } =
     await listOrganizationsOrganizatorGrouped(organizatorId);
 
-  console.log(ownedOrganizations);
-  return {
+  return serverFetchOutput({
     status: 200,
-    body: {
-      title: "Organizations Retrieved",
-      message: "Organizations retrieved successfully",
+    success: true,
+    message: "Organizations retrieved successfully",
+    data: {
       ownedOrganizations,
       followingOrganizations,
       attendingOrganizations,
     },
-  };
+  });
+}
+
+export async function sendRequestToJoinOrganizationService({
+  data,
+  userId,
+}: {
+  data: SendRequestToJoinOrganizationArgs;
+  userId: User["id"];
+}) {
+  await sendRequestToJoinOrganization({
+    data,
+    userId,
+  });
+
+  return toastResponseOutput({
+    status: 200,
+    title: "Request Sent",
+    message: "Your request to join the organization has been sent",
+  });
 }

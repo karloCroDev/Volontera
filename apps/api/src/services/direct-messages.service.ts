@@ -10,39 +10,26 @@ import { createUploadUrl } from "@/lib/aws-s3-functions";
 // Database
 import { User } from "@repo/database";
 
-// Schemas
+// Schema types
 import {
-  searchSchema,
-  conversationSchema,
-  createDirectMessageSchema,
-  presignDirectMessageImagesSchema,
+  SearchArgs,
+  PresignDirectMessageImagesArgs,
+  ConversationArgs,
+  CreateDirectMessageArgs,
 } from "@repo/schemas/direct-messages";
+
+// Websockets
 import { getReceiverSocketId, io } from "@/ws/socket";
-import { EmitNewChat } from "@repo/types/sockets";
+import {
+  serverFetchOutput,
+  toastResponseOutput,
+} from "@/lib/utils/service-output";
 
 export async function presignDirectMessageImagesService({
-  rawData,
-  userId,
-}: {
-  rawData: unknown;
-  userId: User["id"];
-}) {
-  // userId currently unused, but keeps auth context for future limits/rate-limits
-  const { success, data } = presignDirectMessageImagesSchema.safeParse(rawData);
-
-  if (!success) {
-    return {
-      status: 400,
-      body: {
-        title: "Invalid data",
-        message: "Invalid data",
-        success: false,
-      },
-    };
-  }
-
+  images: dataImages,
+}: PresignDirectMessageImagesArgs) {
   const images = await Promise.all(
-    data.images.map(async (image) =>
+    dataImages.map(async (image) =>
       createUploadUrl({
         contentType: image.contentType,
         filename: image.filename,
@@ -51,36 +38,21 @@ export async function presignDirectMessageImagesService({
     )
   );
 
-  return {
+  return serverFetchOutput({
     status: 200,
-    body: {
-      title: "Presigned URLs",
-      message: "Successfully generated presigned URLs",
-      success: true,
-      images,
-    },
-  };
+    message: "Successfully generated presigned URLs",
+    success: true,
+    data: { images },
+  });
 }
 
 export async function searchAllUsersWithQueryService({
-  rawData,
+  data,
   userId,
 }: {
-  rawData: unknown;
+  data: SearchArgs;
   userId: User["id"];
 }) {
-  const { data, success } = searchSchema.safeParse(rawData);
-
-  if (!success) {
-    return {
-      status: 400,
-      body: {
-        title: "Invalid data, cannot create notification",
-        message: "Invalid data",
-      },
-    };
-  }
-
   const users = await searchAllUsers({
     query: data.query,
     userId,
@@ -92,14 +64,12 @@ export async function searchAllUsersWithQueryService({
   // TODO: When I implement the real search, make small algrithm
   // TODO: Pagniate this?
 
-  return {
+  return toastResponseOutput({
     status: 200,
-    body: {
-      title: "Users retrieved successfully",
-      message: "Users retrieved successfully",
-      users,
-    },
-  };
+    title: "Users retrieved successfully",
+    message: "Users retrieved successfully",
+    data: { users },
+  });
 }
 
 export async function listAllDirectMessagesConversationsService(
@@ -107,68 +77,41 @@ export async function listAllDirectMessagesConversationsService(
 ) {
   const conversations = await listAllDirectMessagesConversation(userId);
 
-  return {
+  return toastResponseOutput({
     status: 200,
-    body: {
-      title: "Direct messages conversations retrieved",
-      message: "Direct messages conversations retrieved successfully",
+    title: "Direct messages conversations retrieved",
+    message: "Direct messages conversations retrieved successfully",
+    data: {
       conversations: conversations.map((conversation) => ({
         ...conversation,
         participant: conversation.participants.find(
-          (participant) => participant.userId !== userId // Uzimam podatke od drugog korisnika (ne o sebi)
+          (participant) => participant.userId !== userId
         )!.user,
       })),
     },
-  };
+  });
 }
 
-export async function getDirectMessagesConversationByIdService(
-  rawData: unknown
-) {
-  const { data, success } = conversationSchema.safeParse(rawData);
+export async function getDirectMessagesConversationByIdService({
+  conversationId,
+}: ConversationArgs) {
+  const conversation = await getDirectMessagesConversationById(conversationId);
 
-  if (!success) {
-    return {
-      status: 400,
-      body: {
-        title: "Invalid data, cannot get conversation",
-        message: "Invalid data",
-      },
-    };
-  }
-
-  const conversation = await getDirectMessagesConversationById(
-    data.conversationId
-  );
-
-  return {
+  return toastResponseOutput({
     status: 200,
-    body: {
-      title: "Direct messages conversation retrieved",
-      message: "Direct messages conversation retrieved successfully",
-      conversation,
-    },
-  };
+    message: "Conversation retrieved successfully",
+    title: "Conversation retrieved successfully",
+    data: { conversation },
+  });
 }
 
 export async function startConversationOrStartAndSendDirectMessageService({
-  rawData,
   userId,
+  data,
 }: {
-  rawData: unknown;
+  data: CreateDirectMessageArgs;
   userId: User["id"];
 }) {
-  const { success, data } = createDirectMessageSchema.safeParse(rawData);
-  if (!success) {
-    return {
-      status: 400,
-      body: {
-        title: "Invalid data, cannot create notification",
-        message: "Invalid data",
-      },
-    };
-  }
-
   // TODO: Vidi je li trebam ionako ista vratiti na frontu
   const { conversation, message } =
     await startConversationOrStartAndSendDirectMessage({
@@ -182,20 +125,16 @@ export async function startConversationOrStartAndSendDirectMessageService({
 
   const receiverSocketId = getReceiverSocketId(data.particpantId);
 
-  // Kreiranje poruke korisniku
-  if (receiverSocketId)
-    io.to(receiverSocketId).emit<EmitNewChat>("new-chat", message);
+  // Prikazivanje poruke korisniku
+  if (receiverSocketId) io.to(receiverSocketId).emit("new-chat", message);
 
-  // Kreiranje poruke sebi
-  if (senderSocketId)
-    io.to(senderSocketId).emit<EmitNewChat>("new-chat", message);
+  // Prikazivanje poruke sebi
+  if (senderSocketId) io.to(senderSocketId).emit("new-chat", message);
 
-  return {
+  return toastResponseOutput({
     status: 200,
-    body: {
-      title: "Message is sent",
-      message: "Message is successfully sent to the wanted user",
-      conversationId: conversation.id,
-    },
-  };
+    title: "Message is sent",
+    message: "Message is successfully sent to the wanted user",
+    data: { conversationId: conversation.id },
+  });
 }

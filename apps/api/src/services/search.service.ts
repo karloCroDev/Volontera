@@ -1,41 +1,29 @@
 // Models
+import { toastResponseOutput } from "@/lib/utils/service-output";
 import { searchUsers } from "@/models/search.model";
 
 // Database
 import { User } from "@repo/database";
 
 // Schemas
-import { searchUserSchema } from "@repo/schemas/search";
+import { SearchUserArgs } from "@repo/schemas/search";
 
 export async function searchUsersService({
-  rawData,
+  data,
   userId,
 }: {
-  rawData: unknown;
+  data: SearchUserArgs;
   userId: User["id"];
 }) {
-  const { success, data } = searchUserSchema.safeParse(rawData);
-
-  if (!success) {
-    return {
-      status: 400,
-      body: {
-        message: "Invalid request data",
-      },
-    };
-  }
-
   const { organizations, users } = await searchUsers({
     query: data.query,
     userId,
   });
 
-  return {
+  return toastResponseOutput({
     status: 200,
-    body: {
-      message: "Search results fetched successfully",
-      organizations,
-      users,
-    },
-  };
+    message: "Search results fetched successfully",
+    title: "Search Completed",
+    data: { organizations, users },
+  });
 }

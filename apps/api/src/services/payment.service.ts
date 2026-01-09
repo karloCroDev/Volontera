@@ -12,6 +12,10 @@ import {
   updateSubscription,
 } from "@/models/payment.model";
 
+// Schema types
+import { CreateCheckoutSessionArgs } from "@repo/schemas/payment";
+import { toastResponseOutput } from "@/lib/utils/service-output";
+
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
 export async function webhookService({
@@ -22,10 +26,11 @@ export async function webhookService({
   body: unknown;
 }) {
   if (typeof body !== "string" && !(body instanceof Buffer)) {
-    return {
+    return toastResponseOutput({
       status: 400,
-      body: { success: false, message: "Invalid body format" },
-    };
+      title: "Invalid body format",
+      message: "The webhook body must be a string or Buffer",
+    });
   }
 
   const event = stripe.webhooks.constructEvent(
@@ -131,63 +136,50 @@ export async function webhookService({
       console.log(`Unhandled event type: ${event.type}`);
   }
 
-  return {
+  return toastResponseOutput({
     status: 200,
-    body: { success: true, message: "Event processed successfully" },
-  };
+    title: "Webhook processed",
+    message: "Webhook event has been processed successfully",
+  });
 }
 
 export async function checkoutService({
   userId,
-  priceId,
+  data,
 }: {
   userId: User["id"];
-  priceId: string;
+  data: CreateCheckoutSessionArgs;
 }) {
-  console.log(priceId);
-  if (typeof priceId !== "string") {
-    return {
-      status: 400,
-      body: {
-        title: "Your url for link isn't created successfuly",
-        message: "Invalid priceId",
-      },
-    };
-  }
   const session = await stripe.checkout.sessions.create({
     mode: "subscription",
     success_url: `${process.env.WEB_URL}/select-plan/success`,
     cancel_url: `${process.env.WEB_URL}/select-plan/cancel`,
     line_items: [
       {
-        price: priceId,
+        price: data.priceId,
         quantity: 1,
       },
     ],
 
-    client_reference_id: userId, // <-- THIS IS THE IMPORTANT PART
+    client_reference_id: userId,
   });
 
-  return {
+  return toastResponseOutput({
     status: 200,
-    body: {
-      title: "Your url for link is created successfuly",
-      message: "Successfully created the url",
-      url: session.url,
-    },
-  };
+    title: "Your url for link is created successfuly",
+    message: "Successfully created the url",
+    data: { url: session.url },
+  });
 }
 
 export async function billingService({ userId }: { userId: User["id"] }) {
   const customerId = await getCustomerId(userId);
   if (!customerId) {
-    return {
+    return toastResponseOutput({
       status: 400,
-      body: {
-        success: false,
-        message: "Customer ID not found",
-      },
-    };
+      title: "Customer ID not found",
+      message: "Customer ID not found",
+    });
   }
 
   const session = await stripe.billingPortal.sessions.create({

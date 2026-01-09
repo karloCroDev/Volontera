@@ -12,7 +12,16 @@ import {
   toggleLikeCommentService,
   toggleLikeReplyService,
 } from "@/services/comment.service";
-import { retrieveCommentReplies } from "@/models/comment.model";
+
+// Schema types
+import {
+  DeleteCommentArgs,
+  DeleteReplyArgs,
+  LikeOrDislikeReplyArgs,
+  RetrieveCommentRepliesArgs,
+  RetrievePostCommentsArgs,
+} from "@repo/schemas/comment";
+import { handleServerErrorResponse } from "@/lib/utils/error-response";
 
 export async function retrievePostCommentsController(
   req: Request,
@@ -20,50 +29,51 @@ export async function retrievePostCommentsController(
 ) {
   try {
     const result = await retrievePostCommentsService({
-      rawData: req.params,
+      data: req.params as RetrievePostCommentsArgs,
       userId: req.user.userId,
     });
     return res.status(result.status).json(result.body);
   } catch (err) {
-    return res.status(500).json({ success: false, message: "Internal error" });
+    handleServerErrorResponse(res, err);
   }
 }
 
 export async function createCommentController(req: Request, res: Response) {
   try {
     const result = await createCommentService({
-      rawData: req.body,
+      data: req.body,
       userId: req.user.userId,
     });
 
     return res.status(result.status).json(result.body);
   } catch (err) {
-    return res.status(500).json({ success: false, message: "Internal error" });
+    handleServerErrorResponse(res, err);
   }
 }
 
 export async function deleteCommentController(req: Request, res: Response) {
   try {
     const result = await deleteCommentService({
-      rawData: req.params,
+      data: req.params as DeleteCommentArgs,
+      userId: req.user.userId,
     });
 
     return res.status(result.status).json(result.body);
   } catch (err) {
-    return res.status(500).json({ success: false, message: "Internal error" });
+    handleServerErrorResponse(res, err);
   }
 }
 
 export async function toggleLikeCommentController(req: Request, res: Response) {
   try {
     const result = await toggleLikeCommentService({
-      rawData: req.params,
+      data: req.body,
       userId: req.user.userId,
     });
 
     return res.status(result.status).json(result.body);
   } catch (err) {
-    return res.status(500).json({ success: false, message: "Internal error" });
+    handleServerErrorResponse(res, err);
   }
 }
 
@@ -72,37 +82,38 @@ export async function toggleLikeCommentController(req: Request, res: Response) {
 export async function createReplyController(req: Request, res: Response) {
   try {
     const result = await createReplyService({
-      rawData: req.body,
+      data: req.body,
       userId: req.user.userId,
     });
 
     return res.status(result.status).json(result.body);
   } catch (err) {
-    return res.status(500).json({ success: false, message: "Internal error" });
+    handleServerErrorResponse(res, err);
   }
 }
 
 export async function deleteReplyController(req: Request, res: Response) {
   try {
     const result = await deleteReplyService({
-      rawData: req.params,
+      data: req.params as DeleteReplyArgs,
+      userId: req.user.userId,
     });
 
     return res.status(result.status).json(result.body);
   } catch (err) {
-    return res.status(500).json({ success: false, message: "Internal error" });
+    handleServerErrorResponse(res, err);
   }
 }
 
 export async function toggleLikeReplyController(req: Request, res: Response) {
   try {
     const result = await toggleLikeReplyService({
-      rawData: req.body,
+      data: req.params as LikeOrDislikeReplyArgs,
       userId: req.user.userId,
     });
     return res.status(result.status).json(result.body);
   } catch (err) {
-    return res.status(500).json({ success: false, message: "Internal error" });
+    handleServerErrorResponse(res, err);
   }
 }
 
@@ -112,11 +123,11 @@ export async function retrieveCommentRepliesController(
 ) {
   try {
     const result = await retrieveCommentRepliesService({
-      rawData: req.params,
+      data: req.params as RetrieveCommentRepliesArgs,
       userId: req.user.userId,
     });
     return res.status(result.status).json(result.body);
   } catch (err) {
-    return res.status(500).json({ success: false, message: "Internal error" });
+    handleServerErrorResponse(res, err);
   }
 }

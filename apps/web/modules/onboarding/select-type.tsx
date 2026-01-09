@@ -16,12 +16,10 @@ import { useAppType } from '@/hooks/data/onboarding';
 // Lib
 import { toast } from '@/lib/utils/toast';
 import { withReactQueryProvider } from '@/lib/utils/react-query';
-
-// Types
-import { AppType } from '@repo/types/onboarding';
+import { AppTypeSchemaArgs } from '@repo/schemas/onboarding';
 
 export const SelectType = withReactQueryProvider(() => {
-	const [type, setType] = React.useState<AppType>('USER');
+	const [type, setType] = React.useState<AppTypeSchemaArgs['appType']>('USER');
 	const [error, setError] = React.useState('');
 	const router = useRouter();
 	const { mutate, isPending } = useAppType();
@@ -31,7 +29,7 @@ export const SelectType = withReactQueryProvider(() => {
 		<div className="flex flex-col items-end justify-center">
 			<RadioGroup
 				className="mt-8 flex w-full flex-col gap-8 self-start lg:mt-12"
-				onChange={(val) => setType(val as AppType)}
+				onChange={(val) => setType(val as AppTypeSchemaArgs['appType'])}
 				defaultValue={type}
 			>
 				<Radio className="group" value="USER">
@@ -54,20 +52,25 @@ export const SelectType = withReactQueryProvider(() => {
 				isDisabled={!type}
 				isLoading={isPending}
 				onPress={() => {
-					mutate(type, {
-						onSuccess: ({ message, title }) => {
-							router.push('/onboarding/additional-information');
-							toast({
-								title,
-								content: message,
-								variant: 'success',
-							});
+					mutate(
+						{
+							appType: type,
 						},
+						{
+							onSuccess: ({ message, title }) => {
+								router.push('/onboarding/additional-information');
+								toast({
+									title,
+									content: message,
+									variant: 'success',
+								});
+							},
 
-						onError: ({ message }) => {
-							setError(message);
-						},
-					});
+							onError: ({ message }) => {
+								setError(message);
+							},
+						}
+					);
 				}}
 			>
 				Next

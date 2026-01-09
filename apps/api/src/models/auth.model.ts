@@ -1,5 +1,5 @@
 // Database
-import { prisma, User } from "@repo/database";
+import { Accounts, prisma, User } from "@repo/database";
 
 export async function findUserByEmail(email: string) {
   return prisma.user.findUnique({
@@ -122,4 +122,27 @@ export async function updateVerificationToken({
       verificationTokenExpiresAt: expireDate,
     },
   });
+}
+
+export async function upsertOAuthUser({
+  email,
+  firstName,
+}: {
+  email: User["email"];
+  firstName: User["firstName"];
+}) {
+  return prisma.user.upsert({
+    where: { email },
+    update: {},
+    create: {
+      email,
+      firstName,
+      lastName: "",
+      password: "",
+    },
+  });
+}
+
+export async function addAccountToOAuthUser(data: Omit<Accounts, "id">) {
+  return prisma.accounts.create({ data });
 }

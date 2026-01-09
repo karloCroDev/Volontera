@@ -40,7 +40,7 @@ export const PostsMapping: React.FC<{
 	});
 
 	return (
-		<div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
+		<div className="mt-6 grid grid-cols-1 gap-4 xl:grid-cols-2">
 			{data.posts.length > 0 ? (
 				data.posts.map((post) => (
 					<Post

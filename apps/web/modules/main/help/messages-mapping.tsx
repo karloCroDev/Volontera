@@ -13,7 +13,7 @@ import { useGetHelpConversation } from '@/hooks/data/help';
 
 // Lib
 import { withReactQueryProvider } from '@/lib/utils/react-query';
-import { convertToFullname } from '@/lib/utils/convert-to-fullname';
+import { convertToFullname } from '@/lib/utils/converter';
 
 // Types
 import { UserResponse } from '@repo/types/user';
