@@ -7,14 +7,18 @@ import { retrieveOrganizationMember } from "@/models/organization-managment.mode
 // Database
 import { Organization, OrganizationMember } from "@repo/database";
 
-export function organizationRolesMiddleware(
-  aquiredRoles?: OrganizationMember["role"][]
-) {
+export function organizationRolesMiddleware({
+  aquiredRoles,
+  type = "body",
+}: {
+  aquiredRoles?: OrganizationMember["role"][];
+  type?: "body" | "query" | "params";
+}) {
   // TODO: Redis will be sigma sigma and cache this!!
   return async (req: Request, res: Response, next: NextFunction) => {
     const { userId } = req.user;
     const member = await retrieveOrganizationMember({
-      organizationId: req.params.organizationId as Organization["id"],
+      organizationId: req[type].organizationId as Organization["id"],
       userId: userId,
     });
 

@@ -59,21 +59,16 @@ export async function retrieveAllMembersInOrganizationService({
   });
 }
 
-export async function acceptOrDeclineUsersRequestToJoinOrganizationService({
-  data,
-  userId,
-}: {
-  data: AcceptOrDeclineUsersRequestToJoinOrganizationArgs;
-  userId: User["id"];
-}) {
-  await acceptOrDeclineUsersRequestToJoinOrganization({
-    ...data,
-    requesterId: userId,
-  });
+export async function acceptOrDeclineUsersRequestToJoinOrganizationService(
+  data: AcceptOrDeclineUsersRequestToJoinOrganizationArgs
+) {
+  await acceptOrDeclineUsersRequestToJoinOrganization(data);
 
   return toastResponseOutput({
     title: "Requests Updated",
-    message: "User's request to join organization updated successfully",
+    message: data.status
+      ? "Users request to join organization updated successfully"
+      : "Users request to join organization rejected successfully",
     status: 200,
   });
 }

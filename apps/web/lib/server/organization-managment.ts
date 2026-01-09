@@ -25,7 +25,7 @@ export async function retrieveAllUsersInOrganization(
 > {
 	return await serverFetch({
 		url: `organization-managment/users/${organizationId}`,
-		init: { next: { tags: ['organization-details'] }, cache: 'no-store' },
+		init: { next: { tags: ['organization-members'] }, cache: 'no-store' },
 	});
 }
 

@@ -4,6 +4,7 @@ import {
   OrganizationJoinRequest,
   OrganizationMember,
   prisma,
+  User,
 } from "@repo/database";
 
 export async function retirveAllRequestsToJoinOrganization(
@@ -30,9 +31,9 @@ export async function retrieveAllMembersInOrganization({
   return prisma.organizationMember.findMany({
     where: {
       organizationId,
-      // NOT: {
-      //   userId,
-      // },
+      NOT: {
+        userId,
+      },
     },
     include: {
       user: true,
@@ -42,18 +43,20 @@ export async function retrieveAllMembersInOrganization({
 
 export async function acceptOrDeclineUsersRequestToJoinOrganization({
   organizationId,
-  requesterId,
+  requesterIds,
   status,
 }: {
+  requesterIds: OrganizationJoinRequest["requesterId"][];
   organizationId: Organization["id"];
-  requesterId: string;
   status: OrganizationJoinRequest["status"];
 }) {
   return prisma.organizationJoinRequest.updateMany({
     where: {
       organizationId,
-      requesterId,
       status: "PENDING",
+      requesterId: {
+        in: requesterIds,
+      },
     },
     data: {
       status,
@@ -86,7 +89,7 @@ export async function retrieveOrganizationMember({
   userId,
 }: {
   organizationId: Organization["id"];
-  userId: string;
+  userId: User["id"];
 }) {
   return prisma.organizationMember.findUnique({
     where: {

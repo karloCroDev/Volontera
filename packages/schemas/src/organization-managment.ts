@@ -33,10 +33,11 @@ export type DemoteOrPromoteOrganizationMemberArgs = z.infer<
 >;
 
 export const acceptOrDeclineUsersRequestToJoinOrganizationSchema = z.object({
+  requesterIds: z.array(z.cuid()),
   organizationId: z.cuid(),
-  requesterId: z.cuid(),
   status: z.enum(["APPROVED", "REJECTED"]),
 });
+
 export type AcceptOrDeclineUsersRequestToJoinOrganizationArgs = z.infer<
   typeof acceptOrDeclineUsersRequestToJoinOrganizationSchema
 >;

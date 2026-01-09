@@ -86,10 +86,9 @@ export async function acceptOrDeclineUsersRequestToJoinOrganizationController(
   res: Response
 ) {
   try {
-    const result = await acceptOrDeclineUsersRequestToJoinOrganizationService({
-      data: req.body,
-      userId: req.user.userId,
-    });
+    const result = await acceptOrDeclineUsersRequestToJoinOrganizationService(
+      req.body
+    );
     return res.status(result.status).json(result.body);
   } catch (err) {
     handleServerErrorResponse(res, err);

@@ -34,7 +34,10 @@ organizationManagmentRoutes.get(
     type: "params",
     responseOutput: "server",
   }),
-  organizationRolesMiddleware(),
+  organizationRolesMiddleware({
+    type: "params",
+    aquiredRoles: ["MEMBER", "ADMIN"],
+  }),
   retrieveAllRequestsToJoinOrganizationController
 );
 
@@ -45,7 +48,10 @@ organizationManagmentRoutes.get(
     type: "params",
     responseOutput: "server",
   }),
-  organizationRolesMiddleware(),
+  organizationRolesMiddleware({
+    type: "params",
+    aquiredRoles: ["MEMBER", "ADMIN"],
+  }),
   retrieveAllUsersInOrganizationController
 );
 organizationManagmentRoutes.get(
@@ -55,7 +61,10 @@ organizationManagmentRoutes.get(
     type: "params",
     responseOutput: "server",
   }),
-  organizationRolesMiddleware(["MEMBER", "ADMIN"]),
+  organizationRolesMiddleware({
+    type: "params",
+    aquiredRoles: ["MEMBER", "ADMIN"],
+  }),
   retrieveOrganizationMemberController
 );
 
@@ -65,7 +74,7 @@ organizationManagmentRoutes.post(
     schema: acceptOrDeclineUsersRequestToJoinOrganizationSchema,
     responseOutput: "toast",
   }),
-  organizationRolesMiddleware(),
+  organizationRolesMiddleware({}),
   acceptOrDeclineUsersRequestToJoinOrganizationController
 );
 
@@ -75,6 +84,6 @@ organizationManagmentRoutes.post(
     schema: demoteOrPromoteOrganizationMemberSchema,
     responseOutput: "toast",
   }),
-  organizationRolesMiddleware(),
+  organizationRolesMiddleware({}),
   demoteOrPromoteOrganizationMemberController
 );
