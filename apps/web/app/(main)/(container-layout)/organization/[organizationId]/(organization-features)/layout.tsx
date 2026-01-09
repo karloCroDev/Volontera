@@ -1,8 +1,14 @@
+// External packages
+import { notFound } from 'next/navigation';
+
 // Components
 import { Avatar } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { OrganizationRoutingHeader } from '@/modules/main/organization/common/organization-routing-header';
 import { LinkAsButton } from '@/components/ui/link-as-button';
+
+// Lib
+import { getOrganizationDetailsById } from '@/lib/server/organization';
 
 export default async function OrganizationFeaturesLayout({
 	params,
@@ -12,22 +18,30 @@ export default async function OrganizationFeaturesLayout({
 	children: React.ReactNode;
 }) {
 	const { organizationId } = await params;
+
+	const organizationDetailsById =
+		await getOrganizationDetailsById(organizationId);
+
+	if (!organizationDetailsById.success) {
+		notFound();
+	}
+
 	return (
 		<>
-			<div className="border-input-border bg-muted flex flex-shrink-0 flex-col items-center gap-6 rounded-xl border p-4 md:h-40 md:flex-row md:px-6">
+			<div className="border-input-border bg-muted relative flex flex-shrink-0 flex-col items-center gap-6 rounded-xl border p-4 md:h-40 md:flex-row md:px-6">
 				<Avatar
 					imageProps={{
-						src: '',
+						src: organizationDetailsById.organization.avatarImage,
 					}}
 					size="xl"
 					colorScheme="gray"
 				>
-					Organization
+					{organizationDetailsById.organization.name}
 				</Avatar>
 
 				<div className="flex flex-col">
 					<h1 className="text-lg font-medium md:text-2xl lg:text-3xl">
-						Organization #1
+						{organizationDetailsById.organization.name}
 					</h1>
 
 					<p className="text-muted-foreground">30 attendees | 300 followers </p>

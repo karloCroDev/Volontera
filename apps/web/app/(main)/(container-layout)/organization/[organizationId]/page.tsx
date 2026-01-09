@@ -8,17 +8,16 @@ import { Tag } from '@/components/ui/tag';
 import { SharePost } from '@/components/ui/post/share-post';
 import { Button } from '@/components/ui/button';
 import { AnchorAsButton } from '@/components/ui/anchor-as-button';
+import { LinkAsButton } from '@/components/ui/link-as-button';
 
 // Modules
 import { OrganizationRoutingHeader } from '@/modules/main/organization/common/organization-routing-header';
-
 import { CreatePostDialog } from '@/modules/main/organization/home/create-post-dialog';
 import { PostsMapping } from '@/modules/main/organization/home/posts-mapping';
+
 // Lib
 import { getOrganizationDetailsById } from '@/lib/server/organization';
-import { getImageFromKey } from '@/lib/server/image';
 import { retrieveOrganizationPosts } from '@/lib/server/post';
-import { LinkAsButton } from '@/components/ui/link-as-button';
 
 export default async function OrganizationPage({
 	params,
@@ -31,28 +30,10 @@ export default async function OrganizationPage({
 	const organizationDetailsById =
 		await getOrganizationDetailsById(organizationId);
 
-	console.log(organizationDetailsById);
 	if (!organizationDetailsById.success) notFound();
-
-	const avatarKey = organizationDetailsById.organization.avatarImage;
-	const coverKey =
-		organizationDetailsById.organization.organizationInfo.coverImage;
-	const imageKeys = [avatarKey, coverKey].filter(Boolean);
-
-	const imageResponse = imageKeys.length
-		? await getImageFromKey({ imageUrls: imageKeys })
-		: null;
-
-	const organizationAvatarImage = imageResponse?.urls
-		? imageResponse.urls[avatarKey]
-		: '';
-	const organizationCoverImage = imageResponse?.urls
-		? imageResponse.urls[coverKey]
-		: '';
 
 	const posts = await retrieveOrganizationPosts({ organizationId });
 
-	console.log(posts);
 	if (!posts.success) notFound();
 	return (
 		<>
@@ -69,7 +50,7 @@ export default async function OrganizationPage({
 						<div className="flex w-fit flex-col items-center">
 							<Avatar
 								imageProps={{
-									src: organizationAvatarImage,
+									src: organizationDetailsById.organization.avatarImage,
 								}}
 								colorScheme="gray"
 								size="2xl"
@@ -186,14 +167,14 @@ export default async function OrganizationPage({
 				</div>
 
 				<div className="absolute left-0 top-0 -z-[1] h-64 w-full overflow-hidden md:rounded-t-xl">
-					{organizationCoverImage && (
-						<Image
-							src={organizationCoverImage}
-							alt="Cover image url"
-							fill
-							className="object-cover"
-						/>
-					)}
+					<Image
+						src={
+							organizationDetailsById.organization.organizationInfo.coverImage
+						}
+						alt="Cover image url"
+						fill
+						className="object-cover"
+					/>
 				</div>
 			</div>
 

@@ -1,5 +1,5 @@
 // Schemas
-import { createUploadUrl } from "@/lib/aws-s3-functions";
+import { createUploadUrl, getImagePresignedUrls } from "@/lib/aws-s3-functions";
 import {
   serverFetchOutput,
   toastResponseOutput,
@@ -77,7 +77,22 @@ export async function getOrganizationDetailsByIdService({
     status: 200,
     success: true,
     message: "Organization details retrieved successfully",
-    data: { organization },
+    data: {
+      organization: {
+        ...organization,
+
+        // Samo dvije slike pa je jednostavnije da ovako handleam na licu mjesta
+        avatarImage: await getImagePresignedUrls(organization.avatarImage),
+        organizationInfo: {
+          ...organization.organizationInfo,
+          coverImage: organization.organizationInfo
+            ? await getImagePresignedUrls(
+                organization.organizationInfo.coverImage
+              )
+            : null,
+        },
+      },
+    },
   });
 }
 

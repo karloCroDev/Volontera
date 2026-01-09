@@ -16,7 +16,6 @@ export default async function PostWithComments({
 	params: Promise<{ postId: string }>;
 }) {
 	const { postId } = await params;
-	console.log(postId);
 
 	const postWithComments = await retrievePostWithComments({ postId });
 
@@ -31,13 +30,14 @@ export default async function PostWithComments({
 				})
 			: null;
 
-	console.log('POST WITH COMMENTS:', postWithComments.post.postComments);
 	return (
 		<>
 			<Post post={postWithComments.post} images={imageResponse?.urls} />
 			<hr className="bg-muted my-6 h-px w-full border-0" />
 			<div className="border-input-border bg-muted max-h- relative w-full rounded-xl border px-5 py-6">
-				<h4 className="text-lg font-semibold italic lg:text-xl">Comments</h4>
+				<h4 className="text-lg font-semibold underline underline-offset-4 lg:text-xl">
+					Comments
+				</h4>
 				<hr className="bg-input-border my-2 h-px w-full border-0" />
 				<CommentsMapping
 					comments={{

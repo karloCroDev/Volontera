@@ -108,6 +108,12 @@ export async function createOrganization({
             : undefined,
         },
       },
+      organizationMembers: {
+        create: {
+          userId,
+          role: "OWNER",
+        },
+      },
     },
   });
 }
