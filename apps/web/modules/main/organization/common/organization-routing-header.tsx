@@ -26,7 +26,7 @@ export const OrganizationRoutingHeader = () => {
 				>
 					Posts
 				</LinkAsButton>
-
+				{/* Add separators */}
 				<LinkAsButton
 					variant="ghost"
 					href={`/organization/${params.organizationId}/group-chat`}

@@ -46,7 +46,7 @@ export async function retrieveAllMembersInOrganizationService({
   data: RetrieveAllMembersInOrganizationArgs;
   userId: User["id"];
 }) {
-  const requests = await retrieveAllMembersInOrganization({
+  const members = await retrieveAllMembersInOrganization({
     organizationId: data.organizationId,
     userId,
   });
@@ -55,7 +55,7 @@ export async function retrieveAllMembersInOrganizationService({
     status: 200,
     success: true,
     message: "Users retrieved successfully",
-    data: { requests },
+    data: { members },
   });
 }
 
@@ -73,17 +73,10 @@ export async function acceptOrDeclineUsersRequestToJoinOrganizationService(
   });
 }
 
-export async function demoteOrPromoteOrganizationMemberService({
-  data,
-  userId,
-}: {
-  data: DemoteOrPromoteOrganizationMemberArgs;
-  userId: User["id"];
-}) {
-  await demoteOrPromoteOrganizationMember({
-    ...data,
-    userId,
-  });
+export async function demoteOrPromoteOrganizationMemberService(
+  data: DemoteOrPromoteOrganizationMemberArgs
+) {
+  await demoteOrPromoteOrganizationMember(data);
 
   return toastResponseOutput({
     message: "Organization member role updated successfully",

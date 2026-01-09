@@ -2,7 +2,6 @@
 
 // External pakcages
 import * as React from 'react';
-import { Form } from 'react-aria-components';
 import Link from 'next/link';
 
 // Components
@@ -10,65 +9,127 @@ import { Button } from '@/components/ui/button';
 import { Avatar } from '@/components/ui/avatar';
 import { RetrieveAllMembersInOrganizationResponse } from '@repo/types/organization-managment';
 import { convertToFullname, convertToPascalCase } from '@/lib/utils/converter';
-
-// Schemas
-// import { NotificationIdsArgs } from '@repo/schemas/notification';
+import { useGetImageFromKeys } from '@/hooks/data/image';
+import { useDemoteOrPromoteOrganizationMember } from '@/hooks/data/organization-managment';
+import { DemoteOrPromoteOrganizationMemberArgs } from '@repo/schemas/organization-managment';
+import { useParams } from 'next/navigation';
+import { toast } from '@/lib/utils/toast';
+import { IRevalidateTag } from '@/lib/server/revalidation';
 
 export const CurrentUsersForm: React.FC<{
 	users: RetrieveAllMembersInOrganizationResponse;
 }> = ({ users }) => {
-	// const [ids, setIds] = React.useState<NotificationIdsArgs['notificationIds']>(
-	// 	[]
-	// );
-	const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-		e.preventDefault();
+	const params = useParams<{ organizationId: string }>();
+	const { mutate } = useDemoteOrPromoteOrganizationMember();
+
+	const onSubmit = ({
+		role,
+		userId,
+	}: {
+		userId: DemoteOrPromoteOrganizationMemberArgs['userId'];
+		role: DemoteOrPromoteOrganizationMemberArgs['role'];
+	}) => {
+		mutate(
+			{
+				userId,
+				role,
+				organizationId: params.organizationId,
+			},
+			{
+				onSuccess({ message, title }) {
+					toast({
+						title,
+						content: message,
+						variant: 'success',
+					});
+					IRevalidateTag('organization-members');
+				},
+				onError({ title, message }) {
+					toast({
+						title,
+						content: message,
+						variant: 'error',
+					});
+				},
+			}
+		);
 	};
 
-	console.log(users.requests[0]);
+	const { data: images } = useGetImageFromKeys({
+		imageUrls: users.members
+			.map((member) => member.user.image)
+			.filter((image) => image !== null),
+	});
+
 	return (
-		<Form
-			className="border-input-border min-h-1/2 max-h-3/4 overflow-scroll rounded-xl border py-1"
-			onSubmit={onSubmit}
-		>
-			{users.requests.map((user) => (
+		<div className="border-input-border min-h-1/2 max-h-3/4 overflow-scroll rounded-xl border py-1">
+			{users.members.map((memeber) => (
 				<div
 					className="border-input-border flex w-full items-center gap-4 border-b px-6 py-3 lg:gap-6"
-					key={user.id}
+					key={memeber.id}
 				>
-					<Link href="/" className="flex items-center gap-4">
+					<Link
+						href={`/profile/${memeber.user.id}`}
+						className="flex items-center gap-4"
+					>
 						<Avatar
 							size="sm"
 							imageProps={{
-								src: '',
+								src: memeber.user.image
+									? images?.urls[memeber.user.image]
+									: undefined,
 							}}
 						>
 							{convertToFullname({
-								firstname: user.user.firstName || '',
-								lastname: user.user.lastName || '',
+								firstname: memeber.user.firstName || '',
+								lastname: memeber.user.lastName || '',
 							})}
 						</Avatar>
 
 						<p className="underline-offset-2 hover:underline">
 							{convertToFullname({
-								firstname: user.user.firstName || '',
-								lastname: user.user.lastName || '',
+								firstname: memeber.user.firstName || '',
+								lastname: memeber.user.lastName || '',
 							})}
 						</p>
 					</Link>
 					<p className="text-muted-foreground text-sm">
-						{convertToPascalCase(user.role)}
+						{convertToPascalCase(memeber.role)}
 					</p>
 
 					<div className="ml-auto flex gap-3">
-						<Button isFullyRounded colorScheme="success" size="xs">
-							Set to admin
-						</Button>
-						<Button isFullyRounded colorScheme="yellow" size="xs">
-							Remove admin role
-						</Button>
+						{memeber.role === 'MEMBER' ? (
+							<Button
+								isFullyRounded
+								colorScheme="success"
+								size="xs"
+								onPress={() =>
+									onSubmit({
+										role: 'ADMIN',
+										userId: memeber.user.id,
+									})
+								}
+							>
+								Set to admin
+							</Button>
+						) : (
+							<Button
+								isFullyRounded
+								colorScheme="yellow"
+								size="xs"
+								onPress={() =>
+									onSubmit({
+										role: 'MEMBER',
+										userId: memeber.user.id,
+									})
+								}
+							>
+								Remove admin role
+							</Button>
+						)}
 					</div>
 				</div>
 			))}
-		</Form>
+		</div>
 	);
 };

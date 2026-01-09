@@ -7,7 +7,7 @@ import { ServerHandleResponse } from "./general";
 
 export type RetrieveAllMembersInOrganizationResponse =
   ServerHandleResponse<true> & {
-    requests: ({
+    members: ({
       user: Omit<User, "password">;
     } & OrganizationMember)[];
   };

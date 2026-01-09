@@ -50,17 +50,26 @@ export async function acceptOrDeclineUsersRequestToJoinOrganization({
   organizationId: Organization["id"];
   status: OrganizationJoinRequest["status"];
 }) {
-  return prisma.organizationJoinRequest.updateMany({
-    where: {
-      organizationId,
-      status: "PENDING",
-      requesterId: {
-        in: requesterIds,
+  return prisma.$transaction(async (tx) => {
+    await tx.organizationJoinRequest.updateMany({
+      where: {
+        organizationId,
+        status: "PENDING",
+        requesterId: {
+          in: requesterIds,
+        },
       },
-    },
-    data: {
-      status,
-    },
+      data: {
+        status,
+      },
+    });
+
+    await tx.organizationMember.createMany({
+      data: requesterIds.map((requesterId) => ({
+        organizationId,
+        userId: requesterId,
+      })),
+    });
   });
 }
 
@@ -70,7 +79,7 @@ export async function demoteOrPromoteOrganizationMember({
   role,
 }: {
   organizationId: Organization["id"];
-  userId: string;
+  userId: User["id"];
   role: OrganizationMember["role"];
 }) {
   return prisma.organizationMember.updateMany({

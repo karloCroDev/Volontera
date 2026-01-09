@@ -71,10 +71,7 @@ export async function demoteOrPromoteOrganizationMemberController(
   res: Response
 ) {
   try {
-    const result = await demoteOrPromoteOrganizationMemberService({
-      data: req.body,
-      userId: req.user.userId,
-    });
+    const result = await demoteOrPromoteOrganizationMemberService(req.body);
     return res.status(result.status).json(result.body);
   } catch (err) {
     handleServerErrorResponse(res, err);
