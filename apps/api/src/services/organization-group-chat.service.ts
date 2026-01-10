@@ -4,6 +4,7 @@ import {
   createOrganizationGroupChatMessage,
   retrieveAllOrganizationGroupChatMessages,
 } from "@/models/organization-group-chat.model";
+import { User } from "@repo/database";
 
 // Schema types
 import {
@@ -25,10 +26,17 @@ export async function retrieveAllOrganizationGroupChatMessagesService({
   });
 }
 
-export async function createOrganizationGroupChatMessageService(
-  data: CreateOrganizationGroupChatMessageArgs
-) {
-  const message = await createOrganizationGroupChatMessage(data);
+export async function createOrganizationGroupChatMessageService({
+  data,
+  userId,
+}: {
+  data: CreateOrganizationGroupChatMessageArgs;
+  userId: User["id"];
+}) {
+  const message = await createOrganizationGroupChatMessage({
+    ...data,
+    senderId: userId,
+  });
   return serverFetchOutput({
     status: 200,
     message: "Successfully created organization group chat message",

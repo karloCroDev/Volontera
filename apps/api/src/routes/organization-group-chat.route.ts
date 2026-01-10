@@ -1,38 +1,49 @@
-// Models
-import { serverFetchOutput } from "@/lib/utils/service-output";
-import {
-  createOrganizationGroupChatMessage,
-  retrieveAllOrganizationGroupChatMessages,
-} from "@/models/organization-group-chat.model";
+// External packages
+import express from "express";
+import { Router } from "express";
 
-// Schema types
+// Controllers
 import {
-  CreateOrganizationGroupChatMessageArgs,
-  RetrieveAllOrganizationGroupChatMessagesArgs,
+  retrieveAllOrganizationGroupChatMessagesController,
+  createOrganizationGroupChatMessageController,
+} from "@/controllers/organization-group-chat.controller";
+
+// Schemas
+import {
+  createOrganizationGroupChatMessageSchema,
+  retrieveAllOrganizationGroupChatMessagesSchema,
 } from "@repo/schemas/organization-group-chat";
 
-export async function retrieveAllOrganizationGroupChatMessagesService({
-  organizationId,
-}: RetrieveAllOrganizationGroupChatMessagesArgs) {
-  const messages =
-    await retrieveAllOrganizationGroupChatMessages(organizationId);
+// Middleware
+import { organizationRolesMiddleware } from "@/middleware/organization-roles-middleware";
+import { validate } from "@/middleware/validate.middleware";
 
-  return serverFetchOutput({
-    status: 200,
-    message: "Successfully retrieved all organization group chat messages",
-    data: { messages },
-    success: true,
-  });
-}
+export const organizationGroupChatRoute = Router();
 
-export async function createOrganizationGroupChatMessageService(
-  data: CreateOrganizationGroupChatMessageArgs
-) {
-  const message = await createOrganizationGroupChatMessage(data);
-  return serverFetchOutput({
-    status: 200,
-    message: "Successfully created organization group chat message",
-    data: { message },
-    success: true,
-  });
-}
+organizationGroupChatRoute.use(express.json());
+
+organizationGroupChatRoute.get(
+  "/:organizationId",
+  validate({
+    schema: retrieveAllOrganizationGroupChatMessagesSchema,
+    type: "params",
+    responseOutput: "server",
+  }),
+  organizationRolesMiddleware({
+    type: "params",
+    aquiredRoles: ["MEMBER", "ADMIN"],
+  }),
+  retrieveAllOrganizationGroupChatMessagesController
+);
+
+organizationGroupChatRoute.post(
+  "/create-message",
+  validate({
+    schema: createOrganizationGroupChatMessageSchema,
+    responseOutput: "toast",
+  }),
+  organizationRolesMiddleware({
+    aquiredRoles: ["ADMIN", "MEMBER"],
+  }),
+  createOrganizationGroupChatMessageController
+);

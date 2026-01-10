@@ -34,6 +34,7 @@ import { searchRoutes } from "@/routes/search.routes";
 import { postRoutes } from "@/routes/post.routes";
 import { commentRoutes } from "@/routes/comment.routes";
 import { organizationManagmentRoutes } from "@/routes/organization-managment.routes";
+import { organizationGroupChatRoute } from "@/routes/organization-group-chat.route";
 
 // Security middleware
 app.use(helmet());
@@ -79,9 +80,16 @@ app.use(
   hasRoleMiddleware,
   organizationManagmentRoutes
 );
+app.use(
+  "/organization-group-chat",
+  authMiddleware,
+  hasRoleMiddleware,
+  organizationGroupChatRoute
+);
 app.use("/search", authMiddleware, hasRoleMiddleware, searchRoutes);
 app.use("/post", authMiddleware, hasRoleMiddleware, postRoutes);
 app.use("/comment", authMiddleware, hasRoleMiddleware, commentRoutes);
+
 // Test
 app.get("/protected-user", authMiddleware, userMiddleware, (req, res) => {
   res.json({ message: "Awesome you accessed the proteced route" });

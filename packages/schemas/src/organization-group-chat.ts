@@ -10,7 +10,6 @@ export type RetrieveAllOrganizationGroupChatMessagesArgs = z.infer<
 
 export const createOrganizationGroupChatMessageSchema = z.object({
   content: z.string().min(1).max(200),
-  senderId: z.cuid(),
   groupChatId: z.cuid(),
   imageKeys: z.array(z.string()).optional(),
 });
