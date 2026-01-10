@@ -19,7 +19,7 @@ import { withReactQueryProvider } from '@/lib/utils/react-query';
 import { convertToFullname } from '@/lib/utils/converter';
 
 // Modules
-import { useSocketContext } from '@/modules/main/direct-messages/SocketContext';
+import { useSocketContext } from '@/modules/main/direct-messages/socket-context';
 
 // Types
 import { EmitNewChat } from '@repo/types/sockets';

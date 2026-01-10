@@ -8,7 +8,7 @@ import { SidebarProvider } from '@/components/ui/sidebar/sidebar-provider';
 
 // Types
 import { getSession } from '@/lib/server/user';
-import { SocketContextProvider } from '@/modules/main/direct-messages/SocketContext';
+import { SocketContextProvider } from '@/modules/main/direct-messages/socket-context';
 
 export default async function MainLayout({
 	children,
