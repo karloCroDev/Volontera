@@ -5,13 +5,13 @@ import cors from "cors";
 import helmet from "helmet";
 
 // Middleware
-import { authMiddleware } from "@/middleware/auth-middleware";
+import { authMiddleware } from "@/middleware/auth.middleware";
 import {
   hasRoleMiddleware,
   organizationMiddleware,
-} from "@/middleware/role-middleware";
-import { onboardingProcessMiddleware } from "@/middleware/onboarding-middleware";
-import { userMiddleware } from "@/middleware/role-middleware";
+} from "@/middleware/role.middleware";
+import { onboardingProcessMiddleware } from "@/middleware/onboarding.middleware";
+import { userMiddleware } from "@/middleware/role.middleware";
 
 // Lib
 import { app } from "@/ws/socket";

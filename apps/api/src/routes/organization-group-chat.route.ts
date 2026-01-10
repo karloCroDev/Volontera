@@ -15,7 +15,7 @@ import {
 } from "@repo/schemas/organization-group-chat";
 
 // Middleware
-import { organizationRolesMiddleware } from "@/middleware/organization-roles-middleware";
+import { organizationRolesMiddleware } from "@/middleware/organization-roles.middleware";
 import { validate } from "@/middleware/validate.middleware";
 
 export const organizationGroupChatRoute = Router();

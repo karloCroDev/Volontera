@@ -15,7 +15,7 @@ import {
 import {
   organizationMiddleware,
   userMiddleware,
-} from "@/middleware/role-middleware";
+} from "@/middleware/role.middleware";
 import { validate } from "@/middleware/validate.middleware";
 
 // Schemas

@@ -20,7 +20,7 @@ import {
   retrieveOrganizationMemberSchema,
 } from "@repo/schemas/organization-managment";
 // Middleware
-import { organizationRolesMiddleware } from "@/middleware/organization-roles-middleware";
+import { organizationRolesMiddleware } from "@/middleware/organization-roles.middleware";
 import { validate } from "@/middleware/validate.middleware";
 
 export const organizationManagmentRoutes = Router();

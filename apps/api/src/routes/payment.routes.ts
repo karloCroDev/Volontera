@@ -11,8 +11,8 @@ import {
 } from "@/controllers/payment.controller";
 
 // Middleware
-import { authMiddleware } from "@/middleware/auth-middleware";
-import { hasRoleMiddleware } from "@/middleware/role-middleware";
+import { authMiddleware } from "@/middleware/auth.middleware";
+import { hasRoleMiddleware } from "@/middleware/role.middleware";
 import { validate } from "@/middleware/validate.middleware";
 import { createCheckoutSessionSchema } from "@repo/schemas/payment";
 

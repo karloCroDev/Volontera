@@ -14,7 +14,7 @@ import {
 } from "@/controllers/post.controller";
 
 // Middleware
-import { organizationMiddleware } from "@/middleware/role-middleware";
+import { organizationMiddleware } from "@/middleware/role.middleware";
 import { validate } from "@/middleware/validate.middleware";
 
 // Scheams
