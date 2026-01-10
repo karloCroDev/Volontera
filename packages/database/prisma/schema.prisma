@@ -191,6 +191,8 @@ model Organization {
   organizationMembers      OrganizationMember[]
   organizationJoinRequests OrganizationJoinRequest[]
 
+  groupChat OrganizationGroupChat?
+
   posts     Post[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -376,7 +378,8 @@ model PostCommentsReplyLikes {
 
 model OrganizationGroupChat {
   id             String                         @id @default(cuid())
-  organizationId String
+  organization   Organization                   @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  organizationId String                         @unique
   messages       OrganizationGroupChatMessage[]
   createdAt      DateTime                       @default(now())
   updatedAt      DateTime                       @updatedAt

@@ -4,19 +4,18 @@ import { Request, Response } from "express";
 // Services
 import {
   createOrganizationGroupChatMessageService,
+  deleteOrganizationGroupChatMessageService,
   retrieveAllOrganizationGroupChatMessagesService,
 } from "@/services/organization-group-chat.service";
 
 // Schema types
 import {
-  RetirveAllRequestsToJoinOrganizationArgs,
-  RetrieveAllMembersInOrganizationArgs,
-  RetrieveOrganizationMemberArgs,
-} from "@repo/schemas/organization-managment";
+  RetrieveAllOrganizationGroupChatMessagesArgs,
+  DeleteOrganizationGroupChatMessageArgs,
+} from "@repo/schemas/organization-group-chat";
 
 // Lib
 import { handleServerErrorResponse } from "@/lib/utils/error-response";
-import { RetrieveAllOrganizationGroupChatMessagesArgs } from "@repo/schemas/organization-group-chat";
 
 export async function retrieveAllOrganizationGroupChatMessagesController(
   req: Request,
@@ -40,6 +39,21 @@ export async function createOrganizationGroupChatMessageController(
   try {
     const result = await createOrganizationGroupChatMessageService({
       data: req.body,
+      userId: req.user.userId,
+    });
+
+    return res.status(result.status).json(result.body);
+  } catch (err) {
+    handleServerErrorResponse(res, err);
+  }
+}
+export async function deleteOrganizationGroupChatMessageController(
+  req: Request,
+  res: Response
+) {
+  try {
+    const result = await deleteOrganizationGroupChatMessageService({
+      data: req.params as DeleteOrganizationGroupChatMessageArgs,
       userId: req.user.userId,
     });
 

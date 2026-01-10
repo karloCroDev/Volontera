@@ -27,7 +27,6 @@ export const createDirectMessageSchema = z.object({
   particpantId: z.cuid(),
   imageKeys: z.array(z.string()).optional(),
 });
-
 export type CreateDirectMessageArgs = z.infer<typeof createDirectMessageSchema>;
 
 export const conversationSchema = z.object({

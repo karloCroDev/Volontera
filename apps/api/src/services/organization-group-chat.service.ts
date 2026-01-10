@@ -1,15 +1,24 @@
 // Models
-import { serverFetchOutput } from "@/lib/utils/service-output";
 import {
   createOrganizationGroupChatMessage,
+  deleteOrganizationGroupChatMessage,
   retrieveAllOrganizationGroupChatMessages,
 } from "@/models/organization-group-chat.model";
+
+// Lib
+import {
+  serverFetchOutput,
+  toastResponseOutput,
+} from "@/lib/utils/service-output";
+
+// Database
 import { User } from "@repo/database";
 
 // Schema types
 import {
   CreateOrganizationGroupChatMessageArgs,
   RetrieveAllOrganizationGroupChatMessagesArgs,
+  DeleteOrganizationGroupChatMessageArgs,
 } from "@repo/schemas/organization-group-chat";
 
 export async function retrieveAllOrganizationGroupChatMessagesService({
@@ -42,5 +51,25 @@ export async function createOrganizationGroupChatMessageService({
     message: "Successfully created organization group chat message",
     data: { message },
     success: true,
+  });
+}
+
+export async function deleteOrganizationGroupChatMessageService({
+  data,
+  userId,
+}: {
+  data: DeleteOrganizationGroupChatMessageArgs;
+  userId: User["id"];
+}) {
+  // Implementation for deleting a message goes here
+
+  await deleteOrganizationGroupChatMessage({
+    messageId: data.messageId,
+    userId,
+  });
+  return toastResponseOutput({
+    title: "Info",
+    message: "Delete message functionality not yet implemented",
+    status: 200,
   });
 }

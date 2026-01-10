@@ -13,10 +13,10 @@ import { User } from "@repo/database";
 // Schema types
 import {
   SearchArgs,
-  PresignDirectMessageImagesArgs,
   ConversationArgs,
   CreateDirectMessageArgs,
 } from "@repo/schemas/direct-messages";
+import { PresignImagesSchemaArgs } from "@repo/schemas/image";
 
 // Websockets
 import { getReceiverSocketId, io } from "@/ws/socket";
@@ -27,7 +27,7 @@ import {
 
 export async function presignDirectMessageImagesService({
   images: dataImages,
-}: PresignDirectMessageImagesArgs) {
+}: PresignImagesSchemaArgs) {
   const images = await Promise.all(
     dataImages.map(async (image) =>
       createUploadUrl({

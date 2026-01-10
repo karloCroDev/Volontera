@@ -1,5 +1,4 @@
 // External packages
-import { zodErrorDetecter } from "@/lib/utils/zodDetectionError";
 import type { Request, Response, NextFunction } from "express";
 import { ZodType } from "zod";
 

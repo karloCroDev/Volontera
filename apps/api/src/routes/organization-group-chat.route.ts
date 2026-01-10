@@ -47,3 +47,11 @@ organizationGroupChatRoute.post(
   }),
   createOrganizationGroupChatMessageController
 );
+
+organizationGroupChatRoute.delete(
+  "/delete-message/:messageId",
+  organizationRolesMiddleware({
+    aquiredRoles: ["ADMIN", "MEMBER"],
+    type: "params",
+  })
+);

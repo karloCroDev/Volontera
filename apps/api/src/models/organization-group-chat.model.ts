@@ -10,7 +10,7 @@ import {
 export async function retrieveAllOrganizationGroupChatMessages(
   organizationId: Organization["id"]
 ) {
-  return prisma.organizationGroupChat.findMany({
+  return prisma.organizationGroupChat.findUnique({
     where: {
       organizationId,
     },
@@ -50,6 +50,21 @@ export async function createOrganizationGroupChatMessage({
               }
             : undefined,
       },
+    },
+  });
+}
+
+export async function deleteOrganizationGroupChatMessage({
+  messageId,
+  userId,
+}: {
+  userId: User["id"];
+  messageId: OrganizationGroupChatMessage["id"];
+}) {
+  return prisma.organizationGroupChatMessage.delete({
+    where: {
+      id: messageId,
+      authorId: userId,
     },
   });
 }
