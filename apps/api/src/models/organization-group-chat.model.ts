@@ -18,6 +18,11 @@ export async function retrieveAllOrganizationGroupChatMessages(
       messages: {
         include: {
           organizationGroupChatMessageImages: true,
+          author: {
+            omit: {
+              password: true,
+            },
+          },
         },
       },
     },

@@ -38,7 +38,6 @@ export const Post: React.FC<{
 		? images?.[singlePostImage.imageUrl]
 		: undefined;
 
-	console.log('Post like', post.postLikes);
 	return (
 		<div className="border-input-border bg-muted rounded-xl border px-8 py-6">
 			<div className="mb-8 flex gap-4">

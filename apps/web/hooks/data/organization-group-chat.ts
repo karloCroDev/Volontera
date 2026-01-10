@@ -38,7 +38,7 @@ export const useCreateOrganizationGroupChatMessage = (
 	const queryClient = useQueryClient();
 	return useMutation({
 		mutationKey: ['accept-or-decline-request'],
-		mutationFn: (data: DataWithFiles<MessageArgs>) =>
+		mutationFn: (data: DataWithFiles<Omit<MessageArgs, 'participantId'>>) =>
 			createGroupChatMessage(data),
 		onSuccess: async (...args) => {
 			await queryClient.invalidateQueries({

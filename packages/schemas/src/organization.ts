@@ -11,7 +11,7 @@ export const createOrganizationSchema = z.object({
   organization_bio: z.string().min(10),
   organization_type: z.string(),
   organization_location: z.string().optional(),
-  external_form_link: z.url().optional(),
+  external_form_link: z.url().or(z.literal("")).optional(),
   additional_links: z
     .array(
       z.object({

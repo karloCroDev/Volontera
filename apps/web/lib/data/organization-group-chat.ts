@@ -16,7 +16,7 @@ import { catchError } from '@/lib/utils/error';
 export async function createGroupChatMessage({
 	data,
 	files,
-}: DataWithFiles<MessageArgs>) {
+}: DataWithFiles<Omit<MessageArgs, 'participantId'>>) {
 	try {
 		let imageKeys: string[] | undefined;
 

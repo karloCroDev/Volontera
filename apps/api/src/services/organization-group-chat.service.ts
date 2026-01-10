@@ -24,13 +24,13 @@ import {
 export async function retrieveAllOrganizationGroupChatMessagesService({
   organizationId,
 }: RetrieveAllOrganizationGroupChatMessagesArgs) {
-  const messages =
+  const organizationGroupChat =
     await retrieveAllOrganizationGroupChatMessages(organizationId);
 
   return serverFetchOutput({
     status: 200,
     message: "Successfully retrieved all organization group chat messages",
-    data: { messages },
+    data: { organizationGroupChat },
     success: true,
   });
 }
@@ -42,14 +42,14 @@ export async function createOrganizationGroupChatMessageService({
   data: CreateOrganizationGroupChatMessageArgs;
   userId: User["id"];
 }) {
-  const message = await createOrganizationGroupChatMessage({
+  const messages = await createOrganizationGroupChatMessage({
     ...data,
     senderId: userId,
   });
   return serverFetchOutput({
     status: 200,
     message: "Successfully created organization group chat message",
-    data: { message },
+    data: { messages },
     success: true,
   });
 }
