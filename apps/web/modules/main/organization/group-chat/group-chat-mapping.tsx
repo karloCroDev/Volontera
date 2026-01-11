@@ -24,17 +24,16 @@ import { RetrieveAllOrganizationGroupChatMessagesResponse } from '@repo/types/or
 import { useSocketContext } from '@/modules/main/direct-messages/socket-context';
 import { useSession } from '@/hooks/data/user';
 import { MessageImages } from '@/components/ui/message/message-images';
-import { Button } from '@/components/ui/button';
-import { Trash } from 'lucide-react';
 import { toast } from '@/lib/utils/toast';
 
 export const GroupChatMapping: React.FC<{
 	groupChat: RetrieveAllOrganizationGroupChatMessagesResponse;
 }> = ({ groupChat }) => {
 	const params = useParams<{ organizationId: string }>();
+	const organizationId = params.organizationId;
 	const { data } = useRetrieveAllOrganizationGroupChatMessages(
 		{
-			organizationId: params.organizationId,
+			organizationId,
 		},
 		{
 			initialData: groupChat,
@@ -50,28 +49,52 @@ export const GroupChatMapping: React.FC<{
 	const { socketGlobal } = useSocketContext();
 	React.useEffect(() => {
 		if (!socketGlobal) return;
-		socketGlobal.on('organization-group-chat:new-message', (newChat) => {
+
+		type OrgChatMessage =
+			RetrieveAllOrganizationGroupChatMessagesResponse['organizationGroupChat']['messages'][number];
+		const handleNewMessage = (newChat: OrgChatMessage | OrgChatMessage[]) => {
 			setMessages((prev) => {
 				const prevMessages = prev ?? [];
 				return Array.isArray(newChat)
 					? [...prevMessages, ...newChat]
 					: [...prevMessages, newChat];
 			});
-		});
+		};
+
+		type OrgMessageDeletedPayload = {
+			messageId: string;
+			organizationId: string;
+		};
+		const handleMessageDeleted = (payload: OrgMessageDeletedPayload) => {
+			if (payload.organizationId !== organizationId) return;
+			setMessages((prev) =>
+				prev?.filter((msg) => msg.id !== payload.messageId)
+			);
+		};
+
+		socketGlobal.on('organization-group-chat:new-message', handleNewMessage);
+		socketGlobal.on(
+			'organization-group-chat:message-deleted',
+			handleMessageDeleted
+		);
 
 		return () => {
-			socketGlobal.off('organization-group-chat:new-message');
+			socketGlobal.off('organization-group-chat:new-message', handleNewMessage);
+			socketGlobal.off(
+				'organization-group-chat:message-deleted',
+				handleMessageDeleted
+			);
 		};
-	}, [socketGlobal]);
+	}, [organizationId, socketGlobal]);
 
 	const [messages, setMessages] = React.useState(
 		data.organizationGroupChat.messages
 	);
 
-	// Stavljalju poruke koje su fetchane iz hooka u state (radi lakšeg upravljanja porukama sa ws)
-	React.useEffect(() => {
-		setMessages(data.organizationGroupChat.messages);
-	}, [data]);
+	// // Stavljalju poruke koje su fetchane iz hooka u state (radi lakšeg upravljanja porukama sa ws)
+	// React.useEffect(() => {
+	// 	setMessages(data.organizationGroupChat.messages);
+	// }, [data]);
 
 	// Scrolla se na dna containera kada se pojavi nova poruka
 	const containerRef = React.useRef<HTMLDivElement | null>(null);
@@ -120,26 +143,10 @@ export const GroupChatMapping: React.FC<{
 							)
 						}
 						deleteAction={() =>
-							mutateDeleteMessage(
-								{
-									organizationId: params.organizationId,
-									messageId: message.id,
-								},
-								{
-									onSuccess: () => {
-										setMessages((prev) =>
-											prev?.filter((msg) => msg.id !== message.id)
-										);
-									},
-									onError: ({ message, title }) => {
-										toast({
-											title,
-											content: message,
-											variant: 'error',
-										});
-									},
-								}
-							)
+							mutateDeleteMessage({
+								organizationId,
+								messageId: message.id,
+							})
 						}
 					>
 						<Markdown>{message.content}</Markdown>

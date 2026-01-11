@@ -67,15 +67,20 @@ export async function deleteOrganizationGroupChatMessageService({
   data: DeleteOrganizationGroupChatMessageArgs;
   userId: User["id"];
 }) {
-  // Implementation for deleting a message goes here
-
-  await deleteOrganizationGroupChatMessage({
+  const deletedMessage = await deleteOrganizationGroupChatMessage({
     messageId: data.messageId,
     userId,
   });
+
+  io.to(
+    `organization:${deletedMessage.organizationGroupChat.organizationId}`
+  ).emit("organization-group-chat:message-deleted", {
+    messageId: deletedMessage.id,
+    organizationId: deletedMessage.organizationGroupChat.organizationId,
+  });
   return toastResponseOutput({
-    title: "Info",
-    message: "Delete message functionality not yet implemented",
+    title: "Message deleted",
+    message: "Message deleted successfully",
     status: 200,
   });
 }

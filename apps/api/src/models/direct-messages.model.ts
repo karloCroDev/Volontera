@@ -109,6 +109,17 @@ export async function deleteDirectMessageById({
       id: messageId,
       authorId: userId,
     },
+    include: {
+      conversation: {
+        select: {
+          participants: {
+            select: {
+              userId: true,
+            },
+          },
+        },
+      },
+    },
   });
 }
 

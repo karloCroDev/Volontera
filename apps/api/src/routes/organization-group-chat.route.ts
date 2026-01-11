@@ -6,11 +6,13 @@ import { Router } from "express";
 import {
   retrieveAllOrganizationGroupChatMessagesController,
   createOrganizationGroupChatMessageController,
+  deleteOrganizationGroupChatMessageController,
 } from "@/controllers/organization-group-chat.controller";
 
 // Schemas
 import {
   createOrganizationGroupChatMessageSchema,
+  deleteOrganizationGroupChatMessageSchema,
   retrieveAllOrganizationGroupChatMessagesSchema,
 } from "@repo/schemas/organization-group-chat";
 
@@ -49,9 +51,15 @@ organizationGroupChatRoute.post(
 );
 
 organizationGroupChatRoute.delete(
-  "/delete-message/:messageId",
+  "/delete-message/:organizationId/:messageId",
+  validate({
+    schema: deleteOrganizationGroupChatMessageSchema,
+    responseOutput: "toast",
+    type: "params",
+  }),
   organizationRolesMiddleware({
     aquiredRoles: ["ADMIN", "MEMBER"],
     type: "params",
-  })
+  }),
+  deleteOrganizationGroupChatMessageController
 );

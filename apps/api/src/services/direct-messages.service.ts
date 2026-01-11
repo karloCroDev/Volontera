@@ -114,9 +114,18 @@ export async function deleteDirectMessageByIdService({
   data: DeleteDirectMessageArgs;
   userId: User["id"];
 }) {
-  await deleteDirectMessageById({
+  const deletedMessage = await deleteDirectMessageById({
     messageId: data.messageId,
     userId,
+  });
+
+  // Oba dva korisnika pošaljem kako se izbrisala poruka
+  deletedMessage.conversation.participants.forEach((participant) => {
+    const participantSocketId = getReceiverSocketId(participant.userId);
+    if (!participantSocketId) return;
+    io.to(participantSocketId).emit("direct-messages:message-deleted", {
+      messageId: deletedMessage.id,
+    });
   });
 
   return toastResponseOutput({

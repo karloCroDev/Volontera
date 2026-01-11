@@ -4,10 +4,12 @@
 import * as React from 'react';
 import { useSearchParams } from 'next/navigation';
 import Markdown from 'react-markdown';
+import Link from 'next/link';
 
 // Components
 import { Message, MessageSkeleton } from '@/components/ui/message/message';
 import { Avatar } from '@/components/ui/avatar';
+import { MessageImages } from '@/components/ui/message/message-images';
 
 // Hooks
 import {
@@ -25,22 +27,22 @@ import { convertToFullname } from '@/lib/utils/converter';
 import { useSocketContext } from '@/modules/main/direct-messages/socket-context';
 
 // Types
-import { MessageImages } from '@/components/ui/message/message-images';
-import Link from 'next/link';
-import { Trash } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { toast } from '@/lib/utils/toast';
+import { GetDirectMessagesConversationByIdResponse } from '@repo/types/direct-messages';
+
+// Schemas
+import { DeleteDirectMessageArgs } from '@repo/schemas/direct-messages';
 
 export const Conversation = withReactQueryProvider(() => {
 	const searchParams = useSearchParams();
+	const conversationId = searchParams.get('conversationId');
 
 	const { data: conversation, isLoading } =
 		useGetDirectMessagesConversationById(
 			{
-				conversationId: searchParams.get('conversationId')!,
+				conversationId: conversationId!,
 			},
 			{
-				enabled: !!searchParams.get('conversationId'),
+				enabled: !!conversationId,
 			}
 		);
 
@@ -54,14 +56,27 @@ export const Conversation = withReactQueryProvider(() => {
 	const { socketGlobal } = useSocketContext();
 	React.useEffect(() => {
 		if (!socketGlobal) return;
-		socketGlobal.on('new-chat', (newChat) =>
-			setMessages(messages ? [...messages, newChat] : [newChat])
-		);
+
+		const handleNewChat = (
+			newChat: GetDirectMessagesConversationByIdResponse['conversation'][0]
+		) => {
+			setMessages((prev) => (prev ? [...prev, newChat] : [newChat]));
+		};
+
+		const handleMessageDeleted = ({ messageId }: DeleteDirectMessageArgs) => {
+			// If server includes conversationId, ignore deletes from other conversations
+
+			setMessages((prev) => prev?.filter((msg) => msg.id !== messageId));
+		};
+
+		socketGlobal.on('new-chat', handleNewChat);
+		socketGlobal.on('direct-messages:message-deleted', handleMessageDeleted);
 
 		return () => {
-			socketGlobal.off('new-chat');
+			socketGlobal.off('new-chat', handleNewChat);
+			socketGlobal.off('direct-messages:message-deleted', handleMessageDeleted);
 		};
-	}, [messages, setMessages, socketGlobal]);
+	}, [conversationId, socketGlobal]);
 
 	const { data: userImages } = useGetImageFromKeys(
 		{
@@ -86,6 +101,7 @@ export const Conversation = withReactQueryProvider(() => {
 		el.scrollTop = el.scrollHeight;
 	}, [messages]);
 
+	// Abilty to delete message
 	const { mutate: mutateDeleteMessage } = useDeleteDirectMessageById();
 	return (
 		<div
@@ -132,25 +148,9 @@ export const Conversation = withReactQueryProvider(() => {
 								)
 							}
 							deleteAction={() =>
-								mutateDeleteMessage(
-									{
-										messageId: message.id,
-									},
-									{
-										onSuccess: () => {
-											setMessages((prev) =>
-												prev?.filter((msg) => msg.id !== message.id)
-											);
-										},
-										onError: ({ message, title }) => {
-											toast({
-												title,
-												content: message,
-												variant: 'error',
-											});
-										},
-									}
-								)
+								mutateDeleteMessage({
+									messageId: message.id,
+								})
 							}
 						>
 							<Markdown>{message.content}</Markdown>

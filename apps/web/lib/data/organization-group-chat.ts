@@ -70,10 +70,11 @@ export async function retrieveAllOrganizationGroupChatMessages({
 
 export async function deleteOrganizationGroupChatMessage({
 	messageId,
+	organizationId,
 }: DeleteOrganizationGroupChatMessageArgs) {
 	try {
 		const res = await API().delete(
-			`organization-group-chat/delete-message/${messageId}`
+			`organization-group-chat/delete-message/${organizationId}/${messageId}`
 		);
 		return res.data;
 	} catch (err) {

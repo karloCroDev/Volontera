@@ -79,5 +79,12 @@ export async function deleteOrganizationGroupChatMessage({
       id: messageId,
       authorId: userId,
     },
+    include: {
+      organizationGroupChat: {
+        select: {
+          organizationId: true,
+        },
+      },
+    },
   });
 }

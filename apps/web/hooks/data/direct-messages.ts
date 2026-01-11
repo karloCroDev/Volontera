@@ -76,18 +76,11 @@ export const useStartConversationOrStartAndSendDirectMessage = (
 		DataWithFiles<MessageArgs>
 	>
 ) => {
-	const queryClient = useQueryClient();
+	// Websocketi updateaju razgovor, nema potrebe za invalidacijom
 	return useMutation({
 		mutationKey: ['direct-messages-conversation'],
 		mutationFn: (values: DataWithFiles<MessageArgs>) =>
 			startConversationOrStartAndSendDirectMessage(values),
-		onSuccess: async (...args) => {
-			await queryClient.invalidateQueries({
-				queryKey: ['direct-messages'],
-				exact: false,
-			});
-			await options?.onSuccess?.(...args);
-		},
 		...options,
 	});
 };
@@ -99,18 +92,11 @@ export const useDeleteDirectMessageById = (
 		DeleteDirectMessageArgs
 	>
 ) => {
-	const queryClient = useQueryClient();
+	// Websocketi updateaju razgovor, nema potrebe za invalidacijom
 	return useMutation({
 		mutationKey: ['direct-messages-conversation'],
 		mutationFn: (values: DeleteDirectMessageArgs) =>
 			deleteDirectMessageById(values),
-		onSuccess: async (...args) => {
-			await queryClient.invalidateQueries({
-				queryKey: ['direct-messages'],
-				exact: false,
-			});
-			await options?.onSuccess?.(...args);
-		},
 		...options,
 	});
 };
