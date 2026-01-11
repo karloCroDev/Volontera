@@ -1,5 +1,10 @@
 // Database
-import { prisma, User, DirectMessagesConversations } from "@repo/database";
+import {
+  prisma,
+  User,
+  DirectMessagesConversations,
+  DirectMessages,
+} from "@repo/database";
 
 export async function listAllDirectMessagesConversation(userId: User["id"]) {
   return prisma.directMessagesConversations.findMany({
@@ -92,8 +97,33 @@ export async function searchAllUsers({
     orderBy: [{ updatedAt: "desc" }, { createdAt: "desc" }],
   });
 }
+export async function deleteDirectMessageById({
+  messageId,
+  userId,
+}: {
+  messageId: DirectMessages["id"];
+  userId: User["id"];
+}) {
+  return prisma.directMessages.delete({
+    where: {
+      id: messageId,
+      authorId: userId,
+    },
+    include: {
+      conversation: {
+        select: {
+          participants: {
+            select: {
+              userId: true,
+            },
+          },
+        },
+      },
+    },
+  });
+}
 
-// TODO: Handle this when I make implementation for sending the messages
+// U sidbearu prikaz posljednje poruke u konverzaciji (bolje nego tražiti sve poruke i uzimati zadnju i sigurno će se svaki put kada se pošalje nova poruka ažurirati taj podatak)
 export async function updateDirectMessagesConversationLastMessage({
   conversationId,
   lastMessage,
@@ -110,6 +140,7 @@ export async function updateDirectMessagesConversationLastMessage({
     },
   });
 }
+
 export async function createDirectMessagesConversation({
   participantIds,
 }: {
@@ -130,24 +161,6 @@ export async function createDirectMessagesConversation({
           user: true,
         },
       },
-    },
-  });
-}
-
-export async function createMessageInDirectMessagesConversation({
-  conversationId,
-  authorId,
-  content,
-}: {
-  conversationId: DirectMessagesConversations["id"];
-  authorId: User["id"];
-  content: string;
-}) {
-  return prisma.directMessages.create({
-    data: {
-      conversationId,
-      authorId,
-      content,
     },
   });
 }

@@ -1,120 +1,29 @@
 // External packages
-import { redirect } from 'next/navigation';
-
-// Components
-import { Avatar } from '@/components/ui/avatar';
-import { Message } from '@/components/ui/message';
+import { notFound } from 'next/navigation';
 
 // Lib
-import { getSession } from '@/lib/server/user';
+import { retreiveAllrganizationGroupChatMessages } from '@/lib/server/organization-group-chat';
+import { GroupChatMapping } from '@/modules/main/organization/group-chat/group-chat-mapping';
+import { AddMessageForm } from '@/modules/main/organization/group-chat/add-message-form';
+import { SocketRoomContext } from '@/modules/main/organization/group-chat/socker-room-context';
 
-// Modules
-import { MessageForm } from '@/modules/main/direct-messages/message-form';
-import { convertToFullname } from '@/lib/utils/converter';
+export default async function GroupChatPage({
+	params,
+}: {
+	params: Promise<{ organizationId: string }>;
+}) {
+	const { organizationId } = await params;
 
-export default async function GroupChatPage() {
-	const user = await getSession();
+	const groupChat =
+		await retreiveAllrganizationGroupChatMessages(organizationId);
 
-	if (!user.success) redirect('/auth/login');
+	if (!groupChat.success) notFound();
 	return (
-		<>
-			<div className="flex min-h-[800px] flex-1 flex-col gap-4 px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
-				<div className="no-scrollbar min-h-0 flex-1 space-y-4 overflow-y-auto">
-					<Message
-						date={new Date()}
-						avatar={
-							<Avatar
-								imageProps={{
-									src: user?.image || '',
-								}}
-							>
-								{convertToFullname({
-									firstname: user.firstName,
-									lastname: user.lastName,
-								})}
-							</Avatar>
-						}
-					>
-						Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ea, rem,
-						tenetur quaerat dolore nobis totam voluptas itaque sunt placeat unde
-						assumenda aliquid consequatur delectus eius cum autem ab facilis
-						quis.
-					</Message>
-
-					<Message
-						variant="secondary"
-						date={new Date()}
-						avatar={<Avatar imageProps={{ src: '' }}>Cool man</Avatar>}
-					>
-						Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ea, rem,
-						tenetur quaerat dolore nobis totam voluptas itaque sunt placeat unde
-						assumenda aliquid consequatur delectus eius cum autem ab facilis
-						quis.
-					</Message>
-					<Message
-						variant="secondary"
-						date={new Date()}
-						avatar={<Avatar imageProps={{ src: '' }}>Cool man</Avatar>}
-					>
-						Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ea, rem,
-						tenetur quaerat dolore nobis totam voluptas itaque sunt placeat unde
-						assumenda aliquid consequatur delectus eius cum autem ab facilis
-						quis.
-					</Message>
-					<Message
-						variant="secondary"
-						date={new Date()}
-						avatar={<Avatar imageProps={{ src: '' }}>Cool man</Avatar>}
-					>
-						Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ea, rem,
-						tenetur quaerat dolore nobis totam voluptas itaque sunt placeat unde
-						assumenda aliquid consequatur delectus eius cum autem ab facilis
-						quis.
-					</Message>
-					<Message
-						variant="secondary"
-						date={new Date()}
-						avatar={<Avatar imageProps={{ src: '' }}>Cool man</Avatar>}
-					>
-						Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ea, rem,
-						tenetur quaerat dolore nobis totam voluptas itaque sunt placeat unde
-						assumenda aliquid consequatur delectus eius cum autem ab facilis
-						quis.
-					</Message>
-					<Message
-						variant="secondary"
-						date={new Date()}
-						avatar={<Avatar imageProps={{ src: '' }}>Cool man</Avatar>}
-					>
-						Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ea, rem,
-						tenetur quaerat dolore nobis totam voluptas itaque sunt placeat unde
-						assumenda aliquid consequatur delectus eius cum autem ab facilis
-						quis.
-					</Message>
-					<Message
-						variant="secondary"
-						date={new Date()}
-						avatar={<Avatar imageProps={{ src: '' }}>Cool man</Avatar>}
-					>
-						Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ea, rem,
-						tenetur quaerat dolore nobis totam voluptas itaque sunt placeat unde
-						assumenda aliquid consequatur delectus eius cum autem ab facilis
-						quis.
-					</Message>
-					<Message
-						variant="secondary"
-						date={new Date()}
-						avatar={<Avatar imageProps={{ src: '' }}>Cool man</Avatar>}
-					>
-						Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ea, rem,
-						tenetur quaerat dolore nobis totam voluptas itaque sunt placeat unde
-						assumenda aliquid consequatur delectus eius cum autem ab facilis
-						quis.
-					</Message>
-				</div>
-
-				<MessageForm />
+		<SocketRoomContext>
+			<div className="relative min-h-[800px] flex-1 gap-4 px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
+				<GroupChatMapping groupChat={groupChat} />
+				<AddMessageForm groupChatId={groupChat.organizationGroupChat.id} />
 			</div>
-		</>
+		</SocketRoomContext>
 	);
 }

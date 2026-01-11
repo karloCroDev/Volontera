@@ -4,9 +4,9 @@ import { Router } from "express";
 
 // Controllers
 import {
+  deleteDirectMessageByIdController,
   getDirectMessagesConversationByIdServiceController,
   listAllDirectMessagesConversationsController,
-  presignDirectMessageImagesController,
   searchAllUsersWithQueryController,
   startConversationOrStartAndSendDirectMessageController,
 } from "@/controllers/direct-messages.controller";
@@ -15,7 +15,7 @@ import {
   searchSchema,
   conversationSchema,
   createDirectMessageSchema,
-  presignDirectMessageImagesSchema,
+  deleteDirectMessageSchema,
 } from "@repo/schemas/direct-messages";
 
 export const directMessagesRoutes = Router();
@@ -55,13 +55,12 @@ directMessagesRoutes.post(
   startConversationOrStartAndSendDirectMessageController
 );
 
-// Upload-first flow: get presigned PUT urls for images
-directMessagesRoutes.post(
-  "/presign-images",
+directMessagesRoutes.delete(
+  "/:messageId",
   validate({
-    schema: presignDirectMessageImagesSchema,
-    responseOutput: "server",
-    type: "body",
+    schema: deleteDirectMessageSchema,
+    responseOutput: "toast",
+    type: "params",
   }),
-  presignDirectMessageImagesController
+  deleteDirectMessageByIdController
 );

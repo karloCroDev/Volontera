@@ -38,7 +38,6 @@ export const Post: React.FC<{
 		? images?.[singlePostImage.imageUrl]
 		: undefined;
 
-	console.log('Post like', post.postLikes);
 	return (
 		<div className="border-input-border bg-muted rounded-xl border px-8 py-6">
 			<div className="mb-8 flex gap-4">
@@ -74,7 +73,12 @@ export const Post: React.FC<{
 					{hasAnAdminAccess && <EditPostDialog postId={post.id} />}
 				</div>
 			</div>
-			<h4 className="mb-4 text-lg font-semibold">{post.title}</h4>
+			<Link
+				href={`/organization/post/${post.id}`}
+				className="mb-4 text-lg font-semibold underline-offset-4 hover:underline"
+			>
+				{post.title}
+			</Link>
 
 			{splittedContent.length > 1 ? (
 				<Collapsible

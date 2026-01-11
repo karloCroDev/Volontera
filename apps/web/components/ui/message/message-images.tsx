@@ -10,31 +10,12 @@ import { Carousel } from '@/components/ui/carousel';
 // Hooks
 import { useGetImageFromKeys } from '@/hooks/data/image';
 
-// Types
-import { GetDirectMessagesConversationByIdResponse } from '@repo/types/direct-messages';
-
 export const MessageImages: React.FC<{
-	messages: GetDirectMessagesConversationByIdResponse['conversation'];
-	message: GetDirectMessagesConversationByIdResponse['conversation'][0];
-}> = ({ messages, message }) => {
-	const { data: images, isPending } = useGetImageFromKeys(
-		{
-			imageUrls:
-				messages
-					?.map((message) =>
-						message.directMessagesImages.map((img) => img.imageUrl)
-					)
-					.flat() || [],
-		},
-		{
-			enabled: messages && !!messages.length,
-		}
-	);
-
-	const firstImageKey = message.directMessagesImages[0]!.imageUrl; // Znamo da cemo ga dobiti jer se koristi samo ako postoji barem jedna slika
-	const firstImageSrc = firstImageKey
-		? images?.urls?.[firstImageKey]
-		: undefined;
+	imageUrls: string[];
+}> = ({ imageUrls }) => {
+	const { data: images, isPending } = useGetImageFromKeys({
+		imageUrls,
+	});
 
 	return (
 		<div className="border-input-border relative size-80 overflow-hidden rounded-lg border-2">
@@ -43,9 +24,9 @@ export const MessageImages: React.FC<{
 			)}
 
 			{!isPending &&
-				(message.directMessagesImages.length > 1 ? (
+				(imageUrls.length > 1 ? (
 					<Carousel
-						slides={message.directMessagesImages.map(({ imageUrl, id }) => {
+						slides={imageUrls.map((imageUrl, id) => {
 							const src = images?.urls?.[imageUrl];
 							if (!src) return null;
 
@@ -64,9 +45,9 @@ export const MessageImages: React.FC<{
 							);
 						})}
 					/>
-				) : firstImageSrc ? (
+				) : imageUrls.length === 1 ? (
 					<Image
-						src={firstImageSrc}
+						src={images?.urls[imageUrls[0]!] || ''}
 						alt="Message Image"
 						fill
 						className="object-cover"

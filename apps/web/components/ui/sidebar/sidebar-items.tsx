@@ -116,7 +116,6 @@ export const Organizations = () => {
 			contentProps={{
 				children: (
 					<>
-						<hr className="bg-input-border my-6 h-px w-full border-0" />
 						<ul className="ml-4 mt-4">
 							{isLoading && (
 								<li className="ml-8 mt-4 text-xs sm:text-sm lg:text-base">
@@ -126,11 +125,11 @@ export const Organizations = () => {
 						</ul>
 
 						{organizations?.ownedOrganizations && (
-							<p className="text-md ml-2 mt-4 text-start font-medium underline underline-offset-4">
+							<p className="text-muted-foreground border-input-border ml-2 mt-4 border-b pb-2 text-sm">
 								Managing
 							</p>
 						)}
-						<ul className="border-input-border ml-4 mt-4 border-t">
+						<ul className="ml-4">
 							{organizations?.ownedOrganizations &&
 								(organizations.ownedOrganizations.length > 0 ? (
 									organizations.ownedOrganizations.map((organization) => (
@@ -147,10 +146,10 @@ export const Organizations = () => {
 									</p>
 								))}
 						</ul>
-						<p className="text-md ml-2 mt-4 text-start font-medium underline underline-offset-4">
+						<p className="text-muted-foreground border-input-border ml-2 mt-4 border-b pb-2 text-sm">
 							Attending
 						</p>
-						<ul className="border-input-border ml-4 mt-4 border-t">
+						<ul className="ml-4">
 							{organizations &&
 							organizations.attendingOrganizations.length > 0 ? (
 								organizations.attendingOrganizations.map((organization) => (
@@ -169,10 +168,10 @@ export const Organizations = () => {
 								</p>
 							)}
 						</ul>
-						<p className="text-md ml-2 mt-4 text-start font-medium underline underline-offset-4">
+						<p className="text-muted-foreground border-input-border ml-2 mt-4 border-b pb-2 text-sm">
 							Following
 						</p>
-						<ul className="border-input-border ml-4 mt-4 border-t">
+						<ul className="ml-4">
 							{organizations &&
 							organizations.followingOrganizations.length > 0 ? (
 								organizations?.followingOrganizations.map((organization) => (

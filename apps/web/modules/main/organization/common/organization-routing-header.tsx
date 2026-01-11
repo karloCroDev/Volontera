@@ -34,7 +34,7 @@ export const OrganizationRoutingHeader: React.FC<{
 				>
 					Posts
 				</LinkAsButton>
-				<div className="bg-input-border w-px self-stretch" />
+
 				{/* Members */}
 				<LinkAsButton
 					variant="ghost"
@@ -49,7 +49,6 @@ export const OrganizationRoutingHeader: React.FC<{
 				>
 					Group chat
 				</LinkAsButton>
-				<div className="bg-input-border w-px self-stretch" />
 
 				<LinkAsButton
 					variant="ghost"
@@ -68,8 +67,6 @@ export const OrganizationRoutingHeader: React.FC<{
 
 				{member.organizationMember.role === 'OWNER' && (
 					<>
-						<div className="bg-input-border w-px self-stretch" />
-
 						<LinkAsButton
 							variant="ghost"
 							href={`/organization/${params.organizationId}/manage`}

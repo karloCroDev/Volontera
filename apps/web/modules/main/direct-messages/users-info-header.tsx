@@ -14,7 +14,7 @@ import { LinkAsButton } from '@/components/ui/link-as-button';
 import { useGetUser } from '@/hooks/data/user';
 
 // Modules
-import { useSocketContext } from '@/modules/main/direct-messages/SocketContext';
+import { useSocketContext } from '@/modules/main/direct-messages/socket-context';
 
 // Lib
 import { withReactQueryProvider } from '@/lib/utils/react-query';

@@ -6,7 +6,7 @@ import Markdown from 'react-markdown';
 
 // Components
 import { Avatar } from '@/components/ui/avatar';
-import { Message, MessageSkeleton } from '@/components/ui/message';
+import { Message, MessageSkeleton } from '@/components/ui/message/message';
 
 // Hooks
 import { useGetHelpConversation } from '@/hooks/data/help';

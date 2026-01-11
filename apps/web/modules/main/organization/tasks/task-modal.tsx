@@ -14,7 +14,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Tag } from '@/components/ui/tag';
 import { Avatar } from '@/components/ui/avatar';
 import { ResizableTextArea } from '@/components/ui/resizable-input';
-import { Message } from '@/components/ui/message';
+import { Message } from '@/components/ui/message/message';
 import { Button } from '@/components/ui/button';
 import { Pen, Send, Trash2 } from 'lucide-react';
 import { CheckboxVisually } from '@/components/ui/checkbox';
@@ -90,7 +90,7 @@ export const TaskModal: React.FC<{
 								<Message
 									variant={indx === 0 ? 'primary' : 'secondary'}
 									className={indx !== 0 ? 'mt-4' : undefined}
-									date="16:36 | 8.4. 2024"
+									date={new Date()}
 									avatar={<Avatar imageProps={{ src: '' }}>Ante</Avatar>}
 								>
 									Lorem ipsum dolor sit amet, consectetur adipisicing elit.

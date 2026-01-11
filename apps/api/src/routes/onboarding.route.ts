@@ -3,7 +3,7 @@ import express from "express";
 import { Router } from "express";
 
 // Middleware
-import { hasRoleMiddleware } from "@/middleware/role-middleware";
+import { hasRoleMiddleware } from "@/middleware/role.middleware";
 
 // Controllers
 import {

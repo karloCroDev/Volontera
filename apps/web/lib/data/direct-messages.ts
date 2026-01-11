@@ -7,9 +7,9 @@ import {
 	SearchArgs,
 	ConversationArgs,
 	MessageArgs,
-	CreateDirectMessageArgs,
-	PresignDirectMessageImagesArgs,
+	DeleteDirectMessageArgs,
 } from '@repo/schemas/direct-messages';
+import { PresignImagesSchemaArgs } from '@repo/schemas/image';
 
 // Types
 import { DataWithFiles } from '@repo/types/upload';
@@ -43,6 +43,17 @@ export async function getDirectMessagesConversationById({
 	}
 }
 
+export async function deleteDirectMessageById({
+	messageId,
+}: DeleteDirectMessageArgs) {
+	try {
+		const res = await API().delete(`direct-messages/${messageId}`);
+		return res.data;
+	} catch (err) {
+		catchError(err);
+	}
+}
+
 export async function startConversationOrStartAndSendDirectMessage({
 	data,
 	files,
@@ -52,9 +63,9 @@ export async function startConversationOrStartAndSendDirectMessage({
 
 		// Dobivam presigned URL-ove i keyve slika, te uploadam slike
 		if (data.images && data.images.length && files && files.length) {
-			const presignRes = await API().post('direct-messages/presign-images', {
+			const presignRes = await API().post('image/presign-images', {
 				images: data.images,
-			} satisfies PresignDirectMessageImagesArgs);
+			} as PresignImagesSchemaArgs);
 
 			// Uploadam slike
 			if (presignRes.data?.images) {

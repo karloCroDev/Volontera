@@ -1,5 +1,6 @@
 // Models
 import {
+  deleteDirectMessageById,
   getDirectMessagesConversationById,
   listAllDirectMessagesConversation,
   searchAllUsers,
@@ -13,10 +14,11 @@ import { User } from "@repo/database";
 // Schema types
 import {
   SearchArgs,
-  PresignDirectMessageImagesArgs,
   ConversationArgs,
   CreateDirectMessageArgs,
+  DeleteDirectMessageArgs,
 } from "@repo/schemas/direct-messages";
+import { PresignImagesSchemaArgs } from "@repo/schemas/image";
 
 // Websockets
 import { getReceiverSocketId, io } from "@/ws/socket";
@@ -27,7 +29,7 @@ import {
 
 export async function presignDirectMessageImagesService({
   images: dataImages,
-}: PresignDirectMessageImagesArgs) {
+}: PresignImagesSchemaArgs) {
   const images = await Promise.all(
     dataImages.map(async (image) =>
       createUploadUrl({
@@ -102,6 +104,34 @@ export async function getDirectMessagesConversationByIdService({
     message: "Conversation retrieved successfully",
     title: "Conversation retrieved successfully",
     data: { conversation },
+  });
+}
+
+export async function deleteDirectMessageByIdService({
+  data,
+  userId,
+}: {
+  data: DeleteDirectMessageArgs;
+  userId: User["id"];
+}) {
+  const deletedMessage = await deleteDirectMessageById({
+    messageId: data.messageId,
+    userId,
+  });
+
+  // Oba dva korisnika pošaljem kako se izbrisala poruka
+  deletedMessage.conversation.participants.forEach((participant) => {
+    const participantSocketId = getReceiverSocketId(participant.userId);
+    if (!participantSocketId) return;
+    io.to(participantSocketId).emit("direct-messages:message-deleted", {
+      messageId: deletedMessage.id,
+    });
+  });
+
+  return toastResponseOutput({
+    message: "Message deleted successfully",
+    title: "Message deleted",
+    status: 200,
   });
 }
 

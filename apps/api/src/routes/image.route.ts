@@ -3,8 +3,15 @@ import express from "express";
 import { Router } from "express";
 
 // Controllers
-import { getImageFromKeyController } from "@/controllers/image.controller";
-import { imageKeysSchema } from "@repo/schemas/image";
+import {
+  getImageFromKeyController,
+  presignDirectMessageImagesController,
+} from "@/controllers/image.controller";
+
+// Schemas
+import { imageKeysSchema, presignImagesSchema } from "@repo/schemas/image";
+
+// Middleware
 import { validate } from "@/middleware/validate.middleware";
 
 export const imageRoutes = Router();
@@ -18,4 +25,13 @@ imageRoutes.post(
     responseOutput: "toast",
   }),
   getImageFromKeyController
+);
+
+imageRoutes.post(
+  "/presign-images",
+  validate({
+    schema: presignImagesSchema,
+    responseOutput: "toast",
+  }),
+  presignDirectMessageImagesController
 );

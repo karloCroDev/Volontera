@@ -20,7 +20,7 @@ export default async function DirectMessagesPage() {
 			<MessageWrapper>
 				<UsersInfoHeader />
 
-				<div className="flex min-h-0 flex-1 flex-col gap-4 px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
+				<div className="relative min-h-0 flex-1 px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
 					<Conversation />
 
 					<MessageForm />

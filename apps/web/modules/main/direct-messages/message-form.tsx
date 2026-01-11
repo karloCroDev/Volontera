@@ -80,7 +80,7 @@ export const MessageForm = withReactQueryProvider(() => {
 
 	return (
 		<Form
-			className="lg:max-w-3/4 mx-auto mt-auto w-full flex-none"
+			className="lg:max-w-3/4 z-max bg-background absolute bottom-4 left-1/2 w-full flex-none -translate-x-1/2 rounded-lg"
 			onSubmit={onSubmit}
 		>
 			<TextEditor

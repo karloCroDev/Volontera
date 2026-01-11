@@ -4,13 +4,18 @@
 import * as React from 'react';
 import { useSearchParams } from 'next/navigation';
 import Markdown from 'react-markdown';
+import Link from 'next/link';
 
 // Components
-import { Message, MessageSkeleton } from '@/components/ui/message';
+import { Message, MessageSkeleton } from '@/components/ui/message/message';
 import { Avatar } from '@/components/ui/avatar';
+import { MessageImages } from '@/components/ui/message/message-images';
 
 // Hooks
-import { useGetDirectMessagesConversationById } from '@/hooks/data/direct-messages';
+import {
+	useDeleteDirectMessageById,
+	useGetDirectMessagesConversationById,
+} from '@/hooks/data/direct-messages';
 import { useSession } from '@/hooks/data/user';
 import { useGetImageFromKeys } from '@/hooks/data/image';
 
@@ -19,23 +24,25 @@ import { withReactQueryProvider } from '@/lib/utils/react-query';
 import { convertToFullname } from '@/lib/utils/converter';
 
 // Modules
-import { useSocketContext } from '@/modules/main/direct-messages/SocketContext';
+import { useSocketContext } from '@/modules/main/direct-messages/socket-context';
 
 // Types
-import { EmitNewChat } from '@repo/types/sockets';
-import { MessageImages } from '@/modules/main/direct-messages/message-images';
-import Link from 'next/link';
+import { GetDirectMessagesConversationByIdResponse } from '@repo/types/direct-messages';
+
+// Schemas
+import { DeleteDirectMessageArgs } from '@repo/schemas/direct-messages';
 
 export const Conversation = withReactQueryProvider(() => {
 	const searchParams = useSearchParams();
+	const conversationId = searchParams.get('conversationId');
 
 	const { data: conversation, isLoading } =
 		useGetDirectMessagesConversationById(
 			{
-				conversationId: searchParams.get('conversationId')!,
+				conversationId: conversationId!,
 			},
 			{
-				enabled: !!searchParams.get('conversationId'),
+				enabled: !!conversationId,
 			}
 		);
 
@@ -49,14 +56,27 @@ export const Conversation = withReactQueryProvider(() => {
 	const { socketGlobal } = useSocketContext();
 	React.useEffect(() => {
 		if (!socketGlobal) return;
-		socketGlobal.on<EmitNewChat>('new-chat', (newChat) =>
-			setMessages(messages ? [...messages, newChat] : [newChat])
-		);
+
+		const handleNewChat = (
+			newChat: GetDirectMessagesConversationByIdResponse['conversation'][0]
+		) => {
+			setMessages((prev) => (prev ? [...prev, newChat] : [newChat]));
+		};
+
+		const handleMessageDeleted = ({ messageId }: DeleteDirectMessageArgs) => {
+			// If server includes conversationId, ignore deletes from other conversations
+
+			setMessages((prev) => prev?.filter((msg) => msg.id !== messageId));
+		};
+
+		socketGlobal.on('new-chat', handleNewChat);
+		socketGlobal.on('direct-messages:message-deleted', handleMessageDeleted);
 
 		return () => {
-			socketGlobal.off<EmitNewChat>('new-chat');
+			socketGlobal.off('new-chat', handleNewChat);
+			socketGlobal.off('direct-messages:message-deleted', handleMessageDeleted);
 		};
-	}, [messages, setMessages, socketGlobal]);
+	}, [conversationId, socketGlobal]);
 
 	const { data: userImages } = useGetImageFromKeys(
 		{
@@ -73,8 +93,21 @@ export const Conversation = withReactQueryProvider(() => {
 	// Dobivam trenutno ulogiranog korisnika za prikaz varijanti poruka
 	const { data: user } = useSession();
 
+	// Scrolla se na dna containera kada se pojavi nova poruka
+	const containerRef = React.useRef<HTMLDivElement | null>(null);
+	React.useLayoutEffect(() => {
+		const el = containerRef.current;
+		if (!el) return;
+		el.scrollTop = el.scrollHeight;
+	}, [messages]);
+
+	// Abilty to delete message
+	const { mutate: mutateDeleteMessage } = useDeleteDirectMessageById();
 	return (
-		<div className="no-scrollbar min-h-0 flex-1 space-y-4 overflow-y-auto">
+		<div
+			className="no-scrollbar min-h-0 flex-1 space-y-4 overflow-y-auto scroll-smooth pb-20"
+			ref={containerRef}
+		>
 			{isLoading &&
 				[...Array(5)].map((_, indx) => (
 					<MessageSkeleton
@@ -107,8 +140,17 @@ export const Conversation = withReactQueryProvider(() => {
 							}
 							images={
 								message.directMessagesImages[0]?.imageUrl && (
-									<MessageImages message={message} messages={messages} />
+									<MessageImages
+										imageUrls={message.directMessagesImages
+											.map((img) => img.imageUrl)
+											.filter(Boolean)}
+									/>
 								)
+							}
+							deleteAction={() =>
+								mutateDeleteMessage({
+									messageId: message.id,
+								})
 							}
 						>
 							<Markdown>{message.content}</Markdown>
