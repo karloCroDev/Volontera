@@ -4,14 +4,20 @@
 import * as React from 'react';
 import { Send } from 'lucide-react';
 import { Form } from 'react-aria-components';
+import { useParams } from 'next/navigation';
+
+// Components
 import { TextEditor } from '@/components/ui/text-editor/text-editor';
 import {
 	ImageItemArgs,
 	isLocalImageItem,
 } from '@/components/ui/dnd-mapping-images';
 import { Button } from '@/components/ui/button';
+
+// Hooks
 import { useCreateOrganizationGroupChatMessage } from '@/hooks/data/organization-group-chat';
-import { useParams } from 'next/navigation';
+
+// Schemas
 import { OrganizationGroupChatMessageArgs } from '@repo/schemas/organization-group-chat';
 // import { useCreateOrganizationGroupChatMessage } from '@/hooks/data/organization-group-chat';
 
@@ -56,7 +62,7 @@ export const AddMessageForm: React.FC<{
 
 	return (
 		<Form
-			className="lg:max-w-3/4 mx-auto mt-auto w-full flex-none"
+			className="lg:max-w-3/4 z-max bg-background sticky bottom-0 mx-auto w-full flex-none rounded-lg"
 			onSubmit={onSubmit}
 		>
 			<TextEditor
