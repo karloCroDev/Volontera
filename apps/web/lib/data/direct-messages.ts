@@ -7,6 +7,7 @@ import {
 	SearchArgs,
 	ConversationArgs,
 	MessageArgs,
+	DeleteDirectMessageArgs,
 } from '@repo/schemas/direct-messages';
 import { PresignImagesSchemaArgs } from '@repo/schemas/image';
 
@@ -36,6 +37,17 @@ export async function getDirectMessagesConversationById({
 }: ConversationArgs) {
 	try {
 		const res = await API().get(`direct-messages/${conversationId}`);
+		return res.data;
+	} catch (err) {
+		catchError(err);
+	}
+}
+
+export async function deleteDirectMessageById({
+	messageId,
+}: DeleteDirectMessageArgs) {
+	try {
+		const res = await API().delete(`direct-messages/${messageId}`);
 		return res.data;
 	} catch (err) {
 		catchError(err);

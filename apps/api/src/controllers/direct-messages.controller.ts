@@ -3,15 +3,18 @@ import { Request, Response } from "express";
 
 // Services
 import {
+  deleteDirectMessageByIdService,
   getDirectMessagesConversationByIdService,
   listAllDirectMessagesConversationsService,
-  presignDirectMessageImagesService,
   searchAllUsersWithQueryService,
   startConversationOrStartAndSendDirectMessageService,
 } from "@/services/direct-messages.service";
 
 // Schema types
 import { ConversationArgs, SearchArgs } from "@repo/schemas/direct-messages";
+
+// Lib
+import { handleServerErrorResponse } from "@/lib/utils/error-response";
 
 export async function searchAllUsersWithQueryController(
   req: Request,
@@ -24,7 +27,7 @@ export async function searchAllUsersWithQueryController(
     });
     return res.status(result.status).json(result.body);
   } catch (err) {
-    return res.status(500).json({ success: false, message: "Internal error" });
+    handleServerErrorResponse(res, err);
   }
 }
 
@@ -37,8 +40,8 @@ export async function getDirectMessagesConversationByIdServiceController(
       req.params as ConversationArgs
     );
     return res.status(result.status).json(result.body);
-  } catch (error) {
-    return res.status(500).json({ success: false, message: "Internal error" });
+  } catch (err) {
+    handleServerErrorResponse(res, err);
   }
 }
 
@@ -51,8 +54,23 @@ export async function listAllDirectMessagesConversationsController(
       req.user.userId
     );
     return res.status(result.status).json(result.body);
-  } catch (error) {
-    return res.status(500).json({ success: false, message: "Internal error" });
+  } catch (err) {
+    handleServerErrorResponse(res, err);
+  }
+}
+
+export async function deleteDirectMessageByIdController(
+  req: Request,
+  res: Response
+) {
+  try {
+    const result = await deleteDirectMessageByIdService({
+      data: req.body,
+      userId: req.user.userId,
+    });
+    return res.status(result.status).json(result.body);
+  } catch (err) {
+    handleServerErrorResponse(res, err);
   }
 }
 
@@ -66,19 +84,7 @@ export async function startConversationOrStartAndSendDirectMessageController(
       userId: req.user.userId,
     });
     return res.status(result.status).json(result.body);
-  } catch (error) {
-    return res.status(500).json({ success: false, message: "Internal error" });
-  }
-}
-
-export async function presignDirectMessageImagesController(
-  req: Request,
-  res: Response
-) {
-  try {
-    const result = await presignDirectMessageImagesService(req.body);
-    return res.status(result.status).json(result.body);
-  } catch (error) {
-    return res.status(500).json({ success: false, message: "Internal error" });
+  } catch (err) {
+    handleServerErrorResponse(res, err);
   }
 }

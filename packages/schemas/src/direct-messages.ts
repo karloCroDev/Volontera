@@ -32,5 +32,9 @@ export type CreateDirectMessageArgs = z.infer<typeof createDirectMessageSchema>;
 export const conversationSchema = z.object({
   conversationId: z.cuid(),
 });
-
 export type ConversationArgs = z.infer<typeof conversationSchema>;
+
+export const deleteDirectMessageSchema = z.object({
+  messageId: z.cuid(),
+});
+export type DeleteDirectMessageArgs = z.infer<typeof deleteDirectMessageSchema>;

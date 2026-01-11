@@ -1,5 +1,6 @@
 // Models
 import {
+  deleteDirectMessageById,
   getDirectMessagesConversationById,
   listAllDirectMessagesConversation,
   searchAllUsers,
@@ -15,6 +16,7 @@ import {
   SearchArgs,
   ConversationArgs,
   CreateDirectMessageArgs,
+  DeleteDirectMessageArgs,
 } from "@repo/schemas/direct-messages";
 import { PresignImagesSchemaArgs } from "@repo/schemas/image";
 
@@ -102,6 +104,25 @@ export async function getDirectMessagesConversationByIdService({
     message: "Conversation retrieved successfully",
     title: "Conversation retrieved successfully",
     data: { conversation },
+  });
+}
+
+export async function deleteDirectMessageByIdService({
+  data,
+  userId,
+}: {
+  data: DeleteDirectMessageArgs;
+  userId: User["id"];
+}) {
+  await deleteDirectMessageById({
+    messageId: data.messageId,
+    userId,
+  });
+
+  return toastResponseOutput({
+    message: "Message deleted successfully",
+    title: "Message deleted",
+    status: 200,
   });
 }
 
