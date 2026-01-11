@@ -56,6 +56,14 @@ export async function createOrganizationGroupChatMessage({
             : undefined,
       },
     },
+    include: {
+      organizationGroupChatMessageImages: true,
+      author: {
+        omit: {
+          password: true,
+        },
+      },
+    },
   });
 }
 

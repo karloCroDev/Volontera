@@ -30,8 +30,22 @@ io.on("connection", (socket) => {
   io.emit("get-online-users", Object.keys(userSocketObj));
 
   socket.on("organization-group-chat-room", (organizationId: string) => {
+    const prevOrganizationId = socket.data.organizationId as string | undefined;
+
+    if (prevOrganizationId && prevOrganizationId !== organizationId) {
+      socket.leave(`organization:${prevOrganizationId}`);
+    }
+
+    socket.data.organizationId = organizationId;
     socket.join(`organization:${organizationId}`);
-  }); // Ne diconnectam jer automatski se diconnecta kada napusti stranicu tj. route za group chat neke organizacije
+  });
+
+  socket.on("organization-group-chat-room:leave", (organizationId: string) => {
+    socket.leave(`organization:${organizationId}`);
+    if (socket.data.organizationId === organizationId) {
+      delete socket.data.organizationId;
+    }
+  });
 
   // Handelam samo kada se korisnik disconnecta, jer npr.
   socket.on("disconnect", () => {

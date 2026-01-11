@@ -14,7 +14,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Tag } from '@/components/ui/tag';
 import { Avatar } from '@/components/ui/avatar';
 import { ResizableTextArea } from '@/components/ui/resizable-input';
-import { Message } from '@/components/ui/message';
+import { Message } from '@/components/ui/messages/message';
 import { Button } from '@/components/ui/button';
 import { Pen, Send, Trash2 } from 'lucide-react';
 import { CheckboxVisually } from '@/components/ui/checkbox';

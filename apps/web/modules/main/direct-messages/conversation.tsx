@@ -6,7 +6,7 @@ import { useSearchParams } from 'next/navigation';
 import Markdown from 'react-markdown';
 
 // Components
-import { Message, MessageSkeleton } from '@/components/ui/message';
+import { Message, MessageSkeleton } from '@/components/ui/messages/message';
 import { Avatar } from '@/components/ui/avatar';
 
 // Hooks
@@ -22,7 +22,7 @@ import { convertToFullname } from '@/lib/utils/converter';
 import { useSocketContext } from '@/modules/main/direct-messages/socket-context';
 
 // Types
-import { MessageImages } from '@/modules/main/direct-messages/message-images';
+import { MessageImages } from '@/components/ui/messages/message-images';
 import Link from 'next/link';
 
 export const Conversation = withReactQueryProvider(() => {
@@ -106,7 +106,11 @@ export const Conversation = withReactQueryProvider(() => {
 							}
 							images={
 								message.directMessagesImages[0]?.imageUrl && (
-									<MessageImages message={message} messages={messages} />
+									<MessageImages
+										imageUrls={message.directMessagesImages
+											.map((img) => img.imageUrl)
+											.filter(Boolean)}
+									/>
 								)
 							}
 						>

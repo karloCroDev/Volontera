@@ -7,7 +7,7 @@ import { useParams } from 'next/navigation';
 
 // Components
 import { Avatar } from '@/components/ui/avatar';
-import { Message } from '@/components/ui/message';
+import { Message } from '@/components/ui/messages/message';
 
 // Hooks
 import { useGetImageFromKeys } from '@/hooks/data/image';
@@ -20,6 +20,7 @@ import { convertToFullname } from '@/lib/utils/converter';
 import { RetrieveAllOrganizationGroupChatMessagesResponse } from '@repo/types/organization-group-chat';
 import { useSocketContext } from '@/modules/main/direct-messages/socket-context';
 import { useSession } from '@/hooks/data/user';
+import { MessageImages } from '@/components/ui/messages/message-images';
 
 export const GroupChatMapping: React.FC<{
 	groupChat: RetrieveAllOrganizationGroupChatMessagesResponse;
@@ -41,54 +42,83 @@ export const GroupChatMapping: React.FC<{
 	});
 
 	const { socketGlobal } = useSocketContext();
+	React.useEffect(() => {
+		if (!socketGlobal) return;
+		socketGlobal.on('organization-group-chat:new-message', (newChat) => {
+			setMessages((prev) => {
+				const prevMessages = prev ?? [];
+				return Array.isArray(newChat)
+					? [...prevMessages, ...newChat]
+					: [...prevMessages, newChat];
+			});
+		});
+
+		return () => {
+			socketGlobal.off('organization-group-chat:new-message');
+		};
+	}, [socketGlobal]);
 
 	const [messages, setMessages] = React.useState(
 		data.organizationGroupChat.messages
 	);
 
+	// Stavljalju poruke koje su fetchane iz hooka u state (radi lakšeg upravljanja porukama sa ws)
 	React.useEffect(() => {
 		setMessages(data.organizationGroupChat.messages);
 	}, [data]);
 
-	React.useEffect(() => {
-		if (!socketGlobal) return;
-		socketGlobal.on('organization-group-chat:new-message', (newChat) =>
-			setMessages(messages ? [...messages, newChat] : [newChat])
-		);
-
-		return () => {
-			socketGlobal.off('organization-group-chat:new-message');
-		};
-	}, [messages, setMessages, socketGlobal]);
+	// Scrolla se na dna containera kada se pojavi nova poruka
+	const containerRef = React.useRef<HTMLDivElement | null>(null);
+	React.useLayoutEffect(() => {
+		const el = containerRef.current;
+		if (!el) return;
+		el.scrollTop = el.scrollHeight;
+	}, [messages]);
 
 	const { data: user } = useSession();
-	return messages && messages.length > 0 ? (
-		messages.map((message) => (
-			<Message
-				key={message.id}
-				date={new Date(message.createdAt)}
-				variant={user?.id === message.author.id ? 'primary' : 'secondary'}
-				avatar={
-					<Avatar
-						imageProps={{
-							src: message.author.image
-								? images?.urls[message.author.image]
-								: undefined,
-						}}
+	return (
+		<div
+			className="no-scrollbar min-h-0 flex-1 space-y-4 overflow-y-auto scroll-smooth"
+			ref={containerRef}
+		>
+			{messages && messages.length > 0 ? (
+				messages.map((message) => (
+					<Message
+						key={message.id}
+						date={new Date(message.createdAt)}
+						variant={user?.id === message.author.id ? 'primary' : 'secondary'}
+						avatar={
+							<Avatar
+								imageProps={{
+									src: message.author.image
+										? images?.urls[message.author.image]
+										: undefined,
+								}}
+							>
+								{convertToFullname({
+									firstname: message.author.firstName,
+									lastname: message.author.lastName,
+								})}
+							</Avatar>
+						}
+						images={
+							messages[0]?.organizationGroupChatMessageImages && (
+								<MessageImages
+									imageUrls={message.organizationGroupChatMessageImages.map(
+										(img) => img.imageUrl
+									)}
+								/>
+							)
+						}
 					>
-						{convertToFullname({
-							firstname: message.author.firstName,
-							lastname: message.author.lastName,
-						})}
-					</Avatar>
-				}
-			>
-				<Markdown>{message.content}</Markdown>
-			</Message>
-		))
-	) : (
-		<p className="text-muted-foreground text-center">
-			No messages yet. Be the first to send a message!
-		</p>
+						<Markdown>{message.content}</Markdown>
+					</Message>
+				))
+			) : (
+				<p className="text-muted-foreground text-center">
+					No messages yet. Be the first to send a message!
+				</p>
+			)}
+		</div>
 	);
 };
