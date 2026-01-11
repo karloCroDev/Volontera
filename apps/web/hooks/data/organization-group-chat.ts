@@ -10,6 +10,7 @@ import {
 // Schemas
 import {
 	DeleteOrganizationGroupChatMessageArgs,
+	OrganizationGroupChatMessageArgs,
 	RetrieveAllOrganizationGroupChatMessagesArgs,
 } from '@repo/schemas/organization-group-chat';
 
@@ -20,9 +21,6 @@ import {
 	retrieveAllOrganizationGroupChatMessages,
 } from '@/lib/data/organization-group-chat';
 
-// Schemas
-import { MessageArgs } from '@repo/schemas/direct-messages';
-
 // Types
 import { RetrieveAllOrganizationGroupChatMessagesResponse } from '@repo/types/organization-group-chat';
 import { ErrorToastResponse, SuccessfulResponse } from '@repo/types/general';
@@ -32,19 +30,15 @@ export const useCreateOrganizationGroupChatMessage = (
 	options?: UseMutationOptions<
 		SuccessfulResponse,
 		ErrorToastResponse,
-		DataWithFiles<MessageArgs>
+		DataWithFiles<OrganizationGroupChatMessageArgs>
 	>
 ) => {
-	const queryClient = useQueryClient();
 	return useMutation({
 		mutationKey: ['accept-or-decline-request'],
-		mutationFn: (data: DataWithFiles<Omit<MessageArgs, 'participantId'>>) =>
+		mutationFn: (data: DataWithFiles<OrganizationGroupChatMessageArgs>) =>
 			createGroupChatMessage(data),
 		onSuccess: async (...args) => {
-			await queryClient.invalidateQueries({
-				queryKey: ['organization-group-chat'],
-				exact: false,
-			});
+			// Handling with websockets
 			await options?.onSuccess?.(...args);
 		},
 		...options,

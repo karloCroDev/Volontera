@@ -3,9 +3,6 @@ import http from "http";
 import express from "express";
 import { Server } from "socket.io";
 
-// Types
-import { EmitUsers } from "@repo/types/sockets";
-
 export const app = express();
 export const server = http.createServer(app);
 
@@ -30,9 +27,13 @@ io.on("connection", (socket) => {
   if (userId) userSocketObj[userId] = socket.id;
 
   // Emit => Šalje podatke svim klijentima
-  io.emit<EmitUsers>("get-online-users", Object.keys(userSocketObj));
+  io.emit("get-online-users", Object.keys(userSocketObj));
 
-  // On sluša događaje sve od klijenata
+  socket.on("organization-group-chat-room", (organizationId: string) => {
+    socket.join(`organization:${organizationId}`);
+  }); // Ne diconnectam jer automatski se diconnecta kada napusti stranicu tj. route za group chat neke organizacije
+
+  // Handelam samo kada se korisnik disconnecta, jer npr.
   socket.on("disconnect", () => {
     console.log("user disconnected", socket.id);
     delete userSocketObj[userId];

@@ -24,7 +24,7 @@ export default async function GroupChatPage({
 					<GroupChatMapping groupChat={groupChat} />
 				</div>
 
-				<AddMessageForm />
+				<AddMessageForm groupChatId={groupChat.organizationGroupChat.id} />
 			</div>
 		</>
 	);

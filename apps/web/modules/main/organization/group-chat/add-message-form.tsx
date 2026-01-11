@@ -11,15 +11,20 @@ import {
 } from '@/components/ui/dnd-mapping-images';
 import { Button } from '@/components/ui/button';
 import { useCreateOrganizationGroupChatMessage } from '@/hooks/data/organization-group-chat';
+import { useParams } from 'next/navigation';
+import { OrganizationGroupChatMessageArgs } from '@repo/schemas/organization-group-chat';
 // import { useCreateOrganizationGroupChatMessage } from '@/hooks/data/organization-group-chat';
 
-export const AddMessageForm = () => {
+export const AddMessageForm: React.FC<{
+	groupChatId: OrganizationGroupChatMessageArgs['groupChatId'];
+}> = ({ groupChatId }) => {
 	const [value, setValue] = React.useState('');
 	const [images, setImages] = React.useState<ImageItemArgs>([]);
 
 	console.log(images);
 	const { mutate, isPending } = useCreateOrganizationGroupChatMessage();
 
+	const paras = useParams<{ organizationId: string }>();
 	const onSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
 
@@ -27,7 +32,8 @@ export const AddMessageForm = () => {
 		mutate(
 			{
 				data: {
-					particpantId: '', // Participant ID is not needed for organization group chat
+					groupChatId,
+					organizationId: paras.organizationId,
 					content: value,
 					images: images
 						.filter(isLocalImageItem)
@@ -64,8 +70,8 @@ export const AddMessageForm = () => {
 					<Button
 						type="submit"
 						className="p-2"
-						// isLoading={isPending}
-						// isDisabled={!value || isPending}
+						isLoading={isPending}
+						isDisabled={!value || isPending}
 					>
 						<Send />
 					</Button>

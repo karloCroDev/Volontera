@@ -20,6 +20,7 @@ import {
   RetrieveAllOrganizationGroupChatMessagesArgs,
   DeleteOrganizationGroupChatMessageArgs,
 } from "@repo/schemas/organization-group-chat";
+import { io } from "@/ws/socket";
 
 export async function retrieveAllOrganizationGroupChatMessagesService({
   organizationId,
@@ -46,11 +47,16 @@ export async function createOrganizationGroupChatMessageService({
     ...data,
     senderId: userId,
   });
-  return serverFetchOutput({
-    status: 200,
+
+  io.to(`organization:${data.organizationId}`).emit(
+    "organization-group-chat:new-message",
+    messages
+  );
+
+  return toastResponseOutput({
+    title: "Success",
     message: "Successfully created organization group chat message",
-    data: { messages },
-    success: true,
+    status: 200,
   });
 }
 

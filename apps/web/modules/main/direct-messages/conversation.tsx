@@ -22,7 +22,6 @@ import { convertToFullname } from '@/lib/utils/converter';
 import { useSocketContext } from '@/modules/main/direct-messages/socket-context';
 
 // Types
-import { EmitNewChat } from '@repo/types/sockets';
 import { MessageImages } from '@/modules/main/direct-messages/message-images';
 import Link from 'next/link';
 
@@ -49,12 +48,12 @@ export const Conversation = withReactQueryProvider(() => {
 	const { socketGlobal } = useSocketContext();
 	React.useEffect(() => {
 		if (!socketGlobal) return;
-		socketGlobal.on<EmitNewChat>('new-chat', (newChat) =>
+		socketGlobal.on('new-chat', (newChat) =>
 			setMessages(messages ? [...messages, newChat] : [newChat])
 		);
 
 		return () => {
-			socketGlobal.off<EmitNewChat>('new-chat');
+			socketGlobal.off('new-chat');
 		};
 	}, [messages, setMessages, socketGlobal]);
 

@@ -8,7 +8,6 @@ import { io, Socket } from 'socket.io-client';
 import { useSession } from '@/hooks/data/user';
 
 // Types
-import { EmitUsers } from '@repo/types/sockets';
 import { withReactQueryProvider } from '@/lib/utils/react-query';
 
 export const SocketContext = React.createContext<{
@@ -18,7 +17,6 @@ export const SocketContext = React.createContext<{
 
 export const useSocketContext = () => {
 	const ctx = React.useContext(SocketContext);
-
 	if (!ctx) throw new Error("Oops I can't provide the value");
 
 	return ctx;
@@ -48,9 +46,10 @@ export const SocketContextProvider: React.FC<{ children: React.ReactNode }> =
 
 			setSocketGlobal(socket);
 
-			socket.on<EmitUsers>('get-online-users', (data) => {
+			socket.on('get-online-users', (data) => {
 				setOnlineUsers(data);
 			});
+
 			return () => {
 				socket.close();
 			};
