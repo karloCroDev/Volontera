@@ -7,7 +7,7 @@ import { useParams } from 'next/navigation';
 
 // Components
 import { Avatar } from '@/components/ui/avatar';
-import { Message } from '@/components/ui/messages/message';
+import { Message } from '@/components/ui/message/message';
 
 // Hooks
 import { useGetImageFromKeys } from '@/hooks/data/image';
@@ -20,7 +20,7 @@ import { convertToFullname } from '@/lib/utils/converter';
 import { RetrieveAllOrganizationGroupChatMessagesResponse } from '@repo/types/organization-group-chat';
 import { useSocketContext } from '@/modules/main/direct-messages/socket-context';
 import { useSession } from '@/hooks/data/user';
-import { MessageImages } from '@/components/ui/messages/message-images';
+import { MessageImages } from '@/components/ui/message/message-images';
 
 export const GroupChatMapping: React.FC<{
 	groupChat: RetrieveAllOrganizationGroupChatMessagesResponse;
@@ -102,7 +102,7 @@ export const GroupChatMapping: React.FC<{
 							</Avatar>
 						}
 						images={
-							messages[0]?.organizationGroupChatMessageImages && (
+							message.organizationGroupChatMessageImages[0]?.imageUrl && (
 								<MessageImages
 									imageUrls={message.organizationGroupChatMessageImages.map(
 										(img) => img.imageUrl

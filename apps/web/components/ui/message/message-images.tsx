@@ -23,37 +23,36 @@ export const MessageImages: React.FC<{
 				<div className="bg-muted-foreground text-muted-foreground h-full w-full animate-pulse" />
 			)}
 
-			{imageUrls.length > 1 ? (
-				<Carousel
-					slides={imageUrls.map((imageUrl, id) => {
-						const src = images?.urls?.[imageUrl];
-						if (!src) return null;
+			{!isPending &&
+				(imageUrls.length > 1 ? (
+					<Carousel
+						slides={imageUrls.map((imageUrl, id) => {
+							const src = images?.urls?.[imageUrl];
+							if (!src) return null;
 
-						return (
-							<div
-								key={id}
-								className="relative flex size-80 overflow-hidden rounded-md"
-							>
-								<Image
-									src={src}
-									alt="Message Image"
-									fill
-									className="object-cover"
-								/>
-							</div>
-						);
-					})}
-				/>
-			) : (
-				imageUrls.length === 1 && (
+							return (
+								<div
+									key={id}
+									className="relative flex size-80 overflow-hidden rounded-md"
+								>
+									<Image
+										src={src}
+										alt="Message Image"
+										fill
+										className="object-cover"
+									/>
+								</div>
+							);
+						})}
+					/>
+				) : imageUrls.length === 1 ? (
 					<Image
 						src={images?.urls[imageUrls[0]!] || ''}
 						alt="Message Image"
 						fill
 						className="object-cover"
 					/>
-				)
-			)}
+				) : null)}
 		</div>
 	);
 };
