@@ -11,7 +11,11 @@ import {
 } from "@/services/direct-messages.service";
 
 // Schema types
-import { ConversationArgs, SearchArgs } from "@repo/schemas/direct-messages";
+import {
+  ConversationArgs,
+  DeleteDirectMessageArgs,
+  SearchArgs,
+} from "@repo/schemas/direct-messages";
 
 // Lib
 import { handleServerErrorResponse } from "@/lib/utils/error-response";
@@ -65,7 +69,7 @@ export async function deleteDirectMessageByIdController(
 ) {
   try {
     const result = await deleteDirectMessageByIdService({
-      data: req.body,
+      data: req.params as DeleteDirectMessageArgs,
       userId: req.user.userId,
     });
     return res.status(result.status).json(result.body);

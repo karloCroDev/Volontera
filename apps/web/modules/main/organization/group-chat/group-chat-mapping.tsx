@@ -11,7 +11,10 @@ import { Message } from '@/components/ui/message/message';
 
 // Hooks
 import { useGetImageFromKeys } from '@/hooks/data/image';
-import { useRetrieveAllOrganizationGroupChatMessages } from '@/hooks/data/organization-group-chat';
+import {
+	useDeleteOrganizationGroupChatMessage,
+	useRetrieveAllOrganizationGroupChatMessages,
+} from '@/hooks/data/organization-group-chat';
 
 // Lib
 import { convertToFullname } from '@/lib/utils/converter';
@@ -21,6 +24,9 @@ import { RetrieveAllOrganizationGroupChatMessagesResponse } from '@repo/types/or
 import { useSocketContext } from '@/modules/main/direct-messages/socket-context';
 import { useSession } from '@/hooks/data/user';
 import { MessageImages } from '@/components/ui/message/message-images';
+import { Button } from '@/components/ui/button';
+import { Trash } from 'lucide-react';
+import { toast } from '@/lib/utils/toast';
 
 export const GroupChatMapping: React.FC<{
 	groupChat: RetrieveAllOrganizationGroupChatMessagesResponse;
@@ -76,6 +82,9 @@ export const GroupChatMapping: React.FC<{
 	}, [messages]);
 
 	const { data: user } = useSession();
+
+	const { mutate: mutateDeleteMessage } =
+		useDeleteOrganizationGroupChatMessage();
 	return (
 		<div
 			className="no-scrollbar min-h-0 flex-1 space-y-4 overflow-y-auto scroll-smooth"
@@ -108,6 +117,28 @@ export const GroupChatMapping: React.FC<{
 										(img) => img.imageUrl
 									)}
 								/>
+							)
+						}
+						deleteAction={() =>
+							mutateDeleteMessage(
+								{
+									organizationId: params.organizationId,
+									messageId: message.id,
+								},
+								{
+									onSuccess: () => {
+										setMessages((prev) =>
+											prev?.filter((msg) => msg.id !== message.id)
+										);
+									},
+									onError: ({ message, title }) => {
+										toast({
+											title,
+											content: message,
+											variant: 'error',
+										});
+									},
+								}
 							)
 						}
 					>

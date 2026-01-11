@@ -4,6 +4,7 @@ import { twJoin, twMerge } from 'tailwind-merge';
 
 // Lib
 import { formatTime } from '@/lib/utils/time-adjustments';
+import { DeleteMessageButton } from '@/components/ui/message/delete-message-button';
 
 export const Message: React.FC<
 	React.ComponentPropsWithoutRef<'div'> & {
@@ -11,6 +12,7 @@ export const Message: React.FC<
 		date: Date;
 		variant?: 'primary' | 'secondary';
 		images?: React.ReactNode;
+		deleteAction?: () => void;
 	}
 > = ({
 	/* eslint react/prop-types: 0 */
@@ -18,7 +20,7 @@ export const Message: React.FC<
 	date,
 	children,
 	variant = 'primary',
-
+	deleteAction,
 	images,
 	className,
 	...rest
@@ -30,13 +32,14 @@ export const Message: React.FC<
 			<div
 				{...rest}
 				className={twMerge(
-					'flex gap-4 md:gap-8',
+					'group flex gap-4 md:gap-8',
 					variant === 'secondary' && 'ml-auto flex-row-reverse',
 
 					className
 				)}
 			>
 				{avatar}
+
 				<div className="md:max-w-3/5 mt-6 w-4/5">
 					{/* Must be a (in some places I am handling markdown) */}
 					<div
@@ -57,6 +60,10 @@ export const Message: React.FC<
 						<CheckCheck className="text-muted-foreground size-4" />
 					</div>
 				</div>
+
+				{variant === 'primary' && deleteAction && (
+					<DeleteMessageButton action={deleteAction} />
+				)}
 			</div>
 		</>
 	);

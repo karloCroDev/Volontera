@@ -10,7 +10,10 @@ import { Message, MessageSkeleton } from '@/components/ui/message/message';
 import { Avatar } from '@/components/ui/avatar';
 
 // Hooks
-import { useGetDirectMessagesConversationById } from '@/hooks/data/direct-messages';
+import {
+	useDeleteDirectMessageById,
+	useGetDirectMessagesConversationById,
+} from '@/hooks/data/direct-messages';
 import { useSession } from '@/hooks/data/user';
 import { useGetImageFromKeys } from '@/hooks/data/image';
 
@@ -24,6 +27,9 @@ import { useSocketContext } from '@/modules/main/direct-messages/socket-context'
 // Types
 import { MessageImages } from '@/components/ui/message/message-images';
 import Link from 'next/link';
+import { Trash } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { toast } from '@/lib/utils/toast';
 
 export const Conversation = withReactQueryProvider(() => {
 	const searchParams = useSearchParams();
@@ -79,6 +85,8 @@ export const Conversation = withReactQueryProvider(() => {
 		if (!el) return;
 		el.scrollTop = el.scrollHeight;
 	}, [messages]);
+
+	const { mutate: mutateDeleteMessage } = useDeleteDirectMessageById();
 	return (
 		<div
 			className="no-scrollbar min-h-0 flex-1 space-y-4 overflow-y-auto scroll-smooth"
@@ -121,6 +129,27 @@ export const Conversation = withReactQueryProvider(() => {
 											.map((img) => img.imageUrl)
 											.filter(Boolean)}
 									/>
+								)
+							}
+							deleteAction={() =>
+								mutateDeleteMessage(
+									{
+										messageId: message.id,
+									},
+									{
+										onSuccess: () => {
+											setMessages((prev) =>
+												prev?.filter((msg) => msg.id !== message.id)
+											);
+										},
+										onError: ({ message, title }) => {
+											toast({
+												title,
+												content: message,
+												variant: 'error',
+											});
+										},
+									}
 								)
 							}
 						>

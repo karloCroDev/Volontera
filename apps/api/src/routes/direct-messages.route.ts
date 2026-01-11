@@ -56,11 +56,11 @@ directMessagesRoutes.post(
 );
 
 directMessagesRoutes.delete(
-  "/messageId",
+  "/:messageId",
   validate({
     schema: deleteDirectMessageSchema,
     responseOutput: "toast",
-    type: "body",
+    type: "params",
   }),
   deleteDirectMessageByIdController
 );
