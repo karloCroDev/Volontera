@@ -98,7 +98,10 @@ export const HelpMessageForm: React.FC<{
 		reset();
 	};
 	return (
-		<Form className="mt-auto" onSubmit={handleSubmit(onSubmit)}>
+		<Form
+			className="absolute bottom-4 left-1/2 w-3/4 -translate-x-1/2"
+			onSubmit={handleSubmit(onSubmit)}
+		>
 			<Controller
 				name="message"
 				control={control}
@@ -106,6 +109,7 @@ export const HelpMessageForm: React.FC<{
 					<ResizableTextArea
 						label="Enter your question for AI"
 						textAreaProps={field}
+						className="bg-background"
 						iconsRight={
 							<Button type="submit" className="p-2" isDisabled={isPending}>
 								<Send />

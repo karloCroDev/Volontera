@@ -7,10 +7,7 @@ import { twMerge } from 'tailwind-merge';
 import { Icon } from '@/components/ui/icon';
 
 export const Volontera: React.FC<
-	React.ComponentPropsWithoutRef<'a'> &
-		Omit<LinkProps, 'href'> & {
-			size?: 'sm' | 'md' | 'lg';
-		}
+	React.ComponentPropsWithoutRef<'a'> & Omit<LinkProps, 'href'>
 > = ({ className, ...rest }) => {
 	return (
 		<Link
@@ -19,7 +16,7 @@ export const Volontera: React.FC<
 			{...rest}
 		>
 			<Icon name="logo" className="size-8" />
-			<div className="m-0 flex items-end p-0 text-2xl font-light leading-6">
+			<div className="m-0 flex items-end p-0 text-2xl leading-6">
 				<span>V</span>
 				<span className="mx-1 h-4 w-8 rounded-full border-2 border-current" />
 				<span>lontera</span>

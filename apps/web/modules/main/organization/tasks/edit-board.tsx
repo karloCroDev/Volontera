@@ -12,6 +12,9 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 
+// Modules
+import { DeleteConfirmation } from '@/modules/main/organization/tasks/delete-confirmaton';
+
 export const EditBoard = () => {
 	const [isEditBoardOpen, setIsEditBoardOpen] = React.useState(false);
 	return (
@@ -39,65 +42,16 @@ export const EditBoard = () => {
 				</div>
 
 				<div className="flex justify-between">
-					<DeleteBoardConfirmation
-						boardId=""
-						boardName="s"
-						setIsEditBoardOpen={setIsEditBoardOpen}
+					<DeleteConfirmation
+						action={() => console.log('Wohohoho')}
+						id=""
+						name="Woah"
 					/>
 					<Button type="submit" size="md">
 						Submit
 					</Button>
 				</div>
 			</Form>
-		</Dialog>
-	);
-};
-
-const DeleteBoardConfirmation: React.FC<{
-	boardName: string;
-	boardId: string;
-	setIsEditBoardOpen: React.Dispatch<React.SetStateAction<boolean>>;
-}> = ({ boardId, boardName, setIsEditBoardOpen }) => {
-	return (
-		<Dialog
-			title={`Delete board ${boardName}?`}
-			triggerChildren={
-				<Button
-					type="button"
-					variant="outline"
-					colorScheme="destructive"
-					size="md"
-				>
-					{/* Enter board name */}
-					Delete board?
-				</Button>
-			}
-			// isOpen={isOpen}
-			// onOpenChange={setIsOpen}
-		>
-			<p className="text-muted-foreground">
-				Are you sure you want to delete your post? This action cannot be undone.
-			</p>
-
-			<div className="mt-4 flex justify-center gap-4">
-				<Button
-					// type="submit"
-					colorScheme="destructive"
-					onPress={() => {
-						setIsEditBoardOpen(false);
-					}}
-				>
-					Yes
-				</Button>
-				<Button
-					type="button"
-					colorScheme="bland"
-					variant="outline"
-					slot="close"
-				>
-					No
-				</Button>
-			</div>
 		</Dialog>
 	);
 };

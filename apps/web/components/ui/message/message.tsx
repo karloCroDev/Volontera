@@ -78,36 +78,30 @@ export const MessageSkeleton: React.FC<
 		<div
 			{...rest}
 			className={twMerge(
-				'flex w-full animate-pulse gap-4 md:gap-8', // Add animate-pulse for visual effect
-				variant === 'secondary' && 'ml-auto flex-row-reverse', // Matches Message positioning
+				'flex w-full animate-pulse gap-4 md:gap-8',
+				variant === 'secondary' && 'ml-auto flex-row-reverse',
 				className
 			)}
 		>
-			{/* 1. Avatar Placeholder */}
 			<div className="bg-muted-foreground size-10 rounded-full md:size-12" />
 
-			{/* 2. Content Container (Mimics width and margin/padding of the original) */}
 			<div className="md:max-w-3/5 mt-6 w-4/5">
 				{/* Message Bubble Placeholder */}
 				<div
 					className={twMerge(
 						'items-end border px-5 py-3 text-sm md:text-base',
-						'bg-muted border-input-border rounded-lg border', // Neutral skeleton background
-						// Mimic the rounded corners logic
+						'bg-muted border-input-border rounded-lg border',
 						variant === 'primary' && 'rounded-tl-none',
 						variant === 'secondary' && 'rounded-tr-none'
 					)}
 				>
-					<div className={'bg-muted-foreground h-3 w-full rounded'} />
-					<div className={'bg-muted-foreground mt-2 h-3 w-11/12 rounded'} />
-					<div className={'bg-muted-foreground mt-2 h-3 w-2/3 rounded'} />
+					<div className="bg-muted-foreground h-3 w-full rounded" />
+					<div className="bg-muted-foreground mt-2 h-3 w-11/12 rounded" />
+					<div className="bg-muted-foreground mt-2 h-3 w-2/3 rounded" />
 				</div>
 
-				{/* Date/Status Placeholder */}
 				<div className="mt-2 flex items-center justify-between">
-					<div className={'bg-muted-foreground h-3 w-16 rounded'} />{' '}
-					{/* Date placeholder */}
-					{/* Status icon placeholder (small circle) */}
+					<div className="bg-muted-foreground h-3 w-16 rounded" />
 					<div className="bg-muted-foreground size-4 rounded-full" />
 				</div>
 			</div>

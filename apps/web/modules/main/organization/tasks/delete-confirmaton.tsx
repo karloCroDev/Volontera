@@ -7,11 +7,11 @@ import * as React from 'react';
 import { Button } from '@/components/ui/button';
 import { Dialog } from '@/components/ui/dialog';
 
-const DeleteConfirmation: React.FC<{
+export const DeleteConfirmation: React.FC<{
 	name: string;
 	id: string;
-	setIsDialogOpen: React.Dispatch<React.SetStateAction<boolean>>;
-}> = ({ id, name, setIsDialogOpen }) => {
+	action: () => void;
+}> = ({ id, name, action }) => {
 	return (
 		<Dialog
 			title={`Delete board ${name}?`}
@@ -23,7 +23,7 @@ const DeleteConfirmation: React.FC<{
 					size="md"
 				>
 					{/* Enter board name */}
-					Delete board?
+					Delete {name}
 				</Button>
 			}
 			// isOpen={isOpen}
@@ -39,7 +39,7 @@ const DeleteConfirmation: React.FC<{
 					// type="submit"
 					colorScheme="destructive"
 					onPress={() => {
-						setIsDialogOpen(false);
+						action();
 					}}
 				>
 					Yes

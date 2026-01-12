@@ -20,7 +20,7 @@ export default async function HelpPage() {
 				Help
 			</Heading>
 
-			<div className="flex min-h-0 flex-1 flex-col">
+			<div className="relative flex min-h-0 flex-1 flex-col">
 				<Suspense
 					fallback={[...Array(3)].map((_, indx) => (
 						<MessageSkeleton

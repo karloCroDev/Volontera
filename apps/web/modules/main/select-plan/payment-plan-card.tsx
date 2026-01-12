@@ -29,7 +29,7 @@ export const PaymentPlanCard: React.FC<
 		<div
 			{...rest}
 			className={twMerge(
-				'flex h-full flex-1 flex-col rounded-lg border px-5 py-7',
+				'flex h-full min-w-96 flex-1 flex-col rounded-lg border px-5 py-7',
 				variant === 'primary' && 'border-input-border bg-muted',
 				variant === 'secondary' && 'bg-accent border-accent-foreground'
 			)}

@@ -172,8 +172,13 @@ export const Plans: React.FC<PlansProps> = withReactQueryProvider(
 		];
 		return (
 			<>
-				<div className="hidden gap-5 xl:flex">{slides}</div>
-				<Carousel slides={slides} />
+				<div className="no-scrollbar hidden gap-5 overflow-x-scroll md:flex">
+					{slides}
+				</div>
+
+				<div className="block md:hidden">
+					<Carousel slides={slides} />
+				</div>
 			</>
 		);
 	}
