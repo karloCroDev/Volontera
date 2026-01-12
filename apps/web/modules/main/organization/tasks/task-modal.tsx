@@ -66,7 +66,7 @@ export const TaskModal: React.FC<{
 					<p className="text-md mb-3 mt-4">All members on this task</p>
 
 					<CheckboxGroup
-						className="no-scrollbar mx-auto grid max-h-60 w-fit grid-cols-2 gap-4 self-center overflow-y-scroll lg:max-h-full lg:grid-cols-3"
+						className="no-scrollbar mx-auto grid max-h-60 min-h-40 w-fit grid-cols-2 gap-4 self-center overflow-y-scroll lg:max-h-full lg:grid-cols-3"
 						value={assignedMemberIds}
 						onChange={setAssignedMemberIds}
 					>

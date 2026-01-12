@@ -14,10 +14,15 @@ import { Tag } from '@/components/ui/tag';
 import { SidebarItem } from '@/components/ui/sidebar/sidebar-items';
 import { Textarea } from '@/components/ui/textarea';
 import { AdditionalInformationForm } from '@/modules/onboarding/additional-information-form';
+import { VolonteraLogo } from '@/components/ui/volonotera';
 
 export default function PlaygroundPage() {
 	return (
 		<div>
+			<div className="m-20">
+				<VolonteraLogo />
+			</div>
+
 			<p>Hello world</p>
 			<LinkAsButton href="/playground" colorScheme="bland" variant="blank">
 				Button

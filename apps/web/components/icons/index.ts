@@ -3,6 +3,7 @@ import { PasswordRepresentation } from '@/components/icons/password-representati
 import { LoginRepresentation } from '@/components/icons/login-representation';
 import { RegisterRepresentation } from '@/components/icons/register-representation';
 import { ForgotPasswordRepresentation } from '@/components/icons/forgot-password';
+import { Logo } from '@/components/icons/logo';
 
 export {
 	GoogleIcon,
@@ -10,4 +11,5 @@ export {
 	LoginRepresentation,
 	RegisterRepresentation,
 	ForgotPasswordRepresentation,
+	Logo,
 };
