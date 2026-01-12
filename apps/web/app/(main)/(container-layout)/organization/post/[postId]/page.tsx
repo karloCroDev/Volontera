@@ -51,3 +51,24 @@ export default async function PostWithComments({
 		</>
 	);
 }
+
+// async function CommentsServer({postId}: {postId: string}) {
+// 		const postWithComments = await retrievePostWithComments({ postId });
+
+// 		if (!postWithComments.success) notFound();
+
+// 		const imageResponse =
+// 			postWithComments.post.postImages.length > 0
+// 				? await getImageFromKey({
+// 						imageUrls: postWithComments.post.postImages.map(
+// 							(img) => img.imageUrl
+// 						),
+// 					})
+// 				: null;
+
+// 		return (
+// 			<>
+
+// 			</>
+// 		)
+// }

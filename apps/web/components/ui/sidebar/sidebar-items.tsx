@@ -125,7 +125,7 @@ export const Organizations = () => {
 						</ul>
 
 						{organizations?.ownedOrganizations && (
-							<p className="text-muted-foreground border-input-border ml-2 mt-4 border-b pb-2 text-sm">
+							<p className="text-muted-foreground border-input-border ml-2 mt-4 border-b pb-2 text-start text-sm">
 								Managing
 							</p>
 						)}
@@ -146,7 +146,7 @@ export const Organizations = () => {
 									</p>
 								))}
 						</ul>
-						<p className="text-muted-foreground border-input-border ml-2 mt-4 border-b pb-2 text-sm">
+						<p className="text-muted-foreground border-input-border ml-2 mt-4 border-b pb-2 text-start text-sm">
 							Attending
 						</p>
 						<ul className="ml-4">
@@ -168,7 +168,7 @@ export const Organizations = () => {
 								</p>
 							)}
 						</ul>
-						<p className="text-muted-foreground border-input-border ml-2 mt-4 border-b pb-2 text-sm">
+						<p className="text-muted-foreground border-input-border ml-2 mt-4 border-b pb-2 text-start text-sm">
 							Following
 						</p>
 						<ul className="ml-4">

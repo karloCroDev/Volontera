@@ -25,6 +25,8 @@ export const ListUsers: React.FC<{
 
 	const { onlineUsers } = useSocketContext();
 
+	console.log(listOfAllDirectMessages);
+
 	const { data: images } = useGetImageFromKeys({
 		imageUrls: listOfAllDirectMessages.conversations
 			.map((conversation) =>

@@ -1,7 +1,6 @@
 // Modules
 import { Heading } from '@/components/ui/heading';
 import { Tag } from '@/components/ui/tag';
-import { Post } from '@/components/ui/post/post';
 
 export default async function HomePage() {
 	return (
