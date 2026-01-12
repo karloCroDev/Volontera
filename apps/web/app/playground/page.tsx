@@ -1,13 +1,15 @@
 'use client';
 
+// External packages
 import * as React from 'react';
+
+// Components
 import { Avatar } from '@/components/ui/avatar';
 import { FilledInput } from '@/components/ui/filled-input';
 import { Input } from '@/components/ui/input';
 import { Layout, LayoutColumn } from '@/components/ui/layout-grid';
 import { LinkAsButton } from '@/components/ui/link-as-button';
 import { Separator } from '@/components/ui/separator';
-import { toast } from '@/lib/utils/toast';
 import { Button } from '@/components/ui/button';
 import { Dialog } from '@/components/ui/dialog';
 import { Tag } from '@/components/ui/tag';
@@ -15,6 +17,10 @@ import { SidebarItem } from '@/components/ui/sidebar/sidebar-items';
 import { Textarea } from '@/components/ui/textarea';
 import { AdditionalInformationForm } from '@/modules/onboarding/additional-information-form';
 import { Volontera } from '@/components/ui/volonotera';
+import { PostSkeleton } from '@/components/ui/post/post-skeleton';
+
+// Lib
+import { toast } from '@/lib/utils/toast';
 
 export default function PlaygroundPage() {
 	return (
@@ -103,6 +109,10 @@ export default function PlaygroundPage() {
 			<SidebarItem>Cool</SidebarItem>
 			<Textarea label="sss" />
 			<AdditionalInformationForm />
+
+			<div className="size-80">
+				<PostSkeleton />
+			</div>
 		</div>
 	);
 }

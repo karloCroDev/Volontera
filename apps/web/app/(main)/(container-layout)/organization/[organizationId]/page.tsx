@@ -19,6 +19,8 @@ import { PostsMapping } from '@/modules/main/organization/home/posts-mapping';
 import { getOrganizationDetailsById } from '@/lib/server/organization';
 import { retrieveOrganizationPosts } from '@/lib/server/post';
 import { retrieveOrganizationMember } from '@/lib/server/organization-managment';
+import { Suspense } from 'react';
+import { PostSkeleton } from '@/components/ui/post/post-skeleton';
 
 export default async function OrganizationPage({
 	params,
@@ -28,14 +30,12 @@ export default async function OrganizationPage({
 	}>;
 }) {
 	const { organizationId } = await params;
-	const [organizationDetailsById, posts, member] = await Promise.all([
+	const [organizationDetailsById, member] = await Promise.all([
 		getOrganizationDetailsById(organizationId),
-		retrieveOrganizationPosts(organizationId),
 		retrieveOrganizationMember(organizationId),
 	]);
 
-	if (!organizationDetailsById.success || !posts.success) notFound();
-	console.log('member', member);
+	if (!organizationDetailsById.success) notFound();
 
 	return (
 		<>
@@ -185,7 +185,22 @@ export default async function OrganizationPage({
 				(member.organizationMember.role === 'ADMIN' ||
 					member.organizationMember.role === 'OWNER') && <CreatePostDialog />}
 
-			<PostsMapping posts={posts} />
+			<div className="mt-6 grid grid-cols-1 gap-4 xl:grid-cols-2">
+				<Suspense
+					fallback={[...Array(6)].map((_, indx) => (
+						<PostSkeleton key={indx} />
+					))}
+				>
+					<Posts organizationId={organizationId} />
+				</Suspense>
+			</div>
 		</>
 	);
+}
+
+async function Posts({ organizationId }: { organizationId: string }) {
+	const posts = await retrieveOrganizationPosts(organizationId);
+
+	if (!posts.success) return <p>There was an error with loading posts</p>;
+	return <PostsMapping posts={posts} />;
 }

@@ -25,6 +25,7 @@ import { useDeleteNotifications } from '@/hooks/data/notification';
 import { toast } from '@/lib/utils/toast';
 import { withReactQueryProvider } from '@/lib/utils/react-query';
 import { IRevalidateTag } from '@/lib/server/revalidation';
+import { convertToFullname } from '@/lib/utils/converter';
 
 export const NotificationSandbox: React.FC<{
 	notifications: NotificationResponse['notifications'];
@@ -33,7 +34,6 @@ export const NotificationSandbox: React.FC<{
 		[]
 	);
 
-	console.log(ids);
 	const { mutate, isPending } = useDeleteNotifications();
 
 	const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -122,15 +122,17 @@ export const NotificationSandbox: React.FC<{
 													src: notification?.user.image || '',
 												}}
 											>
-												{notification.user.firstName +
-													' ' +
-													notification.user.lastName}
+												{convertToFullname({
+													firstname: notification.user.firstName,
+													lastname: notification.user.lastName,
+												})}
 											</Avatar>
 
 											<p className="text-muted-foreground text-sm underline-offset-2 hover:underline">
-												{notification.user.firstName +
-													' ' +
-													notification.user.lastName}
+												{convertToFullname({
+													firstname: notification.user.firstName,
+													lastname: notification.user.lastName,
+												})}
 											</p>
 										</Link>
 

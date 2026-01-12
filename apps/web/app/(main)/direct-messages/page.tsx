@@ -8,7 +8,12 @@ import { Conversation } from '@/modules/main/direct-messages/conversation';
 // Lib
 import { getListOfAllDirectMessages } from '@/lib/server/direct-messages';
 
-export default async function DirectMessagesPage() {
+export default async function DirectMessagesPage({
+	searchParams,
+}: {
+	searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}) {
+	console.log('Search param server', await searchParams);
 	const listOfAllDirectMessages = await getListOfAllDirectMessages();
 
 	return (
