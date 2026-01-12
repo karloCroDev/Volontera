@@ -2,7 +2,7 @@
 
 // External packages
 import * as React from 'react';
-import { Checkbox, CheckboxGroup } from 'react-aria-components';
+import { Checkbox, CheckboxGroup, Form } from 'react-aria-components';
 
 // Components
 import { Dialog } from '@/components/ui/dialog';
@@ -16,8 +16,11 @@ import { Avatar } from '@/components/ui/avatar';
 import { ResizableTextArea } from '@/components/ui/resizable-input';
 import { Message } from '@/components/ui/message/message';
 import { Button } from '@/components/ui/button';
-import { Pen, Send, Trash2 } from 'lucide-react';
+import { Send } from 'lucide-react';
 import { CheckboxVisually } from '@/components/ui/checkbox';
+import { Label } from '@/components/ui/label';
+import { DatePicker } from '@/components/ui/date-picker';
+import { convertCalendarDate } from '@/lib/utils/converter';
 
 export const TaskModal: React.FC<{
 	cardProps: TaskCardProps;
@@ -35,7 +38,7 @@ export const TaskModal: React.FC<{
 			endDesktop={12}
 		>
 			<div className="no-scrollbar flex max-h-[600px] w-full flex-col justify-between gap-4 overflow-y-scroll lg:aspect-video lg:flex-row">
-				<div className="flex flex-1 flex-col">
+				<Form className="flex flex-1 flex-col">
 					<h4 className="text-lg lg:text-xl" slot="title">
 						{cardProps.title}
 					</h4>
@@ -44,8 +47,22 @@ export const TaskModal: React.FC<{
 						Due date: {specificDate}
 					</p>
 
-					<p className="text-md mb-2">Description</p>
+					<p className="text-md mb-2">Full description</p>
+
 					<Textarea label="Enter more information about this task" />
+
+					<p className="text-md mb-2 mt-4">Set new due date</p>
+
+					<DatePicker
+						onChange={(val) => {
+							if (!val) return;
+
+							const formatted = convertCalendarDate(val);
+
+							// onChange(formatted);
+						}}
+					/>
+
 					<p className="text-md mb-3 mt-4">All members on this task</p>
 
 					<CheckboxGroup
@@ -76,47 +93,33 @@ export const TaskModal: React.FC<{
 							);
 						})}
 					</CheckboxGroup>
-					<Button className="ml-auto mt-4">Save</Button>
-				</div>
+
+					<div className="mt-4 flex justify-between">
+						<Button variant="outline" colorScheme="destructive" size="sm">
+							Delete this task
+						</Button>
+						<Button size="sm">Save</Button>
+					</div>
+				</Form>
 
 				<div className="bg-input-border w-px self-stretch" />
 
 				<div className="flex h-full flex-1 flex-col gap-4">
-					<h4 className="text-lg lg:text-xl">Questions</h4>
+					<h4 className="mb-4 text-lg underline underline-offset-4 lg:text-xl">
+						Questions
+					</h4>
 
 					<div className="no-scrollbar max-h-60 flex-1 overflow-y-scroll lg:max-h-full">
 						{[...Array(5)].map((_, indx) => (
-							<div key={indx} className="flex items-end gap-2">
-								<Message
-									variant={indx === 0 ? 'primary' : 'secondary'}
-									className={indx !== 0 ? 'mt-4' : undefined}
-									date={new Date()}
-									avatar={<Avatar imageProps={{ src: '' }}>Ante</Avatar>}
-								>
-									Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-								</Message>
-
-								{indx === 0 && (
-									<>
-										<Button
-											size="xs"
-											className="flex-shrink-0 p-2"
-											variant="outline"
-											colorScheme="yellow"
-										>
-											<Pen />
-										</Button>
-										<Button
-											size="xs"
-											className="flex-shrink-0 p-2"
-											variant="outline"
-											colorScheme="destructive"
-										>
-											<Trash2 />
-										</Button>
-									</>
-								)}
-							</div>
+							<Message
+								key={indx}
+								variant={indx === 0 ? 'primary' : 'secondary'}
+								className={indx !== 0 ? 'mt-4' : undefined}
+								date={new Date()}
+								avatar={<Avatar imageProps={{ src: '' }}>Ante</Avatar>}
+							>
+								Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+							</Message>
 						))}
 					</div>
 

@@ -11,6 +11,7 @@ import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Form, Radio, RadioGroup } from 'react-aria-components';
 import { RadioIconVisual } from '@/components/ui/radio';
+import { Textarea } from '@/components/ui/textarea';
 
 export const AddBoard = () => {
 	const [assignTasks, setAssignTasks] = React.useState(false);
@@ -18,7 +19,7 @@ export const AddBoard = () => {
 	return (
 		<Dialog
 			title="Add new board"
-			subtitle="Please enter the information about your organization inside these fields"
+			subtitle="Please enter the board details below."
 			triggerChildren={
 				<Button
 					colorScheme="yellow"
@@ -34,6 +35,12 @@ export const AddBoard = () => {
 				<div>
 					<Label className="mb-2">Title</Label>
 					<Input label="Enter your post title" />
+				</div>
+				<div>
+					<Label className="mb-2" isOptional>
+						Description
+					</Label>
+					<Textarea label="Enter your description" />
 				</div>
 
 				<div>

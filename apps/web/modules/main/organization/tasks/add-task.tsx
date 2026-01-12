@@ -27,7 +27,7 @@ export const AddTask = () => {
 			subtitle="Please enter the information about your organization inside these fields"
 			triggerChildren={
 				<Button isFullyRounded variant="outline" iconRight={<Plus />}>
-					Add Card
+					Add Task
 				</Button>
 			}
 		>

@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 // Modules
 import { AddTask } from '@/modules/main/organization/tasks/add-task';
 import { TaskModal } from '@/modules/main/organization/tasks/task-modal';
+import { EditBoard } from '@/modules/main/organization/tasks/edit-board';
 
 export const TasksBoard = () => {
 	return (
@@ -15,9 +16,8 @@ export const TasksBoard = () => {
 				<h4 className="text-lg underline underline-offset-4">
 					Clean the beach
 				</h4>
-				<Button variant="blank">
-					<Ellipsis className="text-muted-foreground" />
-				</Button>
+
+				<EditBoard />
 			</div>
 
 			<div className="no-scrollbar flex flex-1 flex-col gap-4">
