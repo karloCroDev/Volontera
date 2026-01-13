@@ -4,7 +4,7 @@ import {
   getDirectMessagesConversationById,
   listAllDirectMessagesConversation,
   searchAllUsers,
-  startConversationOrStartAndSendDirectMessage,
+  startConversationOSendDirectMessage,
 } from "@/models/direct-messages.model";
 import { createUploadUrl } from "@/lib/aws-s3-functions";
 
@@ -95,15 +95,22 @@ export async function listAllDirectMessagesConversationsService(
 }
 
 export async function getDirectMessagesConversationByIdService({
-  conversationId,
-}: ConversationArgs) {
-  const conversation = await getDirectMessagesConversationById(conversationId);
+  data,
+  userId,
+}: {
+  data: ConversationArgs;
+  userId: User["id"];
+}) {
+  const conversation = await getDirectMessagesConversationById({
+    recieverId: data.recieverId,
+    senderId: userId,
+  });
 
   return toastResponseOutput({
     status: 200,
     message: "Conversation retrieved successfully",
     title: "Conversation retrieved successfully",
-    data: { conversation },
+    data: { directMessages: conversation?.directMessages || [] },
   });
 }
 
@@ -143,13 +150,12 @@ export async function startConversationOrStartAndSendDirectMessageService({
   userId: User["id"];
 }) {
   // TODO: Vidi je li trebam ionako ista vratiti na frontu
-  const { conversation, message } =
-    await startConversationOrStartAndSendDirectMessage({
-      senderId: userId,
-      receiverId: data.particpantId,
-      content: data.content,
-      imageKeys: data.imageKeys,
-    });
+  const { message } = await startConversationOSendDirectMessage({
+    senderId: userId,
+    recieverId: data.particpantId,
+    content: data.content,
+    imageKeys: data.imageKeys,
+  });
 
   const senderSocketId = getReceiverSocketId(userId);
 
@@ -165,6 +171,5 @@ export async function startConversationOrStartAndSendDirectMessageService({
     status: 200,
     title: "Message is sent",
     message: "Message is successfully sent to the wanted user",
-    data: { conversationId: conversation.id },
   });
 }

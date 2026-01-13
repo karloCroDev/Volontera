@@ -22,11 +22,8 @@ import { withReactQueryProvider } from '@/lib/utils/react-query';
 import { toast } from '@/lib/utils/toast';
 import { IRevalidateTag } from '@/lib/server/revalidation';
 
-// TODO: Implement the image option
 export const MessageForm = withReactQueryProvider(() => {
-	const pathname = usePathname();
 	const searchParams = useSearchParams();
-	const router = useRouter();
 
 	const [value, setValue] = React.useState('');
 	const [images, setImages] = React.useState<ImageItemArgs>([]);
@@ -55,19 +52,7 @@ export const MessageForm = withReactQueryProvider(() => {
 				files: images.filter(isLocalImageItem).map((img) => img.file),
 			},
 			{
-				onSuccess({ message, title, conversationId }) {
-					// Samo kada započinjem novi razgovor
-					if (!searchParams.get('conversationId')) {
-						const params = new URLSearchParams(searchParams.toString());
-						params.set('conversationId', conversationId);
-						router.push(pathname + '?' + params.toString());
-
-						toast({
-							title,
-							content: message,
-							variant: 'success',
-						});
-					}
+				onSuccess() {
 					IRevalidateTag('direct-messages');
 				},
 				onSettled() {
@@ -80,7 +65,7 @@ export const MessageForm = withReactQueryProvider(() => {
 
 	return (
 		<Form
-			className="lg:max-w-3/4 z-max bg-background absolute bottom-4 left-1/2 w-full flex-none -translate-x-1/2 rounded-lg"
+			className="lg:max-w-3/4 bg-background absolute bottom-4 left-1/2 w-full flex-none -translate-x-1/2 rounded-lg"
 			onSubmit={onSubmit}
 		>
 			<TextEditor

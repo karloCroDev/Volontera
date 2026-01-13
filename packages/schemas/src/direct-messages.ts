@@ -30,7 +30,7 @@ export const createDirectMessageSchema = z.object({
 export type CreateDirectMessageArgs = z.infer<typeof createDirectMessageSchema>;
 
 export const conversationSchema = z.object({
-  conversationId: z.cuid(),
+  recieverId: z.cuid(),
 });
 export type ConversationArgs = z.infer<typeof conversationSchema>;
 

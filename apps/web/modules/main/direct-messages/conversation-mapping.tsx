@@ -32,33 +32,35 @@ import { GetDirectMessagesConversationByIdResponse } from '@repo/types/direct-me
 // Schemas
 import { DeleteDirectMessageArgs } from '@repo/schemas/direct-messages';
 
-export const Conversation = withReactQueryProvider(() => {
+export const ConversationMapping = withReactQueryProvider(() => {
 	const searchParams = useSearchParams();
-	const conversationId = searchParams.get('conversationId');
+	const recieverId = searchParams.get('user');
 
+	console.log(recieverId);
 	const { data: conversation, isLoading } =
 		useGetDirectMessagesConversationById(
 			{
-				conversationId: conversationId!,
+				recieverId: recieverId || '',
 			},
-			{
-				enabled: !!conversationId,
-			}
+			{ enabled: !!recieverId }
 		);
 
+	console.log(conversation);
+
 	// Samo stavljam nove poruke kada se razgovor učita
-	const [messages, setMessages] = React.useState(conversation?.conversation);
+	const [messages, setMessages] = React.useState(conversation?.directMessages);
 	React.useEffect(() => {
-		setMessages(conversation?.conversation);
+		setMessages(conversation?.directMessages);
 	}, [conversation]);
 
+	console.log('Messages', messages);
 	// Slušam nove poruke preko socketa
 	const { socketGlobal } = useSocketContext();
 	React.useEffect(() => {
 		if (!socketGlobal) return;
 
 		const handleNewChat = (
-			newChat: GetDirectMessagesConversationByIdResponse['conversation'][0]
+			newChat: GetDirectMessagesConversationByIdResponse['directMessages'][0]
 		) => {
 			setMessages((prev) => (prev ? [...prev, newChat] : [newChat]));
 		};
@@ -76,7 +78,7 @@ export const Conversation = withReactQueryProvider(() => {
 			socketGlobal.off('new-chat', handleNewChat);
 			socketGlobal.off('direct-messages:message-deleted', handleMessageDeleted);
 		};
-	}, [conversationId, socketGlobal]);
+	}, [recieverId, socketGlobal]);
 
 	const { data: userImages } = useGetImageFromKeys(
 		{
@@ -104,63 +106,68 @@ export const Conversation = withReactQueryProvider(() => {
 	// Abilty to delete message
 	const { mutate: mutateDeleteMessage } = useDeleteDirectMessageById();
 	return (
-		<div
-			className="no-scrollbar min-h-0 flex-1 space-y-4 overflow-y-auto scroll-smooth pb-20"
-			ref={containerRef}
-		>
-			{isLoading &&
-				[...Array(5)].map((_, indx) => (
-					<MessageSkeleton
-						key={indx}
-						variant={indx % 2 === 0 ? 'primary' : 'secondary'}
-					/>
-				))}
+		<>
+			<div
+				className="no-scrollbar min-h-0 flex-1 space-y-4 overflow-y-auto scroll-smooth pb-20"
+				ref={containerRef}
+			>
+				{isLoading &&
+					[...Array(5)].map((_, indx) => (
+						<MessageSkeleton
+							key={indx}
+							variant={indx % 2 === 0 ? 'primary' : 'secondary'}
+						/>
+					))}
 
-			{messages && messages.length > 0
-				? messages.map((message) => (
-						<Message
-							key={message.id}
-							variant={message.author.id === user?.id ? 'primary' : 'secondary'}
-							date={new Date(message.createdAt)}
-							avatar={
-								<Link href={`/profile/${message.author.id}`}>
-									<Avatar
-										imageProps={{
-											src: message.author.image
-												? userImages?.urls[message.author.image]
-												: '',
-										}}
-									>
-										{convertToFullname({
-											firstname: message.author.firstName,
-											lastname: message.author.lastName,
-										})}
-									</Avatar>
-								</Link>
-							}
-							images={
-								message.directMessagesImages[0]?.imageUrl && (
-									<MessageImages
-										imageUrls={message.directMessagesImages
-											.map((img) => img.imageUrl)
-											.filter(Boolean)}
-									/>
-								)
-							}
-							deleteAction={() =>
-								mutateDeleteMessage({
-									messageId: message.id,
-								})
-							}
-						>
-							<Markdown>{message.content}</Markdown>
-						</Message>
-					))
-				: !isLoading && (
+				{!isLoading &&
+					(messages && messages.length > 0 ? (
+						messages.map((message) => (
+							<Message
+								key={message.id}
+								variant={
+									message.author.id === user?.id ? 'primary' : 'secondary'
+								}
+								date={new Date(message.createdAt)}
+								avatar={
+									<Link href={`/profile/${message.author.id}`}>
+										<Avatar
+											imageProps={{
+												src: message.author.image
+													? userImages?.urls[message.author.image]
+													: '',
+											}}
+										>
+											{convertToFullname({
+												firstname: message.author.firstName,
+												lastname: message.author.lastName,
+											})}
+										</Avatar>
+									</Link>
+								}
+								images={
+									message.directMessagesImages[0]?.imageUrl && (
+										<MessageImages
+											imageUrls={message.directMessagesImages
+												.map((img) => img.imageUrl)
+												.filter(Boolean)}
+										/>
+									)
+								}
+								deleteAction={() =>
+									mutateDeleteMessage({
+										messageId: message.id,
+									})
+								}
+							>
+								<Markdown>{message.content}</Markdown>
+							</Message>
+						))
+					) : (
 						<p className="text-muted-foreground text-center">
 							No messages found. Start a new conversation
 						</p>
-					)}
-		</div>
+					))}
+			</div>
+		</>
 	);
 });

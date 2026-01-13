@@ -40,9 +40,10 @@ export async function getDirectMessagesConversationByIdServiceController(
   res: Response
 ) {
   try {
-    const result = await getDirectMessagesConversationByIdService(
-      req.params as ConversationArgs
-    );
+    const result = await getDirectMessagesConversationByIdService({
+      data: req.params as ConversationArgs,
+      userId: req.user.userId,
+    });
     return res.status(result.status).json(result.body);
   } catch (err) {
     handleServerErrorResponse(res, err);

@@ -63,7 +63,7 @@ export const useGetDirectMessagesConversationById = (
 	>
 ) => {
 	return useQuery<GetDirectMessagesConversationByIdResponse>({
-		queryKey: ['direct-messages-conversation', data.conversationId],
+		queryKey: ['direct-messages-conversation', data.recieverId],
 		queryFn: () => getDirectMessagesConversationById(data),
 		...options,
 	});
