@@ -3,24 +3,28 @@
 // External packages
 import * as React from 'react';
 import { Checkbox, CheckboxGroup, Form } from 'react-aria-components';
+import { Send } from 'lucide-react';
 
 // Components
 import { Dialog } from '@/components/ui/dialog';
-import {
-	TaskCard,
-	TaskCardProps,
-} from '@/modules/main/organization/tasks/task-card';
 import { Textarea } from '@/components/ui/textarea';
 import { Tag } from '@/components/ui/tag';
 import { Avatar } from '@/components/ui/avatar';
 import { ResizableTextArea } from '@/components/ui/resizable-input';
 import { Message } from '@/components/ui/message/message';
 import { Button } from '@/components/ui/button';
-import { Send } from 'lucide-react';
 import { CheckboxVisually } from '@/components/ui/checkbox';
 import { DatePicker } from '@/components/ui/date-picker';
-import { convertCalendarDate } from '@/lib/utils/converter';
+
+// Modules
+import {
+	TaskCard,
+	TaskCardProps,
+} from '@/modules/main/organization/tasks/task-card';
 import { DeleteConfirmation } from '@/modules/main/organization/tasks/delete-confirmaton';
+
+// Lib
+import { convertCalendarDate } from '@/lib/utils/converter';
 
 export const TaskModal: React.FC<{
 	cardProps: TaskCardProps;

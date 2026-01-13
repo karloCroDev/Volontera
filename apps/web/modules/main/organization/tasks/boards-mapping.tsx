@@ -1,14 +1,20 @@
 'use client';
 
-// Modules
-import { AddTask } from '@/modules/main/organization/tasks/add-task';
-import { TaskModal } from '@/modules/main/organization/tasks/task-modal';
-import { EditBoard } from '@/modules/main/organization/tasks/edit-board';
-import { RetrieveAllOrganizationBoardsWithTasksResponse } from '@repo/types/organization-tasks';
-import { useRetrieveAllOrganizationBoardsWithTasks } from '@/hooks/data/organization-tasks';
+// External packages
 import { useParams } from 'next/navigation';
-import { withReactQueryProvider } from '@/lib/utils/react-query';
+
+// Modules
 import { TasksBoard } from '@/modules/main/organization/tasks/tasks-board';
+import { TasksMapping } from '@/modules/main/organization/tasks/tasks-mapping';
+
+// Types
+import { RetrieveAllOrganizationBoardsWithTasksResponse } from '@repo/types/organization-tasks';
+
+// Hooks
+import { useRetrieveAllOrganizationBoardsWithTasks } from '@/hooks/data/organization-tasks';
+
+// Lib
+import { withReactQueryProvider } from '@/lib/utils/react-query';
 
 export const BoardsMapping: React.FC<{
 	boardWithTasks: RetrieveAllOrganizationBoardsWithTasksResponse;
@@ -25,7 +31,7 @@ export const BoardsMapping: React.FC<{
 	return data.boards.length > 0 ? (
 		data.boards.map((board) => (
 			<TasksBoard
-				tasks={board.organizationTasks}
+				tasks={<TasksMapping tasks={board.organizationTasks} />}
 				title={board.title}
 				key={board.id}
 			/>

@@ -16,7 +16,7 @@ import { Avatar } from '@/components/ui/avatar';
 import { CheckboxVisually } from '@/components/ui/checkbox';
 import { convertCalendarDate } from '@/lib/utils/converter';
 
-export const AddTask = () => {
+export const AddTaskDialog = () => {
 	const [assignedMemberIds, setAssignedMemberIds] = React.useState<string[]>([
 		'0',
 	]);

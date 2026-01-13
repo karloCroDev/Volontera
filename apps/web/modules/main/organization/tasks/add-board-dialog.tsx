@@ -3,26 +3,30 @@
 // External packages
 import * as React from 'react';
 import { Plus } from 'lucide-react';
+import { Controller, useForm } from 'react-hook-form';
+import { Form } from 'react-aria-components';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useParams } from 'next/navigation';
 
 // Components
 import { Button } from '@/components/ui/button';
 import { Dialog } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
-import { Form, Radio, RadioGroup } from 'react-aria-components';
-import { RadioIconVisual } from '@/components/ui/radio';
-import { Textarea } from '@/components/ui/textarea';
-import { Controller, useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
+
+// Schemas
 import {
 	CreateTaskBoardArgs,
 	createTaskBoardSchema,
 } from '@repo/schemas/organization-tasks';
-import { useCreateTaskBoard } from '@/hooks/data/organization-tasks';
-import { toast } from '@/lib/utils/toast';
-import { useParams } from 'next/navigation';
 
-export const AddBoard = () => {
+// Hooks
+import { useCreateTaskBoard } from '@/hooks/data/organization-tasks';
+
+// Lib
+import { toast } from '@/lib/utils/toast';
+
+export const AddBoardDialog = () => {
 	const [assignTasks, setAssignTasks] = React.useState(false);
 
 	const [isOpen, setIsOpen] = React.useState(false);

@@ -1,5 +1,5 @@
 // Modules
-import { AddBoard } from '@/modules/main/organization/tasks/add-board';
+import { AddBoardDialog } from '@/modules/main/organization/tasks/add-board-dialog';
 import { TasksBoardSkeleton } from '@/modules/main/organization/tasks/task-skeleton';
 
 // Lib
@@ -14,9 +14,7 @@ export default async function BoardPage({
 	params: Promise<{ organizationId: string }>;
 }) {
 	const { organizationId } = await params;
-	const boards = await retrieveAllOrganizationBoardsWithTasks(organizationId);
 
-	console.log(boards);
 	return (
 		<div className="flex flex-1 flex-col">
 			<div className="mb-6 flex items-center justify-between">
@@ -26,11 +24,11 @@ export default async function BoardPage({
 						All tasks that are assigned inside this organization
 					</p>
 				</div>
-				<AddBoard />
+				<AddBoardDialog />
 			</div>
 			<div className="flex min-h-0 flex-1 gap-4 overflow-scroll">
 				<Suspense
-					fallback={[...Array(2)].map((_, indx) => (
+					fallback={[...Array(3)].map((_, indx) => (
 						<TasksBoardSkeleton key={indx} />
 					))}
 				>
