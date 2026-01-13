@@ -108,19 +108,10 @@ export const useUpdateOrganizationTaskBoardTitle = (
 		mutationFn: (data: UpdateOrganizationTaskBoardTitleArgs) =>
 			updateOrganizationTaskBoardTitle(data),
 		onSuccess: async (...args) => {
-			const variables = args[1] as
-				| UpdateOrganizationTaskBoardTitleArgs
-				| undefined;
-			if (variables?.organizationId) {
-				await queryClient.invalidateQueries({
-					queryKey: ['organization-task-boards', variables.organizationId],
-				});
-			} else {
-				await queryClient.invalidateQueries({
-					queryKey: ['organization-task-boards'],
-					exact: false,
-				});
-			}
+			await queryClient.invalidateQueries({
+				queryKey: ['organization-task-boards', args[1].organizationId],
+			});
+
 			await options?.onSuccess?.(...args);
 		},
 	});
@@ -140,17 +131,9 @@ export const useDeleteOrganizationTaskBoard = (
 		mutationFn: (data: DeleteOrganizationTaskBoardArgs) =>
 			deleteOrganizationTaskBoard(data),
 		onSuccess: async (...args) => {
-			const variables = args[1] as DeleteOrganizationTaskBoardArgs | undefined;
-			if (variables?.organizationId) {
-				await queryClient.invalidateQueries({
-					queryKey: ['organization-task-boards', variables.organizationId],
-				});
-			} else {
-				await queryClient.invalidateQueries({
-					queryKey: ['organization-task-boards'],
-					exact: false,
-				});
-			}
+			await queryClient.invalidateQueries({
+				queryKey: ['organization-tasks', args[1].organizationId],
+			});
 			await options?.onSuccess?.(...args);
 		},
 	});
@@ -184,17 +167,9 @@ export const useCreateTask = (
 		mutationKey: ['create-task'],
 		mutationFn: (data: CreateTaskArgs) => createTask(data),
 		onSuccess: async (...args) => {
-			const variables = args[1] as CreateTaskArgs | undefined;
-			if (variables?.organizationId) {
-				await queryClient.invalidateQueries({
-					queryKey: ['organization-task-boards', variables.organizationId],
-				});
-			} else {
-				await queryClient.invalidateQueries({
-					queryKey: ['organization-task-boards'],
-					exact: false,
-				});
-			}
+			await queryClient.invalidateQueries({
+				queryKey: ['organization-tasks', args[1].organizationTasksBoardId],
+			});
 			await options?.onSuccess?.(...args);
 		},
 	});
@@ -241,17 +216,10 @@ export const useUpdateTaskInfo = (
 		mutationKey: ['update-task-info'],
 		mutationFn: (data: UpdateTaskInfoArgs) => updateTaskInfo(data),
 		onSuccess: async (...args) => {
-			const variables = args[1] as UpdateTaskInfoArgs | undefined;
-			if (variables?.organizationId) {
-				await queryClient.invalidateQueries({
-					queryKey: ['organization-task-boards', variables.organizationId],
-				});
-			}
-			if (variables?.taskId) {
-				await queryClient.invalidateQueries({
-					queryKey: ['organization-task-info', variables.taskId],
-				});
-			}
+			await queryClient.invalidateQueries({
+				queryKey: ['organization-tasks', args[1].organizationTasksBoardId],
+			});
+
 			await options?.onSuccess?.(...args);
 		},
 	});

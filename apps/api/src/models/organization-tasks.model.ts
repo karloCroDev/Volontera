@@ -83,6 +83,7 @@ export async function retrieveAllBoardTasks(
     where: {
       organizationTasksBoardId: organizationTaskBoardId,
     },
+    // TODO: Get any additional info if needed
     // include: {
     //   organizationTaskInfos: {
     //     select: {
@@ -97,16 +98,21 @@ export async function createTask({
   organizationId,
   description,
   dueDate,
+  title,
+  organizationTasksBoardId,
 }: {
   organizationId: OrganizationTask["organizationId"];
   description: OrganizationTaskInfo["description"];
   dueDate: OrganizationTask["dueDate"];
+  title: OrganizationTask["title"];
+  organizationTasksBoardId: OrganizationTask["organizationTasksBoardId"];
 }) {
   return prisma.organizationTask.create({
     data: {
       organizationId,
-      title: "New task",
+      title,
       dueDate,
+      organizationTasksBoardId,
       organizationTaskInfos: {
         create: {
           description,

@@ -93,13 +93,14 @@ export async function retrieveAllOrganizationBoardsService({
 export async function retrieveAllOrganizationBoardsWithTasksService({
   organizationId,
 }: RetrieveAllOrganizationBoardsWithTasksArgs) {
-  const boards = await retrieveAllBoardTasks(organizationId);
+  const boardsWithTasks =
+    await retrieveAllOrganizationBoardsWithTasks(organizationId);
 
   return serverFetchOutput({
     status: 200,
     success: true,
     message: "Boards with tasks retrieved successfully",
-    data: { boards },
+    data: { boardsWithTasks },
   });
 }
 

@@ -6,14 +6,31 @@ import { RetrieveAllOrganizationBoardsWithTasksResponse } from '@repo/types/orga
 import { Dialog } from '@/components/ui/dialog';
 import { TaskCard } from '@/modules/main/organization/tasks/task-card';
 import { TaskCardDetails } from '@/modules/main/organization/tasks/task-card-details';
+import { useRetrieveAllBoardTasksArgs } from '@/hooks/data/organization-tasks';
+import { useParams } from 'next/navigation';
 
 export const TasksMapping: React.FC<{
-	tasks?: RetrieveAllOrganizationBoardsWithTasksResponse['boards'][0]['organizationTasks'];
-}> = ({ tasks }) => {
+	tasks: RetrieveAllOrganizationBoardsWithTasksResponse['boardsWithTasks'][0]['organizationTasks'];
+	boardId: string;
+}> = ({ tasks, boardId }) => {
+	const params = useParams<{ organizationId: string }>();
+	const { data } = useRetrieveAllBoardTasksArgs(
+		{
+			organizationId: params.organizationId,
+			organizationTaskBoardId: boardId,
+		},
+		{
+			initialData: {
+				tasks,
+				success: true,
+				message: 'Prefetched data',
+			},
+		}
+	);
 	return (
 		<div className="no-scrollbar flex flex-1 flex-col gap-4">
-			{tasks && tasks.length > 0 ? (
-				tasks.map((task) => (
+			{data && data.tasks.length > 0 ? (
+				data.tasks.map((task) => (
 					<Dialog
 						key={task.id}
 						// title={cardProps.title}

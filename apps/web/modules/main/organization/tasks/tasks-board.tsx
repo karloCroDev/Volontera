@@ -12,11 +12,15 @@ import { TaskCard } from '@/modules/main/organization/tasks/task-card';
 import { TasksMapping } from '@/modules/main/organization/tasks/tasks-mapping';
 
 export const TasksBoard: React.FC<{
+	id: string;
 	title: string;
 	tasks: React.ReactNode;
-}> = withReactQueryProvider(({ title, tasks }) => {
+}> = withReactQueryProvider(({ id, title, tasks }) => {
 	return (
-		<div className="border-input-border bg-muted flex min-h-[600px] w-full flex-col gap-5 rounded-xl border p-4 sm:w-2/3 lg:w-1/2 2xl:w-2/5">
+		<div
+			suppressHydrationWarning // TODO: FIX HYDRA
+			className="border-input-border bg-muted flex min-h-[600px] w-full flex-col gap-5 rounded-xl border p-4 sm:w-2/3 lg:w-1/2 2xl:w-2/5"
+		>
 			<div className="flex items-center justify-between">
 				<h4 className="text-lg underline underline-offset-4">{title}</h4>
 				<EditBoardDialog />
@@ -24,7 +28,7 @@ export const TasksBoard: React.FC<{
 
 			{tasks}
 
-			<AddTaskDialog />
+			<AddTaskDialog organizationTasksBoardId={id} />
 		</div>
 	);
 });

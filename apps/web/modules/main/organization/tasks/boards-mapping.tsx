@@ -11,32 +11,46 @@ import { TasksMapping } from '@/modules/main/organization/tasks/tasks-mapping';
 import { RetrieveAllOrganizationBoardsWithTasksResponse } from '@repo/types/organization-tasks';
 
 // Hooks
-import { useRetrieveAllOrganizationBoardsWithTasks } from '@/hooks/data/organization-tasks';
+import { useRetrieveAllOrganizationBoards } from '@/hooks/data/organization-tasks';
 
 // Lib
 import { withReactQueryProvider } from '@/lib/utils/react-query';
 
 export const BoardsMapping: React.FC<{
-	boardWithTasks: RetrieveAllOrganizationBoardsWithTasksResponse;
-}> = withReactQueryProvider(({ boardWithTasks }) => {
+	prefetchedData: RetrieveAllOrganizationBoardsWithTasksResponse;
+}> = withReactQueryProvider(({ prefetchedData }) => {
 	const params = useParams<{ organizationId: string }>();
-	const { data } = useRetrieveAllOrganizationBoardsWithTasks(
+	const { data } = useRetrieveAllOrganizationBoards(
 		{
 			organizationId: params.organizationId,
 		},
 		{
-			initialData: boardWithTasks,
+			initialData: {
+				boards: prefetchedData.boardsWithTasks,
+				success: prefetchedData.success,
+				message: prefetchedData.message,
+			},
 		}
 	);
 	return data.boards.length > 0 ? (
 		data.boards.map((board) => (
 			<TasksBoard
-				tasks={<TasksMapping tasks={board.organizationTasks} />}
+				tasks={
+					<TasksMapping
+						boardId={board.id}
+						// TODO: Rn works, but find a cleaner way to handle this!!
+						tasks={
+							prefetchedData.boardsWithTasks.find((x) => x.id === board.id)
+								?.organizationTasks || []
+						}
+					/>
+				}
+				id={board.id}
 				title={board.title}
 				key={board.id}
 			/>
 		))
 	) : (
-		<p>No boards found.</p>
+		<p className="text-muted-foreground text-center">No boards found.</p>
 	);
 });

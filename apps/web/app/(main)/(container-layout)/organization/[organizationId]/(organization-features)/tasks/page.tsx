@@ -44,5 +44,5 @@ async function BoardsWithTasks({ organizationId }: { organizationId: string }) {
 		await retrieveAllOrganizationBoardsWithTasks(organizationId);
 	if (!boardWithTasks.success) notFound();
 
-	return <BoardsMapping boardWithTasks={boardWithTasks} />;
+	return <BoardsMapping prefetchedData={boardWithTasks} />;
 }

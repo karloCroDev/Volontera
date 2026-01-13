@@ -5,11 +5,6 @@ import * as React from 'react';
 import { Checkbox, CheckboxGroup, Form } from 'react-aria-components';
 
 // Components
-// import { Dialog } from '@/components/ui/dialog';
-// import {
-// 	TaskCard,
-// 	TaskCardProps,
-// } from '@/modules/main/organization/tasks/task-card';
 import { Textarea } from '@/components/ui/textarea';
 import { Tag } from '@/components/ui/tag';
 import { Avatar } from '@/components/ui/avatar';
@@ -21,11 +16,22 @@ import { CheckboxVisually } from '@/components/ui/checkbox';
 import { DatePicker } from '@/components/ui/date-picker';
 import { convertCalendarDate } from '@/lib/utils/converter';
 import { DeleteConfirmation } from '@/modules/main/organization/tasks/delete-confirmaton';
+import { Controller, useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import {
+	createTaskSchema,
+	CreateTaskArgs,
+} from '@repo/schemas/organization-tasks';
+import { useParams } from 'next/navigation';
+import { useCreateTask } from '@/hooks/data/organization-tasks';
 
 export const TaskCardDetails = () => {
 	return (
 		<div className="no-scrollbar flex max-h-[600px] w-full flex-col justify-between gap-4 overflow-y-scroll lg:aspect-video lg:max-h-[800px] lg:flex-row">
-			<Form className="no-scrollbar flex flex-1 flex-col lg:overflow-y-scroll">
+			<Form
+				className="no-scrollbar flex flex-1 flex-col lg:overflow-y-scroll"
+				// onSubmit={handleSubmit(onSubmit)}
+			>
 				<h4 className="text-lg lg:text-xl" slot="title">
 					{/* {cardProps.title} */}
 				</h4>
@@ -37,19 +43,32 @@ export const TaskCardDetails = () => {
 
 				<p className="text-md mb-2">Full description</p>
 
-				<Textarea label="Enter more information about this task" />
-
+				{/* <Controller
+					control={control}
+					name="dueDate"
+					render={({ field }) => ( */}
+				<Textarea
+					label="Enter more information about this task"
+					// textAreaProps={field}
+				/>
+				{/* )}
+				/> */}
 				<p className="text-md mb-2 mt-4">Set new due date</p>
 
-				<DatePicker
-					onChange={(val) => {
-						if (!val) return;
+				{/* <Controller
+					control={control}
+					name="dueDate"
+					render={({ field: { onChange } }) => (
+						<DatePicker
+							onChange={(val) => {
+								if (!val) return;
 
-						const formatted = convertCalendarDate(val);
-
-						// onChange(formatted);
-					}}
-				/>
+								const formatted = convertCalendarDate(val);
+								onChange(formatted);
+							}}
+						/>
+					)}
+				/> */}
 
 				<p className="text-md mb-3 mt-4">All members on this task</p>
 
@@ -117,7 +136,12 @@ export const TaskCardDetails = () => {
 					className="bg-muted absolute bottom-0 w-full lg:max-w-full"
 					label="Enter your questions"
 					iconsRight={
-						<Button type="submit" className="p-2">
+						<Button
+							type="submit"
+							className="p-2"
+							// isDisabled={!isDirty}
+							// isLoading={false}
+						>
 							<Send />
 						</Button>
 					}

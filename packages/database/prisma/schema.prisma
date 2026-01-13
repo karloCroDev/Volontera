@@ -431,7 +431,7 @@ model OrganizationTask {
   organizationTaskInfos     OrganizationTaskInfo?
   organizationTaskQuestions OrganizationTaskQuestions[]
   title                     String
-  dueDate                   DateTime?
+  dueDate                   String
   status                    OrganizationTaskStatus      @default(PENDING)
   organizationTasksBoard    OrganizationTasksBoards?    @relation(fields: [organizationTasksBoardId], references: [id])
   organizationTasksBoardId  String?

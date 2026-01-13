@@ -54,7 +54,9 @@ export const createTaskSchema = z
   .object({
     organizationId: z.cuid(),
     description: z.string().min(1),
-    dueDate: z.coerce.date().nullable(),
+    title: z.string().min(1),
+    dueDate: z.string(),
+    organizationTasksBoardId: z.cuid(),
   })
   .extend(organizationIdSchema.shape);
 export type CreateTaskArgs = z.infer<typeof createTaskSchema>;
@@ -80,7 +82,8 @@ export const updateTaskInfoSchema = z
     taskId: z.cuid(),
     title: z.string().min(1).max(100),
     description: z.string().min(1),
-    dueDate: z.coerce.date().nullable(),
+    dueDate: z.string(),
+    organizationTasksBoardId: z.cuid(),
   })
   .extend(organizationIdSchema.shape);
 export type UpdateTaskInfoArgs = z.infer<typeof updateTaskInfoSchema>;
