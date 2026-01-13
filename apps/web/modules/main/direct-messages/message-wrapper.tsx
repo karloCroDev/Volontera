@@ -12,20 +12,16 @@ export const MessageWrapper: React.FC<{
 
 	const isActive = searchParams.get('user');
 
-	return (
-		<div className="flex w-full flex-col">
-			{isActive ? (
-				children
-			) : (
-				<div className="flex h-full flex-1 flex-col items-center justify-center text-balance px-4 text-center">
-					<h1 className="text-xl font-medium italic">
-						Let&apos; go. Start new conversation
-					</h1>
-					<p className="text-muted-foreground">
-						Choose a user to start chatting with.
-					</p>
-				</div>
-			)}
+	return isActive ? (
+		<div className="flex w-full flex-col pb-40">{children}</div>
+	) : (
+		<div className="hidden h-full flex-1 flex-col items-center justify-center text-balance px-4 text-center lg:flex">
+			<h1 className="text-xl font-medium italic">
+				Let&apos;s go. Start new conversation
+			</h1>
+			<p className="text-muted-foreground">
+				or choose a user to start chatting with.
+			</p>
 		</div>
 	);
 };

@@ -1,16 +1,23 @@
-// Server Component
-import { CommentTextArea } from '@/modules/main/organization/post/comment-text-area';
-import { Post } from '@/components/ui/post/post';
-import { retrievePostWithComments } from '@/lib/server/post';
-import { getImageFromKey } from '@/lib/server/image';
+// External packages
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
+
+// Modules
+import { CommentTextArea } from '@/modules/main/organization/post/comment-text-area';
+
+// Components
+import { Post } from '@/components/ui/post/post';
+import { PostSkeleton } from '@/components/ui/post/post-skeleton';
+
+// Lib
+import { retrievePostWithComments } from '@/lib/server/post';
+import { getImageFromKey } from '@/lib/server/image';
+
+// Modules
 import {
 	CommentOrReplySkeleton,
 	CommentsMapping,
 } from '@/modules/main/organization/post/comments-mapping';
-import { PostSkeleton } from '@/components/ui/post/post-skeleton';
-import { MessageSkeleton } from '@/components/ui/message/message';
 
 // Async server component for Post
 

@@ -32,7 +32,7 @@ export const MessagesMapping: React.FC<{
 
 	return (
 		<>
-			<div className="no-scrollbar relative flex min-h-0 flex-1 flex-col gap-4 overflow-y-scroll">
+			<div className="no-scrollbar relative flex min-h-0 flex-1 flex-col gap-4 overflow-y-scroll pb-40">
 				{helpConversation.messages.length > 0 ? (
 					helpConversation.messages.map((message) => {
 						return (

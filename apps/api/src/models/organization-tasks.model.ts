@@ -13,6 +13,7 @@ export async function createTaskBoard({
   organizationId,
 }: {
   title: OrganizationTasksBoards["title"];
+
   organizationId: OrganizationTasksBoards["organizationId"];
 }) {
   return prisma.organizationTasksBoards.create({

@@ -14,9 +14,11 @@ import { Textarea } from '@/components/ui/textarea';
 
 // Modules
 import { DeleteConfirmation } from '@/modules/main/organization/tasks/delete-confirmaton';
+import { useRetrieveTaskInfo } from '@/hooks/data/organization-tasks';
 
 export const EditBoard = () => {
 	const [isEditBoardOpen, setIsEditBoardOpen] = React.useState(false);
+	// TODO: Retrieve board info and populate the fields
 	return (
 		<Dialog
 			onOpenChange={setIsEditBoardOpen}

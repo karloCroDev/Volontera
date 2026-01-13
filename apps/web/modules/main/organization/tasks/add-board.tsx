@@ -12,9 +12,55 @@ import { Input } from '@/components/ui/input';
 import { Form, Radio, RadioGroup } from 'react-aria-components';
 import { RadioIconVisual } from '@/components/ui/radio';
 import { Textarea } from '@/components/ui/textarea';
+import { Controller, useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import {
+	CreateTaskBoardArgs,
+	createTaskBoardSchema,
+} from '@repo/schemas/organization-tasks';
+import { useCreateTaskBoard } from '@/hooks/data/organization-tasks';
+import { toast } from '@/lib/utils/toast';
+import { useParams } from 'next/navigation';
 
 export const AddBoard = () => {
 	const [assignTasks, setAssignTasks] = React.useState(false);
+
+	const [isOpen, setIsOpen] = React.useState(false);
+	const params = useParams<{ organizationId: string }>();
+	const {
+		handleSubmit,
+		control,
+		formState: { errors, isDirty },
+		reset,
+	} = useForm<CreateTaskBoardArgs>({
+		resolver: zodResolver(createTaskBoardSchema),
+		defaultValues: {
+			title: '',
+			organizationId: params.organizationId,
+		},
+	});
+
+	const { mutate, isPending } = useCreateTaskBoard();
+	const onSubmit = (data: CreateTaskBoardArgs) => {
+		mutate(data, {
+			onSuccess: ({ message, title }) => {
+				toast({
+					title,
+					content: message,
+					variant: 'success',
+				});
+				reset();
+				setIsOpen(false);
+			},
+			onError: ({ message, title }) => {
+				toast({
+					title,
+					content: message,
+					variant: 'error',
+				});
+			},
+		});
+	};
 
 	return (
 		<Dialog
@@ -30,20 +76,30 @@ export const AddBoard = () => {
 					Add Board
 				</Button>
 			}
+			isOpen={isOpen}
+			onOpenChange={setIsOpen}
 		>
-			<Form className="flex flex-col gap-4 overflow-y-scroll">
+			<Form
+				className="flex flex-col gap-4 overflow-y-scroll"
+				onSubmit={handleSubmit(onSubmit)}
+			>
 				<div>
 					<Label className="mb-2">Title</Label>
-					<Input label="Enter your post title" />
-				</div>
-				<div>
-					<Label className="mb-2" isOptional>
-						Description
-					</Label>
-					<Textarea label="Enter your description" />
+
+					<Controller
+						name="title"
+						control={control}
+						render={({ field }) => (
+							<Input
+								label="Enter your post title"
+								inputProps={field}
+								error={errors.title?.message}
+							/>
+						)}
+					/>
 				</div>
 
-				<div>
+				{/* <div>
 					<Label isOptional>Assign predefined tasks (PRO)</Label>
 					<p className="text-muted-foreground text-sm">
 						Assign predefined tasks with the data you have entered in previous
@@ -66,8 +122,14 @@ export const AddBoard = () => {
 							</Radio>
 						</RadioGroup>
 					</div>
-				</div>
-				<Button type="submit" className="self-end" size="md">
+				</div> */}
+				<Button
+					type="submit"
+					className="self-end"
+					size="md"
+					isLoading={isPending}
+					isDisabled={!isDirty || isPending}
+				>
 					Submit
 				</Button>
 			</Form>
