@@ -27,6 +27,7 @@ import {
   retrieveOrganizationPostsSchema,
 } from "@repo/schemas/post";
 import { retrievePostCommentsSchema } from "@repo/schemas/comment";
+import { organizationRolesMiddleware } from "@/middleware/organization-roles.middleware";
 
 export const postRoutes = Router();
 
@@ -36,15 +37,21 @@ postRoutes.use(express.json());
 postRoutes
   .route("/")
   .post(
-    organizationMiddleware,
     validate({
       schema: createPostSchema,
       responseOutput: "form",
     }),
+    organizationRolesMiddleware({
+      aquiredRoles: ["ADMIN"],
+      type: "body",
+    }),
     createPostController
   )
   .delete(
-    organizationMiddleware,
+    organizationRolesMiddleware({
+      aquiredRoles: ["ADMIN"],
+      type: "body",
+    }),
     validate({
       schema: deletePostSchema,
       responseOutput: "form",
@@ -52,7 +59,9 @@ postRoutes
     deletePostController
   )
   .patch(
-    organizationMiddleware,
+    organizationRolesMiddleware({
+      aquiredRoles: ["ADMIN"],
+    }),
     validate({
       schema: updatePostSchema,
       responseOutput: "form",

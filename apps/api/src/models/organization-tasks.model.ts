@@ -5,7 +5,6 @@ import {
   OrganizationTaskInfo,
   OrganizationTaskQuestions,
   OrganizationTask,
-  User,
 } from "@repo/database";
 
 // Boards
