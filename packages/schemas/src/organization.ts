@@ -4,6 +4,10 @@ import { z } from "zod";
 // Schemas
 import { uploadImageSchema } from "./image";
 
+export const organizationIdSchema = z.object({
+  organizationId: z.cuid(),
+});
+
 export const createOrganizationSchema = z.object({
   organization_avatar_image: uploadImageSchema.shape.image,
   organization_cover_image: uploadImageSchema.shape.image,
@@ -22,7 +26,6 @@ export const createOrganizationSchema = z.object({
     .optional(),
   assignPredefinedTasks: z.boolean(),
 });
-
 export type CreateOrganizationArgs = z.infer<typeof createOrganizationSchema>;
 
 export const getOrganizationDetailsByIdSchema = z.object({
@@ -33,12 +36,12 @@ export type GetOrganizationDetailsByIdArgs = z.infer<
   typeof getOrganizationDetailsByIdSchema
 >;
 
-export const sendRequestToJoinOrganizationSchema = z.object({
-  organizationId: z.cuid(),
-  title: z.string().min(1).max(20),
-  content: z.string().min(1).max(200),
-});
-
+export const sendRequestToJoinOrganizationSchema = z
+  .object({
+    title: z.string().min(1).max(20),
+    content: z.string().min(1).max(200),
+  })
+  .extend(organizationIdSchema);
 export type SendRequestToJoinOrganizationArgs = z.infer<
   typeof sendRequestToJoinOrganizationSchema
 >;

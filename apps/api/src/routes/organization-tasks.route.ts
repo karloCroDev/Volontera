@@ -40,8 +40,6 @@ export const organizationTasksRoutes = Router();
 
 organizationTasksRoutes.use(express.json());
 
-const organizationIdSchema = z.object({ organizationId: z.cuid() });
-
 // Boards
 organizationTasksRoutes.get(
   "/boards/:organizationId",
@@ -71,7 +69,7 @@ organizationTasksRoutes.post(
 organizationTasksRoutes.patch(
   "/boards/update-title",
   validate({
-    schema: organizationIdSchema.merge(updateOrganizationTaskBoardTitleSchema),
+    schema: updateOrganizationTaskBoardTitleSchema,
     responseOutput: "toast",
     type: "body",
   }),
@@ -82,7 +80,7 @@ organizationTasksRoutes.patch(
 organizationTasksRoutes.delete(
   "/boards/:organizationId/:organizationTaskBoardId",
   validate({
-    schema: organizationIdSchema.merge(deleteOrganizationTaskBoardSchema),
+    schema: deleteOrganizationTaskBoardSchema,
     responseOutput: "toast",
     type: "params",
   }),
@@ -108,7 +106,7 @@ organizationTasksRoutes.post(
 organizationTasksRoutes.get(
   "/tasks/:organizationId/:taskId",
   validate({
-    schema: organizationIdSchema.extend(retrieveTaskInfoSchema),
+    schema: retrieveTaskInfoSchema,
     responseOutput: "server",
     type: "params",
   }),
@@ -122,7 +120,7 @@ organizationTasksRoutes.get(
 organizationTasksRoutes.get(
   "/tasks/:organizationId/:taskId/questions",
   validate({
-    schema: organizationIdSchema.extend(retrieveTaskQuestionsSchema),
+    schema: retrieveTaskQuestionsSchema,
     responseOutput: "server",
     type: "params",
   }),
@@ -136,7 +134,7 @@ organizationTasksRoutes.get(
 organizationTasksRoutes.patch(
   "/tasks/update",
   validate({
-    schema: organizationIdSchema.extend(updateTaskInfoSchema),
+    schema: updateTaskInfoSchema,
     responseOutput: "toast",
     type: "body",
   }),
@@ -147,7 +145,7 @@ organizationTasksRoutes.patch(
 organizationTasksRoutes.delete(
   "/tasks/:organizationId/:taskId",
   validate({
-    schema: organizationIdSchema.extend(deleteTaskByIdSchema),
+    schema: deleteTaskByIdSchema,
     responseOutput: "toast",
     type: "params",
   }),
@@ -162,9 +160,7 @@ organizationTasksRoutes.delete(
 organizationTasksRoutes.post(
   "/tasks/question",
   validate({
-    schema: organizationIdSchema.extend(
-      createTaskQuestionSchema.omit({ userId: true })
-    ),
+    schema: createTaskQuestionSchema.omit({ userId: true }),
     responseOutput: "toast",
     type: "body",
   }),
