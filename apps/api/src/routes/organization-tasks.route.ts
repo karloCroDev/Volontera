@@ -160,7 +160,7 @@ organizationTasksRoutes.delete(
 organizationTasksRoutes.post(
   "/tasks/question",
   validate({
-    schema: createTaskQuestionSchema.omit({ userId: true }),
+    schema: createTaskQuestionSchema,
     responseOutput: "toast",
     type: "body",
   }),

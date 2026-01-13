@@ -16,7 +16,7 @@ export const organizationGroupChatMessageSchema = z
     groupChatId: z.cuid(),
     images: uploadImageSchema.shape.image.array().optional(),
   })
-  .extend(organizationIdSchema);
+  .extend(organizationIdSchema.shape);
 export type OrganizationGroupChatMessageArgs = z.infer<
   typeof organizationGroupChatMessageSchema
 >;
@@ -27,7 +27,7 @@ export const createOrganizationGroupChatMessageSchema = z
     groupChatId: z.cuid(),
     imageKeys: z.array(z.string()).optional(),
   })
-  .extend(organizationIdSchema);
+  .extend(organizationIdSchema.shape);
 export type CreateOrganizationGroupChatMessageArgs = z.infer<
   typeof createOrganizationGroupChatMessageSchema
 >;
@@ -36,7 +36,7 @@ export const deleteOrganizationGroupChatMessageSchema = z
   .object({
     messageId: z.cuid(),
   })
-  .extend(organizationIdSchema);
+  .extend(organizationIdSchema.shape);
 export type DeleteOrganizationGroupChatMessageArgs = z.infer<
   typeof deleteOrganizationGroupChatMessageSchema
 >;

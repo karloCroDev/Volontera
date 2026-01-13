@@ -86,7 +86,6 @@ export const createTaskQuestionSchema = z
   .object({
     taskId: z.cuid(),
     question: z.string().min(1).max(2000),
-    userId: z.cuid(),
   })
   .extend(organizationIdSchema.shape);
 export type CreateTaskQuestionArgs = z.infer<typeof createTaskQuestionSchema>;

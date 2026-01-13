@@ -41,7 +41,7 @@ export const sendRequestToJoinOrganizationSchema = z
     title: z.string().min(1).max(20),
     content: z.string().min(1).max(200),
   })
-  .extend(organizationIdSchema);
+  .extend(organizationIdSchema.shape);
 export type SendRequestToJoinOrganizationArgs = z.infer<
   typeof sendRequestToJoinOrganizationSchema
 >;
