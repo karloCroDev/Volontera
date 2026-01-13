@@ -9,10 +9,19 @@ import { ServerHandleResponse } from "./general";
 
 export type RetrieveAllOrganizationBoardsWithTasksResponse =
   ServerHandleResponse<true> & {
-    boards: (OrganizationTasksBoards & {
+    boardsWithTasks: (OrganizationTasksBoards & {
       organizationTasks: OrganizationTask[];
     })[];
   };
+
+export type RetrieveAllOrganizationBoardsResponse =
+  ServerHandleResponse<true> & {
+    boards: OrganizationTasksBoards[];
+  };
+
+export type RetrieveAllBoardTasksResponse = ServerHandleResponse<true> & {
+  tasks: OrganizationTask[];
+};
 
 export type RetrieveTaskInfoResponse = ServerHandleResponse<boolean> & {
   taskInfo?: OrganizationTaskInfo & {

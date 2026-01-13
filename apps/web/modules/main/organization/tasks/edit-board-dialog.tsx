@@ -36,12 +36,6 @@ export const EditBoardDialog = () => {
 					<Label className="mb-2">Title</Label>
 					<Input label="Enter your board title" />
 				</div>
-				<div>
-					<Label className="mb-2" isOptional>
-						Description
-					</Label>
-					<Textarea label="Enter your description" />
-				</div>
 
 				<div className="flex justify-between">
 					<DeleteConfirmation

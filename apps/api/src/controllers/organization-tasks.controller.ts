@@ -9,6 +9,8 @@ import {
   deleteOrganizationTaskBoardService,
   deleteTaskByIdService,
   deleteTaskQuestionService,
+  retrieveAllBoardTasksService,
+  retrieveAllOrganizationBoardsService,
   retrieveAllOrganizationBoardsWithTasksService,
   retrieveTaskInfoService,
   retrieveTaskQuestionsService,
@@ -29,6 +31,8 @@ import {
   RetrieveTaskQuestionsArgs,
   UpdateOrganizationTaskBoardTitleArgs,
   UpdateTaskInfoArgs,
+  RetrieveAllBoardTasksArgs,
+  RetrieveAllOrganizationBoardsArgs,
 } from "@repo/schemas/organization-tasks";
 
 // Lib
@@ -66,7 +70,7 @@ export async function deleteOrganizationTaskBoardController(
 ) {
   try {
     const result = await deleteOrganizationTaskBoardService(
-      req.params as unknown as DeleteOrganizationTaskBoardArgs
+      req.params as DeleteOrganizationTaskBoardArgs
     );
     return res.status(result.status).json(result.body);
   } catch (err) {
@@ -74,13 +78,28 @@ export async function deleteOrganizationTaskBoardController(
   }
 }
 
+export async function retrieveAllOrganizationBoardsController(
+  req: Request,
+  res: Response
+) {
+  try {
+    const result = await retrieveAllOrganizationBoardsService(
+      req.params as RetrieveAllOrganizationBoardsArgs
+    );
+    return res.status(result.status).json(result.body);
+  } catch (err) {
+    handleServerErrorResponse(res, err);
+  }
+}
+
+// Board with tasks
 export async function retrieveAllOrganizationBoardsWithTasksController(
   req: Request,
   res: Response
 ) {
   try {
     const result = await retrieveAllOrganizationBoardsWithTasksService(
-      req.params as unknown as RetrieveAllOrganizationBoardsWithTasksArgs
+      req.params as RetrieveAllOrganizationBoardsWithTasksArgs
     );
     return res.status(result.status).json(result.body);
   } catch (err) {
@@ -89,6 +108,20 @@ export async function retrieveAllOrganizationBoardsWithTasksController(
 }
 
 // Tasks
+export async function retrieveAllBoardTasksController(
+  req: Request,
+  res: Response
+) {
+  try {
+    const result = await retrieveAllBoardTasksService(
+      req.params as RetrieveAllBoardTasksArgs
+    );
+    return res.status(result.status).json(result.body);
+  } catch (err) {
+    handleServerErrorResponse(res, err);
+  }
+}
+
 export async function createTaskController(req: Request, res: Response) {
   try {
     const result = await createTaskService(req.body as CreateTaskArgs);
@@ -101,7 +134,7 @@ export async function createTaskController(req: Request, res: Response) {
 export async function retrieveTaskInfoController(req: Request, res: Response) {
   try {
     const result = await retrieveTaskInfoService(
-      req.params as unknown as RetrieveTaskInfoArgs
+      req.params as RetrieveTaskInfoArgs
     );
     return res.status(result.status).json(result.body);
   } catch (err) {
@@ -115,7 +148,7 @@ export async function retrieveTaskQuestionsController(
 ) {
   try {
     const result = await retrieveTaskQuestionsService(
-      req.params as unknown as RetrieveTaskQuestionsArgs
+      req.params as RetrieveTaskQuestionsArgs
     );
     return res.status(result.status).json(result.body);
   } catch (err) {
@@ -135,7 +168,7 @@ export async function updateTaskInfoController(req: Request, res: Response) {
 export async function deleteTaskByIdController(req: Request, res: Response) {
   try {
     const result = await deleteTaskByIdService(
-      req.params as unknown as DeleteTaskByIdArgs
+      req.params as DeleteTaskByIdArgs
     );
     return res.status(result.status).json(result.body);
   } catch (err) {
@@ -165,10 +198,7 @@ export async function deleteTaskQuestionController(
   res: Response
 ) {
   try {
-    const params = req.params as unknown as Omit<
-      DeleteTaskQuestionArgs,
-      "userId"
-    >;
+    const params = req.params as Omit<DeleteTaskQuestionArgs, "userId">;
     const result = await deleteTaskQuestionService({
       data: params,
       userId: req.user.userId,

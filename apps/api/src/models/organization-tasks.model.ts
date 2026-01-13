@@ -51,6 +51,16 @@ export async function deleteOrganizationTaskBoard(
   });
 }
 
+export async function retrieveAllOrganizationBoards(
+  organizationId: OrganizationTasksBoards["organizationId"]
+) {
+  return prisma.organizationTasksBoards.findMany({
+    where: {
+      organizationId,
+    },
+  });
+}
+
 // Board with tasks
 export async function retrieveAllOrganizationBoardsWithTasks(
   organizationId: OrganizationTasksBoards["organizationId"]
@@ -66,6 +76,23 @@ export async function retrieveAllOrganizationBoardsWithTasks(
 }
 
 // Tasks
+export async function retrieveAllBoardTasks(
+  organizationTaskBoardId: OrganizationTasksBoards["id"]
+) {
+  return prisma.organizationTask.findMany({
+    where: {
+      organizationTasksBoardId: organizationTaskBoardId,
+    },
+    // include: {
+    //   organizationTaskInfos: {
+    //     select: {
+
+    //     }
+    //   }
+    // }
+  });
+}
+
 export async function createTask({
   organizationId,
   description,
@@ -102,15 +129,6 @@ export async function retrieveTaskInfo(taskId: OrganizationTaskInfo["id"]) {
     include: {
       organizationTask: true,
       membersAssigned: true,
-    },
-  });
-}
-export async function retrieveTaskQuestions(
-  taskId: OrganizationTaskQuestions["organizationTaskId"]
-) {
-  return prisma.organizationTaskQuestions.findMany({
-    where: {
-      organizationTaskId: taskId,
     },
   });
 }
@@ -157,6 +175,16 @@ export async function deleteTaskById(taskId: OrganizationTaskInfo["id"]) {
 }
 
 // Questions
+export async function retrieveTaskQuestions(
+  taskId: OrganizationTaskQuestions["organizationTaskId"]
+) {
+  return prisma.organizationTaskQuestions.findMany({
+    where: {
+      organizationTaskId: taskId,
+    },
+  });
+}
+
 export async function createTaskQuestion({
   question,
   taskId,

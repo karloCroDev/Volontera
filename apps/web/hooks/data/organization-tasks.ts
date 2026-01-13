@@ -17,7 +17,8 @@ import {
 	deleteOrganizationTaskBoard,
 	deleteTaskById,
 	deleteTaskQuestion,
-	retrieveAllOrganizationBoardsWithTasks,
+	retrieveAllOrganizationBoards,
+	retrieveAllBoardTasks,
 	retrieveTaskInfo,
 	retrieveTaskQuestions,
 	updateOrganizationTaskBoardTitle,
@@ -32,7 +33,8 @@ import {
 	DeleteOrganizationTaskBoardArgs,
 	DeleteTaskByIdArgs,
 	DeleteTaskQuestionArgs,
-	RetrieveAllOrganizationBoardsWithTasksArgs,
+	RetrieveAllBoardTasksArgs,
+	RetrieveAllOrganizationBoardsArgs,
 	RetrieveTaskInfoArgs,
 	RetrieveTaskQuestionsArgs,
 	UpdateOrganizationTaskBoardTitleArgs,
@@ -42,22 +44,23 @@ import {
 // Types
 import { ErrorToastResponse, SuccessfulResponse } from '@repo/types/general';
 import {
-	RetrieveAllOrganizationBoardsWithTasksResponse,
+	RetrieveAllBoardTasksResponse,
+	RetrieveAllOrganizationBoardsResponse,
 	RetrieveTaskInfoResponse,
 	RetrieveTaskQuestionsResponse,
 } from '@repo/types/organization-tasks';
 
 // Boards
-export const useRetrieveAllOrganizationBoardsWithTasks = (
-	data: RetrieveAllOrganizationBoardsWithTasksArgs,
+export const useRetrieveAllOrganizationBoards = (
+	data: RetrieveAllOrganizationBoardsArgs,
 	options?: Omit<
-		UseSuspenseQueryOptions<RetrieveAllOrganizationBoardsWithTasksResponse>,
+		UseSuspenseQueryOptions<RetrieveAllOrganizationBoardsResponse>,
 		'queryKey' | 'queryFn'
 	>
 ) => {
-	return useSuspenseQuery<RetrieveAllOrganizationBoardsWithTasksResponse>({
+	return useSuspenseQuery<RetrieveAllOrganizationBoardsResponse>({
 		queryKey: ['organization-task-boards', data.organizationId],
-		queryFn: () => retrieveAllOrganizationBoardsWithTasks(data),
+		queryFn: () => retrieveAllOrganizationBoards(data),
 		...options,
 	});
 };
@@ -154,6 +157,20 @@ export const useDeleteOrganizationTaskBoard = (
 };
 
 // Tasks
+export const useRetrieveAllBoardTasksArgs = (
+	data: RetrieveAllBoardTasksArgs,
+	options?: Omit<
+		UseSuspenseQueryOptions<RetrieveAllBoardTasksResponse>,
+		'queryKey' | 'queryFn'
+	>
+) => {
+	return useSuspenseQuery<RetrieveAllBoardTasksResponse>({
+		queryKey: ['organization-tasks', data.organizationTaskBoardId],
+		queryFn: () => retrieveAllBoardTasks(data),
+		...options,
+	});
+};
+
 export const useCreateTask = (
 	options?: UseMutationOptions<
 		SuccessfulResponse,

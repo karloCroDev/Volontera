@@ -10,7 +10,8 @@ import {
 	DeleteOrganizationTaskBoardArgs,
 	DeleteTaskByIdArgs,
 	DeleteTaskQuestionArgs,
-	RetrieveAllOrganizationBoardsWithTasksArgs,
+	RetrieveAllBoardTasksArgs,
+	RetrieveAllOrganizationBoardsArgs,
 	RetrieveTaskInfoArgs,
 	RetrieveTaskQuestionsArgs,
 	UpdateOrganizationTaskBoardTitleArgs,
@@ -18,9 +19,10 @@ import {
 } from '@repo/schemas/organization-tasks';
 
 // Boards
-export async function retrieveAllOrganizationBoardsWithTasks({
+
+export async function retrieveAllOrganizationBoards({
 	organizationId,
-}: RetrieveAllOrganizationBoardsWithTasksArgs) {
+}: RetrieveAllOrganizationBoardsArgs) {
 	try {
 		const res = await API().get(`/organization-tasks/boards/${organizationId}`);
 		return res.data;
@@ -67,6 +69,20 @@ export async function deleteOrganizationTaskBoard({
 }
 
 // Tasks
+export async function retrieveAllBoardTasks({
+	organizationId,
+	organizationTaskBoardId,
+}: RetrieveAllBoardTasksArgs) {
+	try {
+		const res = await API().get(
+			`/organization-tasks/tasks/${organizationId}/${organizationTaskBoardId}`
+		);
+		return res.data;
+	} catch (err) {
+		catchError(err);
+	}
+}
+
 export async function createTask(data: CreateTaskArgs) {
 	try {
 		const res = await API().post('/organization-tasks/tasks/create', data);

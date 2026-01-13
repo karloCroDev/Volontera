@@ -29,13 +29,24 @@ export type DeleteOrganizationTaskBoardArgs = z.infer<
   typeof deleteOrganizationTaskBoardSchema
 >;
 
-export const retrieveAllOrganizationBoardsWithTasksSchema = z
+export const retrieveAllBoardTasksSchema = z
   .object({
-    organizationId: z.cuid(),
+    organizationTaskBoardId: z.cuid(),
   })
   .extend(organizationIdSchema.shape);
+export type RetrieveAllBoardTasksArgs = z.infer<
+  typeof retrieveAllBoardTasksSchema
+>;
+
+export const retrieveAllOrganizationBoardsWithTasksSchema =
+  organizationIdSchema;
 export type RetrieveAllOrganizationBoardsWithTasksArgs = z.infer<
   typeof retrieveAllOrganizationBoardsWithTasksSchema
+>;
+
+export const retrieveAllOrganizationBoardSchema = organizationIdSchema;
+export type RetrieveAllOrganizationBoardsArgs = z.infer<
+  typeof retrieveAllOrganizationBoardSchema
 >;
 
 // Tasks

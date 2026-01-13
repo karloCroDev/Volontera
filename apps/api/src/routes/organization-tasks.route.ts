@@ -11,6 +11,8 @@ import {
   deleteOrganizationTaskBoardController,
   deleteTaskByIdController,
   deleteTaskQuestionController,
+  retrieveAllBoardTasksController,
+  retrieveAllOrganizationBoardsController,
   retrieveAllOrganizationBoardsWithTasksController,
   retrieveTaskInfoController,
   retrieveTaskQuestionsController,
@@ -34,27 +36,17 @@ import {
   retrieveTaskQuestionsSchema,
   updateOrganizationTaskBoardTitleSchema,
   updateTaskInfoSchema,
+  deleteTaskQuestionSchema,
+  retrieveAllBoardTasksSchema,
+  retrieveAllOrganizationBoardSchema,
 } from "@repo/schemas/organization-tasks";
+import { retrieveAllBoardTasks } from "@/models/organization-tasks.model";
 
 export const organizationTasksRoutes = Router();
 
 organizationTasksRoutes.use(express.json());
 
 // Boards
-organizationTasksRoutes.get(
-  "/boards/:organizationId",
-  validate({
-    schema: retrieveAllOrganizationBoardsWithTasksSchema,
-    type: "params",
-    responseOutput: "server",
-  }),
-  organizationRolesMiddleware({
-    type: "params",
-    aquiredRoles: ["MEMBER", "ADMIN"],
-  }),
-  retrieveAllOrganizationBoardsWithTasksController
-);
-
 organizationTasksRoutes.post(
   "/boards/create",
   validate({
@@ -91,7 +83,50 @@ organizationTasksRoutes.delete(
   deleteOrganizationTaskBoardController
 );
 
+organizationTasksRoutes.get(
+  "/boards/:organizationId",
+  validate({
+    schema: retrieveAllOrganizationBoardSchema,
+    responseOutput: "server",
+    type: "params",
+  }),
+  organizationRolesMiddleware({
+    type: "params",
+    aquiredRoles: ["MEMBER", "ADMIN"],
+  }),
+  retrieveAllOrganizationBoardsController
+);
+
+// Boards with tasks
+organizationTasksRoutes.get(
+  "/boards-with-tasks/:organizationId",
+  validate({
+    schema: retrieveAllOrganizationBoardsWithTasksSchema,
+    type: "params",
+    responseOutput: "server",
+  }),
+  organizationRolesMiddleware({
+    type: "params",
+    aquiredRoles: ["MEMBER", "ADMIN"],
+  }),
+  retrieveAllOrganizationBoardsWithTasksController
+);
+
 // Tasks
+organizationTasksRoutes.get(
+  "/tasks/:organizationId/:organizationTaskBoardId",
+  validate({
+    schema: retrieveAllBoardTasksSchema,
+    responseOutput: "server",
+    type: "params",
+  }),
+  organizationRolesMiddleware({
+    type: "params",
+    aquiredRoles: ["MEMBER", "ADMIN"],
+  }),
+  retrieveAllBoardTasksController
+);
+
 organizationTasksRoutes.post(
   "/tasks/create",
   validate({
@@ -171,7 +206,7 @@ organizationTasksRoutes.post(
 organizationTasksRoutes.delete(
   "/tasks/question/:organizationId/:questionId",
   validate({
-    schema: z.object({ organizationId: z.cuid(), questionId: z.cuid() }),
+    schema: deleteTaskQuestionSchema,
     responseOutput: "toast",
     type: "params",
   }),

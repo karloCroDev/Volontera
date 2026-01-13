@@ -11,7 +11,7 @@ export async function retrieveAllOrganizationBoardsWithTasks(
 	RetrieveAllOrganizationBoardsWithTasksResponse | ServerHandleResponse<false>
 > {
 	return await serverFetch({
-		url: `organization-tasks/boards/${organizationId}`,
+		url: `organization-tasks/boards-with-tasks/${organizationId}`,
 		init: { next: { tags: ['organization-tasks'] }, cache: 'no-store' },
 	});
 }

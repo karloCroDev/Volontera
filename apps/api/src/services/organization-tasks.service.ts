@@ -12,6 +12,8 @@ import {
   deleteOrganizationTaskBoard,
   deleteTaskById,
   deleteTaskQuestion,
+  retrieveAllBoardTasks,
+  retrieveAllOrganizationBoards,
   retrieveAllOrganizationBoardsWithTasks,
   retrieveTaskInfo,
   retrieveTaskQuestions,
@@ -27,6 +29,8 @@ import {
   DeleteOrganizationTaskBoardArgs,
   DeleteTaskByIdArgs,
   DeleteTaskQuestionArgs,
+  RetrieveAllBoardTasksArgs,
+  RetrieveAllOrganizationBoardsArgs,
   RetrieveAllOrganizationBoardsWithTasksArgs,
   RetrieveTaskInfoArgs,
   RetrieveTaskQuestionsArgs,
@@ -39,7 +43,7 @@ import { User } from "@repo/database";
 
 // Boards
 export async function createTaskBoardService(data: CreateTaskBoardArgs) {
-  const board = await createTaskBoard(data);
+  await createTaskBoard(data);
 
   return toastResponseOutput({
     status: 200,
@@ -72,10 +76,10 @@ export async function deleteOrganizationTaskBoardService({
   });
 }
 
-export async function retrieveAllOrganizationBoardsWithTasksService({
+export async function retrieveAllOrganizationBoardsService({
   organizationId,
-}: RetrieveAllOrganizationBoardsWithTasksArgs) {
-  const boards = await retrieveAllOrganizationBoardsWithTasks(organizationId);
+}: RetrieveAllOrganizationBoardsArgs) {
+  const boards = await retrieveAllOrganizationBoards(organizationId);
 
   return serverFetchOutput({
     status: 200,
@@ -85,7 +89,34 @@ export async function retrieveAllOrganizationBoardsWithTasksService({
   });
 }
 
+// Board with tasks
+export async function retrieveAllOrganizationBoardsWithTasksService({
+  organizationId,
+}: RetrieveAllOrganizationBoardsWithTasksArgs) {
+  const boards = await retrieveAllBoardTasks(organizationId);
+
+  return serverFetchOutput({
+    status: 200,
+    success: true,
+    message: "Boards with tasks retrieved successfully",
+    data: { boards },
+  });
+}
+
 // Tasks
+export async function retrieveAllBoardTasksService({
+  organizationTaskBoardId,
+}: RetrieveAllBoardTasksArgs) {
+  const tasks = await retrieveAllBoardTasks(organizationTaskBoardId);
+
+  return serverFetchOutput({
+    status: 200,
+    success: true,
+    message: "Tasks retrieved successfully",
+    data: { tasks },
+  });
+}
+
 export async function createTaskService(data: CreateTaskArgs) {
   await createTask(data);
 
