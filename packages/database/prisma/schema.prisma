@@ -257,21 +257,23 @@ model OrganizationInfo {
   organizationId   String            @unique
   createdAt        DateTime          @default(now())
   updatedAt        DateTime          @updatedAt
-
-  organizationFollowers OrganizationFollowers[]
 }
 
 // Additional fields that can be for the organznizaton
 model OrganizationFollowers {
-  id                 String           @id @default(cuid())
-  organizationInfo   OrganizationInfo @relation(fields: [organizationInfoId], references: [id], onDelete: Cascade)
-  organizationInfoId String
-  followerUser       User             @relation(fields: [followerUserId], references: [id], onDelete: Cascade)
-  followerUserId     String
-  createdAt          DateTime         @default(now())
-  updatedAt          DateTime         @updatedAt
-  organization       Organization?    @relation(fields: [organizationId], references: [id])
-  organizationId     String?
+  id String @id @default(cuid())
+
+  followerUser   User         @relation(fields: [followerUserId], references: [id], onDelete: Cascade)
+  followerUserId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  organizationId String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([organizationId, followerUserId])
+  @@index([followerUserId])
+  @@index([organizationId])
 }
 
 model AdditionalLinks {

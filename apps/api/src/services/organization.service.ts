@@ -7,11 +7,14 @@ import {
 
 // Models
 import {
+  checkIfUserFollowsOrganization,
   createOrganization,
+  followOrganization,
   getOrganizationDetailsById,
   listOrganizationsOrganizatorGrouped,
   listOrganizationsUser,
   sendRequestToJoinOrganization,
+  unfollowOrganization,
 } from "@/models/organization.model";
 
 // Database
@@ -20,6 +23,7 @@ import { User } from "@repo/database";
 // Schema types
 import {
   CreateOrganizationArgs,
+  ToggleFollowOrganizationArgs,
   GetOrganizationDetailsByIdArgs,
   SendRequestToJoinOrganizationArgs,
 } from "@repo/schemas/organization";
@@ -145,5 +149,38 @@ export async function sendRequestToJoinOrganizationService({
     status: 200,
     title: "Request Sent",
     message: "Your request to join the organization has been sent",
+  });
+}
+
+export async function toggleFollowOrganizationService({
+  data,
+  userId,
+}: {
+  data: ToggleFollowOrganizationArgs;
+  userId: User["id"];
+}) {
+  const isFollowing = await checkIfUserFollowsOrganization({
+    organizationId: data.organizationId,
+    userId,
+  });
+
+  if (isFollowing) {
+    await unfollowOrganization({
+      organizationId: data.organizationId,
+      userId,
+    });
+  } else {
+    await followOrganization({
+      organizationId: data.organizationId,
+      userId,
+    });
+  }
+
+  return toastResponseOutput({
+    status: 200,
+    title: isFollowing ? "Organization Unfollowed" : "Organization Followed",
+    message: isFollowing
+      ? "Organization unfollowed successfully"
+      : "Organization followed successfully",
   });
 }

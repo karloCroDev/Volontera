@@ -12,16 +12,22 @@ import {
 	listOrganizationsOrganizator,
 	listOrganizationsUser,
 	sendRequestToJoinOrganization,
+	toggleFollowOrganization,
 } from '@/lib/data/organization';
 
 // Schemas
 import {
 	CreateOrganizationArgs,
+	ToggleFollowOrganizationArgs,
 	SendRequestToJoinOrganizationArgs,
 } from '@repo/schemas/organization';
 
 // Types
-import { ErrorFormResponse, SuccessfulResponse } from '@repo/types/general';
+import {
+	ErrorFormResponse,
+	ErrorToastResponse,
+	SuccessfulResponse,
+} from '@repo/types/general';
 import {
 	CreateOrganizationResponse,
 	ListOrganizationsOrganizatorResponse,
@@ -75,6 +81,29 @@ export const useSendRequestToJoinOrganization = (
 		mutationKey: ['send-request-to-join-organization'],
 		mutationFn: (data: SendRequestToJoinOrganizationArgs) =>
 			sendRequestToJoinOrganization(data),
+		onSuccess: async (...args) => {
+			await queryClient.invalidateQueries({
+				queryKey: ['organization'],
+				exact: false,
+			});
+			await options?.onSuccess?.(...args);
+		},
+		...options,
+	});
+};
+
+export const useToggleFollowOrganization = (
+	options?: UseMutationOptions<
+		SuccessfulResponse,
+		ErrorToastResponse,
+		ToggleFollowOrganizationArgs
+	>
+) => {
+	const queryClient = useQueryClient();
+	return useMutation({
+		mutationKey: ['follow-organization'],
+		mutationFn: (data: ToggleFollowOrganizationArgs) =>
+			toggleFollowOrganization(data),
 		onSuccess: async (...args) => {
 			await queryClient.invalidateQueries({
 				queryKey: ['organization'],

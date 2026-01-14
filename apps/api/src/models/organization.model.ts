@@ -1,5 +1,5 @@
 // Database
-import { prisma, User } from "@repo/database";
+import { Organization, prisma, User } from "@repo/database";
 
 // Types
 import {
@@ -153,6 +153,71 @@ export async function listOrganizationsUser(userId: User["id"]) {
   };
 }
 
+export async function sendRequestToJoinOrganization({
+  data,
+  userId,
+}: {
+  data: SendRequestToJoinOrganizationArgs;
+  userId: User["id"];
+}) {
+  return prisma.organizationJoinRequest.create({
+    data: {
+      ...data,
+      requesterId: userId,
+      status: "PENDING",
+    },
+  });
+}
+
+export async function checkIfUserFollowsOrganization({
+  organizationId,
+  userId,
+}: {
+  organizationId: Organization["id"];
+  userId: User["id"];
+}) {
+  return prisma.organizationFollowers.findUnique({
+    where: {
+      organizationId_followerUserId: {
+        organizationId,
+        followerUserId: userId,
+      },
+    },
+  });
+}
+
+export async function followOrganization({
+  organizationId,
+  userId,
+}: {
+  organizationId: Organization["id"];
+  userId: User["id"];
+}) {
+  return prisma.organizationFollowers.create({
+    data: {
+      followerUserId: userId,
+      organizationId: organizationId,
+    },
+  });
+}
+
+export async function unfollowOrganization({
+  organizationId,
+  userId,
+}: {
+  organizationId: Organization["id"];
+  userId: User["id"];
+}) {
+  return prisma.organizationFollowers.delete({
+    where: {
+      organizationId_followerUserId: {
+        organizationId,
+        followerUserId: userId,
+      },
+    },
+  });
+}
+
 // All
 // TODO: Handle this with redis or something simmilar and make alogirthm for that
 export async function searchOrganizationsByName(query: string) {
@@ -183,22 +248,6 @@ export async function getOrganizationDetailsById(organizationId: string) {
 
       // Vrati po hijewrarhiji korisnike i onda displayamo na frontendu (admini organizacije, vlasnik i neke korisnike)
       // owner: true,
-    },
-  });
-}
-
-export async function sendRequestToJoinOrganization({
-  data,
-  userId,
-}: {
-  data: SendRequestToJoinOrganizationArgs;
-  userId: User["id"];
-}) {
-  return prisma.organizationJoinRequest.create({
-    data: {
-      ...data,
-      requesterId: userId,
-      status: "PENDING",
     },
   });
 }

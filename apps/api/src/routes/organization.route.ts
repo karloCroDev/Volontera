@@ -5,6 +5,7 @@ import { Router } from "express";
 // Controllers
 import {
   createOrganizationController,
+  toggleFollowOrganizationController,
   getOrganizationDetailsByIdController,
   listOrganizationsOrganizatorController,
   listOrganizationsUserController,
@@ -23,6 +24,7 @@ import {
   getOrganizationDetailsByIdSchema,
   createOrganizationSchema,
   sendRequestToJoinOrganizationSchema,
+  toggleFollowOrganizationSchema,
 } from "@repo/schemas/organization";
 
 export const organizationRoutes = Router();
@@ -72,4 +74,15 @@ organizationRoutes.post(
     responseOutput: "form",
   }),
   sendRequestToJoinOrganizationController
+);
+
+organizationRoutes.delete(
+  "/toggle-follow/:organizationId",
+  userMiddleware,
+  validate({
+    schema: toggleFollowOrganizationSchema,
+    responseOutput: "toast",
+    type: "params",
+  }),
+  toggleFollowOrganizationController
 );

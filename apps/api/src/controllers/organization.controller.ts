@@ -8,8 +8,12 @@ import {
   listOrganizationsOrganizatorService,
   listOrganizationsUserService,
   sendRequestToJoinOrganizationService,
+  toggleFollowOrganizationService,
 } from "@/services/organization.service";
-import { GetOrganizationDetailsByIdArgs } from "@repo/schemas/organization";
+import {
+  GetOrganizationDetailsByIdArgs,
+  ToggleFollowOrganizationArgs,
+} from "@repo/schemas/organization";
 
 export async function createOrganizationController(
   req: Request,
@@ -72,6 +76,22 @@ export async function sendRequestToJoinOrganizationController(
   try {
     const result = await sendRequestToJoinOrganizationService({
       data: req.body,
+      userId: req.user.userId,
+    });
+
+    return res.status(result.status).json(result.body);
+  } catch (err) {
+    return res.status(500).json({ success: false, message: "Internal error" });
+  }
+}
+
+export async function toggleFollowOrganizationController(
+  req: Request,
+  res: Response
+) {
+  try {
+    const result = await toggleFollowOrganizationService({
+      data: req.params as ToggleFollowOrganizationArgs,
       userId: req.user.userId,
     });
 

@@ -45,3 +45,8 @@ export const sendRequestToJoinOrganizationSchema = z
 export type SendRequestToJoinOrganizationArgs = z.infer<
   typeof sendRequestToJoinOrganizationSchema
 >;
+
+export const toggleFollowOrganizationSchema = organizationIdSchema;
+export type ToggleFollowOrganizationArgs = z.infer<
+  typeof toggleFollowOrganizationSchema
+>;

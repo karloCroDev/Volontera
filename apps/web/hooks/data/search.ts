@@ -2,7 +2,7 @@
 import { useQuery, UseQueryOptions } from '@tanstack/react-query';
 
 // Lib
-import { searchUsers } from '@/lib/data/search';
+import { search } from '@/lib/data/search';
 
 // Schemas
 import { SearchUserArgs } from '@repo/schemas/search';
@@ -20,7 +20,7 @@ export const useSearch = (
 ) => {
 	return useQuery<SearchResponse, ErrorFormResponse>({
 		queryKey: ['search', data.query],
-		queryFn: () => searchUsers(data),
+		queryFn: () => search(data),
 		...options,
 	});
 };
