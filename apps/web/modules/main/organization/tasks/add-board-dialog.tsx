@@ -53,7 +53,9 @@ export const AddBoardDialog = () => {
 					content: message,
 					variant: 'success',
 				});
-				reset();
+				reset({
+					title: '',
+				});
 				setIsOpen(false);
 			},
 			onError: ({ message, title }) => {

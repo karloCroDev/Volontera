@@ -34,16 +34,16 @@ export const FormWrapper = withReactQueryProvider(() => {
 		resolver: zodResolver(settingsSchema),
 
 		defaultValues: {
-			firstName: user?.firstName || '', // Getting the values 100%, however hook form needs to accept the values that are string and not undefined
-			lastName: user?.lastName || '', // Getting the values 100%, however hook form needs to accept the values that are string and not undefined,
-			address: user?.address || '',
-			bio: user?.bio || '',
-			workOrSchool: user?.workOrSchool || '',
-			DOB: user?.DOB || '',
+			firstName: '',
+			lastName: '',
+			address: '',
+			bio: '',
+			workOrSchool: '',
+			DOB: '',
 		},
 	});
 
-	// Reset the form when user data arrives so defaultValues are applied after async load
+	// Pošto ovi podatci ne dolaze odmah, nego se fetchaju asinhrono, treba ih postaviti kad stignu
 	React.useEffect(() => {
 		if (!user) return;
 		methods.reset({

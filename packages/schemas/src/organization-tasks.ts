@@ -55,7 +55,7 @@ export const createTaskSchema = z
     organizationId: z.cuid(),
     description: z.string().min(1),
     title: z.string().min(1),
-    dueDate: z.string(),
+    dueDate: z.string().min(1, "Due date is required"),
     organizationTasksBoardId: z.cuid(),
   })
   .extend(organizationIdSchema.shape);
@@ -82,7 +82,7 @@ export const updateTaskInfoSchema = z
     taskId: z.cuid(),
     title: z.string().min(1).max(100),
     description: z.string().min(1),
-    dueDate: z.string(),
+    dueDate: z.string().min(1, "Due date is required"),
     organizationTasksBoardId: z.cuid(),
   })
   .extend(organizationIdSchema.shape);
@@ -107,7 +107,6 @@ export type CreateTaskQuestionArgs = z.infer<typeof createTaskQuestionSchema>;
 export const deleteTaskQuestionSchema = z
   .object({
     questionId: z.cuid(),
-    userId: z.cuid(),
   })
   .extend(organizationIdSchema.shape);
 export type DeleteTaskQuestionArgs = z.infer<typeof deleteTaskQuestionSchema>;

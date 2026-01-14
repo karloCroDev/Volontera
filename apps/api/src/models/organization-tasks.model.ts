@@ -189,6 +189,9 @@ export async function retrieveTaskQuestions(
     where: {
       organizationTaskId: taskId,
     },
+    include: {
+      author: true,
+    },
   });
 }
 

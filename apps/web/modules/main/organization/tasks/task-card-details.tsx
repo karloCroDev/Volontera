@@ -2,7 +2,12 @@
 
 // External packages
 import * as React from 'react';
-import { Checkbox, CheckboxGroup, Form } from 'react-aria-components';
+import {
+	Checkbox,
+	CheckboxGroup,
+	Form,
+	Input as AriaInput,
+} from 'react-aria-components';
 
 // Components
 import { Textarea } from '@/components/ui/textarea';
@@ -19,17 +24,23 @@ import { DeleteConfirmation } from '@/modules/main/organization/tasks/delete-con
 import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
-	createTaskSchema,
-	CreateTaskArgs,
+	UpdateTaskInfoArgs,
+	updateTaskInfoSchema,
 } from '@repo/schemas/organization-tasks';
 import { useParams } from 'next/navigation';
 import {
 	useCreateTask,
 	useDeleteTaskById,
 	useRetrieveTaskInfo,
+	useUpdateTaskInfo,
 } from '@/hooks/data/organization-tasks';
 import { useDeleteAccount } from '@/hooks/data/settings';
 import { toast } from '@/lib/utils/toast';
+import { getLocalTimeZone, parseDate, today } from '@internationalized/date';
+import { FilledInput } from '@/components/ui/filled-input';
+import { Input } from '@/components/ui/input';
+import { Error } from '@/components/ui/error';
+import { TaskCardQuestions } from '@/modules/main/organization/tasks/task-card-questions';
 
 export const TaskCardDetails: React.FC<{
 	taskId: string;
@@ -41,19 +52,80 @@ export const TaskCardDetails: React.FC<{
 		taskId,
 	});
 
-	const { mutate } = useDeleteTaskById(boardId);
+	const {
+		control,
+		handleSubmit,
+		formState: { isDirty, errors },
+		reset,
+	} = useForm<UpdateTaskInfoArgs>({
+		resolver: zodResolver(updateTaskInfoSchema),
+		defaultValues: {
+			description: '',
+			dueDate: '',
+			title: '',
+			organizationId: params.organizationId,
+			organizationTasksBoardId: boardId,
+			taskId,
+		},
+	});
+
+	React.useEffect(() => {
+		if (!data || !data.taskInfo) return;
+		reset({
+			description: data.taskInfo.description,
+			dueDate: data.taskInfo.organizationTask.dueDate,
+			title: data.taskInfo.organizationTask.title,
+			organizationId: params.organizationId,
+			organizationTasksBoardId: boardId,
+			taskId,
+		});
+	}, [data]);
+
+	const { mutate: mutateUpdateTaskInfo } = useUpdateTaskInfo();
+
+	const onSubmit = (data: UpdateTaskInfoArgs) => {
+		mutateUpdateTaskInfo(data, {
+			onSuccess: ({ message, title }) => {
+				toast({
+					title,
+					content: message,
+					variant: 'success',
+				});
+			},
+			onError: ({ message, title }) => {
+				toast({
+					title,
+					content: message,
+					variant: 'error',
+				});
+			},
+		});
+	};
+
+	const { mutate: mutateDeleteTaskById } = useDeleteTaskById(boardId);
+
+	// Questions
 
 	return (
 		<div className="no-scrollbar flex max-h-[600px] w-full flex-col justify-between gap-4 overflow-y-scroll lg:aspect-video lg:max-h-[800px] lg:flex-row">
 			<Form
 				className="no-scrollbar flex flex-1 flex-col lg:overflow-y-scroll"
-				// onSubmit={handleSubmit(onSubmit)}
+				onSubmit={handleSubmit(onSubmit)}
 			>
-				<h4 className="text-lg lg:text-xl" slot="title">
-					{/* {cardProps.title} */}
+				<Controller
+					control={control}
+					name="title"
+					render={({ field }) => (
+						<AriaInput
+							className="placeholder: text-lg outline-none lg:text-xl"
+							placeholder="Task title"
+							// size="lg"
 
-					{data?.taskInfo?.organizationTask.title}
-				</h4>
+							{...field}
+						/>
+					)}
+				/>
+				<Error>{errors.title?.message}</Error>
 
 				<p className="text-muted-foreground mb-6 text-sm">
 					Due date: {data?.taskInfo?.organizationTask.dueDate}
@@ -62,23 +134,26 @@ export const TaskCardDetails: React.FC<{
 
 				<p className="text-md mb-2">Full description</p>
 
-				{/* <Controller
+				<Controller
 					control={control}
-					name="dueDate"
-					render={({ field }) => ( */}
-				<Textarea
-					label="Enter more information about this task"
-					// textAreaProps={field}
+					name="description"
+					render={({ field }) => (
+						<Textarea
+							label="Enter more information about this task"
+							textAreaProps={field}
+							error={errors.description?.message}
+						/>
+					)}
 				/>
-				{/* )}
-				/> */}
-				<p className="text-md mb-2 mt-4">Set new due date</p>
 
-				{/* <Controller
+				<p className="text-md mb-2 mt-4">Set new due date</p>
+				<Controller
 					control={control}
 					name="dueDate"
-					render={({ field: { onChange } }) => (
+					render={({ field: { onChange, value } }) => (
 						<DatePicker
+							minValue={today(getLocalTimeZone())}
+							value={value ? parseDate(value) : undefined}
 							onChange={(val) => {
 								if (!val) return;
 
@@ -87,7 +162,7 @@ export const TaskCardDetails: React.FC<{
 							}}
 						/>
 					)}
-				/> */}
+				/>
 
 				<p className="text-md mb-3 mt-4">All members on this task</p>
 
@@ -122,8 +197,8 @@ export const TaskCardDetails: React.FC<{
 
 				<div className="mt-auto flex justify-between">
 					<DeleteConfirmation
-						action={() =>
-							mutate(
+						action={() => {
+							mutateDeleteTaskById(
 								{ organizationId: params.organizationId, taskId },
 								{
 									onSuccess: ({ message, title }) => {
@@ -142,50 +217,23 @@ export const TaskCardDetails: React.FC<{
 										});
 									},
 								}
-							)
-						}
+							);
+						}}
 						name={data?.taskInfo?.organizationTask.title || 'work'}
 					/>
-					<Button size="sm">Save</Button>
+					<Button
+						size="sm"
+						isDisabled={!isDirty}
+						isLoading={false}
+						type="submit"
+					>
+						Save
+					</Button>
 				</div>
 			</Form>
 
 			<div className="bg-input-border w-px self-stretch" />
-
-			<div className="relative flex flex-1 flex-col gap-4">
-				<h4 className="mb-4 text-lg underline underline-offset-4 lg:text-xl">
-					Questions
-				</h4>
-
-				<div className="no-scrollbar max-h-[600px] min-h-60 flex-1 overflow-y-scroll lg:max-h-full">
-					{[...Array(5)].map((_, indx) => (
-						<Message
-							key={indx}
-							variant={indx === 0 ? 'primary' : 'secondary'}
-							className={indx !== 0 ? 'mt-4' : undefined}
-							date={new Date()}
-							avatar={<Avatar imageProps={{ src: '' }}>Ante</Avatar>}
-						>
-							Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-						</Message>
-					))}
-				</div>
-
-				<ResizableTextArea
-					className="bg-muted absolute bottom-0 w-full lg:max-w-full"
-					label="Enter your questions"
-					iconsRight={
-						<Button
-							type="submit"
-							className="p-2"
-							// isDisabled={!isDirty}
-							// isLoading={false}
-						>
-							<Send />
-						</Button>
-					}
-				/>
-			</div>
+			<TaskCardQuestions taskId={taskId} />
 		</div>
 	);
 };

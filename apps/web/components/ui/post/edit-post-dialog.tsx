@@ -85,7 +85,7 @@ export const EditPostDialog: React.FC<{
 			reset({
 				title: data.post.title,
 				content: data.post.content,
-				// Existing images are represented as keys/urls (schema allows string[])
+
 				images: data.post.postImages.map((img) => img.imageUrl),
 			});
 		}

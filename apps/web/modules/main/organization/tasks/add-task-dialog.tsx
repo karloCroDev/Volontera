@@ -63,7 +63,11 @@ export const AddTaskDialog: React.FC<{
 					variant: 'success',
 				});
 
-				reset();
+				reset({
+					description: '',
+					title: '',
+					dueDate: '',
+				});
 				setIsOpen(false);
 			},
 			onError: ({ message, title }) => {

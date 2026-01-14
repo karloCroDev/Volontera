@@ -4,6 +4,7 @@ import {
   OrganizationTaskInfo,
   OrganizationTaskQuestions,
   OrganizationTasksBoards,
+  User,
 } from "@repo/database";
 import { ServerHandleResponse } from "./general";
 
@@ -31,5 +32,7 @@ export type RetrieveTaskInfoResponse = ServerHandleResponse<boolean> & {
 };
 
 export type RetrieveTaskQuestionsResponse = ServerHandleResponse<true> & {
-  questions: OrganizationTaskQuestions[];
+  questions: (OrganizationTaskQuestions & {
+    author: User;
+  })[];
 };
