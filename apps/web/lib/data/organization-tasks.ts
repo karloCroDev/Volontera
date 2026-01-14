@@ -98,7 +98,7 @@ export async function retrieveTaskInfo({
 }: RetrieveTaskInfoArgs) {
 	try {
 		const res = await API().get(
-			`/organization-tasks/tasks/${organizationId}/${taskId}`
+			`/organization-tasks/tasks/${organizationId}/${taskId}/info`
 		);
 		return res.data;
 	} catch (err) {

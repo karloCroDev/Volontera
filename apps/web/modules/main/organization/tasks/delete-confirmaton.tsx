@@ -9,9 +9,8 @@ import { Dialog } from '@/components/ui/dialog';
 
 export const DeleteConfirmation: React.FC<{
 	name: string;
-	id: string;
 	action: () => void;
-}> = ({ id, name, action }) => {
+}> = ({ name, action }) => {
 	return (
 		<Dialog
 			title={`Delete board ${name}?`}

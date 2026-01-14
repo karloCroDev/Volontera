@@ -39,7 +39,7 @@ export const TasksMapping: React.FC<{
 						startDesktop={2}
 						endDesktop={12}
 					>
-						<TaskCardDetails />
+						<TaskCardDetails taskId={task.id} boardId={boardId} />
 					</Dialog>
 				))
 			) : (

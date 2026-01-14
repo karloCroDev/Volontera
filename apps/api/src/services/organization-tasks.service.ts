@@ -135,7 +135,7 @@ export async function retrieveTaskInfoService({
 
   if (!taskInfo) {
     return serverFetchOutput({
-      status: 404,
+      status: 400,
       success: false,
       message: "Task not found",
     });

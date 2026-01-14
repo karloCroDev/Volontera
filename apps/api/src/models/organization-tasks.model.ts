@@ -127,10 +127,10 @@ export async function createTask({
   });
 }
 
-export async function retrieveTaskInfo(taskId: OrganizationTaskInfo["id"]) {
+export async function retrieveTaskInfo(taskId: OrganizationTask["id"]) {
   return prisma.organizationTaskInfo.findUnique({
     where: {
-      id: taskId,
+      organizationTaskId: taskId,
     },
     include: {
       organizationTask: true,
@@ -145,14 +145,14 @@ export async function updateTaskInfo({
   description,
   dueDate,
 }: {
-  taskId: OrganizationTaskInfo["id"];
+  taskId: OrganizationTask["id"];
   title: OrganizationTask["title"];
   description: OrganizationTaskInfo["description"];
   dueDate: OrganizationTask["dueDate"];
 }) {
   return prisma.organizationTaskInfo.update({
     where: {
-      id: taskId,
+      organizationTaskId: taskId,
     },
     data: {
       description,
@@ -172,8 +172,9 @@ export async function updateTaskInfo({
   });
 }
 
-export async function deleteTaskById(taskId: OrganizationTaskInfo["id"]) {
-  return prisma.organizationTask.deleteMany({
+export async function deleteTaskById(taskId: OrganizationTask["id"]) {
+  console.log("Deleting task with ID:", taskId);
+  return prisma.organizationTask.delete({
     where: {
       id: taskId,
     },

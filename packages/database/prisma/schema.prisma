@@ -443,7 +443,7 @@ model OrganizationTaskInfo {
   id                 String               @id @default(cuid())
   description        String
   membersAssigned    OrganizationMember[] @relation("TaskCardMembersAssigned")
-  organizationTask   OrganizationTask     @relation(fields: [organizationTaskId], references: [id])
+  organizationTask   OrganizationTask     @relation(fields: [organizationTaskId], references: [id], onDelete: Cascade)
   organizationTaskId String               @unique
 
   createdAt DateTime @default(now())
@@ -454,7 +454,7 @@ model OrganizationTaskQuestions {
   id String @id @default(cuid())
 
   question           String
-  organizationTask   OrganizationTask? @relation(fields: [organizationTaskId], references: [id])
+  organizationTask   OrganizationTask? @relation(fields: [organizationTaskId], references: [id], onDelete: Cascade)
   organizationTaskId String?
 
   author   User   @relation(fields: [authorId], references: [id], onDelete: Cascade)

@@ -11,7 +11,7 @@ import { Button } from 'react-aria-components';
 import { RetrieveAllOrganizationBoardsWithTasksResponse } from '@repo/types/organization-tasks';
 
 export const TaskCard: React.FC<{
-	task: RetrieveAllOrganizationBoardsWithTasksResponse['boards'][0]['organizationTasks'][0];
+	task: RetrieveAllOrganizationBoardsWithTasksResponse['boardsWithTasks'][0]['organizationTasks'][0];
 }> = ({ task }) => {
 	return (
 		<Button className="border-input-border relative cursor-pointer rounded-2xl border p-4 hover:opacity-80">
@@ -36,10 +36,7 @@ export const TaskCard: React.FC<{
 
 			<div className="mt-3 flex items-center justify-between">
 				<p className="text-muted-foreground text-sm">
-					Deadline:{' '}
-					{task.dueDate
-						? new Date(task.dueDate).toLocaleDateString()
-						: 'No deadline'}
+					Deadline: {task.dueDate}
 				</p>
 				{/* Add different background colors */}
 

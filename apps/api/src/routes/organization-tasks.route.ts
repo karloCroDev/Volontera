@@ -139,7 +139,7 @@ organizationTasksRoutes.post(
 );
 
 organizationTasksRoutes.get(
-  "/tasks/:organizationId/:taskId",
+  "/tasks/:organizationId/:taskId/info",
   validate({
     schema: retrieveTaskInfoSchema,
     responseOutput: "server",

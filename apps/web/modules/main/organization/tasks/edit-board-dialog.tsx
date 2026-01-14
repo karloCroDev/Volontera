@@ -14,16 +14,24 @@ import { Textarea } from '@/components/ui/textarea';
 
 // Modules
 import { DeleteConfirmation } from '@/modules/main/organization/tasks/delete-confirmaton';
-import { useRetrieveTaskInfo } from '@/hooks/data/organization-tasks';
+import {
+	useDeleteOrganizationTaskBoard,
+	useRetrieveTaskInfo,
+} from '@/hooks/data/organization-tasks';
+import { useParams } from 'next/navigation';
+import { toast } from '@/lib/utils/toast';
 
-export const EditBoardDialog = () => {
-	const [isEditBoardOpen, setIsEditBoardOpen] = React.useState(false);
+export const EditBoardDialog: React.FC<{
+	title: string;
+	boardId: string;
+}> = ({ title, boardId }) => {
 	// TODO: Retrieve board info and populate the fields
+
+	const params = useParams<{ organizationId: string }>();
+	const { mutate } = useDeleteOrganizationTaskBoard();
 	return (
 		<Dialog
-			onOpenChange={setIsEditBoardOpen}
-			isOpen={isEditBoardOpen}
-			title="Edit board"
+			title={`Edit board: ${title}`}
 			subtitle="Please enter the board details below."
 			triggerChildren={
 				<Button variant="blank">
@@ -39,9 +47,32 @@ export const EditBoardDialog = () => {
 
 				<div className="flex justify-between">
 					<DeleteConfirmation
-						action={() => console.log('Wohohoho')}
-						id=""
-						name="Woah"
+						action={() =>
+							mutate(
+								{
+									organizationId: params.organizationId,
+									organizationTaskBoardId: boardId,
+								},
+								{
+									onSuccess: ({ message, title }) => {
+										toast({
+											title,
+											content: message,
+											variant: 'success',
+										});
+									},
+
+									onError: ({ message, title }) => {
+										toast({
+											title,
+											content: message,
+											variant: 'error',
+										});
+									},
+								}
+							)
+						}
+						name={title}
 					/>
 					<Button type="submit" size="md">
 						Submit

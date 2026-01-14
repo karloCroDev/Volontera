@@ -45,7 +45,7 @@ export const BoardsMapping: React.FC<{
 						}
 					/>
 				}
-				id={board.id}
+				boardId={board.id}
 				title={board.title}
 				key={board.id}
 			/>

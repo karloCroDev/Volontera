@@ -59,7 +59,7 @@ export const useRetrieveAllOrganizationBoards = (
 	>
 ) => {
 	return useSuspenseQuery<RetrieveAllOrganizationBoardsResponse>({
-		queryKey: ['organization-task-boards', data.organizationId],
+		queryKey: ['organization-boards', data.organizationId],
 		queryFn: () => retrieveAllOrganizationBoards(data),
 		...options,
 	});
@@ -78,17 +78,10 @@ export const useCreateTaskBoard = (
 		mutationKey: ['create-task-board'],
 		mutationFn: (data: CreateTaskBoardArgs) => createTaskBoard(data),
 		onSuccess: async (...args) => {
-			const variables = args[1] as CreateTaskBoardArgs | undefined;
-			if (variables?.organizationId) {
-				await queryClient.invalidateQueries({
-					queryKey: ['organization-task-boards', variables.organizationId],
-				});
-			} else {
-				await queryClient.invalidateQueries({
-					queryKey: ['organization-task-boards'],
-					exact: false,
-				});
-			}
+			await queryClient.invalidateQueries({
+				queryKey: ['organization-boards', args[1].organizationId],
+			});
+
 			await options?.onSuccess?.(...args);
 		},
 	});
@@ -109,7 +102,7 @@ export const useUpdateOrganizationTaskBoardTitle = (
 			updateOrganizationTaskBoardTitle(data),
 		onSuccess: async (...args) => {
 			await queryClient.invalidateQueries({
-				queryKey: ['organization-task-boards', args[1].organizationId],
+				queryKey: ['organization-boards', args[1].organizationId],
 			});
 
 			await options?.onSuccess?.(...args);
@@ -132,7 +125,7 @@ export const useDeleteOrganizationTaskBoard = (
 			deleteOrganizationTaskBoard(data),
 		onSuccess: async (...args) => {
 			await queryClient.invalidateQueries({
-				queryKey: ['organization-tasks', args[1].organizationId],
+				queryKey: ['organization-boards', args[1].organizationId],
 			});
 			await options?.onSuccess?.(...args);
 		},
@@ -226,6 +219,7 @@ export const useUpdateTaskInfo = (
 };
 
 export const useDeleteTaskById = (
+	boardId: string,
 	options?: UseMutationOptions<
 		SuccessfulResponse,
 		ErrorToastResponse,
@@ -238,16 +232,10 @@ export const useDeleteTaskById = (
 		mutationKey: ['delete-task'],
 		mutationFn: (data: DeleteTaskByIdArgs) => deleteTaskById(data),
 		onSuccess: async (...args) => {
-			const variables = args[1] as DeleteTaskByIdArgs | undefined;
-			if (variables?.organizationId) {
-				await queryClient.invalidateQueries({
-					queryKey: ['organization-task-boards', variables.organizationId],
-				});
-			}
 			await queryClient.invalidateQueries({
-				queryKey: ['organization-task-info'],
-				exact: false,
+				queryKey: ['organization-tasks', boardId],
 			});
+
 			await options?.onSuccess?.(...args);
 		},
 	});

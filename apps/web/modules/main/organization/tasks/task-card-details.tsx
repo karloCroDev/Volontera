@@ -23,9 +23,26 @@ import {
 	CreateTaskArgs,
 } from '@repo/schemas/organization-tasks';
 import { useParams } from 'next/navigation';
-import { useCreateTask } from '@/hooks/data/organization-tasks';
+import {
+	useCreateTask,
+	useDeleteTaskById,
+	useRetrieveTaskInfo,
+} from '@/hooks/data/organization-tasks';
+import { useDeleteAccount } from '@/hooks/data/settings';
+import { toast } from '@/lib/utils/toast';
 
-export const TaskCardDetails = () => {
+export const TaskCardDetails: React.FC<{
+	taskId: string;
+	boardId: string;
+}> = ({ taskId, boardId }) => {
+	const params = useParams<{ organizationId: string }>();
+	const { data } = useRetrieveTaskInfo({
+		organizationId: params.organizationId,
+		taskId,
+	});
+
+	const { mutate } = useDeleteTaskById(boardId);
+
 	return (
 		<div className="no-scrollbar flex max-h-[600px] w-full flex-col justify-between gap-4 overflow-y-scroll lg:aspect-video lg:max-h-[800px] lg:flex-row">
 			<Form
@@ -34,10 +51,12 @@ export const TaskCardDetails = () => {
 			>
 				<h4 className="text-lg lg:text-xl" slot="title">
 					{/* {cardProps.title} */}
+
+					{data?.taskInfo?.organizationTask.title}
 				</h4>
 
 				<p className="text-muted-foreground mb-6 text-sm">
-					Due date:
+					Due date: {data?.taskInfo?.organizationTask.dueDate}
 					{/* {specificDate} */}
 				</p>
 
@@ -103,9 +122,29 @@ export const TaskCardDetails = () => {
 
 				<div className="mt-auto flex justify-between">
 					<DeleteConfirmation
-						action={() => console.log('Wohohoho')}
-						id=""
-						name="Woah"
+						action={() =>
+							mutate(
+								{ organizationId: params.organizationId, taskId },
+								{
+									onSuccess: ({ message, title }) => {
+										toast({
+											title,
+											content: message,
+											variant: 'success',
+										});
+									},
+
+									onError: ({ message, title }) => {
+										toast({
+											title,
+											content: message,
+											variant: 'error',
+										});
+									},
+								}
+							)
+						}
+						name={data?.taskInfo?.organizationTask.title || 'work'}
 					/>
 					<Button size="sm">Save</Button>
 				</div>
