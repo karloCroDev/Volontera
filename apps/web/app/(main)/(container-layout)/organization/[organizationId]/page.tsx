@@ -38,6 +38,7 @@ export default async function OrganizationPage({
 
 	if (!organizationDetailsById.success) notFound();
 
+	console.log(member);
 	return (
 		<>
 			<div className="border-input-border relative -mx-4 -my-6 rounded-xl px-5 py-4 md:m-0 md:border">
@@ -61,26 +62,28 @@ export default async function OrganizationPage({
 								{organizationDetailsById.organization.name}
 							</Avatar>
 						</div>
+						{((member.success && member.organizationMember.role !== 'OWNER') ||
+							!member.success) && (
+							<div className="flex gap-4">
+								<FollowOrganizationButton
+									hasUserFollowed={organizationDetailsById.isFollowing}
+								/>
 
-						<div className="flex gap-4">
-							<FollowOrganizationButton
-								hasUserFollowed={organizationDetailsById.isFollowing}
-							/>
-
-							{member.success && !!member.organizationMember.role ? (
-								<Button variant="outline" colorScheme="destructive" size="md">
-									Leave
-								</Button>
-							) : (
-								<LinkAsButton
-									colorScheme="orange"
-									size="md"
-									href={`/organization/${organizationId}/join-organization`}
-								>
-									Join
-								</LinkAsButton>
-							)}
-						</div>
+								{member.success ? (
+									<Button variant="outline" colorScheme="destructive" size="md">
+										Leave
+									</Button>
+								) : (
+									<LinkAsButton
+										colorScheme="orange"
+										size="md"
+										href={`/organization/${organizationId}/join-organization`}
+									>
+										Join
+									</LinkAsButton>
+								)}
+							</div>
+						)}
 					</div>
 					<h1 className="mt-4 text-xl font-medium md:text-2xl lg:text-3xl">
 						{organizationDetailsById.organization.name}

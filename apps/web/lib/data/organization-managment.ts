@@ -78,3 +78,16 @@ export async function retrieveOrganizationMember({
 		catchError(err);
 	}
 }
+
+export async function leaveOrganization({
+	organizationId,
+}: RetrieveOrganizationMemberArgs) {
+	try {
+		const res = await API().delete(
+			`/organization-managment/leave/${organizationId}`
+		);
+		return res.data;
+	} catch (err) {
+		catchError(err);
+	}
+}

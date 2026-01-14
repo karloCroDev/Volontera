@@ -18,7 +18,11 @@ export type RetrieveOrganizationMemberArgs = z.infer<
   typeof retrieveOrganizationMemberSchema
 >;
 
-export const leaveOrganizationSchema = organizationIdSchema;
+export const leaveOrganizationSchema = z
+  .object({
+    reason: z.string().min(1).optional(),
+  })
+  .extend(organizationIdSchema.shape);
 export type LeaveOrganizationArgs = z.infer<typeof leaveOrganizationSchema>;
 
 export const demoteOrPromoteOrganizationMemberSchema = z.object({

@@ -20,7 +20,7 @@ import { Send } from 'lucide-react';
 import { CheckboxVisually } from '@/components/ui/checkbox';
 import { DatePicker } from '@/components/ui/date-picker';
 import { convertCalendarDate } from '@/lib/utils/converter';
-import { DeleteConfirmation } from '@/modules/main/organization/tasks/delete-confirmaton';
+import { DeleteConfirmationDialog } from '@/modules/main/organization/tasks/delete-confirmaton-dialog';
 import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
@@ -196,7 +196,7 @@ export const TaskCardDetails: React.FC<{
 				</CheckboxGroup>
 
 				<div className="mt-auto flex justify-between">
-					<DeleteConfirmation
+					<DeleteConfirmationDialog
 						action={() => {
 							mutateDeleteTaskById(
 								{ organizationId: params.organizationId, taskId },

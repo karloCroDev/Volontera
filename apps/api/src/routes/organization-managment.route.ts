@@ -90,12 +90,12 @@ organizationManagmentRoutes.post(
   demoteOrPromoteOrganizationMemberController
 );
 
-organizationManagmentRoutes.post(
+organizationManagmentRoutes.delete(
   "/leave/:organizationId",
   validate({
     schema: leaveOrganizationSchema,
     type: "params",
-    responseOutput: "toast",
+    responseOutput: "form",
   }),
   organizationRolesMiddleware({
     type: "params",

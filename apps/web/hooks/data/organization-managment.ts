@@ -16,6 +16,7 @@ import {
 	RetirveAllRequestsToJoinOrganizationArgs,
 	RetrieveOrganizationMemberArgs,
 	RetrieveAllMembersInOrganizationArgs,
+	LeaveOrganizationArgs,
 } from '@repo/schemas/organization-managment';
 import {
 	acceptOrDeclineUsersRequestToJoinOrganization,
@@ -23,12 +24,17 @@ import {
 	retrieveAllUsersInOrganization,
 	retrieveOrganizationMember,
 	retrieveAllRequestsToJoinOrganization,
+	leaveOrganization,
 } from '@/lib/data/organization-managment';
 import {
 	RetirveAllRequestsToJoinOrganizationResponse,
 	RetrieveOrganizationMemberResponse,
 } from '@repo/types/organization-managment';
-import { ErrorToastResponse, SuccessfulResponse } from '@repo/types/general';
+import {
+	ErrorFormResponse,
+	ErrorToastResponse,
+	SuccessfulResponse,
+} from '@repo/types/general';
 
 export const useAcceptOrDeclineUsersRequestToJoinOrganization = (
 	options?: UseMutationOptions<
@@ -103,6 +109,7 @@ export const useRetrieveAllMembersInOrganization = (
 		...options,
 	});
 };
+
 export const useRetirveAllRequestsToJoinOrganization = (
 	data: RetirveAllRequestsToJoinOrganizationArgs,
 	options?: Omit<
@@ -113,6 +120,28 @@ export const useRetirveAllRequestsToJoinOrganization = (
 	return useSuspenseQuery<RetirveAllRequestsToJoinOrganizationResponse>({
 		queryKey: ['organization-join-requests', data.organizationId],
 		queryFn: () => retrieveAllRequestsToJoinOrganization(data),
+		...options,
+	});
+};
+
+export const useLeaveOrganization = (
+	options?: UseMutationOptions<
+		SuccessfulResponse,
+		ErrorFormResponse,
+		LeaveOrganizationArgs
+	>
+) => {
+	const queryClient = useQueryClient();
+	return useMutation({
+		mutationKey: ['leave-organization'],
+		mutationFn: (data: LeaveOrganizationArgs) => leaveOrganization(data),
+		onSuccess: async (...args) => {
+			await queryClient.invalidateQueries({
+				queryKey: ['organization'],
+				exact: false,
+			});
+			await options?.onSuccess?.(...args);
+		},
 		...options,
 	});
 };

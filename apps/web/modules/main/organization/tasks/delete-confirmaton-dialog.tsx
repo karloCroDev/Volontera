@@ -7,7 +7,7 @@ import * as React from 'react';
 import { Button } from '@/components/ui/button';
 import { Dialog } from '@/components/ui/dialog';
 
-export const DeleteConfirmation: React.FC<{
+export const DeleteConfirmationDialog: React.FC<{
 	name: string;
 	action: () => void;
 }> = ({ name, action }) => {

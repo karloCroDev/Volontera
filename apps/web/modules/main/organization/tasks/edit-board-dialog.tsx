@@ -13,7 +13,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 
 // Modules
-import { DeleteConfirmation } from '@/modules/main/organization/tasks/delete-confirmaton';
+import { DeleteConfirmationDialog } from '@/modules/main/organization/tasks/delete-confirmaton-dialog';
 import {
 	useDeleteOrganizationTaskBoard,
 	useRetrieveTaskInfo,
@@ -46,7 +46,7 @@ export const EditBoardDialog: React.FC<{
 				</div>
 
 				<div className="flex justify-between">
-					<DeleteConfirmation
+					<DeleteConfirmationDialog
 						action={() =>
 							mutate(
 								{

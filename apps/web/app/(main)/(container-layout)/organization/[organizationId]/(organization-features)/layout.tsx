@@ -55,19 +55,29 @@ export default async function OrganizationFeaturesLayout({
 					</p>
 				</div>
 
-				<div className="flex gap-4 md:ml-auto">
-					<FollowOrganizationButton
-						// Dobivam samo korisnika u ovom arrayu
-						hasUserFollowed={organizationDetailsById.isFollowing}
-					/>
-					<LinkAsButton
-						colorScheme="orange"
-						size="md"
-						href={`/organization/${organizationId}/join-organization`}
-					>
-						Join
-					</LinkAsButton>
-				</div>
+				{((member.success && member.organizationMember.role !== 'OWNER') ||
+					!member.success) && (
+					<div className="flex gap-4 md:ml-auto">
+						<FollowOrganizationButton
+							// Dobivam samo korisnika u ovom arrayu
+							hasUserFollowed={organizationDetailsById.isFollowing}
+						/>
+
+						{member.success ? (
+							<Button variant="outline" colorScheme="destructive" size="md">
+								Leave
+							</Button>
+						) : (
+							<LinkAsButton
+								colorScheme="orange"
+								size="md"
+								href={`/organization/${organizationId}/join-organization`}
+							>
+								Join
+							</LinkAsButton>
+						)}
+					</div>
+				)}
 			</div>
 
 			{!member.success || !member.organizationMember.role ? (

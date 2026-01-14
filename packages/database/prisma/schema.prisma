@@ -84,6 +84,7 @@ model User {
   ownedOrganizations            Organization[]                 @relation("OrganizationOwner")
   organizationGroupChatMessages OrganizationGroupChatMessage[]
   organizationTaskQuestions     OrganizationTaskQuestions[]
+  organizationLeaveFeedbacks    OrganizationLeaveFeedback[]
 }
 
 model Accounts {
@@ -194,9 +195,10 @@ model Organization {
 
   groupChat OrganizationGroupChat?
 
-  posts     Post[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  posts                      Post[]
+  createdAt                  DateTime                    @default(now())
+  updatedAt                  DateTime                    @updatedAt
+  organizationLeaveFeedbacks OrganizationLeaveFeedback[]
 }
 
 enum OrganizationMemberRole {
@@ -259,7 +261,6 @@ model OrganizationInfo {
   updatedAt        DateTime          @updatedAt
 }
 
-// Additional fields that can be for the organznizaton
 model OrganizationFollowers {
   id String @id @default(cuid())
 
@@ -274,6 +275,20 @@ model OrganizationFollowers {
   @@unique([organizationId, followerUserId])
   @@index([followerUserId])
   @@index([organizationId])
+}
+
+model OrganizationLeaveFeedback {
+  id             String       @id @default(cuid())
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  organizationId String
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId         String
+
+  reason      String
+  suggestions String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model AdditionalLinks {
