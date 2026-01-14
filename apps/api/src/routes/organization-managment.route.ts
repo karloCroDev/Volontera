@@ -9,6 +9,7 @@ import {
   retrieveOrganizationMemberController,
   acceptOrDeclineUsersRequestToJoinOrganizationController,
   demoteOrPromoteOrganizationMemberController,
+  leaveOrganizationController,
 } from "@/controllers/organization-managment.controller";
 
 // Schemas
@@ -18,6 +19,7 @@ import {
   retirveAllRequestsToJoinOrganizationSchema,
   retrieveAllMembersInOrganizationSchema,
   retrieveOrganizationMemberSchema,
+  leaveOrganizationSchema,
 } from "@repo/schemas/organization-managment";
 // Middleware
 import { organizationRolesMiddleware } from "@/middleware/organization-roles.middleware";
@@ -86,4 +88,18 @@ organizationManagmentRoutes.post(
   }),
   organizationRolesMiddleware({}),
   demoteOrPromoteOrganizationMemberController
+);
+
+organizationManagmentRoutes.post(
+  "/leave/:organizationId",
+  validate({
+    schema: leaveOrganizationSchema,
+    type: "params",
+    responseOutput: "toast",
+  }),
+  organizationRolesMiddleware({
+    type: "params",
+    aquiredRoles: ["MEMBER", "ADMIN"],
+  }),
+  leaveOrganizationController
 );

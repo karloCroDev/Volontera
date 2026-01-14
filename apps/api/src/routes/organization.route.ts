@@ -76,9 +76,8 @@ organizationRoutes.post(
   sendRequestToJoinOrganizationController
 );
 
-organizationRoutes.delete(
+organizationRoutes.post(
   "/toggle-follow/:organizationId",
-  userMiddleware,
   validate({
     schema: toggleFollowOrganizationSchema,
     responseOutput: "toast",

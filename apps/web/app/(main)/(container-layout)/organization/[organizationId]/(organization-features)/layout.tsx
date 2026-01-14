@@ -11,6 +11,7 @@ import { LinkAsButton } from '@/components/ui/link-as-button';
 // Lib
 import { getOrganizationDetailsById } from '@/lib/server/organization';
 import { retrieveOrganizationMember } from '@/lib/server/organization-managment';
+import { FollowOrganizationButton } from '@/modules/main/organization/common/follow-organization-button';
 
 export default async function OrganizationFeaturesLayout({
 	params,
@@ -26,9 +27,7 @@ export default async function OrganizationFeaturesLayout({
 		await retrieveOrganizationMember(organizationId),
 	]);
 
-	if (!organizationDetailsById.success) {
-		notFound();
-	}
+	if (!organizationDetailsById.success) notFound();
 
 	return (
 		<>
@@ -48,13 +47,19 @@ export default async function OrganizationFeaturesLayout({
 						{organizationDetailsById.organization.name}
 					</h1>
 
-					<p className="text-muted-foreground">30 attendees | 300 followers </p>
+					<p className="text-muted-foreground">
+						{organizationDetailsById.organization._count.organizationMembers}{' '}
+						members |{' '}
+						{organizationDetailsById.organization._count.organizationFollowers}{' '}
+						followers{' '}
+					</p>
 				</div>
 
 				<div className="flex gap-4 md:ml-auto">
-					<Button colorScheme="yellow" size="md">
-						Follow
-					</Button>
+					<FollowOrganizationButton
+						// Dobivam samo korisnika u ovom arrayu
+						hasUserFollowed={organizationDetailsById.isFollowing}
+					/>
 					<LinkAsButton
 						colorScheme="orange"
 						size="md"

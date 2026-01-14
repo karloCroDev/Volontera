@@ -6,7 +6,6 @@ import Image from 'next/image';
 import { Avatar } from '@/components/ui/avatar';
 import { Tag } from '@/components/ui/tag';
 import { SharePost } from '@/components/ui/post/share-post';
-import { Button } from '@/components/ui/button';
 import { AnchorAsButton } from '@/components/ui/anchor-as-button';
 import { LinkAsButton } from '@/components/ui/link-as-button';
 
@@ -21,6 +20,8 @@ import { retrieveOrganizationPosts } from '@/lib/server/post';
 import { retrieveOrganizationMember } from '@/lib/server/organization-managment';
 import { Suspense } from 'react';
 import { PostSkeleton } from '@/components/ui/post/post-skeleton';
+import { FollowOrganizationButton } from '@/modules/main/organization/common/follow-organization-button';
+import { Button } from '@/components/ui/button';
 
 export default async function OrganizationPage({
 	params,
@@ -62,16 +63,23 @@ export default async function OrganizationPage({
 						</div>
 
 						<div className="flex gap-4">
-							<Button colorScheme="yellow" size="md">
-								Follow
-							</Button>
-							<LinkAsButton
-								colorScheme="orange"
-								size="md"
-								href={`/organization/${organizationId}/join-organization`}
-							>
-								Join
-							</LinkAsButton>
+							<FollowOrganizationButton
+								hasUserFollowed={organizationDetailsById.isFollowing}
+							/>
+
+							{member.success && !!member.organizationMember.role ? (
+								<Button variant="outline" colorScheme="destructive" size="md">
+									Leave
+								</Button>
+							) : (
+								<LinkAsButton
+									colorScheme="orange"
+									size="md"
+									href={`/organization/${organizationId}/join-organization`}
+								>
+									Join
+								</LinkAsButton>
+							)}
 						</div>
 					</div>
 					<h1 className="mt-4 text-xl font-medium md:text-2xl lg:text-3xl">
@@ -80,11 +88,23 @@ export default async function OrganizationPage({
 					{/* TODO: Get the number, and just check if user is inside the organization or not */}
 					<div className="text-muted-foreground mt-1.5 flex items-center gap-4">
 						<p>
-							<strong>30</strong> attendees
+							<strong>
+								{
+									organizationDetailsById.organization._count
+										.organizationMembers
+								}
+							</strong>{' '}
+							members
 						</p>
 						<hr className="bg-input-border h-6 w-px border-0" />
 						<p>
-							<strong>300</strong> followers
+							<strong>
+								{
+									organizationDetailsById.organization._count
+										.organizationFollowers
+								}
+							</strong>{' '}
+							followers
 						</p>
 					</div>
 					<hr className="bg-input-border my-6 h-px w-full border-0" />

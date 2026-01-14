@@ -36,9 +36,10 @@ export async function getOrganizationDetailsByIdController(
   res: Response
 ) {
   try {
-    const result = await getOrganizationDetailsByIdService(
-      req.params as GetOrganizationDetailsByIdArgs
-    );
+    const result = await getOrganizationDetailsByIdService({
+      data: req.params as GetOrganizationDetailsByIdArgs,
+      userId: req.user.userId,
+    });
     return res.status(result.status).json(result.body);
   } catch (err) {
     return res.status(500).json({ success: false, message: "Internal error" });

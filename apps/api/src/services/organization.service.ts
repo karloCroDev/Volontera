@@ -65,17 +65,26 @@ export async function createOrganizationService({
 }
 
 export async function getOrganizationDetailsByIdService({
-  organizationId,
-}: GetOrganizationDetailsByIdArgs) {
-  const organization = await getOrganizationDetailsById(organizationId);
+  data,
+  userId,
+}: {
+  data: GetOrganizationDetailsByIdArgs;
+  userId: User["id"];
+}) {
+  const result = await getOrganizationDetailsById({
+    organizationId: data.organizationId,
+    userId,
+  });
 
-  if (!organization) {
+  if (!result) {
     return serverFetchOutput({
       status: 400,
       success: false,
       message: "Organization not found",
     });
   }
+
+  const { organization, membersHierarchy, isFollowing } = result;
 
   return serverFetchOutput({
     status: 200,
@@ -85,7 +94,6 @@ export async function getOrganizationDetailsByIdService({
       organization: {
         ...organization,
 
-        // Samo dvije slike pa je jednostavnije da ovako handleam na licu mjesta
         avatarImage: await getImagePresignedUrls(organization.avatarImage),
         organizationInfo: {
           ...organization.organizationInfo,
@@ -96,6 +104,8 @@ export async function getOrganizationDetailsByIdService({
             : null,
         },
       },
+      membersHierarchy,
+      isFollowing: !!isFollowing,
     },
   });
 }

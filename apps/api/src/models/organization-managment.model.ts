@@ -109,3 +109,24 @@ export async function retrieveOrganizationMember({
     },
   });
 }
+
+export async function leaveOrganization({
+  organizationId,
+  userId,
+}: {
+  organizationId: Organization["id"];
+  userId: User["id"];
+}) {
+  return prisma.organizationMember.delete({
+    where: {
+      // Owner je automatski vlasnik, pa mu onemogućavamo da ode iz organizacije (jedino je može izbrisati)
+      role: {
+        not: "OWNER",
+      },
+      organizationId_userId: {
+        organizationId,
+        userId,
+      },
+    },
+  });
+}

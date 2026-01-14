@@ -18,6 +18,9 @@ export type RetrieveOrganizationMemberArgs = z.infer<
   typeof retrieveOrganizationMemberSchema
 >;
 
+export const leaveOrganizationSchema = organizationIdSchema;
+export type LeaveOrganizationArgs = z.infer<typeof leaveOrganizationSchema>;
+
 export const demoteOrPromoteOrganizationMemberSchema = z.object({
   organizationId: z.cuid(),
   userId: z.cuid(),

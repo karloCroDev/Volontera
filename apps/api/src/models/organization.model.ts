@@ -169,21 +169,108 @@ export async function sendRequestToJoinOrganization({
   });
 }
 
-export async function checkIfUserFollowsOrganization({
+// All
+// TODO: Handle this with redis or something simmilar and make alogirthm for that
+export async function searchOrganizationsByName(query: string) {
+  return prisma.organization.findMany({
+    where: {
+      name: {
+        contains: query,
+        mode: "insensitive",
+      },
+    },
+    take: 10,
+  });
+}
+
+export async function getOrganizationDetailsById({
   organizationId,
   userId,
 }: {
-  organizationId: Organization["id"];
+  organizationId: string;
   userId: User["id"];
 }) {
-  return prisma.organizationFollowers.findUnique({
-    where: {
-      organizationId_followerUserId: {
-        organizationId,
-        followerUserId: userId,
-      },
+  const [organization, isFollowing, adminMembers, otherMembers] =
+    await prisma.$transaction([
+      prisma.organization.findUnique({
+        where: {
+          id: organizationId,
+        },
+        include: {
+          owner: {
+            omit: {
+              password: true,
+            },
+          },
+
+          _count: {
+            select: {
+              organizationFollowers: true,
+              organizationMembers: true,
+            },
+          },
+
+          organizationInfo: {
+            include: {
+              additionalLinks: true,
+            },
+          },
+        },
+      }),
+      prisma.organizationFollowers.findUnique({
+        where: {
+          organizationId_followerUserId: {
+            followerUserId: userId,
+            organizationId,
+          },
+        },
+      }),
+      prisma.organizationMember.findMany({
+        where: {
+          organizationId,
+          role: "ADMIN",
+        },
+        include: {
+          user: {
+            omit: {
+              password: true,
+            },
+          },
+        },
+        orderBy: {
+          createdAt: "asc",
+        },
+        take: 3,
+      }),
+      prisma.organizationMember.findMany({
+        where: {
+          organizationId,
+          role: "MEMBER",
+        },
+        include: {
+          user: {
+            omit: {
+              password: true,
+            },
+          },
+        },
+        orderBy: {
+          createdAt: "asc",
+        },
+        take: 5,
+      }),
+    ]);
+
+  if (!organization) return null;
+
+  return {
+    organization,
+    isFollowing,
+    membersHierarchy: {
+      admins: adminMembers,
+      members: otherMembers,
     },
-  });
+  };
 }
 
 export async function followOrganization({
@@ -218,36 +305,19 @@ export async function unfollowOrganization({
   });
 }
 
-// All
-// TODO: Handle this with redis or something simmilar and make alogirthm for that
-export async function searchOrganizationsByName(query: string) {
-  return prisma.organization.findMany({
+export async function checkIfUserFollowsOrganization({
+  organizationId,
+  userId,
+}: {
+  organizationId: Organization["id"];
+  userId: User["id"];
+}) {
+  return prisma.organizationFollowers.findUnique({
     where: {
-      name: {
-        contains: query,
-        mode: "insensitive",
+      organizationId_followerUserId: {
+        organizationId,
+        followerUserId: userId,
       },
-    },
-    take: 10,
-  });
-}
-
-export async function getOrganizationDetailsById(organizationId: string) {
-  return prisma.organization.findUnique({
-    where: {
-      id: organizationId,
-    },
-    include: {
-      organizationMembers: true,
-      organizationFollowers: true,
-      organizationInfo: {
-        include: {
-          additionalLinks: true,
-        },
-      },
-
-      // Vrati po hijewrarhiji korisnike i onda displayamo na frontendu (admini organizacije, vlasnik i neke korisnike)
-      // owner: true,
     },
   });
 }
