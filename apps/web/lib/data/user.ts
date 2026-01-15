@@ -42,15 +42,6 @@ export async function retrieveAllPostsForUser({ userId }: UserSchemaArgs) {
 	}
 }
 
-export async function retrieveAllOrganizations({ userId }: UserSchemaArgs) {
-	try {
-		const res = await API().get(`user/organizations/${userId}`);
-		return res.data;
-	} catch (err) {
-		catchError(err);
-	}
-}
-
 export async function logout() {
 	try {
 		const res = await API().post('user/logout');

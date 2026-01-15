@@ -19,7 +19,6 @@ export async function retrieveAllOrganizationsForUser(userId: User["id"]) {
         },
       },
     },
-    include: {},
   });
 }
 
@@ -27,6 +26,26 @@ export async function retrieveAllPostsForUser(userId: User["id"]) {
   return prisma.post.findMany({
     where: {
       authorId: userId,
+    },
+    include: {
+      organization: true,
+      postImages: true,
+      postLikes: {
+        where: {
+          userId,
+        },
+      },
+      _count: {
+        select: {
+          postComments: true,
+          postLikes: true,
+        },
+      },
+      author: {
+        omit: {
+          password: true,
+        },
+      },
     },
   });
 }

@@ -12,12 +12,36 @@ import { LinkAsButton } from '@/components/ui/link-as-button';
 
 // Modules
 import { InformationContainer } from '@/modules/main/public-profile/information-container';
+import {
+	useRetrieveAllOrganizationsForUser,
+	useRetrieveAllPostsForUser,
+} from '@/hooks/data/user';
+import { useParams } from 'next/navigation';
+import { useGetImageFromKeys } from '@/hooks/data/image';
 
-// TODO: Fetch this separately so that I don't have to fetch everything in the same fetch
 export const ListOrganizations = () => {
+	const [open, setOpen] = React.useState(false);
+
+	const params = useParams<{ userId: string }>();
+
+	const { data, isLoading } = useRetrieveAllOrganizationsForUser(
+		params.userId,
+		{
+			// Samo kada su otvorene, da ne bi odmah fetchao na loadu stranice
+			enabled: open,
+		}
+	);
+
+	const { data: image } = useGetImageFromKeys({
+		imageUrls: data?.organizations.map((org) => org.avatarImage) || [],
+	});
+	console.log('List organizations:', data);
+
 	return (
 		<InformationContainer>
 			<Collapsible
+				open={open}
+				onOpenChange={setOpen}
 				trigger={
 					<Button className="group flex w-full justify-between outline-none">
 						<p className="text-lg lg:text-xl">Organizations</p>
@@ -34,25 +58,43 @@ export const ListOrganizations = () => {
 				}
 				contentProps={{
 					children: (
-						<div className="border-input-border bg-muted mt-4 flex items-center gap-4 rounded-md border px-4 py-3">
-							<Avatar
-								imageProps={{
-									src: '',
-								}}
-								colorScheme="gray"
-							>
-								Organization Example
-							</Avatar>
+						<div className="flex flex-col gap-4">
+							{isLoading &&
+								[...Array(3)].map((_, index) => (
+									<ListOrganizationSkeleton key={index} />
+								))}
 
-							<p className="text-md">Organization Example</p>
+							{data && data.organizations.length > 0 ? (
+								data?.organizations.map((organization, index) => (
+									<div
+										className="border-input-border bg-muted mt-4 flex items-center gap-4 rounded-md border px-4 py-3"
+										key={index}
+									>
+										<Avatar
+											imageProps={{
+												src: image?.urls[organization.avatarImage],
+											}}
+											colorScheme="gray"
+										>
+											{organization.name}
+										</Avatar>
 
-							<LinkAsButton
-								href="/organizations/organization"
-								size="sm"
-								className="ml-auto"
-							>
-								Explore
-							</LinkAsButton>
+										<p className="text-md">{organization.name}</p>
+
+										<LinkAsButton
+											href={`/organization/${organization.id}`}
+											size="sm"
+											className="ml-auto"
+										>
+											Explore
+										</LinkAsButton>
+									</div>
+								))
+							) : (
+								<p className="text-muted-foreground">
+									This user is not part of any organizations.
+								</p>
+							)}
 						</div>
 					),
 				}}
@@ -60,3 +102,11 @@ export const ListOrganizations = () => {
 		</InformationContainer>
 	);
 };
+
+const ListOrganizationSkeleton = () => (
+	<div className="border-input-border bg-muted mt-4 flex items-center gap-4 rounded-md border px-4 py-3">
+		<div className="bg-muted-foreground/20 h-10 w-10 animate-pulse rounded-full" />
+		<div className="bg-muted-foreground/20 h-4 w-48 animate-pulse rounded" />
+		<div className="bg-muted-foreground/20 ml-auto h-8 w-20 animate-pulse rounded" />
+	</div>
+);

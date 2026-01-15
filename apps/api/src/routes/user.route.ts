@@ -9,6 +9,7 @@ import {
   getUserByIdController,
   userSessionController,
   retrieveAllOrganizationsForUserController,
+  retrieveAllPostsForUserController,
 } from "@/controllers/user.controller";
 import { validate } from "@/middleware/validate.middleware";
 import { userSchema, UserSchemaArgs } from "@repo/schemas/user";
@@ -35,6 +36,14 @@ userRoutes.get(
   }),
   retrieveAllOrganizationsForUserController
 );
-userRoutes.get("/posts/:userId", getUserByIdController);
+userRoutes.get(
+  "/posts/:userId",
+  validate({
+    schema: userSchema,
+    type: "params",
+    responseOutput: "server",
+  }),
+  retrieveAllPostsForUserController
+);
 userRoutes.get("/session", userSessionController);
 userRoutes.post("/logout", logoutController);
