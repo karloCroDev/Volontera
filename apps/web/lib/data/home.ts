@@ -12,7 +12,7 @@ import { RetrieveHomePostsResponse } from '@repo/types/home';
 export async function retrieveRecentAlgoHomePosts({
 	limit = 10,
 	offset = 0,
-}: Partial<RetrieveAlgoPostsSchema> = {}) {
+}: RetrieveAlgoPostsSchema) {
 	try {
 		const res = await API().get(`/home/home-posts`, {
 			params: { limit, offset },
@@ -26,7 +26,7 @@ export async function retrieveRecentAlgoHomePosts({
 export async function retrieveRecentFollowedHomePosts({
 	limit = 10,
 	offset = 0,
-}: Partial<RetrieveFollowedAlgoPostsSchema> = {}) {
+}: RetrieveFollowedAlgoPostsSchema) {
 	try {
 		const res = await API().get(`/home/following`, {
 			params: { limit, offset },

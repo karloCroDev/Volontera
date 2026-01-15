@@ -21,6 +21,7 @@ import { PostSkeleton } from '@/components/ui/post/post-skeleton';
 
 // Lib
 import { toast } from '@/lib/utils/toast';
+import { HomePostsMapping } from '@/modules/main/home/home-posts-mapping';
 
 export default function PlaygroundPage() {
 	return (
@@ -112,6 +113,13 @@ export default function PlaygroundPage() {
 
 			<div className="size-80">
 				<PostSkeleton />
+			</div>
+
+			<div
+				className="h-96 w-96 overflow-x-hidden overflow-y-scroll"
+				id="x-scroll"
+			>
+				<HomePostsMapping />
 			</div>
 		</div>
 	);

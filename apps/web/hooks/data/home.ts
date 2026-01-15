@@ -1,5 +1,4 @@
 // External packages
-import * as React from 'react';
 import {
 	useInfiniteQuery,
 	UseInfiniteQueryOptions,
@@ -15,20 +14,13 @@ import {
 // Types
 import { RetrieveHomePostsResponse } from '@repo/types/home';
 
-type HomeFeed = 'algo' | 'following';
+//
+export type HomeFeed = 'home' | 'following';
 
-const getNextOffset = (
-	lastPage: RetrieveHomePostsResponse,
-	allPages: RetrieveHomePostsResponse[],
-	limit: number
-) => {
-	const loadedCount = allPages.reduce(
-		(acc, page) => acc + (page.posts?.length ?? 0),
-		0
-	);
-
-	if ((lastPage.posts?.length ?? 0) < limit) return undefined;
-	return loadedCount;
+export const homeQueryKeys = {
+	all: ['home'] as const,
+	feed: (feed: HomeFeed, limit: number) =>
+		[...homeQueryKeys.all, 'posts', feed, limit] as const,
 };
 
 export const useInfiniteHomePosts = ({
@@ -43,14 +35,14 @@ export const useInfiniteHomePosts = ({
 			RetrieveHomePostsResponse,
 			Error,
 			InfiniteData<RetrieveHomePostsResponse>,
-			ReturnType<typeof homePostsQueryKey>,
+			ReturnType<typeof homeQueryKeys.feed>,
 			number
 		>,
 		'queryKey' | 'queryFn' | 'initialPageParam' | 'getNextPageParam'
 	>;
 }) => {
 	const query = useInfiniteQuery({
-		queryKey: homePostsQueryKey({ feed, limit }),
+		queryKey: homeQueryKeys.feed(feed, limit),
 		initialPageParam: 0,
 		queryFn: ({ pageParam }) => {
 			const offset = pageParam ?? 0;
@@ -58,37 +50,20 @@ export const useInfiniteHomePosts = ({
 				? retrieveRecentFollowedHomePosts({ limit, offset })
 				: retrieveRecentAlgoHomePosts({ limit, offset });
 		},
-		getNextPageParam: (lastPage, allPages) =>
-			getNextOffset(lastPage, allPages, limit),
+		getNextPageParam: (
+			lastPage: RetrieveHomePostsResponse,
+			allPages: RetrieveHomePostsResponse[]
+		) => {
+			const loadedCount = allPages.reduce(
+				(acc, page) => acc + (page.posts?.length ?? 0),
+				0
+			);
+
+			if ((lastPage.posts?.length ?? 0) < limit) return undefined;
+			return loadedCount;
+		},
 		...options,
 	});
 
-	const posts = React.useMemo(
-		() => query.data?.pages.flatMap((p) => p.posts) ?? [],
-		[query.data]
-	);
-
-	return { ...query, posts };
-};
-
-export const homePostsQueryKey = ({
-	feed,
-	limit,
-}: {
-	feed: HomeFeed;
-	limit: number;
-}) => ['home-posts', feed, limit] as const;
-
-export const useInfiniteAlgoHomePosts = (
-	limit = 10,
-	options?: Parameters<typeof useInfiniteHomePosts>[0]['options']
-) => {
-	return useInfiniteHomePosts({ feed: 'algo', limit, options });
-};
-
-export const useInfiniteFollowedHomePosts = (
-	limit = 10,
-	options?: Parameters<typeof useInfiniteHomePosts>[0]['options']
-) => {
-	return useInfiniteHomePosts({ feed: 'following', limit, options });
+	return query;
 };
