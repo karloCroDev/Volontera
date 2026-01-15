@@ -1,39 +1,83 @@
-// import { prisma, User } from "@repo/database";
+// Database
+import { prisma, User } from "@repo/database";
 
-// export async function retrieveAlgoPosts({
-//   offset = 0,
-//   limit = 10,
-// }: {
-//   offset?: number;
-//   limit?: number;
-// }) {
-//   return prisma.post.findMany({
+export async function retrieveAlgoPosts({
+  userId,
+  offset = 0,
+  limit = 10,
+}: {
+  userId: User["id"];
+  offset?: number;
+  limit?: number;
+}) {
+  return prisma.post.findMany({
+    include: {
+      organization: true,
+      postImages: true,
+      postLikes: {
+        where: {
+          userId,
+        },
+      },
+      _count: {
+        select: {
+          postComments: true,
+          postLikes: true,
+        },
+      },
+      author: {
+        omit: {
+          password: true,
+        },
+      },
+    },
+    skip: offset,
+    take: limit,
+  });
+}
 
-//     where : {
-//         organization: {
-
-//         }
-//     },
-
-//     skip: offset,
-//     take: limit,
-//   });
-// }
-
-// export async function retrieveFollowedAlgoPosts({
-//   userId,
-//   offset = 0,
-//     limit = 10,
-// }: {
-//   userId: User['id']
-//   offset?: number;
-//     limit?: number;
-// }) {
-//     return prisma.post.findMany({
-//         where: {
-//             organization : {
-//                 follo
-//             }
-//         }
-//     })
-// }
+export async function retrieveFollowedAlgoPosts({
+  userId,
+  offset = 0,
+  limit = 10,
+}: {
+  userId: User["id"];
+  offset?: number;
+  limit?: number;
+}) {
+  return prisma.organization.findMany({
+    where: {
+      organizationFollowers: {
+        some: {
+          followerUserId: userId,
+        },
+      },
+    },
+    include: {
+      posts: {
+        include: {
+          organization: true,
+          postImages: true,
+          postLikes: {
+            where: {
+              userId,
+            },
+          },
+          _count: {
+            select: {
+              postComments: true,
+              postLikes: true,
+            },
+          },
+          author: {
+            omit: {
+              password: true,
+            },
+          },
+        },
+      },
+    },
+    skip: offset,
+    take: limit,
+  });
+}

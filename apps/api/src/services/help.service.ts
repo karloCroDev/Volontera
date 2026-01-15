@@ -63,7 +63,7 @@ export async function addQuestionService({
     llmResponse,
   });
 
-  toastResponseOutput({
+  return toastResponseOutput({
     status: 200,
     message: "Message sent successfully",
     title: "Message sent successfully",
