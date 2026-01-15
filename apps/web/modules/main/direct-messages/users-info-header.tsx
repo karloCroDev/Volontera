@@ -23,7 +23,9 @@ import { formatTime } from '@/lib/utils/time-adjustments';
 
 export const UsersInfoHeader = withReactQueryProvider(() => {
 	const params = useSearchParams();
-	const { data: user } = useGetUser(params.get('user') || '');
+	const { data: user } = useGetUser({
+		userId: params.get('userId') || '',
+	});
 
 	const { onlineUsers } = useSocketContext();
 

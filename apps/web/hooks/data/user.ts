@@ -6,6 +6,7 @@ import {
 	useQuery,
 	useQueryClient,
 } from '@tanstack/react-query';
+import { UserSchemaArgs } from '@repo/schemas/user';
 
 // Lib
 import { clientSession, logout, getUserById } from '@/lib/data/user';
@@ -35,9 +36,25 @@ export const useLogout = (options?: UseMutationOptions<void, Error, void>) => {
 	});
 };
 
-export const useGetUser = (userId: string) => {
+export const useGetUser = ({ userId }: UserSchemaArgs) => {
 	return useQuery<UserResponse, ServerHandleResponse<false>>({
 		queryKey: [userId],
-		queryFn: () => getUserById(userId),
+		queryFn: () => getUserById({ userId }),
+	});
+};
+
+export const useRetrieveAllOrganizationsForUser = ({
+	userId,
+}: UserSchemaArgs) => {
+	return useQuery<UserResponse, ServerHandleResponse<false>>({
+		queryKey: ['organizations', userId],
+		queryFn: () => getUserById({ userId }),
+	});
+};
+
+export const useRetrieveAllPostsForUser = ({ userId }: UserSchemaArgs) => {
+	return useQuery<UserResponse, ServerHandleResponse<false>>({
+		queryKey: ['posts', userId],
+		queryFn: () => getUserById({ userId }),
 	});
 };

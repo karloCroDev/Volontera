@@ -9,3 +9,24 @@ export async function findUserById(userId: User["id"]) {
     },
   });
 }
+
+export async function retrieveAllOrganizationsForUser(userId: User["id"]) {
+  return prisma.organization.findMany({
+    where: {
+      organizationMembers: {
+        some: {
+          userId,
+        },
+      },
+    },
+    include: {},
+  });
+}
+
+export async function retrieveAllPostsForUser(userId: User["id"]) {
+  return prisma.post.findMany({
+    where: {
+      authorId: userId,
+    },
+  });
+}
