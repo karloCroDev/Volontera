@@ -5,6 +5,7 @@ import { Request, Response } from "express";
 import {
   acceptOrDeclineUsersRequestToJoinOrganizationService,
   demoteOrPromoteOrganizationMemberService,
+  leaveOrganizationService,
   retirveAllRequestsToJoinOrganizationService,
   retrieveAllMembersInOrganizationService,
   retrieveOrganizationMemberService,
@@ -12,6 +13,7 @@ import {
 
 // Schema types
 import {
+  LeaveOrganizationArgs,
   RetirveAllRequestsToJoinOrganizationArgs,
   RetrieveAllMembersInOrganizationArgs,
   RetrieveOrganizationMemberArgs,
@@ -86,6 +88,18 @@ export async function acceptOrDeclineUsersRequestToJoinOrganizationController(
     const result = await acceptOrDeclineUsersRequestToJoinOrganizationService(
       req.body
     );
+    return res.status(result.status).json(result.body);
+  } catch (err) {
+    handleServerErrorResponse(res, err);
+  }
+}
+
+export async function leaveOrganizationController(req: Request, res: Response) {
+  try {
+    const result = await leaveOrganizationService({
+      data: req.params as LeaveOrganizationArgs,
+      userId: req.user.userId,
+    });
     return res.status(result.status).json(result.body);
   } catch (err) {
     handleServerErrorResponse(res, err);

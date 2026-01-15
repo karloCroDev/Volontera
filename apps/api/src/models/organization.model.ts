@@ -1,5 +1,5 @@
 // Database
-import { prisma, User } from "@repo/database";
+import { Organization, prisma, User } from "@repo/database";
 
 // Types
 import {
@@ -153,6 +153,22 @@ export async function listOrganizationsUser(userId: User["id"]) {
   };
 }
 
+export async function sendRequestToJoinOrganization({
+  data,
+  userId,
+}: {
+  data: SendRequestToJoinOrganizationArgs;
+  userId: User["id"];
+}) {
+  return prisma.organizationJoinRequest.create({
+    data: {
+      ...data,
+      requesterId: userId,
+      status: "PENDING",
+    },
+  });
+}
+
 // All
 // TODO: Handle this with redis or something simmilar and make alogirthm for that
 export async function searchOrganizationsByName(query: string) {
@@ -167,38 +183,146 @@ export async function searchOrganizationsByName(query: string) {
   });
 }
 
-export async function getOrganizationDetailsById(organizationId: string) {
-  return prisma.organization.findUnique({
-    where: {
-      id: organizationId,
-    },
-    include: {
-      organizationMembers: true,
-      organizationFollowers: true,
-      organizationInfo: {
-        include: {
-          additionalLinks: true,
+export async function getOrganizationDetailsById({
+  organizationId,
+  userId,
+}: {
+  organizationId: string;
+  userId: User["id"];
+}) {
+  const [organization, isFollowing, adminMembers, otherMembers] =
+    await prisma.$transaction([
+      // Organizacijski detalji  + vlasnikovi podaci
+      prisma.organization.findUnique({
+        where: {
+          id: organizationId,
         },
-      },
+        include: {
+          owner: {
+            omit: {
+              password: true,
+            },
+          },
 
-      // Vrati po hijewrarhiji korisnike i onda displayamo na frontendu (admini organizacije, vlasnik i neke korisnike)
-      // owner: true,
+          _count: {
+            select: {
+              organizationFollowers: true,
+              organizationMembers: true,
+            },
+          },
+
+          organizationInfo: {
+            include: {
+              additionalLinks: true,
+            },
+          },
+        },
+      }),
+      // Je li trenutni korisnik prati organizaciju
+      prisma.organizationFollowers.findUnique({
+        where: {
+          organizationId_followerUserId: {
+            followerUserId: userId,
+            organizationId,
+          },
+        },
+      }),
+      // Admini organizacije
+      prisma.organizationMember.findMany({
+        where: {
+          organizationId,
+          role: "ADMIN",
+        },
+        include: {
+          user: {
+            omit: {
+              password: true,
+            },
+          },
+        },
+        orderBy: {
+          createdAt: "asc",
+        },
+      }),
+
+      // Obični članovi
+      prisma.organizationMember.findMany({
+        where: {
+          organizationId,
+          role: "MEMBER",
+        },
+        include: {
+          user: {
+            omit: {
+              password: true,
+            },
+          },
+        },
+
+        orderBy: {
+          createdAt: "asc",
+        },
+        take: 5,
+      }),
+    ]);
+
+  if (!organization) return null;
+
+  return {
+    organization,
+    isFollowing,
+    membersHierarchy: {
+      admins: adminMembers,
+      members: otherMembers,
+    },
+  };
+}
+
+export async function followOrganization({
+  organizationId,
+  userId,
+}: {
+  organizationId: Organization["id"];
+  userId: User["id"];
+}) {
+  return prisma.organizationFollowers.create({
+    data: {
+      followerUserId: userId,
+      organizationId: organizationId,
     },
   });
 }
 
-export async function sendRequestToJoinOrganization({
-  data,
+export async function unfollowOrganization({
+  organizationId,
   userId,
 }: {
-  data: SendRequestToJoinOrganizationArgs;
+  organizationId: Organization["id"];
   userId: User["id"];
 }) {
-  return prisma.organizationJoinRequest.create({
-    data: {
-      ...data,
-      requesterId: userId,
-      status: "PENDING",
+  return prisma.organizationFollowers.delete({
+    where: {
+      organizationId_followerUserId: {
+        organizationId,
+        followerUserId: userId,
+      },
+    },
+  });
+}
+
+export async function checkIfUserFollowsOrganization({
+  organizationId,
+  userId,
+}: {
+  organizationId: Organization["id"];
+  userId: User["id"];
+}) {
+  return prisma.organizationFollowers.findUnique({
+    where: {
+      organizationId_followerUserId: {
+        organizationId,
+        followerUserId: userId,
+      },
     },
   });
 }

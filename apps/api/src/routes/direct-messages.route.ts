@@ -10,7 +10,11 @@ import {
   searchAllUsersWithQueryController,
   startConversationOrStartAndSendDirectMessageController,
 } from "@/controllers/direct-messages.controller";
+
+// Middleware
 import { validate } from "@/middleware/validate.middleware";
+
+// Schemas
 import {
   searchSchema,
   conversationSchema,
@@ -25,7 +29,7 @@ directMessagesRoutes.use(express.json());
 directMessagesRoutes.get("/", listAllDirectMessagesConversationsController);
 
 directMessagesRoutes.get(
-  "/:conversationId",
+  "/:recieverId",
   validate({
     schema: conversationSchema,
     responseOutput: "toast",

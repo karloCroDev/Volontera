@@ -60,8 +60,8 @@ export const DatePicker = <T extends DateValue>({
 						<CalendarGrid className="mt-3">
 							{(date) => (
 								<CalendarCell
-									className="data-[pressed]:bg-pending data-[outside-month]:text-popover data-[selected]:bg-accent flex h-6 cursor-pointer items-center justify-center rounded px-2 py-4 text-center"
 									date={date}
+									className="data-[selected]:bg-accent data-[pressed]:bg-pending data-[outside-month]:text-popover data-[disabled]:text-muted-foreground data-[disabled]:bg-muted flex h-6 cursor-pointer items-center justify-center rounded px-2 py-4 text-center data-[disabled]:cursor-not-allowed"
 								/>
 							)}
 						</CalendarGrid>

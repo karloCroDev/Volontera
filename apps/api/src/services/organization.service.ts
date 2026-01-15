@@ -7,11 +7,14 @@ import {
 
 // Models
 import {
+  checkIfUserFollowsOrganization,
   createOrganization,
+  followOrganization,
   getOrganizationDetailsById,
   listOrganizationsOrganizatorGrouped,
   listOrganizationsUser,
   sendRequestToJoinOrganization,
+  unfollowOrganization,
 } from "@/models/organization.model";
 
 // Database
@@ -20,6 +23,7 @@ import { User } from "@repo/database";
 // Schema types
 import {
   CreateOrganizationArgs,
+  ToggleFollowOrganizationArgs,
   GetOrganizationDetailsByIdArgs,
   SendRequestToJoinOrganizationArgs,
 } from "@repo/schemas/organization";
@@ -61,17 +65,26 @@ export async function createOrganizationService({
 }
 
 export async function getOrganizationDetailsByIdService({
-  organizationId,
-}: GetOrganizationDetailsByIdArgs) {
-  const organization = await getOrganizationDetailsById(organizationId);
+  data,
+  userId,
+}: {
+  data: GetOrganizationDetailsByIdArgs;
+  userId: User["id"];
+}) {
+  const result = await getOrganizationDetailsById({
+    organizationId: data.organizationId,
+    userId,
+  });
 
-  if (!organization) {
+  if (!result) {
     return serverFetchOutput({
       status: 400,
       success: false,
       message: "Organization not found",
     });
   }
+
+  const { organization, membersHierarchy, isFollowing } = result;
 
   return serverFetchOutput({
     status: 200,
@@ -80,8 +93,6 @@ export async function getOrganizationDetailsByIdService({
     data: {
       organization: {
         ...organization,
-
-        // Samo dvije slike pa je jednostavnije da ovako handleam na licu mjesta
         avatarImage: await getImagePresignedUrls(organization.avatarImage),
         organizationInfo: {
           ...organization.organizationInfo,
@@ -92,6 +103,8 @@ export async function getOrganizationDetailsByIdService({
             : null,
         },
       },
+      membersHierarchy,
+      isFollowing: !!isFollowing,
     },
   });
 }
@@ -145,5 +158,38 @@ export async function sendRequestToJoinOrganizationService({
     status: 200,
     title: "Request Sent",
     message: "Your request to join the organization has been sent",
+  });
+}
+
+export async function toggleFollowOrganizationService({
+  data,
+  userId,
+}: {
+  data: ToggleFollowOrganizationArgs;
+  userId: User["id"];
+}) {
+  const isFollowing = await checkIfUserFollowsOrganization({
+    organizationId: data.organizationId,
+    userId,
+  });
+
+  if (isFollowing) {
+    await unfollowOrganization({
+      organizationId: data.organizationId,
+      userId,
+    });
+  } else {
+    await followOrganization({
+      organizationId: data.organizationId,
+      userId,
+    });
+  }
+
+  return toastResponseOutput({
+    status: 200,
+    title: isFollowing ? "Organization Unfollowed" : "Organization Followed",
+    message: isFollowing
+      ? "Organization unfollowed successfully"
+      : "Organization followed successfully",
   });
 }

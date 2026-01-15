@@ -1,20 +1,28 @@
 // Lib
 import { getImagePresignedUrls } from "@/lib/aws-s3-functions";
+import {
+  serverFetchOutput,
+  toastResponseOutput,
+} from "@/lib/utils/service-output";
 
 // Models
-import { findUserById } from "@/models/user.model";
+import {
+  findUserById,
+  retrieveAllOrganizationsForUser,
+  retrieveAllPostsForUser,
+} from "@/models/user.model";
+import { UserSchemaArgs } from "@repo/schemas/user";
 
-export async function getUserByIdService(userId: string) {
+export async function getUserByIdService({ userId }: UserSchemaArgs) {
   const user = await findUserById(userId);
 
-  if (!user)
-    return {
+  if (!user) {
+    return serverFetchOutput({
+      message: "There is no user that we could find with that ID",
+      success: false,
       status: 400,
-      body: {
-        message: "There is no user that we could find with that ID",
-        success: false,
-      },
-    };
+    });
+  }
 
   let userData = user;
 
@@ -22,12 +30,36 @@ export async function getUserByIdService(userId: string) {
     const image = await getImagePresignedUrls(user.image);
     userData = { ...user, image };
   }
-  return {
+
+  return serverFetchOutput({
     status: 200,
-    body: {
-      message: "User fetched successfully",
-      success: true,
-      ...userData,
-    },
-  };
+    message: "User fetched successfully",
+    success: true,
+    data: userData,
+  });
+}
+
+export async function retrieveAllOrganizationsForUserService({
+  userId,
+}: UserSchemaArgs) {
+  const organizations = await retrieveAllOrganizationsForUser(userId);
+  return serverFetchOutput({
+    status: 200,
+    message: "Attending organizations fetched successfully",
+    success: true,
+    data: { organizations },
+  });
+}
+
+export async function retrieveAllPostsForUserService({
+  userId,
+}: UserSchemaArgs) {
+  const posts = await retrieveAllPostsForUser(userId);
+
+  return serverFetchOutput({
+    status: 200,
+    message: "Users posts fetched successfully",
+    success: true,
+    data: { posts },
+  });
 }

@@ -1,0 +1,112 @@
+// External packages
+import { organizationIdSchema } from "./organization";
+import { z } from "zod";
+
+// Boards
+export const createTaskBoardSchema = z
+  .object({
+    title: z.string().min(1).max(100),
+  })
+  .extend(organizationIdSchema.shape);
+export type CreateTaskBoardArgs = z.infer<typeof createTaskBoardSchema>;
+
+export const updateOrganizationTaskBoardTitleSchema = z
+  .object({
+    organizationTaskBoardId: z.cuid(),
+    title: z.string().min(1).max(100),
+  })
+  .extend(organizationIdSchema.shape);
+export type UpdateOrganizationTaskBoardTitleArgs = z.infer<
+  typeof updateOrganizationTaskBoardTitleSchema
+>;
+
+export const deleteOrganizationTaskBoardSchema = z
+  .object({
+    organizationTaskBoardId: z.cuid(),
+  })
+  .extend(organizationIdSchema.shape);
+export type DeleteOrganizationTaskBoardArgs = z.infer<
+  typeof deleteOrganizationTaskBoardSchema
+>;
+
+export const retrieveAllBoardTasksSchema = z
+  .object({
+    organizationTaskBoardId: z.cuid(),
+  })
+  .extend(organizationIdSchema.shape);
+export type RetrieveAllBoardTasksArgs = z.infer<
+  typeof retrieveAllBoardTasksSchema
+>;
+
+export const retrieveAllOrganizationBoardsWithTasksSchema =
+  organizationIdSchema;
+export type RetrieveAllOrganizationBoardsWithTasksArgs = z.infer<
+  typeof retrieveAllOrganizationBoardsWithTasksSchema
+>;
+
+export const retrieveAllOrganizationBoardSchema = organizationIdSchema;
+export type RetrieveAllOrganizationBoardsArgs = z.infer<
+  typeof retrieveAllOrganizationBoardSchema
+>;
+
+// Tasks
+export const createTaskSchema = z
+  .object({
+    organizationId: z.cuid(),
+    description: z.string().min(1),
+    title: z.string().min(1),
+    dueDate: z.string().min(1, "Due date is required"),
+    organizationTasksBoardId: z.cuid(),
+  })
+  .extend(organizationIdSchema.shape);
+export type CreateTaskArgs = z.infer<typeof createTaskSchema>;
+
+export const retrieveTaskInfoSchema = z
+  .object({
+    taskId: z.cuid(),
+  })
+  .extend(organizationIdSchema.shape);
+export type RetrieveTaskInfoArgs = z.infer<typeof retrieveTaskInfoSchema>;
+
+export const retrieveTaskQuestionsSchema = z
+  .object({
+    taskId: z.cuid(),
+  })
+  .extend(organizationIdSchema.shape);
+export type RetrieveTaskQuestionsArgs = z.infer<
+  typeof retrieveTaskQuestionsSchema
+>;
+
+export const updateTaskInfoSchema = z
+  .object({
+    taskId: z.cuid(),
+    title: z.string().min(1).max(100),
+    description: z.string().min(1),
+    dueDate: z.string().min(1, "Due date is required"),
+    organizationTasksBoardId: z.cuid(),
+  })
+  .extend(organizationIdSchema.shape);
+export type UpdateTaskInfoArgs = z.infer<typeof updateTaskInfoSchema>;
+
+export const deleteTaskByIdSchema = z
+  .object({
+    taskId: z.cuid(),
+  })
+  .extend(organizationIdSchema.shape);
+export type DeleteTaskByIdArgs = z.infer<typeof deleteTaskByIdSchema>;
+
+// Questions
+export const createTaskQuestionSchema = z
+  .object({
+    taskId: z.cuid(),
+    question: z.string().min(1).max(2000),
+  })
+  .extend(organizationIdSchema.shape);
+export type CreateTaskQuestionArgs = z.infer<typeof createTaskQuestionSchema>;
+
+export const deleteTaskQuestionSchema = z
+  .object({
+    questionId: z.cuid(),
+  })
+  .extend(organizationIdSchema.shape);
+export type DeleteTaskQuestionArgs = z.infer<typeof deleteTaskQuestionSchema>;

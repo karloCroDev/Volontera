@@ -19,6 +19,7 @@ import {
   loginSchema,
   registerSchema,
   resetPasswordSchema,
+  verifyEmailSchema,
 } from "@repo/schemas/auth";
 
 // Middleware
@@ -63,7 +64,7 @@ authRoutes.post(
 authRoutes.post(
   "/verify-token",
   validate({
-    schema: loginSchema,
+    schema: verifyEmailSchema,
     responseOutput: "form",
   }),
   verifyTokenController
@@ -71,13 +72,12 @@ authRoutes.post(
 authRoutes.post(
   "/reset-verify-token",
   validate({
-    schema: loginSchema,
+    schema: verifyEmailSchema,
     responseOutput: "form",
   }),
   resetVerifyTokenController
 );
 
-// TODO: Rewrite this so that this part using three layer structure
 // Google OAuth sign in method
 authRoutes.get(
   "/google",

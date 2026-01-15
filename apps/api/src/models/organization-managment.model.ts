@@ -109,3 +109,44 @@ export async function retrieveOrganizationMember({
     },
   });
 }
+
+export async function leaveOrganization({
+  organizationId,
+  userId,
+  reason,
+}: {
+  organizationId: Organization["id"];
+  userId: User["id"];
+  reason?: string;
+}) {
+  return prisma.$transaction(async (tx) => {
+    await tx.organizationJoinRequest.deleteMany({
+      where: {
+        organizationId,
+        requesterId: userId,
+      },
+    });
+    await tx.organizationMember.delete({
+      where: {
+        // Owner je automatski vlasnik, pa mu onemogućavamo da ode iz organizacije
+        role: {
+          not: "OWNER",
+        },
+        organizationId_userId: {
+          organizationId,
+          userId,
+        },
+      },
+    });
+
+    if (reason) {
+      await tx.organizationLeaveFeedback.create({
+        data: {
+          organizationId,
+          reason,
+          authorId: userId,
+        },
+      });
+    }
+  });
+}

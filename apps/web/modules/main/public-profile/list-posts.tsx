@@ -12,11 +12,35 @@ import { Post } from '@/components/ui/post/post';
 // Modules
 import { InformationContainer } from '@/modules/main/public-profile/information-container';
 
-// TODO: Fetch this separately so that I don't have to fetch everything in the same fetch
+import { useParams } from 'next/navigation';
+import { useRetrieveAllPostsForUser } from '@/hooks/data/user';
+import { useGetImageFromKeys } from '@/hooks/data/image';
+
 export const ListPosts = () => {
+	const [open, setOpen] = React.useState(false);
+
+	const params = useParams<{ userId: string }>();
+	const { data } = useRetrieveAllPostsForUser(params.userId, {
+		// Samo kada su otvorene, da ne bi odmah fetchao na loadu stranice
+		enabled: open,
+	});
+
+	const { data: images } = useGetImageFromKeys({
+		imageUrls: [
+			...(data?.posts
+				.map((post) => post.author.image)
+				.filter((img) => img !== null) || []),
+			...(data?.posts
+				.flatMap((post) => post.postImages.map((img) => img.imageUrl))
+				.filter((img) => img !== null) || []),
+		],
+	});
+
 	return (
 		<InformationContainer>
 			<Collapsible
+				open={open}
+				onOpenChange={setOpen}
 				trigger={
 					<Button className="group flex w-full justify-between outline-none">
 						<p className="text-lg lg:text-xl">Posts</p>
@@ -33,8 +57,16 @@ export const ListPosts = () => {
 				}
 				contentProps={{
 					children: (
-						<div className="my-6">
-							<Post content="xxx" title="sss" />
+						<div className="mt-6 flex flex-col gap-6">
+							{data && data.posts.length > 0 ? (
+								data.posts.map((post) => (
+									<Post key={post.id} post={post} images={images?.urls} />
+								))
+							) : (
+								<p className="text-muted-foreground">
+									This user has not made any posts.
+								</p>
+							)}
 						</div>
 					),
 				}}

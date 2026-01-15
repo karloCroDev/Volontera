@@ -5,6 +5,7 @@ import { catchError } from '@/lib/utils/error';
 // Schemas
 import {
 	CreateOrganizationArgs,
+	ToggleFollowOrganizationArgs,
 	SendRequestToJoinOrganizationArgs,
 } from '@repo/schemas/organization';
 import { DataWithFiles } from '@repo/types/upload';
@@ -61,6 +62,19 @@ export async function sendRequestToJoinOrganization(
 		const res = await API().post(
 			'/organization/send-request-to-join-organization',
 			data
+		);
+		return res.data;
+	} catch (err) {
+		catchError(err);
+	}
+}
+
+export async function toggleFollowOrganization({
+	organizationId,
+}: ToggleFollowOrganizationArgs) {
+	try {
+		const res = await API().post(
+			`/organization/toggle-follow/${organizationId}`
 		);
 		return res.data;
 	} catch (err) {

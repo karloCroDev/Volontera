@@ -25,7 +25,7 @@ export const Toaster = () => {
 				<Toast key={indx} title={title} content={content} variant={variant} />
 			))}
 
-			<RadixToast.Viewport className="fixed inset-x-6 bottom-6 z-10 md:inset-auto md:bottom-12 md:right-12 md:w-96" />
+			<RadixToast.Viewport className="z-max fixed inset-x-6 bottom-6 md:inset-auto md:bottom-12 md:right-12 md:w-96" />
 		</RadixToast.Provider>
 	);
 };

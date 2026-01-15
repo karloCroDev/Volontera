@@ -1,41 +1,45 @@
-// External packages
-import { Ellipsis } from 'lucide-react';
-
-// Components
-import { Button } from '@/components/ui/button';
+'use client';
 
 // Modules
-import { AddTask } from '@/modules/main/organization/tasks/add-task';
-import { TaskModal } from '@/modules/main/organization/tasks/task-modal';
+import { AddTaskDialog } from '@/modules/main/organization/tasks/add-task-dialog';
+import { EditBoardDialog } from '@/modules/main/organization/tasks/edit-board-dialog';
+import { RetrieveAllOrganizationBoardsWithTasksResponse } from '@repo/types/organization-tasks';
+import { withReactQueryProvider } from '@/lib/utils/react-query';
+import { Dialog } from '@/components/ui/dialog';
+import { TaskCardDetails } from '@/modules/main/organization/tasks/task-card-details';
+import { TaskCard } from '@/modules/main/organization/tasks/task-card';
+import { TasksMapping } from '@/modules/main/organization/tasks/tasks-mapping';
 
-export const TasksBoard = () => {
+export const TasksBoard: React.FC<{
+	boardId: string;
+	title: string;
+	tasks: React.ReactNode;
+}> = withReactQueryProvider(({ boardId, title, tasks }) => {
 	return (
-		<div className="border-input-border bg-muted sm:min-w-2/3 lg:min-w-1/2 2xl:min-w-2/5 flex min-h-[600px] min-w-full flex-1 flex-col gap-5 rounded-xl border p-4">
+		<div
+			suppressHydrationWarning // TODO: FIX HYDRA
+			className="border-input-border bg-muted flex min-h-[600px] w-full min-w-96 flex-col gap-5 rounded-xl border p-4 sm:w-2/3 lg:w-1/2 2xl:w-2/5"
+		>
 			<div className="flex items-center justify-between">
-				<h4 className="text-lg underline underline-offset-4">
-					Clean the beach
-				</h4>
-				<Button variant="blank">
-					<Ellipsis className="text-muted-foreground" />
-				</Button>
+				<h4 className="text-lg underline underline-offset-4">{title}</h4>
+				<EditBoardDialog boardId={boardId} title={title} />
 			</div>
 
-			<div className="no-scrollbar flex flex-1 flex-col gap-4">
-				<TaskModal
-					cardProps={{
-						title: 'Save the earth',
-						description: 'Save the earth from xxxxxx',
-						indefiniteDate: `${new Date().toLocaleString('default', { month: 'long' }).slice(0, 3)} ${new Date().getDate()}`,
+			{tasks}
 
-						isUserIncluded: true,
-						otherUsersCount: 3,
-						state: 'success',
-					}}
-					specificDate={new Date().toLocaleDateString().replaceAll('/', '. ')}
-				/>
-			</div>
-
-			<AddTask />
+			<AddTaskDialog organizationTasksBoardId={boardId} />
 		</div>
 	);
-};
+});
+
+// <TaskModal
+// 	cardProps={{
+// 		title: 'Save the earth',
+// 		description: 'Save the earth from xxxxxx',
+// 		indefiniteDate: `${new Date().toLocaleString('default', { month: 'long' }).slice(0, 3)} ${new Date().getDate()}`,
+// 		isUserIncluded: true,
+// 		otherUsersCount: 3,
+// 		state: 'success',
+// 	}}
+// 	specificDate={new Date().toLocaleDateString().replaceAll('/', '. ')}
+// />;

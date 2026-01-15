@@ -1,7 +1,6 @@
 // Modules
 import { Heading } from '@/components/ui/heading';
 import { Tag } from '@/components/ui/tag';
-import { Post } from '@/components/ui/post/post';
 
 export default async function HomePage() {
 	return (
@@ -15,6 +14,7 @@ export default async function HomePage() {
 					<Tag className="mt-2 h-fit">Following</Tag>
 				</div>
 			</div>
+			{/* TODO: Put this inside the suspense component */}
 			{/* <Post
 				title="Example title"
 				content="Lorem ipsum dolorem et imet sssswqdd po qkwd kqwdkpoqwpodk qk. What is going on in this world. Hello w"

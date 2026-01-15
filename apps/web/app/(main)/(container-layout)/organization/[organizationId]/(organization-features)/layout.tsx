@@ -11,6 +11,8 @@ import { LinkAsButton } from '@/components/ui/link-as-button';
 // Lib
 import { getOrganizationDetailsById } from '@/lib/server/organization';
 import { retrieveOrganizationMember } from '@/lib/server/organization-managment';
+import { FollowOrganizationButton } from '@/modules/main/organization/common/follow-organization-button';
+import { LeaveOrganizationDialog } from '@/modules/main/organization/common/leave-organization-dialog';
 
 export default async function OrganizationFeaturesLayout({
 	params,
@@ -26,10 +28,9 @@ export default async function OrganizationFeaturesLayout({
 		await retrieveOrganizationMember(organizationId),
 	]);
 
-	if (!organizationDetailsById.success) {
-		notFound();
-	}
+	if (!organizationDetailsById.success) notFound();
 
+	console.log('MEMBER', member);
 	return (
 		<>
 			<div className="border-input-border bg-muted relative flex flex-shrink-0 flex-col items-center gap-6 rounded-xl border p-4 md:h-40 md:flex-row md:px-6">
@@ -48,21 +49,37 @@ export default async function OrganizationFeaturesLayout({
 						{organizationDetailsById.organization.name}
 					</h1>
 
-					<p className="text-muted-foreground">30 attendees | 300 followers </p>
+					<p className="text-muted-foreground">
+						{organizationDetailsById.organization._count.organizationMembers}{' '}
+						members |{' '}
+						{organizationDetailsById.organization._count.organizationFollowers}{' '}
+						followers{' '}
+					</p>
 				</div>
 
-				<div className="flex gap-4 md:ml-auto">
-					<Button colorScheme="yellow" size="md">
-						Follow
-					</Button>
-					<LinkAsButton
-						colorScheme="orange"
-						size="md"
-						href={`/organization/${organizationId}/join-organization`}
-					>
-						Join
-					</LinkAsButton>
-				</div>
+				{((member.success && member.organizationMember.role !== 'OWNER') ||
+					!member.success) && (
+					<div className="flex gap-4 md:ml-auto">
+						<FollowOrganizationButton
+							// Dobivam samo korisnika u ovom arrayu
+							hasUserFollowed={organizationDetailsById.isFollowing}
+						/>
+
+						{member.success ? (
+							<LeaveOrganizationDialog
+								organizationName={organizationDetailsById.organization.name}
+							/>
+						) : (
+							<LinkAsButton
+								colorScheme="orange"
+								size="md"
+								href={`/organization/${organizationId}/join-organization`}
+							>
+								Join
+							</LinkAsButton>
+						)}
+					</div>
+				)}
 			</div>
 
 			{!member.success || !member.organizationMember.role ? (

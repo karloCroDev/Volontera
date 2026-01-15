@@ -9,14 +9,11 @@ import {
 import { NotificationSandbox } from '@/modules/main/notifications/notification-sandbox';
 
 export default async function Notifications() {
-	const [notifications, markAsRead] = await Promise.all([
-		getUsersNotifications(),
-		getMarkAllNotificationsAsRead(),
-	]);
+	const notifications = await getUsersNotifications();
 
-	// On each loading of the notifications page, I am marking all notifications as read
-	console.log(markAsRead);
+	await getMarkAllNotificationsAsRead(); // Svaki put kad se otvori notifikacijski page, sve notifikacije se oznace kao procitane (nece biti odmah prikazane kao procitane na UI-u samo updateam)
 
+	// TODO: Implment skeltons and pagination in future
 	return (
 		<>
 			<Heading subtitle="See all recent activities you might have missed out!">

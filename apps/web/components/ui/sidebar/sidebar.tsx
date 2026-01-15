@@ -28,6 +28,8 @@ import {
 	SidebarItem,
 } from '@/components/ui/sidebar/sidebar-items';
 import { UserResponse } from '@repo/types/user';
+import { Volontera } from '@/components/ui/volonotera';
+import { Icon } from '@/components/ui/icon';
 
 export const Sidebar: React.FC<{
 	user: UserResponse;
@@ -51,7 +53,7 @@ export const Sidebar: React.FC<{
 					colorScheme="bland"
 					isFullyRounded
 					onClick={() => setDesktopOpen((prev) => !prev)}
-					className="bg-background absolute -right-6 top-20 z-[1] p-2"
+					className="bg-background top-22 absolute -right-6 z-[1] p-2"
 				>
 					<ChevronLast
 						className={twJoin(
@@ -61,6 +63,14 @@ export const Sidebar: React.FC<{
 					/>
 				</Button>
 
+				{desktopOpen ? (
+					<Volontera className="mx-4 mt-4" />
+				) : (
+					<Link href="/auth/login" className="mt-4">
+						<Icon name="logo" className="size-20" />
+					</Link>
+				)}
+				<hr className="bg-input-border my-6 h-px w-full border-0" />
 				<div className={`flex flex-col ${desktopOpen ? 'gap-4' : 'gap-6'}`}>
 					<Link href="/home">
 						{desktopOpen ? (
@@ -162,7 +172,11 @@ export const Sidebar: React.FC<{
 					>
 						<Dialog className="flex h-full flex-col">
 							<div className="mb-4 flex items-center justify-between px-2">
-								<p className="text-md">[app name]</p>
+								<div>
+									<Volontera />
+									<hr className="bg-input-border my-6 h-px w-full border-0" />
+								</div>
+
 								<Button slot="close" isFullyRounded className="p-2">
 									<X />
 								</Button>

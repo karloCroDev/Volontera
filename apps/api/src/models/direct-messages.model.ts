@@ -30,20 +30,26 @@ export async function listAllDirectMessagesConversation(userId: User["id"]) {
   });
 }
 
-export async function getDirectMessagesConversationById(
-  conversationId: DirectMessagesConversations["id"]
-) {
-  return prisma.directMessages.findMany({
+export async function getDirectMessagesConversationById({
+  recieverId,
+  senderId,
+}: {
+  senderId: User["id"];
+  recieverId: User["id"];
+}) {
+  const pairKey = [senderId, recieverId].sort().join(":");
+  return prisma.directMessagesConversations.findUnique({
     where: {
-      conversationId,
+      pairKey,
     },
+
     include: {
-      author: {
-        omit: {
-          password: true,
+      directMessages: {
+        include: {
+          directMessagesImages: true,
+          author: true,
         },
       },
-      directMessagesImages: true,
     },
   });
 }
@@ -97,6 +103,7 @@ export async function searchAllUsers({
     orderBy: [{ updatedAt: "desc" }, { createdAt: "desc" }],
   });
 }
+
 export async function deleteDirectMessageById({
   messageId,
   userId,
@@ -141,43 +148,19 @@ export async function updateDirectMessagesConversationLastMessage({
   });
 }
 
-export async function createDirectMessagesConversation({
-  participantIds,
-}: {
-  participantIds: User["id"][];
-}) {
-  return prisma.directMessagesConversations.create({
-    data: {
-      pairKey: "ss",
-      participants: {
-        create: participantIds.map((id) => ({
-          userId: id,
-        })),
-      },
-    },
-    include: {
-      participants: {
-        include: {
-          user: true,
-        },
-      },
-    },
-  });
-}
-
-export async function startConversationOrStartAndSendDirectMessage({
+export async function startConversationOSendDirectMessage({
   senderId,
-  receiverId,
+  recieverId,
   content,
   imageKeys,
 }: {
   senderId: User["id"];
-  receiverId: User["id"];
+  recieverId: User["id"];
   content: string;
   imageKeys?: string[];
 }) {
   // Pair key mi olakšava način na koji ću pronaći konverzaciju između dva korisnika, također mi omogućava da ako se 2 iste poruke pošalju u isto vrijeme, da ne dobijem konflikt u bazi podataka jer će pair key uvijek biti isti za ta dva korisnika.
-  const pairKey = [senderId, receiverId].sort().join(":"); // Uvijek isti redoslijed korisnika bez obzira tko šalje poruku
+  const pairKey = [senderId, recieverId].sort().join(":"); // Uvijek isti redoslijed korisnika bez obzira tko šalje poruku
 
   // Koristim transakciju jer imamo veći broj operacija koje moramo obaviti. Ideja je kada korisnik pošalje poruku, ako ne postoji konverzacija između ta dva korisnika, da se kreira nova konverzacija i da se u nju doda poruka. Ako konverzacija postoji, samo se doda poruka u postojeću konverzaciju. Također, potrebno je ažurirati i posljednju poruku u konverzaciji, kako bi ju prikazali u listi konverzacija.
 
@@ -190,7 +173,7 @@ export async function startConversationOrStartAndSendDirectMessage({
       create: {
         pairKey,
         participants: {
-          create: [{ userId: senderId }, { userId: receiverId }],
+          create: [{ userId: senderId }, { userId: recieverId }],
         },
       },
       update: {},

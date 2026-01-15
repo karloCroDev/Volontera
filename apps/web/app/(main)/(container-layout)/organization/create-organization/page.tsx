@@ -1,11 +1,12 @@
 // Components
 import { Heading } from '@/components/ui/heading';
-import { LayoutColumn } from '@/components/ui/layout-grid';
+
+// Lib
 import { getSession } from '@/lib/server/user';
 
 // Modules
 import { CreateOrganizationForm } from '@/modules/main/organization/create-organizations/create-organization-form';
-import { Layout } from 'lucide-react';
+
 import { redirect } from 'next/navigation';
 
 export default async function CreateOrganizationPage() {

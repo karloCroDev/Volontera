@@ -11,6 +11,7 @@ import {
   retrieveAllMembersInOrganization,
   demoteOrPromoteOrganizationMember,
   acceptOrDeclineUsersRequestToJoinOrganization,
+  leaveOrganization,
 } from "@/models/organization-managment.model";
 
 // Database
@@ -20,6 +21,7 @@ import { User } from "@repo/database";
 import {
   AcceptOrDeclineUsersRequestToJoinOrganizationArgs,
   DemoteOrPromoteOrganizationMemberArgs,
+  LeaveOrganizationArgs,
   RetirveAllRequestsToJoinOrganizationArgs,
   RetrieveAllMembersInOrganizationArgs,
   RetrieveOrganizationMemberArgs,
@@ -103,5 +105,37 @@ export async function retrieveOrganizationMemberService({
     success: true,
     data: { organizationMember },
     status: 200,
+  });
+}
+
+export async function leaveOrganizationService({
+  data,
+  userId,
+}: {
+  data: LeaveOrganizationArgs;
+  userId: User["id"];
+}) {
+  const member = await retrieveOrganizationMember({
+    organizationId: data.organizationId,
+    userId,
+  });
+
+  if (!member) {
+    return toastResponseOutput({
+      status: 400,
+      title: "Not a member",
+      message: "You are not a member of this organization",
+    });
+  }
+
+  await leaveOrganization({
+    organizationId: data.organizationId,
+    userId,
+  });
+
+  return toastResponseOutput({
+    status: 200,
+    title: "Left organization",
+    message: "You have left the organization successfully",
   });
 }

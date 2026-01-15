@@ -11,7 +11,6 @@ import Markdown from 'react-markdown';
 
 export const UsersSidebar: React.FC<{
 	id: string;
-	conversationId?: string; // Npr. kod searcha nećemo imati conversationId
 	username: string;
 	userRole?: string;
 	lastMessage?: string;
@@ -20,7 +19,6 @@ export const UsersSidebar: React.FC<{
 	imageUrl?: string;
 }> = ({
 	id,
-	conversationId,
 	username,
 	userRole,
 	lastMessage,
@@ -36,11 +34,7 @@ export const UsersSidebar: React.FC<{
 
 	return (
 		<Link
-			href={
-				conversationId
-					? `${pathname}?user=${id}&conversationId=${conversationId}`
-					: `${pathname}?user=${id}`
-			}
+			href={`${pathname}?user=${id}`}
 			className={twJoin(
 				'border-input-border hover:bg-background-foreground/10 flex items-center gap-4 rounded-lg px-2 py-3 backdrop-blur-2xl',
 				isActive && 'border-b-muted-foreground font-semibold',

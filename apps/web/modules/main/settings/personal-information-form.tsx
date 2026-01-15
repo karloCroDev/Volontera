@@ -35,7 +35,6 @@ export const PersonalInformationForm = withReactQueryProvider(() => {
 
 	const { data: user } = useSession();
 
-	console.log(user?.DOB);
 	return (
 		<div className="border-input-border mt-10 flex flex-col justify-between gap-8 rounded-md border p-6 lg:p-8 xl:flex-row 2xl:p-10">
 			<div className="flex justify-between xl:flex-col">

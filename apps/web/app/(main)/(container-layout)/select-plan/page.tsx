@@ -13,11 +13,13 @@ import { getSession } from '@/lib/server/user';
 import { getBillingLink } from '@/lib/server/payment';
 
 export default async function SelectPlan() {
-	const user = await getSession();
+	const [user, billingLink] = await Promise.all([
+		await getSession(),
+		await getBillingLink(),
+	]);
 
 	if (!user.success) redirect('/auth/login');
 
-	const billingLink = await getBillingLink();
 	return (
 		<>
 			<div className="flex items-center justify-between">

@@ -1,14 +1,16 @@
 // External packages
 import { notFound } from 'next/navigation';
+import { Suspense } from 'react';
 import Image from 'next/image';
 
 // Components
 import { Avatar } from '@/components/ui/avatar';
-import { Tag } from '@/components/ui/tag';
+import { LinkAsTag, Tag } from '@/components/ui/tag';
 import { SharePost } from '@/components/ui/post/share-post';
-import { Button } from '@/components/ui/button';
 import { AnchorAsButton } from '@/components/ui/anchor-as-button';
 import { LinkAsButton } from '@/components/ui/link-as-button';
+import { PostSkeleton } from '@/components/ui/post/post-skeleton';
+import { Indicators } from '@/components/ui/indicators';
 
 // Modules
 import { OrganizationRoutingHeader } from '@/modules/main/organization/common/organization-routing-header';
@@ -19,6 +21,12 @@ import { PostsMapping } from '@/modules/main/organization/home/posts-mapping';
 import { getOrganizationDetailsById } from '@/lib/server/organization';
 import { retrieveOrganizationPosts } from '@/lib/server/post';
 import { retrieveOrganizationMember } from '@/lib/server/organization-managment';
+import { getImageFromKey } from '@/lib/server/image';
+
+// Modules
+import { FollowOrganizationButton } from '@/modules/main/organization/common/follow-organization-button';
+import { LeaveOrganizationDialog } from '@/modules/main/organization/common/leave-organization-dialog';
+import { convertToFullname } from '@/lib/utils/converter';
 
 export default async function OrganizationPage({
 	params,
@@ -28,15 +36,16 @@ export default async function OrganizationPage({
 	}>;
 }) {
 	const { organizationId } = await params;
-	const [organizationDetailsById, posts, member] = await Promise.all([
+	const [organizationDetailsById, member] = await Promise.all([
 		getOrganizationDetailsById(organizationId),
-		retrieveOrganizationPosts(organizationId),
 		retrieveOrganizationMember(organizationId),
 	]);
 
-	if (!organizationDetailsById.success || !posts.success) notFound();
-	console.log('member', member);
+	if (!organizationDetailsById.success) notFound();
 
+	// const images = getImageFromKey({
+	// 	imageUrls:
+	// })
 	return (
 		<>
 			<div className="border-input-border relative -mx-4 -my-6 rounded-xl px-5 py-4 md:m-0 md:border">
@@ -60,19 +69,28 @@ export default async function OrganizationPage({
 								{organizationDetailsById.organization.name}
 							</Avatar>
 						</div>
+						{((member.success && member.organizationMember.role !== 'OWNER') ||
+							!member.success) && (
+							<div className="flex gap-4">
+								<FollowOrganizationButton
+									hasUserFollowed={organizationDetailsById.isFollowing}
+								/>
 
-						<div className="flex gap-4">
-							<Button colorScheme="yellow" size="md">
-								Follow
-							</Button>
-							<LinkAsButton
-								colorScheme="orange"
-								size="md"
-								href={`/organization/${organizationId}/join-organization`}
-							>
-								Join
-							</LinkAsButton>
-						</div>
+								{member.success ? (
+									<LeaveOrganizationDialog
+										organizationName={organizationDetailsById.organization.name}
+									/>
+								) : (
+									<LinkAsButton
+										colorScheme="orange"
+										size="md"
+										href={`/organization/${organizationId}/join-organization`}
+									>
+										Join
+									</LinkAsButton>
+								)}
+							</div>
+						)}
 					</div>
 					<h1 className="mt-4 text-xl font-medium md:text-2xl lg:text-3xl">
 						{organizationDetailsById.organization.name}
@@ -80,17 +98,29 @@ export default async function OrganizationPage({
 					{/* TODO: Get the number, and just check if user is inside the organization or not */}
 					<div className="text-muted-foreground mt-1.5 flex items-center gap-4">
 						<p>
-							<strong>30</strong> attendees
+							<strong>
+								{
+									organizationDetailsById.organization._count
+										.organizationMembers
+								}
+							</strong>{' '}
+							members
 						</p>
 						<hr className="bg-input-border h-6 w-px border-0" />
 						<p>
-							<strong>300</strong> followers
+							<strong>
+								{
+									organizationDetailsById.organization._count
+										.organizationFollowers
+								}
+							</strong>{' '}
+							followers
 						</p>
 					</div>
 					<hr className="bg-input-border my-6 h-px w-full border-0" />
 
 					<div className="flex justify-between lg:gap-8">
-						<div>
+						<div className="flex-1">
 							{organizationDetailsById.organization.organizationInfo
 								.additionalLinks.length > 0 && (
 								<>
@@ -140,29 +170,107 @@ export default async function OrganizationPage({
 							)}
 						</div>
 
-						<div>
+						<div className="flex-1">
 							<h4 className="text-lg underline underline-offset-4 lg:text-xl">
 								Members
 							</h4>
-							<div className="mt-3 grid grid-cols-2 items-center gap-4 md:grid-cols-3 xl:grid-cols-4">
-								{/* TODO: Samo vrati imena */}
-								{[...Array(7)].map((_, indx) => (
-									<Tag key={indx} className="flex gap-2" colorScheme="gray">
-										<Avatar
-											imageProps={{
-												src: '',
-											}}
-											size="xs"
-										>
-											Ante
-										</Avatar>
-										Ana
-									</Tag>
-								))}
 
-								<Tag colorScheme="gray" className="h-fit w-full justify-center">
-									+99 more
-								</Tag>
+							<Indicators className="mb-3">Owner</Indicators>
+							<LinkAsTag
+								href={`/profile/${organizationDetailsById.organization.owner.id}`}
+								className="flex gap-2"
+								colorScheme="gray"
+							>
+								<Avatar
+									imageProps={{
+										src: '',
+									}}
+									size="xs"
+								>
+									{convertToFullname({
+										firstname:
+											organizationDetailsById.organization.owner.firstName ||
+											'',
+										lastname:
+											organizationDetailsById.organization.owner.lastName || '',
+									})}
+								</Avatar>
+								{convertToFullname({
+									firstname:
+										organizationDetailsById.organization.owner.firstName || '',
+									lastname:
+										organizationDetailsById.organization.owner.lastName || '',
+								})}
+							</LinkAsTag>
+
+							<Indicators className="mb-3">Admins</Indicators>
+							<div className="flex items-center gap-4">
+								{organizationDetailsById.membersHierarchy.admins.map(
+									(admin) => (
+										<LinkAsTag
+											href={`/profile/${admin.user.id}`}
+											key={admin.id}
+											className="flex gap-2"
+											colorScheme="gray"
+										>
+											<Avatar
+												imageProps={{
+													src: '',
+												}}
+												size="xs"
+											>
+												{convertToFullname({
+													firstname: admin.user.firstName || '',
+													lastname: admin.user.lastName || '',
+												})}
+											</Avatar>
+											{convertToFullname({
+												firstname: admin.user.firstName || '',
+												lastname: admin.user.lastName || '',
+											})}
+										</LinkAsTag>
+									)
+								)}
+							</div>
+
+							<Indicators className="mb-3">Members</Indicators>
+							<div className="flex items-center gap-4">
+								{organizationDetailsById.membersHierarchy.members.map(
+									(member) => (
+										<LinkAsTag
+											href={`/profile/${member.user.id}`}
+											key={member.id}
+											className="flex gap-2"
+											colorScheme="gray"
+										>
+											<Avatar
+												imageProps={{
+													src: '',
+												}}
+												size="xs"
+											>
+												{convertToFullname({
+													firstname: member.user.firstName || '',
+													lastname: member.user.lastName || '',
+												})}
+											</Avatar>
+											{convertToFullname({
+												firstname: member.user.firstName || '',
+												lastname: member.user.lastName || '',
+											})}
+										</LinkAsTag>
+									)
+								)}
+
+								{organizationDetailsById.organization._count
+									.organizationMembers > 5 && (
+									<Tag colorScheme="gray">
+										+
+										{organizationDetailsById.organization._count
+											.organizationMembers - 5}{' '}
+										more
+									</Tag>
+								)}
 							</div>
 						</div>
 					</div>
@@ -185,7 +293,22 @@ export default async function OrganizationPage({
 				(member.organizationMember.role === 'ADMIN' ||
 					member.organizationMember.role === 'OWNER') && <CreatePostDialog />}
 
-			<PostsMapping posts={posts} />
+			<div className="mt-6 grid grid-cols-1 gap-4 xl:grid-cols-2">
+				<Suspense
+					fallback={[...Array(6)].map((_, indx) => (
+						<PostSkeleton key={indx} />
+					))}
+				>
+					<Posts organizationId={organizationId} />
+				</Suspense>
+			</div>
 		</>
 	);
+}
+
+async function Posts({ organizationId }: { organizationId: string }) {
+	const posts = await retrieveOrganizationPosts(organizationId);
+
+	if (!posts.success) return <p>There was an error with loading posts</p>;
+	return <PostsMapping posts={posts} />;
 }

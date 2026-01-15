@@ -9,7 +9,8 @@ export type IconNames =
 	| 'login-represntation'
 	| 'register-represntation'
 	| 'password-represntation'
-	| 'forgot-password-represntation';
+	| 'forgot-password-represntation'
+	| 'logo';
 
 const baseClasses = 'flex-shrink-0';
 
@@ -53,6 +54,9 @@ export const Icon: React.FC<
 				{...rest}
 				className={twMerge(baseClasses, className)}
 			/>
+		)}
+		{name === 'logo' && (
+			<Icons.Logo {...rest} className={twMerge(baseClasses, className)} />
 		)}
 	</>
 );

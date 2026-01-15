@@ -7,6 +7,7 @@ import {
 	CreditCard,
 	EllipsisVertical,
 	LogOut,
+	SunMoon,
 } from 'lucide-react';
 import {
 	Button as AriaButton,
@@ -32,6 +33,7 @@ import { withReactQueryProvider } from '@/lib/utils/react-query';
 // Types
 import { UserResponse } from '@repo/types/user';
 import { convertToFullname, convertToPascalCase } from '@/lib/utils/converter';
+import { useTheme } from 'next-themes';
 
 export const UserInformation: React.FC<{
 	user: UserResponse;
@@ -40,6 +42,7 @@ export const UserInformation: React.FC<{
 	const { desktopOpen } = useSidebarContext();
 
 	const { mutate, isPending } = useLogout();
+	const { theme, setTheme } = useTheme();
 
 	return (
 		<>
@@ -157,6 +160,19 @@ export const UserInformation: React.FC<{
 											{user.subscriptionTier === 'PRO' ? 'Premium' : 'Free'}
 										</p>
 									</LinkAsButton>
+								</li>
+								<li className="lg:hidden">
+									<Button
+										variant="ghost"
+										iconLeft={<SunMoon className="size-4" />}
+										size="sm"
+										className="w-full justify-start px-2"
+										onPress={() =>
+											setTheme(theme === 'dark' ? 'light' : 'dark')
+										}
+									>
+										Change theme
+									</Button>
 								</li>
 							</ul>
 							<hr className="bg-input-border h-px w-full border-0" />

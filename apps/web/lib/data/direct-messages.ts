@@ -33,10 +33,10 @@ export async function searchAllUsers({ query }: SearchArgs) {
 }
 
 export async function getDirectMessagesConversationById({
-	conversationId,
+	recieverId,
 }: ConversationArgs) {
 	try {
-		const res = await API().get(`direct-messages/${conversationId}`);
+		const res = await API().get(`direct-messages/${recieverId}`);
 		return res.data;
 	} catch (err) {
 		catchError(err);

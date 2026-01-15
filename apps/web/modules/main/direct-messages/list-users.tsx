@@ -35,7 +35,6 @@ export const ListUsers: React.FC<{
 			.filter(Boolean),
 	});
 
-	console.log('Image obj', images);
 	return (
 		<aside
 			className={twJoin(
@@ -60,7 +59,6 @@ export const ListUsers: React.FC<{
 							isOnline={onlineUsers.includes(conversation.participant.id)}
 							username={`${conversation.participant.firstName} ${conversation.participant.lastName}`}
 							lastMessage={conversation.lastMessage || undefined}
-							conversationId={conversation.id}
 							id={conversation.participant.id}
 							key={conversation.participant.id}
 						/>

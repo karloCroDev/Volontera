@@ -35,6 +35,7 @@ import { postRoutes } from "@/routes/post.route";
 import { commentRoutes } from "@/routes/comment.route";
 import { organizationManagmentRoutes } from "@/routes/organization-managment.route";
 import { organizationGroupChatRoute } from "@/routes/organization-group-chat.route";
+import { organizationTasksRoutes } from "@/routes/organization-tasks.route";
 
 // Security middleware
 app.use(helmet());
@@ -85,6 +86,12 @@ app.use(
   authMiddleware,
   hasRoleMiddleware,
   organizationGroupChatRoute
+);
+app.use(
+  "/organization-tasks",
+  authMiddleware,
+  hasRoleMiddleware,
+  organizationTasksRoutes
 );
 app.use("/search", authMiddleware, hasRoleMiddleware, searchRoutes);
 app.use("/post", authMiddleware, hasRoleMiddleware, postRoutes);

@@ -1,27 +1,29 @@
 // External packages
 import { z } from "zod";
+import { organizationIdSchema } from "./organization";
 
-export const retirveAllRequestsToJoinOrganizationSchema = z.object({
-  organizationId: z.cuid(),
-});
+// TODO: If there are no more agruments (100% then just use organizationIdSchema directly)
+export const retirveAllRequestsToJoinOrganizationSchema = organizationIdSchema;
 export type RetirveAllRequestsToJoinOrganizationArgs = z.infer<
   typeof retirveAllRequestsToJoinOrganizationSchema
 >;
 
-export const retrieveAllMembersInOrganizationSchema = z.object({
-  organizationId: z.cuid(),
-});
-
+export const retrieveAllMembersInOrganizationSchema = organizationIdSchema;
 export type RetrieveAllMembersInOrganizationArgs = z.infer<
   typeof retrieveAllMembersInOrganizationSchema
 >;
 
-export const retrieveOrganizationMemberSchema = z.object({
-  organizationId: z.cuid(),
-});
+export const retrieveOrganizationMemberSchema = organizationIdSchema;
 export type RetrieveOrganizationMemberArgs = z.infer<
   typeof retrieveOrganizationMemberSchema
 >;
+
+export const leaveOrganizationSchema = z
+  .object({
+    reason: z.string().min(1).or(z.literal("")).optional(),
+  })
+  .extend(organizationIdSchema.shape);
+export type LeaveOrganizationArgs = z.infer<typeof leaveOrganizationSchema>;
 
 export const demoteOrPromoteOrganizationMemberSchema = z.object({
   organizationId: z.cuid(),

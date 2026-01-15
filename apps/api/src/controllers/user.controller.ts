@@ -2,14 +2,19 @@
 import { Request, Response } from "express";
 
 // Services
-import { getUserByIdService } from "@/services/user.service";
+import {
+  getUserByIdService,
+  retrieveAllOrganizationsForUserService,
+  retrieveAllPostsForUserService,
+} from "@/services/user.service";
 import { handleServerErrorResponse } from "@/lib/utils/error-response";
+import { UserSchemaArgs } from "@repo/schemas/user";
 
 export async function userSessionController(req: Request, res: Response) {
   try {
-    const { userId } = req.user;
-
-    const result = await getUserByIdService(userId);
+    const result = await getUserByIdService({
+      userId: req.user.userId,
+    } as UserSchemaArgs);
 
     return res.status(result.status).json(result.body);
   } catch (err) {
@@ -30,7 +35,39 @@ export async function logoutController(req: Request, res: Response) {
 export async function getUserByIdController(req: Request, res: Response) {
   try {
     // TODO: For this write a zod schema later
-    const result = await getUserByIdService(req.params.userId as string);
+    const result = await getUserByIdService(req.params as UserSchemaArgs);
+
+    return res.status(result.status).json(result.body);
+  } catch (err) {
+    handleServerErrorResponse(res, err);
+  }
+}
+
+export async function retrieveAllOrganizationsForUserController(
+  req: Request,
+  res: Response
+) {
+  try {
+    // TODO: For this write a zod schema later
+    const result = await retrieveAllOrganizationsForUserService(
+      req.params as UserSchemaArgs
+    );
+
+    return res.status(result.status).json(result.body);
+  } catch (err) {
+    handleServerErrorResponse(res, err);
+  }
+}
+
+export async function retrieveAllPostsForUserController(
+  req: Request,
+  res: Response
+) {
+  try {
+    // TODO: For this write a zod schema later
+    const result = await retrieveAllPostsForUserService(
+      req.params as UserSchemaArgs
+    );
 
     return res.status(result.status).json(result.body);
   } catch (err) {

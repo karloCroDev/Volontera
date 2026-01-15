@@ -29,10 +29,8 @@ export function organizationRolesMiddleware({
       });
     }
 
-    // Owner uvijek ima pristup svemu unutar organizacije
-    if (member.role === "OWNER") {
-      return next();
-    }
+    // Owner uvijek ima pristup svemu unutar organizacije (osim ako je eksplicitno zabranjeno)
+    if (member.role === "OWNER") return next();
 
     // Ako nisu specificirane role, onda ne moze nijedan korisnik osim organizacije pristupiti
     if (!aquiredRoles) {

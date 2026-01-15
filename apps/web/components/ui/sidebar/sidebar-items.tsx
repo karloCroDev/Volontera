@@ -5,6 +5,7 @@ import * as React from 'react';
 import { twJoin, twMerge } from 'tailwind-merge';
 import { ButtonProps } from 'react-aria-components';
 import { Building2, ChevronDown, Plus } from 'lucide-react';
+import { useParams } from 'next/navigation';
 
 // Hooks
 import { useIsMobile } from '@/hooks/utils/useIsMobile';
@@ -18,12 +19,16 @@ import {
 } from '@/components/ui/link-as-button';
 import { Avatar } from '@/components/ui/avatar';
 import { useSidebarContext } from '@/components/ui/sidebar/sidebar-provider';
+import { Indicators } from '@/components/ui/indicators';
+
+// Hooks
 import { useSession } from '@/hooks/data/user';
 import { useListOrganizations } from '@/hooks/data/organization';
-import { ListOrganizationsOrganizatorResponse } from '@repo/types/organization';
-import { useParams } from 'next/navigation';
-import { Dot } from '@/components/ui/dot';
 import { useGetImageFromKeys } from '@/hooks/data/image';
+
+// Types
+import { ListOrganizationsOrganizatorResponse } from '@repo/types/organization';
+import { Dot } from '@/components/ui/dot';
 
 export const SidebarItem: React.FC<
 	React.ComponentPropsWithoutRef<'button'> &
@@ -80,6 +85,7 @@ export const Organizations = () => {
 
 	const params = useParams<{ organizationId: string }>();
 
+	console.log(organizations);
 	return (
 		<Collapsible
 			open={open}
@@ -125,9 +131,7 @@ export const Organizations = () => {
 						</ul>
 
 						{organizations?.ownedOrganizations && (
-							<p className="text-muted-foreground border-input-border ml-2 mt-4 border-b pb-2 text-sm">
-								Managing
-							</p>
+							<Indicators>Managing</Indicators>
 						)}
 						<ul className="ml-4">
 							{organizations?.ownedOrganizations &&
@@ -146,9 +150,7 @@ export const Organizations = () => {
 									</p>
 								))}
 						</ul>
-						<p className="text-muted-foreground border-input-border ml-2 mt-4 border-b pb-2 text-sm">
-							Attending
-						</p>
+						<Indicators>Attending</Indicators>
 						<ul className="ml-4">
 							{organizations &&
 							organizations.attendingOrganizations.length > 0 ? (
@@ -168,9 +170,7 @@ export const Organizations = () => {
 								</p>
 							)}
 						</ul>
-						<p className="text-muted-foreground border-input-border ml-2 mt-4 border-b pb-2 text-sm">
-							Following
-						</p>
+						<Indicators>Following</Indicators>
 						<ul className="ml-4">
 							{organizations &&
 							organizations.followingOrganizations.length > 0 ? (
