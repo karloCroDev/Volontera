@@ -14,6 +14,7 @@ import {
   GetOrganizationDetailsByIdArgs,
   ToggleFollowOrganizationArgs,
 } from "@repo/schemas/organization";
+import { handleServerErrorResponse } from "@/lib/utils/error-response";
 
 export async function createOrganizationController(
   req: Request,
@@ -27,7 +28,7 @@ export async function createOrganizationController(
 
     return res.status(result.status).json(result.body);
   } catch (err) {
-    return res.status(500).json({ success: false, message: "Internal error" });
+    handleServerErrorResponse(res, err);
   }
 }
 
@@ -42,7 +43,7 @@ export async function getOrganizationDetailsByIdController(
     });
     return res.status(result.status).json(result.body);
   } catch (err) {
-    return res.status(500).json({ success: false, message: "Internal error" });
+    handleServerErrorResponse(res, err);
   }
 }
 
@@ -54,7 +55,7 @@ export async function listOrganizationsOrganizatorController(
     const result = await listOrganizationsOrganizatorService(req.user.userId);
     return res.status(result.status).json(result.body);
   } catch (err) {
-    return res.status(500).json({ success: false, message: "Internal error" });
+    handleServerErrorResponse(res, err);
   }
 }
 
@@ -66,7 +67,7 @@ export async function listOrganizationsUserController(
     const result = await listOrganizationsUserService(req.user.userId);
     return res.status(result.status).json(result.body);
   } catch (err) {
-    return res.status(500).json({ success: false, message: "Internal error" });
+    handleServerErrorResponse(res, err);
   }
 }
 
@@ -82,7 +83,7 @@ export async function sendRequestToJoinOrganizationController(
 
     return res.status(result.status).json(result.body);
   } catch (err) {
-    return res.status(500).json({ success: false, message: "Internal error" });
+    handleServerErrorResponse(res, err);
   }
 }
 
@@ -98,6 +99,6 @@ export async function toggleFollowOrganizationController(
 
     return res.status(result.status).json(result.body);
   } catch (err) {
-    return res.status(500).json({ success: false, message: "Internal error" });
+    handleServerErrorResponse(res, err);
   }
 }

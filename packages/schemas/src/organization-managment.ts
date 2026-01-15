@@ -20,7 +20,7 @@ export type RetrieveOrganizationMemberArgs = z.infer<
 
 export const leaveOrganizationSchema = z
   .object({
-    reason: z.string().min(1).optional(),
+    reason: z.string().min(1).or(z.literal("")).optional(),
   })
   .extend(organizationIdSchema.shape);
 export type LeaveOrganizationArgs = z.infer<typeof leaveOrganizationSchema>;

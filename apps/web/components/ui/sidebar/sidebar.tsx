@@ -70,7 +70,7 @@ export const Sidebar: React.FC<{
 						<Icon name="logo" className="size-20" />
 					</Link>
 				)}
-				<hr className="border-input-border my-6 h-px w-full border" />
+				<hr className="bg-input-border my-6 h-px w-full border-0" />
 				<div className={`flex flex-col ${desktopOpen ? 'gap-4' : 'gap-6'}`}>
 					<Link href="/home">
 						{desktopOpen ? (
@@ -172,7 +172,11 @@ export const Sidebar: React.FC<{
 					>
 						<Dialog className="flex h-full flex-col">
 							<div className="mb-4 flex items-center justify-between px-2">
-								<Volontera />
+								<div>
+									<Volontera />
+									<hr className="bg-input-border my-6 h-px w-full border-0" />
+								</div>
+
 								<Button slot="close" isFullyRounded className="p-2">
 									<X />
 								</Button>

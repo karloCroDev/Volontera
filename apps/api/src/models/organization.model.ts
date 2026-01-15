@@ -192,6 +192,7 @@ export async function getOrganizationDetailsById({
 }) {
   const [organization, isFollowing, adminMembers, otherMembers] =
     await prisma.$transaction([
+      // Organizacijski detalji  + vlasnikovi podaci
       prisma.organization.findUnique({
         where: {
           id: organizationId,
@@ -217,6 +218,7 @@ export async function getOrganizationDetailsById({
           },
         },
       }),
+      // Je li trenutni korisnik prati organizaciju
       prisma.organizationFollowers.findUnique({
         where: {
           organizationId_followerUserId: {
@@ -225,6 +227,7 @@ export async function getOrganizationDetailsById({
           },
         },
       }),
+      // Admini organizacije
       prisma.organizationMember.findMany({
         where: {
           organizationId,
@@ -240,8 +243,9 @@ export async function getOrganizationDetailsById({
         orderBy: {
           createdAt: "asc",
         },
-        take: 3,
       }),
+
+      // Obični članovi
       prisma.organizationMember.findMany({
         where: {
           organizationId,
@@ -254,6 +258,7 @@ export async function getOrganizationDetailsById({
             },
           },
         },
+
         orderBy: {
           createdAt: "asc",
         },

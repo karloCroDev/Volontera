@@ -12,6 +12,7 @@ import { LinkAsButton } from '@/components/ui/link-as-button';
 import { getOrganizationDetailsById } from '@/lib/server/organization';
 import { retrieveOrganizationMember } from '@/lib/server/organization-managment';
 import { FollowOrganizationButton } from '@/modules/main/organization/common/follow-organization-button';
+import { LeaveOrganizationDialog } from '@/modules/main/organization/common/leave-organization-dialog';
 
 export default async function OrganizationFeaturesLayout({
 	params,
@@ -29,6 +30,7 @@ export default async function OrganizationFeaturesLayout({
 
 	if (!organizationDetailsById.success) notFound();
 
+	console.log('MEMBER', member);
 	return (
 		<>
 			<div className="border-input-border bg-muted relative flex flex-shrink-0 flex-col items-center gap-6 rounded-xl border p-4 md:h-40 md:flex-row md:px-6">
@@ -64,9 +66,9 @@ export default async function OrganizationFeaturesLayout({
 						/>
 
 						{member.success ? (
-							<Button variant="outline" colorScheme="destructive" size="md">
-								Leave
-							</Button>
+							<LeaveOrganizationDialog
+								organizationName={organizationDetailsById.organization.name}
+							/>
 						) : (
 							<LinkAsButton
 								colorScheme="orange"

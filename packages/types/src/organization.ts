@@ -15,6 +15,7 @@ export type CreateOrganizationResponse = SuccessfulResponse & {
 
 export type GetOrganizationDetailsByIdResponse = ServerHandleResponse<true> & {
   organization: Organization & {
+    owner: Omit<User, "password">;
     organizationInfo: OrganizationInfo & {
       additionalLinks: AdditionalLinks[];
     };

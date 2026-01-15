@@ -93,7 +93,6 @@ export async function getOrganizationDetailsByIdService({
     data: {
       organization: {
         ...organization,
-
         avatarImage: await getImagePresignedUrls(organization.avatarImage),
         organizationInfo: {
           ...organization.organizationInfo,

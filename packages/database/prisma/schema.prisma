@@ -281,8 +281,8 @@ model OrganizationLeaveFeedback {
   id             String       @id @default(cuid())
   organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   organizationId String
-  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId         String
+  author         User         @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  authorId       String
 
   reason      String
   suggestions String?

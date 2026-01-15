@@ -1,13 +1,16 @@
 // External packages
 import { notFound } from 'next/navigation';
+import { Suspense } from 'react';
 import Image from 'next/image';
 
 // Components
 import { Avatar } from '@/components/ui/avatar';
-import { Tag } from '@/components/ui/tag';
+import { LinkAsTag, Tag } from '@/components/ui/tag';
 import { SharePost } from '@/components/ui/post/share-post';
 import { AnchorAsButton } from '@/components/ui/anchor-as-button';
 import { LinkAsButton } from '@/components/ui/link-as-button';
+import { PostSkeleton } from '@/components/ui/post/post-skeleton';
+import { Indicators } from '@/components/ui/indicators';
 
 // Modules
 import { OrganizationRoutingHeader } from '@/modules/main/organization/common/organization-routing-header';
@@ -18,10 +21,12 @@ import { PostsMapping } from '@/modules/main/organization/home/posts-mapping';
 import { getOrganizationDetailsById } from '@/lib/server/organization';
 import { retrieveOrganizationPosts } from '@/lib/server/post';
 import { retrieveOrganizationMember } from '@/lib/server/organization-managment';
-import { Suspense } from 'react';
-import { PostSkeleton } from '@/components/ui/post/post-skeleton';
+import { getImageFromKey } from '@/lib/server/image';
+
+// Modules
 import { FollowOrganizationButton } from '@/modules/main/organization/common/follow-organization-button';
-import { Button } from '@/components/ui/button';
+import { LeaveOrganizationDialog } from '@/modules/main/organization/common/leave-organization-dialog';
+import { convertToFullname } from '@/lib/utils/converter';
 
 export default async function OrganizationPage({
 	params,
@@ -38,7 +43,9 @@ export default async function OrganizationPage({
 
 	if (!organizationDetailsById.success) notFound();
 
-	console.log(member);
+	// const images = getImageFromKey({
+	// 	imageUrls:
+	// })
 	return (
 		<>
 			<div className="border-input-border relative -mx-4 -my-6 rounded-xl px-5 py-4 md:m-0 md:border">
@@ -70,9 +77,9 @@ export default async function OrganizationPage({
 								/>
 
 								{member.success ? (
-									<Button variant="outline" colorScheme="destructive" size="md">
-										Leave
-									</Button>
+									<LeaveOrganizationDialog
+										organizationName={organizationDetailsById.organization.name}
+									/>
 								) : (
 									<LinkAsButton
 										colorScheme="orange"
@@ -113,7 +120,7 @@ export default async function OrganizationPage({
 					<hr className="bg-input-border my-6 h-px w-full border-0" />
 
 					<div className="flex justify-between lg:gap-8">
-						<div>
+						<div className="flex-1">
 							{organizationDetailsById.organization.organizationInfo
 								.additionalLinks.length > 0 && (
 								<>
@@ -163,29 +170,107 @@ export default async function OrganizationPage({
 							)}
 						</div>
 
-						<div>
+						<div className="flex-1">
 							<h4 className="text-lg underline underline-offset-4 lg:text-xl">
 								Members
 							</h4>
-							<div className="mt-3 grid grid-cols-2 items-center gap-4 md:grid-cols-3 xl:grid-cols-4">
-								{/* TODO: Samo vrati imena */}
-								{[...Array(7)].map((_, indx) => (
-									<Tag key={indx} className="flex gap-2" colorScheme="gray">
-										<Avatar
-											imageProps={{
-												src: '',
-											}}
-											size="xs"
-										>
-											Ante
-										</Avatar>
-										Ana
-									</Tag>
-								))}
 
-								<Tag colorScheme="gray" className="h-fit w-full justify-center">
-									+99 more
-								</Tag>
+							<Indicators className="mb-3">Owner</Indicators>
+							<LinkAsTag
+								href={`/profile/${organizationDetailsById.organization.owner.id}`}
+								className="flex gap-2"
+								colorScheme="gray"
+							>
+								<Avatar
+									imageProps={{
+										src: '',
+									}}
+									size="xs"
+								>
+									{convertToFullname({
+										firstname:
+											organizationDetailsById.organization.owner.firstName ||
+											'',
+										lastname:
+											organizationDetailsById.organization.owner.lastName || '',
+									})}
+								</Avatar>
+								{convertToFullname({
+									firstname:
+										organizationDetailsById.organization.owner.firstName || '',
+									lastname:
+										organizationDetailsById.organization.owner.lastName || '',
+								})}
+							</LinkAsTag>
+
+							<Indicators className="mb-3">Admins</Indicators>
+							<div className="flex items-center gap-4">
+								{organizationDetailsById.membersHierarchy.admins.map(
+									(admin) => (
+										<LinkAsTag
+											href={`/profile/${admin.user.id}`}
+											key={admin.id}
+											className="flex gap-2"
+											colorScheme="gray"
+										>
+											<Avatar
+												imageProps={{
+													src: '',
+												}}
+												size="xs"
+											>
+												{convertToFullname({
+													firstname: admin.user.firstName || '',
+													lastname: admin.user.lastName || '',
+												})}
+											</Avatar>
+											{convertToFullname({
+												firstname: admin.user.firstName || '',
+												lastname: admin.user.lastName || '',
+											})}
+										</LinkAsTag>
+									)
+								)}
+							</div>
+
+							<Indicators className="mb-3">Members</Indicators>
+							<div className="flex items-center gap-4">
+								{organizationDetailsById.membersHierarchy.members.map(
+									(member) => (
+										<LinkAsTag
+											href={`/profile/${member.user.id}`}
+											key={member.id}
+											className="flex gap-2"
+											colorScheme="gray"
+										>
+											<Avatar
+												imageProps={{
+													src: '',
+												}}
+												size="xs"
+											>
+												{convertToFullname({
+													firstname: member.user.firstName || '',
+													lastname: member.user.lastName || '',
+												})}
+											</Avatar>
+											{convertToFullname({
+												firstname: member.user.firstName || '',
+												lastname: member.user.lastName || '',
+											})}
+										</LinkAsTag>
+									)
+								)}
+
+								{organizationDetailsById.organization._count
+									.organizationMembers > 5 && (
+									<Tag colorScheme="gray">
+										+
+										{organizationDetailsById.organization._count
+											.organizationMembers - 5}{' '}
+										more
+									</Tag>
+								)}
 							</div>
 						</div>
 					</div>

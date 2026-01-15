@@ -18,6 +18,7 @@ import {
   RetrievePostArgs,
 } from "@repo/schemas/post";
 import { RetrievePostCommentsArgs } from "@repo/schemas/comment";
+import { handleServerErrorResponse } from "@/lib/utils/error-response";
 
 export async function createPostController(req: Request, res: Response) {
   try {
@@ -28,7 +29,7 @@ export async function createPostController(req: Request, res: Response) {
 
     return res.status(result.status).json(result.body);
   } catch (err) {
-    return res.status(500).json({ success: false, message: "Internal error" });
+    handleServerErrorResponse(res, err);
   }
 }
 
@@ -38,7 +39,7 @@ export async function deletePostController(req: Request, res: Response) {
 
     return res.status(result.status).json(result.body);
   } catch (err) {
-    return res.status(500).json({ success: false, message: "Internal error" });
+    handleServerErrorResponse(res, err);
   }
 }
 
@@ -48,7 +49,7 @@ export async function updatePostController(req: Request, res: Response) {
 
     return res.status(result.status).json(result.body);
   } catch (err) {
-    return res.status(500).json({ success: false, message: "Internal error" });
+    handleServerErrorResponse(res, err);
   }
 }
 
@@ -76,7 +77,7 @@ export async function retrieveOrganizationPostsController(
     });
     return res.status(result.status).json(result.body);
   } catch (err) {
-    return res.status(500).json({ success: false, message: "Internal error" });
+    handleServerErrorResponse(res, err);
   }
 }
 
@@ -92,7 +93,7 @@ export async function retrievePostWithCommentsController(
 
     return res.status(result.status).json(result.body);
   } catch (err) {
-    return res.status(500).json({ success: false, message: "Internal error" });
+    handleServerErrorResponse(res, err);
   }
 }
 
@@ -105,6 +106,6 @@ export async function toggleLikePostController(req: Request, res: Response) {
 
     return res.status(result.status).json(result.body);
   } catch (err) {
-    return res.status(500).json({ success: false, message: "Internal error" });
+    handleServerErrorResponse(res, err);
   }
 }

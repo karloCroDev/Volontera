@@ -23,13 +23,15 @@ import { useLeaveOrganization } from '@/hooks/data/organization-managment';
 // Lib
 import { toast } from '@/lib/utils/toast';
 
-export const LeaveOrganizationDialog = () => {
+export const LeaveOrganizationDialog: React.FC<{
+	organizationName: string;
+}> = ({ organizationName }) => {
 	const params = useParams<{ organizationId: string }>();
 	const {
 		handleSubmit,
 		control,
 		setError,
-		formState: { errors, isDirty },
+		formState: { errors },
 	} = useForm<LeaveOrganizationArgs>({
 		resolver: zodResolver(leaveOrganizationSchema),
 		defaultValues: {
@@ -58,22 +60,17 @@ export const LeaveOrganizationDialog = () => {
 
 	return (
 		<Dialog
+			title={`Leave: ${organizationName}`}
+			subtitle={`Please tell us why you are leaving ${organizationName}.`}
 			triggerChildren={
 				<Button variant="outline" colorScheme="destructive" size="md">
 					Leave
 				</Button>
 			}
 		>
-			<Form
-				onSubmit={handleSubmit(onSubmit)}
-				className="flex flex-col gap-4 overflow-y-scroll"
-			>
+			<Form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
 				<div>
-					<Label isOptional className="mb-2">
-						{' '}
-						Please tell us why you are leaving
-					</Label>
-
+					<Label isOptional>Reason for leaving</Label>
 					<Controller
 						control={control}
 						name="reason"
@@ -89,9 +86,10 @@ export const LeaveOrganizationDialog = () => {
 				</div>
 
 				<Button
-					isDisabled={!isDirty || isPending}
+					isDisabled={isPending}
 					isLoading={isPending}
 					type="submit"
+					className="self-end"
 				>
 					{' '}
 					Leave
