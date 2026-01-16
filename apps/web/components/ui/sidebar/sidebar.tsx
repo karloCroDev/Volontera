@@ -172,15 +172,13 @@ export const Sidebar: React.FC<{
 					>
 						<Dialog className="flex h-full flex-col">
 							<div className="mb-4 flex items-center justify-between px-2">
-								<div>
-									<Volontera />
-									<hr className="bg-input-border my-6 h-px w-full border-0" />
-								</div>
+								<Volontera />
 
 								<Button slot="close" isFullyRounded className="p-2">
 									<X />
 								</Button>
 							</div>
+							<hr className="bg-input-border mb-6 h-px w-full border-0" />
 
 							<div className="flex w-3/4 flex-col gap-2 md:w-3/5">
 								<div className="flex flex-1 flex-col gap-4">

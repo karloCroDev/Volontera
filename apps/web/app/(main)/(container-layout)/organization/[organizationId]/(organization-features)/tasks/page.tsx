@@ -18,15 +18,15 @@ export default async function BoardPage({
 
 	return (
 		<div className="flex flex-1 flex-col">
-			<div className="mb-6 flex items-center justify-between gap-8 overflow-x-scroll">
+			<div className="mb-6 flex flex-col justify-between gap-x-8 gap-y-4 overflow-x-scroll lg:flex-row lg:items-center">
 				<div>
 					<h4 className="text-xl lg:text-2xl">Tasks</h4>
 
-					<p className="text-muted-foreground hidden md:block">
+					<p className="text-muted-foreground">
 						All tasks that are assigned inside this organization
 					</p>
 				</div>
-				<div className="flex gap-4">
+				<div className="flex justify-between gap-4 lg:justify-start">
 					<SortTasksSelect />
 					<AddBoardDialog />
 				</div>

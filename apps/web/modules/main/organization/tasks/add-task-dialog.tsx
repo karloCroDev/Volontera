@@ -28,6 +28,7 @@ import {
 } from '@/hooks/data/organization-tasks';
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from '@/lib/utils/toast';
+import { getLocalTimeZone, today } from '@internationalized/date';
 import { Error } from '@/components/ui/error';
 
 export const AddTaskDialog: React.FC<{
@@ -141,6 +142,7 @@ export const AddTaskDialog: React.FC<{
 						name="dueDate"
 						render={({ field: { onChange } }) => (
 							<DatePicker
+								minValue={today(getLocalTimeZone())}
 								onChange={(val) => {
 									if (!val) return;
 
@@ -163,7 +165,7 @@ export const AddTaskDialog: React.FC<{
 							<CheckboxGroup
 								value={field.value}
 								onChange={field.onChange}
-								className="mx-auto flex w-fit flex-wrap gap-3"
+								className="flex w-fit flex-wrap gap-3"
 							>
 								{organizationMembersData?.organizationMembers?.map((member) => (
 									<Checkbox className="group" key={member.id} value={member.id}>
@@ -191,6 +193,8 @@ export const AddTaskDialog: React.FC<{
 							</CheckboxGroup>
 						)}
 					/>
+
+					<Error>{errors.assignedMembers?.message}</Error>
 				</div>
 
 				<Button

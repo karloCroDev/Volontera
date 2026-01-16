@@ -61,7 +61,9 @@ export const createTaskSchema = z
     description: z.string().min(1),
     title: z.string().min(1),
     dueDate: z.string().min(1, "Due date is required"),
-    assignedMembers: z.array(z.string()),
+    assignedMembers: z
+      .array(z.string())
+      .min(1, "At least one member must be assigned"),
     organizationTasksBoardId: z.cuid(),
   })
   .extend(organizationIdSchema.shape);
@@ -89,7 +91,9 @@ export const updateTaskInfoSchema = z
     title: z.string().min(1).max(100),
     description: z.string().min(1),
     dueDate: z.string().min(1, "Due date is required"),
-    assignedMembers: z.array(z.string()),
+    assignedMembers: z
+      .array(z.string())
+      .min(1, "At least one member must be assigned"),
     organizationTasksBoardId: z.cuid(),
   })
   .extend(organizationIdSchema.shape);

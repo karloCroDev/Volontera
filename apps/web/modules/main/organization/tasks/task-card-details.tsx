@@ -16,7 +16,7 @@ import { Avatar } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { CheckboxVisually } from '@/components/ui/checkbox';
 import { DatePicker } from '@/components/ui/date-picker';
-import { convertCalendarDate } from '@/lib/utils/converter';
+import { convertCalendarDate, convertToFullname } from '@/lib/utils/converter';
 import { DeleteConfirmationDialog } from '@/modules/main/organization/tasks/delete-confirmaton-dialog';
 import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -171,7 +171,7 @@ export const TaskCardDetails: React.FC<{
 					name="assignedMembers"
 					render={({ field }) => (
 						<CheckboxGroup
-							className="no-scrollbar mx-auto grid max-h-60 w-fit grid-cols-2 place-content-start gap-4 self-center overflow-y-scroll lg:max-h-full lg:grid-cols-3"
+							className="no-scrollbar mb-4 flex w-full flex-wrap gap-3 pb-2"
 							value={field.value}
 							onChange={field.onChange}
 						>
@@ -185,10 +185,16 @@ export const TaskCardDetails: React.FC<{
 											}}
 											size="xs"
 										>
-											{member.user.firstName} {member.user.lastName}
+											{convertToFullname({
+												firstname: member.user.firstName,
+												lastname: member.user.lastName,
+											})}
 										</Avatar>
 										<p>
-											{member.user.firstName} {member.user.lastName}
+											{convertToFullname({
+												firstname: member.user.firstName,
+												lastname: member.user.lastName,
+											})}
 										</p>
 
 										<CheckboxVisually
