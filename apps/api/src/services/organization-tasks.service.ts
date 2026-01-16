@@ -13,6 +13,7 @@ import {
   deleteTaskById,
   deleteTaskQuestion,
   moveTaskToBoard,
+  retrieveOrganizationMembers,
   retrieveAllBoardTasks,
   retrieveAllOrganizationBoards,
   retrieveAllOrganizationBoardsWithTasks,
@@ -36,6 +37,7 @@ import {
   RetrieveAllOrganizationBoardsWithTasksArgs,
   RetrieveTaskInfoArgs,
   RetrieveTaskQuestionsArgs,
+  RetrieveOrganizationMembersArgs,
   UpdateOrganizationTaskBoardTitleArgs,
   UpdateTaskInfoArgs,
 } from "@repo/schemas/organization-tasks";
@@ -103,6 +105,19 @@ export async function retrieveAllOrganizationBoardsWithTasksService({
     success: true,
     message: "Boards with tasks retrieved successfully",
     data: { boardsWithTasks },
+  });
+}
+
+export async function retrieveOrganizationMembersService({
+  organizationId,
+}: RetrieveOrganizationMembersArgs) {
+  const organizationMembers = await retrieveOrganizationMembers(organizationId);
+
+  return serverFetchOutput({
+    status: 200,
+    success: true,
+    message: "Organization members retrieved successfully",
+    data: { organizationMembers },
   });
 }
 

@@ -83,14 +83,17 @@ export async function retrieveAllBoardTasks(
     where: {
       organizationTasksBoardId: organizationTaskBoardId,
     },
-    // TODO: Get any additional info if needed
-    // include: {
-    //   organizationTaskInfos: {
-    //     select: {
+  });
+}
 
-    //     }
-    //   }
-    // }
+export async function retrieveOrganizationMembers(organizationId: string) {
+  return prisma.organizationMember.findMany({
+    where: {
+      organizationId,
+    },
+    include: {
+      user: true,
+    },
   });
 }
 
@@ -100,13 +103,19 @@ export async function createTask({
   dueDate,
   title,
   organizationTasksBoardId,
+  assignedMembers,
 }: {
   organizationId: OrganizationTask["organizationId"];
   description: OrganizationTaskInfo["description"];
   dueDate: OrganizationTask["dueDate"];
   title: OrganizationTask["title"];
+  assignedMembers: string[];
   organizationTasksBoardId: OrganizationTask["organizationTasksBoardId"];
 }) {
+  const assignedMembersData = assignedMembers.map((memberId) => ({
+    organizationMemberId: memberId,
+  }));
+
   return prisma.organizationTask.create({
     data: {
       organizationId,
@@ -116,11 +125,15 @@ export async function createTask({
       organizationTaskInfos: {
         create: {
           description,
-          //   membersAssigned: {
-          //     create: {
-          //         organization:
-          //     }
-          //   }
+          organizatonMembersAsiggnedToTaskCards: {
+            ...(assignedMembersData.length
+              ? {
+                  createMany: {
+                    data: assignedMembersData,
+                  },
+                }
+              : {}),
+          },
         },
       },
     },
@@ -134,7 +147,15 @@ export async function retrieveTaskInfo(taskId: OrganizationTask["id"]) {
     },
     include: {
       organizationTask: true,
-      membersAssigned: true,
+      organizatonMembersAsiggnedToTaskCards: {
+        include: {
+          organizationMember: {
+            include: {
+              user: true,
+            },
+          },
+        },
+      },
     },
   });
 }
@@ -144,7 +165,9 @@ export async function updateTaskInfo({
   title,
   description,
   dueDate,
+  assignedMembers,
 }: {
+  assignedMembers: string[];
   taskId: OrganizationTask["id"];
   title: OrganizationTask["title"];
   description: OrganizationTaskInfo["description"];
@@ -156,11 +179,14 @@ export async function updateTaskInfo({
     },
     data: {
       description,
-      membersAssigned: {
-        // update: {
-        //     where: {
-        //     }
-        // }
+      organizatonMembersAsiggnedToTaskCards: {
+        deleteMany: {},
+
+        createMany: {
+          data: assignedMembers.map((memberId) => ({
+            organizationMemberId: memberId,
+          })),
+        },
       },
       organizationTask: {
         update: {
@@ -190,7 +216,6 @@ export async function moveTaskToBoard({
 }
 
 export async function deleteTaskById(taskId: OrganizationTask["id"]) {
-  console.log("Deleting task with ID:", taskId);
   return prisma.organizationTask.delete({
     where: {
       id: taskId,

@@ -11,6 +11,7 @@ import {
   deleteOrganizationTaskBoardController,
   deleteTaskByIdController,
   deleteTaskQuestionController,
+  retrieveOrganizationMembersController,
   retrieveAllBoardTasksController,
   retrieveAllOrganizationBoardsController,
   retrieveAllOrganizationBoardsWithTasksController,
@@ -33,6 +34,7 @@ import {
   deleteOrganizationTaskBoardSchema,
   deleteTaskByIdSchema,
   retrieveAllOrganizationBoardsWithTasksSchema,
+  retrieveOrganizationMembersSchema,
   retrieveTaskInfoSchema,
   retrieveTaskQuestionsSchema,
   updateOrganizationTaskBoardTitleSchema,
@@ -112,6 +114,21 @@ organizationTasksRoutes.get(
     aquiredRoles: ["MEMBER", "ADMIN"],
   }),
   retrieveAllOrganizationBoardsWithTasksController
+);
+
+// Members (for task assignment)
+organizationTasksRoutes.get(
+  "/members/:organizationId",
+  validate({
+    schema: retrieveOrganizationMembersSchema,
+    responseOutput: "server",
+    type: "params",
+  }),
+  organizationRolesMiddleware({
+    type: "params",
+    aquiredRoles: ["MEMBER", "ADMIN"],
+  }),
+  retrieveOrganizationMembersController
 );
 
 // Tasks

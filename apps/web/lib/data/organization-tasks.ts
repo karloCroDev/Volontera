@@ -12,6 +12,7 @@ import {
 	DeleteTaskQuestionArgs,
 	RetrieveAllBoardTasksArgs,
 	RetrieveAllOrganizationBoardsArgs,
+	RetrieveOrganizationMembersArgs,
 	RetrieveTaskInfoArgs,
 	RetrieveTaskQuestionsArgs,
 	UpdateOrganizationTaskBoardTitleArgs,
@@ -62,6 +63,19 @@ export async function deleteOrganizationTaskBoard({
 	try {
 		const res = await API().delete(
 			`/organization-tasks/boards/${organizationId}/${organizationTaskBoardId}`
+		);
+		return res.data;
+	} catch (err) {
+		catchError(err);
+	}
+}
+
+export async function retrieveOrganizationMembers({
+	organizationId,
+}: RetrieveOrganizationMembersArgs) {
+	try {
+		const res = await API().get(
+			`/organization-tasks/members/${organizationId}`
 		);
 		return res.data;
 	} catch (err) {

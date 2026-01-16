@@ -12,6 +12,7 @@ import {
   retrieveAllBoardTasksService,
   retrieveAllOrganizationBoardsService,
   retrieveAllOrganizationBoardsWithTasksService,
+  retrieveOrganizationMembersService,
   retrieveTaskInfoService,
   retrieveTaskQuestionsService,
   updateOrganizationTaskBoardTitleService,
@@ -30,6 +31,7 @@ import {
   RetrieveAllOrganizationBoardsWithTasksArgs,
   RetrieveTaskInfoArgs,
   RetrieveTaskQuestionsArgs,
+  RetrieveOrganizationMembersArgs,
   UpdateOrganizationTaskBoardTitleArgs,
   UpdateTaskInfoArgs,
   MoveTaskArgs,
@@ -102,6 +104,20 @@ export async function retrieveAllOrganizationBoardsWithTasksController(
   try {
     const result = await retrieveAllOrganizationBoardsWithTasksService(
       req.params as RetrieveAllOrganizationBoardsWithTasksArgs
+    );
+    return res.status(result.status).json(result.body);
+  } catch (err) {
+    handleServerErrorResponse(res, err);
+  }
+}
+
+export async function retrieveOrganizationMembersController(
+  req: Request,
+  res: Response
+) {
+  try {
+    const result = await retrieveOrganizationMembersService(
+      req.params as RetrieveOrganizationMembersArgs
     );
     return res.status(result.status).json(result.body);
   } catch (err) {

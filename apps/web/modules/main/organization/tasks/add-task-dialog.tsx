@@ -22,7 +22,10 @@ import {
 	createTaskSchema,
 } from '@repo/schemas/organization-tasks';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useCreateTask } from '@/hooks/data/organization-tasks';
+import {
+	useCreateTask,
+	useRetrieveOrganizationMembers,
+} from '@/hooks/data/organization-tasks';
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from '@/lib/utils/toast';
 import { Error } from '@/components/ui/error';
@@ -30,18 +33,16 @@ import { Error } from '@/components/ui/error';
 export const AddTaskDialog: React.FC<{
 	organizationTasksBoardId: string;
 }> = ({ organizationTasksBoardId }) => {
-	const [assignedMemberIds, setAssignedMemberIds] = React.useState<string[]>([
-		'0',
-	]);
-
 	const [isOpen, setIsOpen] = React.useState(false);
 	const params = useParams<{ organizationId: string }>();
+	const { data: organizationMembersData } = useRetrieveOrganizationMembers({
+		organizationId: params.organizationId,
+	});
 	const {
 		handleSubmit,
 		control,
 		formState: { errors, isDirty },
 		reset,
-		watch,
 	} = useForm<CreateTaskArgs>({
 		resolver: zodResolver(createTaskSchema),
 		defaultValues: {
@@ -50,6 +51,7 @@ export const AddTaskDialog: React.FC<{
 			title: '',
 			description: '',
 			dueDate: '',
+			assignedMembers: [],
 		},
 	});
 
@@ -67,6 +69,7 @@ export const AddTaskDialog: React.FC<{
 					description: '',
 					title: '',
 					dueDate: '',
+					assignedMembers: [],
 				});
 				setIsOpen(false);
 			},
@@ -80,13 +83,12 @@ export const AddTaskDialog: React.FC<{
 		});
 	};
 
-	console.log(watch().dueDate);
 	return (
 		<Dialog
 			onOpenChange={setIsOpen}
 			isOpen={isOpen}
 			title="Add new task"
-			subtitle="Please enter the information about your organization inside these fields"
+			subtitle="Please enter the information about the new task"
 			triggerChildren={
 				<Button
 					isFullyRounded
@@ -152,39 +154,44 @@ export const AddTaskDialog: React.FC<{
 					<Error>{errors.dueDate?.message}</Error>
 				</div>
 
-				{/* TODO: Handle if there is some more time */}
-				{/* <div className="w-full">
+				<div className="w-full">
 					<Label className="mb-2">Assgin members</Label>
+					<Controller
+						control={control}
+						name="assignedMembers"
+						render={({ field }) => (
+							<CheckboxGroup
+								value={field.value}
+								onChange={field.onChange}
+								className="mx-auto flex w-fit flex-wrap gap-3"
+							>
+								{organizationMembersData?.organizationMembers?.map((member) => (
+									<Checkbox className="group" key={member.id} value={member.id}>
+										<Tag className="flex items-center gap-4">
+											<Avatar
+												imageProps={{
+													src: member.user.image || '',
+													alt: `${member.user.firstName} ${member.user.lastName}`,
+												}}
+												size="xs"
+											>
+												{member.user.firstName} {member.user.lastName}
+											</Avatar>
+											<p>
+												{member.user.firstName} {member.user.lastName}
+											</p>
 
-					<CheckboxGroup
-						value={assignedMemberIds}
-						onChange={setAssignedMemberIds}
-						className="mx-auto flex w-fit flex-wrap gap-3"
-					>
-						{[...Array(4)].map((_, indx) => {
-							return (
-								<Checkbox className="group" key={indx} value={indx.toString()}>
-									<Tag className="flex items-center gap-4">
-										<Avatar
-											imageProps={{
-												src: '',
-											}}
-											size="xs"
-										>
-											Ante
-										</Avatar>
-										<p>Ante</p>
-
-										<CheckboxVisually
-											className="rounded-full"
-											variant="secondary"
-										/>
-									</Tag>
-								</Checkbox>
-							);
-						})}
-					</CheckboxGroup>
-				</div> */}
+											<CheckboxVisually
+												className="rounded-full"
+												variant="secondary"
+											/>
+										</Tag>
+									</Checkbox>
+								))}
+							</CheckboxGroup>
+						)}
+					/>
+				</div>
 
 				<Button
 					type="submit"

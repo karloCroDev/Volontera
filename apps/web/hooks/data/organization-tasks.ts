@@ -17,6 +17,7 @@ import {
 	deleteOrganizationTaskBoard,
 	deleteTaskById,
 	deleteTaskQuestion,
+	retrieveOrganizationMembers,
 	retrieveAllOrganizationBoards,
 	retrieveAllBoardTasks,
 	retrieveTaskInfo,
@@ -36,6 +37,7 @@ import {
 	DeleteTaskQuestionArgs,
 	RetrieveAllBoardTasksArgs,
 	RetrieveAllOrganizationBoardsArgs,
+	RetrieveOrganizationMembersArgs,
 	RetrieveTaskInfoArgs,
 	RetrieveTaskQuestionsArgs,
 	UpdateOrganizationTaskBoardTitleArgs,
@@ -48,6 +50,7 @@ import { ErrorToastResponse, SuccessfulResponse } from '@repo/types/general';
 import {
 	RetrieveAllBoardTasksResponse,
 	RetrieveAllOrganizationBoardsResponse,
+	RetrieveOrganizationMembersResponse,
 	RetrieveTaskInfoResponse,
 	RetrieveTaskQuestionsResponse,
 } from '@repo/types/organization-tasks';
@@ -131,6 +134,20 @@ export const useDeleteOrganizationTaskBoard = (
 			});
 			await options?.onSuccess?.(...args);
 		},
+	});
+};
+
+export const useRetrieveOrganizationMembers = (
+	data: RetrieveOrganizationMembersArgs,
+	options?: Omit<
+		UseQueryOptions<RetrieveOrganizationMembersResponse>,
+		'queryKey' | 'queryFn'
+	>
+) => {
+	return useQuery<RetrieveOrganizationMembersResponse>({
+		queryKey: ['organization-members', data.organizationId],
+		queryFn: () => retrieveOrganizationMembers(data),
+		...options,
 	});
 };
 

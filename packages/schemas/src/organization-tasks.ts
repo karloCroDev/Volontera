@@ -49,6 +49,11 @@ export type RetrieveAllOrganizationBoardsArgs = z.infer<
   typeof retrieveAllOrganizationBoardSchema
 >;
 
+export const retrieveOrganizationMembersSchema = organizationIdSchema;
+export type RetrieveOrganizationMembersArgs = z.infer<
+  typeof retrieveOrganizationMembersSchema
+>;
+
 // Tasks
 export const createTaskSchema = z
   .object({
@@ -56,6 +61,7 @@ export const createTaskSchema = z
     description: z.string().min(1),
     title: z.string().min(1),
     dueDate: z.string().min(1, "Due date is required"),
+    assignedMembers: z.array(z.string()),
     organizationTasksBoardId: z.cuid(),
   })
   .extend(organizationIdSchema.shape);
@@ -83,6 +89,7 @@ export const updateTaskInfoSchema = z
     title: z.string().min(1).max(100),
     description: z.string().min(1),
     dueDate: z.string().min(1, "Due date is required"),
+    assignedMembers: z.array(z.string()),
     organizationTasksBoardId: z.cuid(),
   })
   .extend(organizationIdSchema.shape);
