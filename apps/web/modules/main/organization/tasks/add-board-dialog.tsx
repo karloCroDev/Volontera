@@ -77,6 +77,7 @@ export const AddBoardDialog = () => {
 					colorScheme="yellow"
 					variant="outline"
 					isFullyRounded
+					className="flex-shrink-0"
 					iconRight={<Plus />}
 				>
 					Add Board

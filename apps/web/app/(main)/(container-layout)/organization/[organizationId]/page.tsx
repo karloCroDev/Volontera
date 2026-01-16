@@ -27,6 +27,7 @@ import { getImageFromKey } from '@/lib/server/image';
 import { FollowOrganizationButton } from '@/modules/main/organization/common/follow-organization-button';
 import { LeaveOrganizationDialog } from '@/modules/main/organization/common/leave-organization-dialog';
 import { convertToFullname } from '@/lib/utils/converter';
+import { PostsSelect } from '@/modules/main/organization/home/posts-select';
 
 export default async function OrganizationPage({
 	params,
@@ -293,6 +294,10 @@ export default async function OrganizationPage({
 				(member.organizationMember.role === 'ADMIN' ||
 					member.organizationMember.role === 'OWNER') && <CreatePostDialog />}
 
+			<div className="flex justify-between">
+				<h2 className="text-xl lg:text-2xl">Posts</h2>
+				<PostsSelect />
+			</div>
 			<div className="mt-6 grid grid-cols-1 gap-4 xl:grid-cols-2">
 				<Suspense
 					fallback={[...Array(6)].map((_, indx) => (

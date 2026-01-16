@@ -22,12 +22,23 @@ import { PostSkeleton } from '@/components/ui/post/post-skeleton';
 // Lib
 import { toast } from '@/lib/utils/toast';
 import { HomePostsMapping } from '@/modules/main/home/home-posts-mapping';
+import { SelectContainer, SelectItem } from '@/components/ui/select';
 
 export default function PlaygroundPage() {
 	return (
 		<div>
 			<div className="m-20">
 				<Volontera />
+			</div>
+
+			<div className="ml-40">
+				<SelectContainer>
+					<SelectItem itemProps={{ value: 'option1' }} title="Option 1" />
+					<SelectItem itemProps={{ value: 'option2' }} title="Option 2" />
+					<SelectItem itemProps={{ value: 'option3' }} title="Option 3" />
+					<SelectItem itemProps={{ value: 'option4' }} title="Option 4" />
+					<SelectItem itemProps={{ value: 'option5' }} title="Option 5" />
+				</SelectContainer>
 			</div>
 
 			<p>Hello world</p>

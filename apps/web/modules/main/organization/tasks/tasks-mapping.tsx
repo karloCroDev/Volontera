@@ -2,11 +2,6 @@
 
 // External packages
 import * as React from 'react';
-import { RetrieveAllOrganizationBoardsWithTasksResponse } from '@repo/types/organization-tasks';
-import { Dialog } from '@/components/ui/dialog';
-import { TaskCard } from '@/modules/main/organization/tasks/task-card';
-import { TaskCardDetails } from '@/modules/main/organization/tasks/task-card-details';
-import { useRetrieveAllBoardTasksArgs } from '@/hooks/data/organization-tasks';
 import { useParams } from 'next/navigation';
 import {
 	Button as AriaButton,
@@ -18,7 +13,22 @@ import {
 } from 'react-aria-components';
 import { GripVertical } from 'lucide-react';
 import { useQueryClient } from '@tanstack/react-query';
+
+// Types
+import { RetrieveAllOrganizationBoardsWithTasksResponse } from '@repo/types/organization-tasks';
+
+// Components
+import { Dialog } from '@/components/ui/dialog';
+
+// Modules
+import { TaskCard } from '@/modules/main/organization/tasks/task-card';
+import { TaskCardDetails } from '@/modules/main/organization/tasks/task-card-details';
+
+// Hooks
+import { useRetrieveAllBoardTasksArgs } from '@/hooks/data/organization-tasks';
 import { useMoveTask } from '@/hooks/data/organization-tasks';
+
+// Lib
 import { toast } from '@/lib/utils/toast';
 
 type BoardTasksResponse = {

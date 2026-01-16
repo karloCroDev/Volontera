@@ -7,6 +7,7 @@ import { retrieveAllOrganizationBoardsWithTasks } from '@/lib/server/organizatio
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
 import { BoardsMapping } from '@/modules/main/organization/tasks/boards-mapping';
+import { SortTasksSelect } from '@/modules/main/organization/tasks/sort-tasks-select';
 
 export default async function BoardPage({
 	params,
@@ -17,14 +18,18 @@ export default async function BoardPage({
 
 	return (
 		<div className="flex flex-1 flex-col">
-			<div className="mb-6 flex items-center justify-between">
+			<div className="mb-6 flex items-center justify-between gap-8 overflow-x-scroll">
 				<div>
 					<h4 className="text-xl lg:text-2xl">Tasks</h4>
-					<p className="text-muted-foreground">
+
+					<p className="text-muted-foreground hidden md:block">
 						All tasks that are assigned inside this organization
 					</p>
 				</div>
-				<AddBoardDialog />
+				<div className="flex gap-4">
+					<SortTasksSelect />
+					<AddBoardDialog />
+				</div>
 			</div>
 			<div className="flex min-h-0 flex-1 gap-4 overflow-scroll">
 				<Suspense
