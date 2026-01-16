@@ -5,7 +5,7 @@ import * as React from 'react';
 
 // Components
 import { Avatar } from '@/components/ui/avatar';
-import { Dot, DotProps } from '@/components/ui/dot';
+import { Dot } from '@/components/ui/dot';
 import { EllipsisVertical } from 'lucide-react';
 import { Button } from 'react-aria-components';
 import { RetrieveAllOrganizationBoardsWithTasksResponse } from '@repo/types/organization-tasks';
@@ -30,6 +30,7 @@ export const TaskCard: React.FC<{
 						<p className="text-md">{task.title}</p>
 					</div>
 				</div>
+
 				<EllipsisVertical className="text-muted-foreground size-4" />
 			</div>
 			<p className="text-muted-foreground text-start text-xs">{task.title}</p>
@@ -49,7 +50,7 @@ export const TaskCard: React.FC<{
 							}}
 							colorScheme="yellow"
 						>
-							Orrr
+							John Doe
 						</Avatar>
 						<Avatar
 							size="sm"
@@ -59,7 +60,7 @@ export const TaskCard: React.FC<{
 							colorScheme="gray"
 							className="absolute -left-4 top-0"
 						>
-							Orrr
+							John Doe
 						</Avatar>
 						<Avatar
 							size="sm"
@@ -69,7 +70,7 @@ export const TaskCard: React.FC<{
 							colorScheme="orange"
 							className="absolute -left-8 top-0 !bg-blue-400"
 						>
-							Orrr
+							John Doe
 						</Avatar>
 					</div>
 

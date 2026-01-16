@@ -16,6 +16,7 @@ import {
   retrieveTaskQuestionsService,
   updateOrganizationTaskBoardTitleService,
   updateTaskInfoService,
+  moveTaskService,
 } from "@/services/organization-tasks.service";
 
 // Schema types
@@ -31,6 +32,7 @@ import {
   RetrieveTaskQuestionsArgs,
   UpdateOrganizationTaskBoardTitleArgs,
   UpdateTaskInfoArgs,
+  MoveTaskArgs,
   RetrieveAllBoardTasksArgs,
   RetrieveAllOrganizationBoardsArgs,
 } from "@repo/schemas/organization-tasks";
@@ -159,6 +161,15 @@ export async function retrieveTaskQuestionsController(
 export async function updateTaskInfoController(req: Request, res: Response) {
   try {
     const result = await updateTaskInfoService(req.body as UpdateTaskInfoArgs);
+    return res.status(result.status).json(result.body);
+  } catch (err) {
+    handleServerErrorResponse(res, err);
+  }
+}
+
+export async function moveTaskController(req: Request, res: Response) {
+  try {
+    const result = await moveTaskService(req.body as MoveTaskArgs);
     return res.status(result.status).json(result.body);
   } catch (err) {
     handleServerErrorResponse(res, err);

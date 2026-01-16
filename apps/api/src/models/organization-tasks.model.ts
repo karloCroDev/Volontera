@@ -172,6 +172,23 @@ export async function updateTaskInfo({
   });
 }
 
+export async function moveTaskToBoard({
+  taskId,
+  organizationTasksBoardId,
+}: {
+  taskId: OrganizationTask["id"];
+  organizationTasksBoardId: OrganizationTask["organizationTasksBoardId"];
+}) {
+  return prisma.organizationTask.update({
+    where: {
+      id: taskId,
+    },
+    data: {
+      organizationTasksBoardId,
+    },
+  });
+}
+
 export async function deleteTaskById(taskId: OrganizationTask["id"]) {
   console.log("Deleting task with ID:", taskId);
   return prisma.organizationTask.delete({

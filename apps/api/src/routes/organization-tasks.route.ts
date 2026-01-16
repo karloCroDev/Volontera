@@ -18,6 +18,7 @@ import {
   retrieveTaskQuestionsController,
   updateOrganizationTaskBoardTitleController,
   updateTaskInfoController,
+  moveTaskController,
 } from "@/controllers/organization-tasks.controller";
 
 // Middleware
@@ -36,6 +37,7 @@ import {
   retrieveTaskQuestionsSchema,
   updateOrganizationTaskBoardTitleSchema,
   updateTaskInfoSchema,
+  moveTaskSchema,
   deleteTaskQuestionSchema,
   retrieveAllBoardTasksSchema,
   retrieveAllOrganizationBoardSchema,
@@ -175,6 +177,17 @@ organizationTasksRoutes.patch(
   }),
   organizationRolesMiddleware({ aquiredRoles: ["MEMBER", "ADMIN"] }),
   updateTaskInfoController
+);
+
+organizationTasksRoutes.patch(
+  "/tasks/move",
+  validate({
+    schema: moveTaskSchema,
+    responseOutput: "toast",
+    type: "body",
+  }),
+  organizationRolesMiddleware({ aquiredRoles: ["MEMBER", "ADMIN"] }),
+  moveTaskController
 );
 
 organizationTasksRoutes.delete(

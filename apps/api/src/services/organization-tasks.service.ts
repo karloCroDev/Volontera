@@ -12,6 +12,7 @@ import {
   deleteOrganizationTaskBoard,
   deleteTaskById,
   deleteTaskQuestion,
+  moveTaskToBoard,
   retrieveAllBoardTasks,
   retrieveAllOrganizationBoards,
   retrieveAllOrganizationBoardsWithTasks,
@@ -29,6 +30,7 @@ import {
   DeleteOrganizationTaskBoardArgs,
   DeleteTaskByIdArgs,
   DeleteTaskQuestionArgs,
+  MoveTaskArgs,
   RetrieveAllBoardTasksArgs,
   RetrieveAllOrganizationBoardsArgs,
   RetrieveAllOrganizationBoardsWithTasksArgs,
@@ -169,6 +171,19 @@ export async function updateTaskInfoService(data: UpdateTaskInfoArgs) {
     status: 200,
     title: "Task Updated",
     message: "Task updated successfully",
+  });
+}
+
+export async function moveTaskService({
+  taskId,
+  organizationTasksBoardId,
+}: MoveTaskArgs) {
+  const task = await moveTaskToBoard({ taskId, organizationTasksBoardId });
+
+  return toastResponseOutput({
+    status: 200,
+    title: `Task: ${task.title} `,
+    message: "Task moved successfully",
   });
 }
 

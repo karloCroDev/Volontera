@@ -88,6 +88,14 @@ export const updateTaskInfoSchema = z
   .extend(organizationIdSchema.shape);
 export type UpdateTaskInfoArgs = z.infer<typeof updateTaskInfoSchema>;
 
+export const moveTaskSchema = z
+  .object({
+    taskId: z.cuid(),
+    organizationTasksBoardId: z.cuid(),
+  })
+  .extend(organizationIdSchema.shape);
+export type MoveTaskArgs = z.infer<typeof moveTaskSchema>;
+
 export const deleteTaskByIdSchema = z
   .object({
     taskId: z.cuid(),

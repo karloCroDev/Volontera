@@ -23,6 +23,7 @@ import {
 	retrieveTaskQuestions,
 	updateOrganizationTaskBoardTitle,
 	updateTaskInfo,
+	moveTask,
 } from '@/lib/data/organization-tasks';
 
 // Schemas
@@ -39,6 +40,7 @@ import {
 	RetrieveTaskQuestionsArgs,
 	UpdateOrganizationTaskBoardTitleArgs,
 	UpdateTaskInfoArgs,
+	MoveTaskArgs,
 } from '@repo/schemas/organization-tasks';
 
 // Types
@@ -143,6 +145,7 @@ export const useRetrieveAllBoardTasksArgs = (
 	return useSuspenseQuery<RetrieveAllBoardTasksResponse>({
 		queryKey: ['organization-tasks', data.organizationTaskBoardId],
 		queryFn: () => retrieveAllBoardTasks(data),
+
 		...options,
 	});
 };
@@ -238,6 +241,20 @@ export const useDeleteTaskById = (
 
 			await options?.onSuccess?.(...args);
 		},
+	});
+};
+
+export const useMoveTask = (
+	options?: UseMutationOptions<
+		SuccessfulResponse,
+		ErrorToastResponse,
+		MoveTaskArgs
+	>
+) => {
+	return useMutation({
+		...options,
+		mutationKey: ['move-task'],
+		mutationFn: (data: MoveTaskArgs) => moveTask(data),
 	});
 };
 

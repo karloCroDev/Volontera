@@ -16,6 +16,7 @@ import {
 	RetrieveTaskQuestionsArgs,
 	UpdateOrganizationTaskBoardTitleArgs,
 	UpdateTaskInfoArgs,
+	MoveTaskArgs,
 } from '@repo/schemas/organization-tasks';
 
 // Boards
@@ -123,6 +124,15 @@ export async function retrieveTaskQuestions({
 export async function updateTaskInfo(data: UpdateTaskInfoArgs) {
 	try {
 		const res = await API().patch('/organization-tasks/tasks/update', data);
+		return res.data;
+	} catch (err) {
+		catchError(err);
+	}
+}
+
+export async function moveTask(data: MoveTaskArgs) {
+	try {
+		const res = await API().patch('/organization-tasks/tasks/move', data);
 		return res.data;
 	} catch (err) {
 		catchError(err);
