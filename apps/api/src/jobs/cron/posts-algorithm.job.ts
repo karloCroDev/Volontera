@@ -1,12 +1,13 @@
+// External packages
+import { prisma } from "@repo/database";
 import cron from "node-cron";
 
-cron.schedule("* */1 * * *", async () => {
-  // Here you can call the functions that implement your posts algorithm logic
+export const postAlgorithmJob = cron.schedule("*/10 * * * *", async () => {
   console.log("Running posts algorithm job every hour");
-  // Example: await updatePostsAlgorithm()
 });
 
-// Iz dokumentacije node-crona što znači koji izraz
+// Iz dokumentacije node-crona što znači koji izraz (*)
+
 //  # ┌────────────── second (optional)
 //  # │ ┌──────────── minute
 //  # │ │ ┌────────── hour

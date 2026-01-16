@@ -61,7 +61,7 @@ export const HomePostsMapping: React.FC<{
 
 	return (
 		<>
-			<div className="mt-6 grid grid-cols-1 gap-4 xl:grid-cols-2">
+			<div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
 				{posts.length > 0 ? (
 					posts.map((post) => (
 						<Post key={post.id} post={post} images={imagesData?.urls} />
@@ -69,21 +69,14 @@ export const HomePostsMapping: React.FC<{
 				) : (
 					<p className="text-muted-foreground text-center">No posts found.</p>
 				)}
+				{query.isFetchingNextPage &&
+					[...Array(2)].map((_, indx) => <PostSkeleton key={indx} />)}
 			</div>
-
-			{query.isFetchingNextPage ? (
-				<div className="mt-6 grid grid-cols-1 gap-4 xl:grid-cols-2">
-					{[...Array(2)].map((_, indx) => (
-						<PostSkeleton key={indx} />
-					))}
-				</div>
-			) : null}
-
-			{query.hasNextPage && <div ref={loadMoreRef} />}
 
 			{!query.hasNextPage && posts.length > 0 ? (
 				<p className="text-muted-foreground mt-6 text-center">No more posts.</p>
 			) : null}
+			{query.hasNextPage && <div ref={loadMoreRef} />}
 		</>
 	);
 });
