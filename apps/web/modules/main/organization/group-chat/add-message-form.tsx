@@ -62,7 +62,7 @@ export const AddMessageForm: React.FC<{
 
 	return (
 		<Form
-			className="lg:max-w-3/4 z-max bg-background sticky bottom-0 mx-auto w-full flex-none rounded-lg"
+			className="lg:max-w-3/4 bg-background absolute bottom-4 left-1/2 w-full flex-none -translate-x-1/2 rounded-lg"
 			onSubmit={onSubmit}
 		>
 			<TextEditor

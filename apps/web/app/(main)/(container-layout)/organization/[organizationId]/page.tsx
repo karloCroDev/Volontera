@@ -21,12 +21,11 @@ import { PostsMapping } from '@/modules/main/organization/home/posts-mapping';
 import { getOrganizationDetailsById } from '@/lib/server/organization';
 import { retrieveOrganizationPosts } from '@/lib/server/post';
 import { retrieveOrganizationMember } from '@/lib/server/organization-managment';
-import { getImageFromKey } from '@/lib/server/image';
+import { convertToFullname } from '@/lib/utils/converter';
 
 // Modules
 import { FollowOrganizationButton } from '@/modules/main/organization/common/follow-organization-button';
 import { LeaveOrganizationDialog } from '@/modules/main/organization/common/leave-organization-dialog';
-import { convertToFullname } from '@/lib/utils/converter';
 import { PostsSelect } from '@/modules/main/organization/home/posts-select';
 
 export default async function OrganizationPage({
@@ -47,6 +46,8 @@ export default async function OrganizationPage({
 	// const images = getImageFromKey({
 	// 	imageUrls:
 	// })
+
+	console.log();
 	return (
 		<>
 			<div className="border-input-border relative -mx-4 -my-6 rounded-xl px-5 py-4 md:m-0 md:border">

@@ -24,7 +24,7 @@ export const createOrganizationSchema = z.object({
           label: z.string(),
           url: z.string(),
         })
-        .refine((link) => {
+        .superRefine((link) => {
           const label = link.label.trim();
           const url = link.url.trim();
 

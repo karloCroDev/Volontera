@@ -451,7 +451,7 @@ model OrganizationTask {
   dueDate                   String
   status                    OrganizationTaskStatus
   authorId                  String
-  organizationTasksBoard    OrganizationTasksBoards?    @relation(fields: [organizationTasksBoardId], references: [id])
+  organizationTasksBoard    OrganizationTasksBoards?    @relation(fields: [organizationTasksBoardId], references: [id], onDelete: Cascade)
   organizationTasksBoardId  String?
   createdAt                 DateTime                    @default(now())
   updatedAt                 DateTime                    @updatedAt
