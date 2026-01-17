@@ -335,7 +335,9 @@ export const useDeleteTaskQuestion = (
 		onSuccess: async (...args) => {
 			await queryClient.invalidateQueries({
 				queryKey: ['organization-task-questions'],
-				exact: false,
+				predicate: (query) => {
+					return query.queryKey[0] === 'organization-task-questions';
+				},
 			});
 			await options?.onSuccess?.(...args);
 		},

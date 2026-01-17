@@ -38,6 +38,7 @@ export type RetrieveAllBoardTasksArgs = z.infer<
   typeof retrieveAllBoardTasksSchema
 >;
 
+// Odvojena schema jer sam napravio konfiguraciju middlewarea da ne moze primati i :params i :query u isto vrijeme
 export const retrieveAllBoardTasksQuerySchema = z.object({
   filter: z.enum(["your-tasks", "assigned-by-you"]).optional(),
 });
@@ -49,13 +50,6 @@ export const retrieveAllOrganizationBoardsWithTasksSchema =
   organizationIdSchema;
 export type RetrieveAllOrganizationBoardsWithTasksArgs = z.infer<
   typeof retrieveAllOrganizationBoardsWithTasksSchema
->;
-
-export const retrieveAllOrganizationBoardsWithTasksQuerySchema = z.object({
-  filter: z.enum(["your-tasks", "assigned-by-you"]).optional(),
-});
-export type RetrieveAllOrganizationBoardsWithTasksQueryArgs = z.infer<
-  typeof retrieveAllOrganizationBoardsWithTasksQuerySchema
 >;
 
 export const retrieveAllOrganizationBoardSchema = organizationIdSchema;

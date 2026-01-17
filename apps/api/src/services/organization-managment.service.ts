@@ -12,6 +12,7 @@ import {
   demoteOrPromoteOrganizationMember,
   acceptOrDeclineUsersRequestToJoinOrganization,
   leaveOrganization,
+  retrieveDataAboutOrganization,
 } from "@/models/organization-managment.model";
 
 // Database
@@ -24,6 +25,7 @@ import {
   LeaveOrganizationArgs,
   RetirveAllRequestsToJoinOrganizationArgs,
   RetrieveAllMembersInOrganizationArgs,
+  RetrieveDataAboutOrganizationArgs,
   RetrieveOrganizationMemberArgs,
 } from "@repo/schemas/organization-managment";
 
@@ -62,7 +64,7 @@ export async function retrieveAllMembersInOrganizationService({
 }
 
 export async function acceptOrDeclineUsersRequestToJoinOrganizationService(
-  data: AcceptOrDeclineUsersRequestToJoinOrganizationArgs
+  data: AcceptOrDeclineUsersRequestToJoinOrganizationArgs,
 ) {
   await acceptOrDeclineUsersRequestToJoinOrganization(data);
 
@@ -76,7 +78,7 @@ export async function acceptOrDeclineUsersRequestToJoinOrganizationService(
 }
 
 export async function demoteOrPromoteOrganizationMemberService(
-  data: DemoteOrPromoteOrganizationMemberArgs
+  data: DemoteOrPromoteOrganizationMemberArgs,
 ) {
   await demoteOrPromoteOrganizationMember(data);
 
@@ -137,5 +139,32 @@ export async function leaveOrganizationService({
     status: 200,
     title: "Left organization",
     message: "You have left the organization successfully",
+  });
+}
+
+export async function retrieveDataAboutOrganizationService({
+  organizationId,
+}: RetrieveDataAboutOrganizationArgs) {
+  const {
+    adminUserCount,
+    highPriority,
+    lowPriority,
+    mediumPriority,
+    memberUserCount,
+    totalUserCount,
+  } = await retrieveDataAboutOrganization(organizationId);
+
+  return serverFetchOutput({
+    status: 200,
+    success: true,
+    message: "Organization data retrieved successfully",
+    data: {
+      adminUserCount,
+      highPriority,
+      lowPriority,
+      mediumPriority,
+      memberUserCount,
+      totalUserCount,
+    },
   });
 }

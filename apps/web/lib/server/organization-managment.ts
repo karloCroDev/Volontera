@@ -39,3 +39,10 @@ export async function retrieveAllRequestsToJoinOrganization(
 		init: { next: { tags: ['organization-join-requests'] }, cache: 'no-store' },
 	});
 }
+
+export async function retrieveDataAboutOrganization(organizationId: string) {
+	return await serverFetch({
+		url: `organization-managment/data/${organizationId}`,
+		init: { next: { tags: ['organization-data'] }, cache: 'no-store' },
+	});
+}

@@ -43,3 +43,8 @@ export const acceptOrDeclineUsersRequestToJoinOrganizationSchema = z.object({
 export type AcceptOrDeclineUsersRequestToJoinOrganizationArgs = z.infer<
   typeof acceptOrDeclineUsersRequestToJoinOrganizationSchema
 >;
+
+export const retrieveDataAboutOrganizationSchema = organizationIdSchema;
+export type RetrieveDataAboutOrganizationArgs = z.infer<
+  typeof retrieveDataAboutOrganizationSchema
+>;

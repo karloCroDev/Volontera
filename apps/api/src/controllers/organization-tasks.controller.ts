@@ -29,7 +29,6 @@ import {
   DeleteTaskByIdArgs,
   DeleteTaskQuestionArgs,
   RetrieveAllOrganizationBoardsWithTasksArgs,
-  RetrieveAllOrganizationBoardsWithTasksQueryArgs,
   RetrieveTaskInfoArgs,
   RetrieveTaskQuestionsArgs,
   RetrieveOrganizationMembersArgs,
@@ -106,7 +105,7 @@ export async function retrieveAllOrganizationBoardsWithTasksController(
   try {
     const result = await retrieveAllOrganizationBoardsWithTasksService({
       ...(req.params as RetrieveAllOrganizationBoardsWithTasksArgs),
-      ...(req.query as RetrieveAllOrganizationBoardsWithTasksQueryArgs),
+      ...(req.query as RetrieveAllBoardTasksQueryArgs),
       userId: req.user.userId,
     });
     return res.status(result.status).json(result.body);
