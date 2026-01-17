@@ -50,7 +50,7 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextAreaProps>(
 							)}
 							placeholder=""
 						/>
-						<Label className="text-muted-foreground absolute left-0 top-6 origin-left -translate-y-[24px] scale-75 transition-transform peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100">
+						<Label className="text-muted-foreground pointer-events-none absolute left-0 top-6 origin-left -translate-y-[24px] scale-75 transition-transform peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100">
 							{label}
 						</Label>
 					</div>

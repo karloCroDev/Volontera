@@ -30,10 +30,9 @@ export default async function OrganizationFeaturesLayout({
 
 	if (!organizationDetailsById.success) notFound();
 
-	console.log('MEMBER', member);
 	return (
 		<>
-			<div className="border-input-border bg-muted relative flex flex-shrink-0 flex-col items-center gap-6 rounded-xl border p-4 md:h-32 md:flex-row md:px-6">
+			<div className="border-input-border relative flex flex-shrink-0 flex-col items-center gap-6 rounded-xl border p-4 md:h-32 md:flex-row md:px-6">
 				<Avatar
 					imageProps={{
 						src: organizationDetailsById.organization.avatarImage,

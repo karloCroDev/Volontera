@@ -44,11 +44,11 @@ export const Message: React.FC<
 					{/* Must be a (in some places I am handling markdown) */}
 					<div
 						className={twJoin(
-							'w-full items-end rounded-lg border px-5 py-3 text-sm md:text-base',
+							'w-full items-end rounded-lg border px-5 py-3 text-sm shadow-lg md:text-base',
 							variant === 'primary' &&
 								'bg-accent text-accent-foreground border-accent-foreground rounded-tl-none',
 							variant === 'secondary' &&
-								'border-input-border text-background-foreground rounded-tr-none'
+								'border-input-border text-background-foreground bg-muted rounded-tr-none'
 						)}
 					>
 						<div className="prose prose-custom !max-w-full">{children}</div>

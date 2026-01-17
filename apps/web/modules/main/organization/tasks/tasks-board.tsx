@@ -16,10 +16,7 @@ export const TasksBoard: React.FC<{
 	tasks: React.ReactNode;
 }> = withReactQueryProvider(({ boardId, title, tasks }) => {
 	return (
-		<div
-			suppressHydrationWarning // TODO: FIX HYDRA
-			className="border-input-border bg-muted flex min-h-[600px] w-full min-w-96 flex-col gap-5 rounded-xl border p-4 sm:w-2/3 lg:w-1/2 2xl:w-2/5"
-		>
+		<div className="border-input-border bg-muted flex min-h-[600px] w-full min-w-96 flex-col gap-5 rounded-xl border p-4 shadow-xl sm:w-2/3 lg:w-1/2 2xl:w-2/5">
 			<div className="flex items-center justify-between">
 				<h4 className="text-lg underline underline-offset-4">{title}</h4>
 				<EditBoardDialog boardId={boardId} title={title} />

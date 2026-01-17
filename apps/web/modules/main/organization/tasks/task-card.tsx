@@ -14,7 +14,7 @@ export const TaskCard: React.FC<{
 	task: RetrieveAllOrganizationBoardsWithTasksResponse['boardsWithTasks'][0]['organizationTasks'][0];
 }> = ({ task }) => {
 	return (
-		<Button className="border-input-border relative cursor-pointer rounded-2xl border p-4 hover:opacity-80">
+		<Button className="border-input-border relative cursor-pointer rounded-2xl border p-4 shadow-lg hover:opacity-80">
 			<div className="flex justify-between">
 				<div>
 					<div className="flex items-center gap-4">

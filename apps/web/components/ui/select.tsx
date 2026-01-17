@@ -10,7 +10,7 @@ export const SelectContainer: React.FC<
 	React.ComponentPropsWithoutRef<'div'> & RadixSelect.SelectProps
 > = ({ children, ...rest }) => (
 	<RadixSelect.Root {...rest}>
-		<RadixSelect.Trigger className="bg-muted border-input-border flex w-40 cursor-pointer items-center justify-between rounded-md border px-2 py-3 outline-none lg:w-56">
+		<RadixSelect.Trigger className="bg-muted border-input-border flex w-40 cursor-pointer items-center justify-between rounded-md border p-3 outline-none lg:w-56">
 			<RadixSelect.Value placeholder="Select an option" />
 			<RadixSelect.Icon>
 				<ChevronDown className="size-4" />
@@ -19,7 +19,7 @@ export const SelectContainer: React.FC<
 
 		<RadixSelect.Portal>
 			<RadixSelect.Content
-				className="border-input-border bg-background data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out data-[state=open]:fade-in-0 mt-4 overflow-hidden rounded-md border"
+				className="border-input-border bg-background data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out data-[state=open]:fade-in-0 mt-4 overflow-hidden rounded-md border shadow-lg"
 				position="popper"
 				align="start"
 			>
@@ -38,7 +38,7 @@ export const SelectItem: React.FC<
 		<RadixSelect.Item
 			{...rest}
 			className={twMerge(
-				'border-b-input-border hover:bg-accent hover:text-accent-foreground bg-muted cursor-pointer border-b px-2 py-3 outline-none transition-colors last:border-b-0',
+				'border-b-input-border hover:bg-accent hover:text-accent-foreground cursor-pointer border-b px-2 py-3 outline-none transition-colors last:border-b-0',
 				className
 			)}
 		>

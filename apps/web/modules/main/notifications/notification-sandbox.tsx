@@ -64,10 +64,10 @@ export const NotificationSandbox: React.FC<{
 	};
 	return (
 		<Form
-			className="border-input-border min-h-1/2 max-h-3/4 overflow-scroll rounded-xl border py-4"
+			className="border-input-border min-h-1/2 max-h-3/4 overflow-scroll rounded-xl border shadow-xl"
 			onSubmit={onSubmit}
 		>
-			<div className="mb-4 flex items-center justify-between px-6">
+			<div className="bg-muted flex items-center justify-between px-6 py-4">
 				<CheckboxWithLabel
 					checkboxVisuallyProps={{
 						size: 'lg',
