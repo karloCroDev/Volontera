@@ -62,15 +62,42 @@ export async function retrieveAllOrganizationBoards(
 }
 
 // Board with tasks
-export async function retrieveAllOrganizationBoardsWithTasks(
-  organizationId: OrganizationTasksBoards["organizationId"]
-) {
+export async function retrieveAllOrganizationBoardsWithTasks({
+  organizationId,
+  filter,
+  userId,
+}: {
+  organizationId: OrganizationTasksBoards["organizationId"];
+  filter?: "all-tasks" | "your-tasks" | "assigned-by-you";
+  userId: string;
+}) {
+  const organizationTasksWhere =
+    filter === "your-tasks"
+      ? {
+          organizationTaskInfos: {
+            is: {
+              organizatonMembersAsiggnedToTaskCards: {
+                some: {
+                  organizationMember: {
+                    userId,
+                  },
+                },
+              },
+            },
+          },
+        }
+      : undefined;
+
   return prisma.organizationTasksBoards.findMany({
     where: {
       organizationId,
     },
     include: {
-      organizationTasks: true,
+      organizationTasks: organizationTasksWhere
+        ? {
+            where: organizationTasksWhere,
+          }
+        : true,
     },
   });
 }

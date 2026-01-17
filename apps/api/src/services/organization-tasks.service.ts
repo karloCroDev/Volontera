@@ -35,6 +35,7 @@ import {
   RetrieveAllBoardTasksArgs,
   RetrieveAllOrganizationBoardsArgs,
   RetrieveAllOrganizationBoardsWithTasksArgs,
+  RetrieveAllOrganizationBoardsWithTasksQueryArgs,
   RetrieveTaskInfoArgs,
   RetrieveTaskQuestionsArgs,
   RetrieveOrganizationMembersArgs,
@@ -96,9 +97,15 @@ export async function retrieveAllOrganizationBoardsService({
 // Board with tasks
 export async function retrieveAllOrganizationBoardsWithTasksService({
   organizationId,
-}: RetrieveAllOrganizationBoardsWithTasksArgs) {
-  const boardsWithTasks =
-    await retrieveAllOrganizationBoardsWithTasks(organizationId);
+  filter,
+  userId,
+}: RetrieveAllOrganizationBoardsWithTasksArgs &
+  RetrieveAllOrganizationBoardsWithTasksQueryArgs & { userId: string }) {
+  const boardsWithTasks = await retrieveAllOrganizationBoardsWithTasks({
+    organizationId,
+    filter,
+    userId,
+  });
 
   return serverFetchOutput({
     status: 200,
@@ -126,7 +133,6 @@ export async function retrieveAllBoardTasksService({
   organizationTaskBoardId,
 }: RetrieveAllBoardTasksArgs) {
   const tasks = await retrieveAllBoardTasks(organizationTaskBoardId);
-
   return serverFetchOutput({
     status: 200,
     success: true,

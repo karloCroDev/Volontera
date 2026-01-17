@@ -11,10 +11,13 @@ import { SortTasksSelect } from '@/modules/main/organization/tasks/sort-tasks-se
 
 export default async function BoardPage({
 	params,
+	searchParams,
 }: {
 	params: Promise<{ organizationId: string }>;
+	searchParams: Promise<{ [key: string]: string | undefined }>;
 }) {
 	const { organizationId } = await params;
+	const searchParamsResolved = await searchParams;
 
 	return (
 		<div className="flex flex-1 flex-col">
@@ -37,16 +40,27 @@ export default async function BoardPage({
 						<TasksBoardSkeleton key={indx} />
 					))}
 				>
-					<BoardsWithTasks organizationId={organizationId} />
+					<BoardsWithTasks
+						organizationId={organizationId}
+						filter={searchParamsResolved.filter}
+					/>
 				</Suspense>
 			</div>
 		</div>
 	);
 }
 
-async function BoardsWithTasks({ organizationId }: { organizationId: string }) {
-	const boardWithTasks =
-		await retrieveAllOrganizationBoardsWithTasks(organizationId);
+async function BoardsWithTasks({
+	organizationId,
+	filter,
+}: {
+	organizationId: string;
+	filter?: string;
+}) {
+	const boardWithTasks = await retrieveAllOrganizationBoardsWithTasks(
+		organizationId,
+		filter
+	);
 	if (!boardWithTasks.success) notFound();
 
 	return <BoardsMapping prefetchedData={boardWithTasks} />;

@@ -34,6 +34,7 @@ import {
   deleteOrganizationTaskBoardSchema,
   deleteTaskByIdSchema,
   retrieveAllOrganizationBoardsWithTasksSchema,
+  retrieveAllOrganizationBoardsWithTasksQuerySchema,
   retrieveOrganizationMembersSchema,
   retrieveTaskInfoSchema,
   retrieveTaskQuestionsSchema,
@@ -107,6 +108,11 @@ organizationTasksRoutes.get(
   validate({
     schema: retrieveAllOrganizationBoardsWithTasksSchema,
     type: "params",
+    responseOutput: "server",
+  }),
+  validate({
+    schema: retrieveAllOrganizationBoardsWithTasksQuerySchema,
+    type: "query",
     responseOutput: "server",
   }),
   organizationRolesMiddleware({

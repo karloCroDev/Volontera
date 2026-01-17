@@ -29,6 +29,7 @@ import {
   DeleteTaskByIdArgs,
   DeleteTaskQuestionArgs,
   RetrieveAllOrganizationBoardsWithTasksArgs,
+  RetrieveAllOrganizationBoardsWithTasksQueryArgs,
   RetrieveTaskInfoArgs,
   RetrieveTaskQuestionsArgs,
   RetrieveOrganizationMembersArgs,
@@ -102,9 +103,11 @@ export async function retrieveAllOrganizationBoardsWithTasksController(
   res: Response
 ) {
   try {
-    const result = await retrieveAllOrganizationBoardsWithTasksService(
-      req.params as RetrieveAllOrganizationBoardsWithTasksArgs
-    );
+    const result = await retrieveAllOrganizationBoardsWithTasksService({
+      ...(req.params as RetrieveAllOrganizationBoardsWithTasksArgs),
+      ...(req.query as RetrieveAllOrganizationBoardsWithTasksQueryArgs),
+      userId: req.user.userId,
+    });
     return res.status(result.status).json(result.body);
   } catch (err) {
     handleServerErrorResponse(res, err);
