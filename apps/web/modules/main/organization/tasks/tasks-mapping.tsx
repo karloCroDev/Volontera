@@ -2,7 +2,7 @@
 
 // External packages
 import * as React from 'react';
-import { useParams } from 'next/navigation';
+import { useParams, useSearchParams } from 'next/navigation';
 import {
 	Button as AriaButton,
 	DropIndicator,
@@ -45,12 +45,18 @@ export const TasksMapping: React.FC<{
 	boardId: string;
 }> = ({ tasks, boardId }) => {
 	const params = useParams<{ organizationId: string }>();
-	const queryClient = useQueryClient();
+	const searchParams = useSearchParams();
+	const filter = searchParams.get('filter') as
+		| 'your-tasks'
+		| 'assigned-by-you'
+		| null;
+
 	const { mutate: mutateMoveTask } = useMoveTask();
 	const { data } = useRetrieveAllBoardTasksArgs(
 		{
 			organizationId: params.organizationId,
 			organizationTaskBoardId: boardId,
+			...(filter ? { filter } : {}),
 		},
 		{
 			initialData: {
@@ -61,6 +67,12 @@ export const TasksMapping: React.FC<{
 		}
 	);
 
+	const queryClient = useQueryClient();
+	const queryKeyForBoard = React.useCallback(
+		(boardKey: string) =>
+			[boardKey, 'organization-tasks', filter ?? null] as const,
+		[filter]
+	);
 	const updateBoardCache = (
 		boardKey: string,
 		updater: (
@@ -68,7 +80,7 @@ export const TasksMapping: React.FC<{
 		) => BoardTasksResponse | undefined
 	) => {
 		queryClient.setQueryData<BoardTasksResponse>(
-			['organization-tasks', boardKey],
+			queryKeyForBoard(boardKey),
 			updater
 		);
 	};
@@ -151,10 +163,9 @@ export const TasksMapping: React.FC<{
 			// Kada se radi insert iz druge liste, prvo treba uzeti taskove iz te liste
 			const taskById = new Map<string, Task>();
 			pairs.forEach(({ taskId, sourceBoardId }) => {
-				const sourceData = queryClient.getQueryData<BoardTasksResponse>([
-					'organization-tasks',
-					sourceBoardId,
-				]);
+				const sourceData = queryClient.getQueryData<BoardTasksResponse>(
+					queryKeyForBoard(sourceBoardId)
+				);
 				const task =
 					sourceData?.tasks.find((task) => task.id === taskId) ??
 					data?.tasks.find((task) => task.id === taskId);
@@ -262,10 +273,9 @@ export const TasksMapping: React.FC<{
 			// Capture tasks before mutating caches.
 			const taskById = new Map<string, Task>();
 			pairs.forEach(({ taskId, sourceBoardId }) => {
-				const sourceData = queryClient.getQueryData<BoardTasksResponse>([
-					'organization-tasks',
-					sourceBoardId,
-				]);
+				const sourceData = queryClient.getQueryData<BoardTasksResponse>(
+					queryKeyForBoard(sourceBoardId)
+				);
 				const task =
 					sourceData?.tasks.find((t) => t.id === taskId) ??
 					data?.tasks.find((t) => t.id === taskId);

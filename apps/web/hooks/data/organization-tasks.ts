@@ -36,6 +36,7 @@ import {
 	DeleteTaskByIdArgs,
 	DeleteTaskQuestionArgs,
 	RetrieveAllBoardTasksArgs,
+	RetrieveAllBoardTasksQueryArgs,
 	RetrieveAllOrganizationBoardsArgs,
 	RetrieveOrganizationMembersArgs,
 	RetrieveTaskInfoArgs,
@@ -64,7 +65,7 @@ export const useRetrieveAllOrganizationBoards = (
 	>
 ) => {
 	return useSuspenseQuery<RetrieveAllOrganizationBoardsResponse>({
-		queryKey: ['organization-boards', data.organizationId],
+		queryKey: [data.organizationId, 'organization-boards'],
 		queryFn: () => retrieveAllOrganizationBoards(data),
 		...options,
 	});
@@ -84,7 +85,7 @@ export const useCreateTaskBoard = (
 		mutationFn: (data: CreateTaskBoardArgs) => createTaskBoard(data),
 		onSuccess: async (...args) => {
 			await queryClient.invalidateQueries({
-				queryKey: ['organization-boards', args[1].organizationId],
+				queryKey: [args[1].organizationId, 'organization-boards'],
 			});
 
 			await options?.onSuccess?.(...args);
@@ -107,7 +108,7 @@ export const useUpdateOrganizationTaskBoardTitle = (
 			updateOrganizationTaskBoardTitle(data),
 		onSuccess: async (...args) => {
 			await queryClient.invalidateQueries({
-				queryKey: ['organization-boards', args[1].organizationId],
+				queryKey: [args[1].organizationId, 'organization-boards'],
 			});
 
 			await options?.onSuccess?.(...args);
@@ -130,7 +131,7 @@ export const useDeleteOrganizationTaskBoard = (
 			deleteOrganizationTaskBoard(data),
 		onSuccess: async (...args) => {
 			await queryClient.invalidateQueries({
-				queryKey: ['organization-boards', args[1].organizationId],
+				queryKey: [args[1].organizationId, 'organization-boards'],
 			});
 			await options?.onSuccess?.(...args);
 		},
@@ -153,14 +154,18 @@ export const useRetrieveOrganizationMembers = (
 
 // Tasks
 export const useRetrieveAllBoardTasksArgs = (
-	data: RetrieveAllBoardTasksArgs,
+	data: RetrieveAllBoardTasksArgs & RetrieveAllBoardTasksQueryArgs,
 	options?: Omit<
 		UseSuspenseQueryOptions<RetrieveAllBoardTasksResponse>,
 		'queryKey' | 'queryFn'
 	>
 ) => {
 	return useSuspenseQuery<RetrieveAllBoardTasksResponse>({
-		queryKey: ['organization-tasks', data.organizationTaskBoardId],
+		queryKey: [
+			data.organizationTaskBoardId,
+			'organization-tasks',
+			data.filter ?? null,
+		],
 		queryFn: () => retrieveAllBoardTasks(data),
 
 		...options,
@@ -181,7 +186,13 @@ export const useCreateTask = (
 		mutationFn: (data: CreateTaskArgs) => createTask(data),
 		onSuccess: async (...args) => {
 			await queryClient.invalidateQueries({
-				queryKey: ['organization-tasks', args[1].organizationTasksBoardId],
+				queryKey: [args[1].organizationTasksBoardId, 'organization-tasks'],
+				predicate: (query) => {
+					return (
+						query.queryKey[0] === args[1].organizationTasksBoardId &&
+						query.queryKey[1] === 'organization-tasks'
+					);
+				},
 			});
 			await options?.onSuccess?.(...args);
 		},
@@ -230,7 +241,13 @@ export const useUpdateTaskInfo = (
 		mutationFn: (data: UpdateTaskInfoArgs) => updateTaskInfo(data),
 		onSuccess: async (...args) => {
 			await queryClient.invalidateQueries({
-				queryKey: ['organization-tasks', args[1].organizationTasksBoardId],
+				queryKey: [args[1].organizationTasksBoardId, 'organization-tasks'],
+				predicate: (query) => {
+					return (
+						query.queryKey[0] === args[1].organizationTasksBoardId &&
+						query.queryKey[1] === 'organization-tasks'
+					);
+				},
 			});
 
 			await options?.onSuccess?.(...args);
@@ -253,7 +270,13 @@ export const useDeleteTaskById = (
 		mutationFn: (data: DeleteTaskByIdArgs) => deleteTaskById(data),
 		onSuccess: async (...args) => {
 			await queryClient.invalidateQueries({
-				queryKey: ['organization-tasks', boardId],
+				queryKey: [boardId, 'organization-tasks'],
+				predicate: (query) => {
+					return (
+						query.queryKey[0] === boardId &&
+						query.queryKey[1] === 'organization-tasks'
+					);
+				},
 			});
 
 			await options?.onSuccess?.(...args);
@@ -290,8 +313,7 @@ export const useCreateTaskQuestion = (
 		mutationFn: (data: CreateTaskQuestionArgs) => createTaskQuestion(data),
 		onSuccess: async (...args) => {
 			await queryClient.invalidateQueries({
-				queryKey: ['organization-task-questions'],
-				exact: false,
+				queryKey: ['organization-task-questions', args[1].taskId],
 			});
 			await options?.onSuccess?.(...args);
 		},

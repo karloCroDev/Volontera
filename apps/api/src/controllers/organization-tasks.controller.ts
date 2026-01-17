@@ -37,6 +37,7 @@ import {
   UpdateTaskInfoArgs,
   MoveTaskArgs,
   RetrieveAllBoardTasksArgs,
+  RetrieveAllBoardTasksQueryArgs,
   RetrieveAllOrganizationBoardsArgs,
 } from "@repo/schemas/organization-tasks";
 
@@ -134,9 +135,11 @@ export async function retrieveAllBoardTasksController(
   res: Response,
 ) {
   try {
-    const result = await retrieveAllBoardTasksService(
-      req.params as RetrieveAllBoardTasksArgs,
-    );
+    const result = await retrieveAllBoardTasksService({
+      ...(req.params as RetrieveAllBoardTasksArgs),
+      ...(req.query as RetrieveAllBoardTasksQueryArgs),
+      userId: req.user.userId,
+    });
     return res.status(result.status).json(result.body);
   } catch (err) {
     handleServerErrorResponse(res, err);

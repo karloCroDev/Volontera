@@ -33,6 +33,7 @@ import {
   DeleteTaskQuestionArgs,
   MoveTaskArgs,
   RetrieveAllBoardTasksArgs,
+  RetrieveAllBoardTasksQueryArgs,
   RetrieveAllOrganizationBoardsArgs,
   RetrieveAllOrganizationBoardsWithTasksArgs,
   RetrieveAllOrganizationBoardsWithTasksQueryArgs,
@@ -131,8 +132,15 @@ export async function retrieveOrganizationMembersService({
 // Tasks
 export async function retrieveAllBoardTasksService({
   organizationTaskBoardId,
-}: RetrieveAllBoardTasksArgs) {
-  const tasks = await retrieveAllBoardTasks(organizationTaskBoardId);
+  filter,
+  userId,
+}: RetrieveAllBoardTasksArgs &
+  RetrieveAllBoardTasksQueryArgs & { userId: string }) {
+  const tasks = await retrieveAllBoardTasks({
+    organizationTaskBoardId,
+    userId,
+    filter,
+  });
   return serverFetchOutput({
     status: 200,
     success: true,

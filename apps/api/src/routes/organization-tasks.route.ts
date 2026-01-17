@@ -43,6 +43,7 @@ import {
   moveTaskSchema,
   deleteTaskQuestionSchema,
   retrieveAllBoardTasksSchema,
+  retrieveAllBoardTasksQuerySchema,
   retrieveAllOrganizationBoardSchema,
 } from "@repo/schemas/organization-tasks";
 import { retrieveAllBoardTasks } from "@/models/organization-tasks.model";
@@ -60,7 +61,7 @@ organizationTasksRoutes.post(
     type: "body",
   }),
   organizationRolesMiddleware({ aquiredRoles: ["MEMBER", "ADMIN"] }),
-  createTaskBoardController
+  createTaskBoardController,
 );
 
 organizationTasksRoutes.patch(
@@ -71,7 +72,7 @@ organizationTasksRoutes.patch(
     type: "body",
   }),
   organizationRolesMiddleware({ aquiredRoles: ["MEMBER", "ADMIN"] }),
-  updateOrganizationTaskBoardTitleController
+  updateOrganizationTaskBoardTitleController,
 );
 
 organizationTasksRoutes.delete(
@@ -85,7 +86,7 @@ organizationTasksRoutes.delete(
     aquiredRoles: ["MEMBER", "ADMIN"],
     type: "params",
   }),
-  deleteOrganizationTaskBoardController
+  deleteOrganizationTaskBoardController,
 );
 
 organizationTasksRoutes.get(
@@ -99,7 +100,7 @@ organizationTasksRoutes.get(
     type: "params",
     aquiredRoles: ["MEMBER", "ADMIN"],
   }),
-  retrieveAllOrganizationBoardsController
+  retrieveAllOrganizationBoardsController,
 );
 
 // Boards with tasks
@@ -119,7 +120,7 @@ organizationTasksRoutes.get(
     type: "params",
     aquiredRoles: ["MEMBER", "ADMIN"],
   }),
-  retrieveAllOrganizationBoardsWithTasksController
+  retrieveAllOrganizationBoardsWithTasksController,
 );
 
 // Members (for task assignment)
@@ -134,7 +135,7 @@ organizationTasksRoutes.get(
     type: "params",
     aquiredRoles: ["MEMBER", "ADMIN"],
   }),
-  retrieveOrganizationMembersController
+  retrieveOrganizationMembersController,
 );
 
 // Tasks
@@ -145,11 +146,16 @@ organizationTasksRoutes.get(
     responseOutput: "server",
     type: "params",
   }),
+  validate({
+    schema: retrieveAllBoardTasksQuerySchema,
+    responseOutput: "server",
+    type: "query",
+  }),
   organizationRolesMiddleware({
     type: "params",
     aquiredRoles: ["MEMBER", "ADMIN"],
   }),
-  retrieveAllBoardTasksController
+  retrieveAllBoardTasksController,
 );
 
 organizationTasksRoutes.post(
@@ -160,7 +166,7 @@ organizationTasksRoutes.post(
     type: "body",
   }),
   organizationRolesMiddleware({ aquiredRoles: ["MEMBER", "ADMIN"] }),
-  createTaskController
+  createTaskController,
 );
 
 organizationTasksRoutes.get(
@@ -174,7 +180,7 @@ organizationTasksRoutes.get(
     aquiredRoles: ["MEMBER", "ADMIN"],
     type: "params",
   }),
-  retrieveTaskInfoController
+  retrieveTaskInfoController,
 );
 
 organizationTasksRoutes.get(
@@ -188,7 +194,7 @@ organizationTasksRoutes.get(
     aquiredRoles: ["MEMBER", "ADMIN"],
     type: "params",
   }),
-  retrieveTaskQuestionsController
+  retrieveTaskQuestionsController,
 );
 
 organizationTasksRoutes.patch(
@@ -199,7 +205,7 @@ organizationTasksRoutes.patch(
     type: "body",
   }),
   organizationRolesMiddleware({ aquiredRoles: ["MEMBER", "ADMIN"] }),
-  updateTaskInfoController
+  updateTaskInfoController,
 );
 
 organizationTasksRoutes.patch(
@@ -210,7 +216,7 @@ organizationTasksRoutes.patch(
     type: "body",
   }),
   organizationRolesMiddleware({ aquiredRoles: ["MEMBER", "ADMIN"] }),
-  moveTaskController
+  moveTaskController,
 );
 
 organizationTasksRoutes.delete(
@@ -224,7 +230,7 @@ organizationTasksRoutes.delete(
     aquiredRoles: ["MEMBER", "ADMIN"],
     type: "params",
   }),
-  deleteTaskByIdController
+  deleteTaskByIdController,
 );
 
 // Questions
@@ -236,7 +242,7 @@ organizationTasksRoutes.post(
     type: "body",
   }),
   organizationRolesMiddleware({ aquiredRoles: ["MEMBER", "ADMIN"] }),
-  createTaskQuestionController
+  createTaskQuestionController,
 );
 
 organizationTasksRoutes.delete(
@@ -250,5 +256,5 @@ organizationTasksRoutes.delete(
     aquiredRoles: ["MEMBER", "ADMIN"],
     type: "params",
   }),
-  deleteTaskQuestionController
+  deleteTaskQuestionController,
 );

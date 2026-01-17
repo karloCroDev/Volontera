@@ -11,6 +11,7 @@ import {
 	DeleteTaskByIdArgs,
 	DeleteTaskQuestionArgs,
 	RetrieveAllBoardTasksArgs,
+	RetrieveAllBoardTasksQueryArgs,
 	RetrieveAllOrganizationBoardsArgs,
 	RetrieveOrganizationMembersArgs,
 	RetrieveTaskInfoArgs,
@@ -87,10 +88,12 @@ export async function retrieveOrganizationMembers({
 export async function retrieveAllBoardTasks({
 	organizationId,
 	organizationTaskBoardId,
-}: RetrieveAllBoardTasksArgs) {
+	filter,
+}: RetrieveAllBoardTasksArgs & RetrieveAllBoardTasksQueryArgs) {
 	try {
+		const qs = filter ? `?filter=${filter}` : '';
 		const res = await API().get(
-			`/organization-tasks/tasks/${organizationId}/${organizationTaskBoardId}`
+			`/organization-tasks/tasks/${organizationId}/${organizationTaskBoardId}${qs}`
 		);
 		return res.data;
 	} catch (err) {

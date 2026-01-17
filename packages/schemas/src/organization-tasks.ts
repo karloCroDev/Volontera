@@ -38,6 +38,13 @@ export type RetrieveAllBoardTasksArgs = z.infer<
   typeof retrieveAllBoardTasksSchema
 >;
 
+export const retrieveAllBoardTasksQuerySchema = z.object({
+  filter: z.enum(["your-tasks", "assigned-by-you"]).optional(),
+});
+export type RetrieveAllBoardTasksQueryArgs = z.infer<
+  typeof retrieveAllBoardTasksQuerySchema
+>;
+
 export const retrieveAllOrganizationBoardsWithTasksSchema =
   organizationIdSchema;
 export type RetrieveAllOrganizationBoardsWithTasksArgs = z.infer<
@@ -45,7 +52,7 @@ export type RetrieveAllOrganizationBoardsWithTasksArgs = z.infer<
 >;
 
 export const retrieveAllOrganizationBoardsWithTasksQuerySchema = z.object({
-  filter: z.enum(["all-tasks", "your-tasks", "assigned-by-you"]).optional(),
+  filter: z.enum(["your-tasks", "assigned-by-you"]).optional(),
 });
 export type RetrieveAllOrganizationBoardsWithTasksQueryArgs = z.infer<
   typeof retrieveAllOrganizationBoardsWithTasksQuerySchema

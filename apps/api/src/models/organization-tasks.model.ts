@@ -54,6 +54,7 @@ export async function deleteOrganizationTaskBoard(
 
 export async function retrieveAllOrganizationBoards(
   organizationId: OrganizationTasksBoards["organizationId"],
+  filter?: "your-tasks" | "assigned-by-you",
 ) {
   return prisma.organizationTasksBoards.findMany({
     where: {
@@ -69,12 +70,73 @@ export async function retrieveAllOrganizationBoardsWithTasks({
   userId,
 }: {
   organizationId: OrganizationTasksBoards["organizationId"];
-  filter?: "all-tasks" | "your-tasks" | "assigned-by-you";
+  filter?: "your-tasks" | "assigned-by-you";
   userId: User["id"];
 }) {
-  const organizationTasksWhere =
-    filter === "your-tasks"
-      ? {
+  switch (filter) {
+    case "your-tasks":
+      return prisma.organizationTasksBoards.findMany({
+        where: {
+          organizationId,
+        },
+        include: {
+          organizationTasks: {
+            where: {
+              organizationTaskInfos: {
+                is: {
+                  organizatonMembersAsiggnedToTaskCards: {
+                    some: {
+                      organizationMember: {
+                        userId,
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      });
+    case "assigned-by-you":
+      return prisma.organizationTasksBoards.findMany({
+        where: {
+          organizationId,
+        },
+        include: {
+          organizationTasks: {
+            where: {
+              authorId: userId,
+            },
+          },
+        },
+      });
+    default:
+      return prisma.organizationTasksBoards.findMany({
+        where: {
+          organizationId,
+        },
+        include: {
+          organizationTasks: true,
+        },
+      });
+  }
+}
+
+// Tasks
+export async function retrieveAllBoardTasks({
+  organizationTaskBoardId,
+  userId,
+  filter,
+}: {
+  organizationTaskBoardId: OrganizationTasksBoards["id"];
+  userId: User["id"];
+  filter?: "your-tasks" | "assigned-by-you";
+}) {
+  switch (filter) {
+    case "your-tasks":
+      return prisma.organizationTask.findMany({
+        where: {
+          organizationTasksBoardId: organizationTaskBoardId,
           organizationTaskInfos: {
             is: {
               organizatonMembersAsiggnedToTaskCards: {
@@ -86,45 +148,22 @@ export async function retrieveAllOrganizationBoardsWithTasks({
               },
             },
           },
-        }
-      : undefined;
-
-  return prisma.organizationTasksBoards.findMany({
-    where: {
-      organizationId,
-    },
-    include: {
-      organizationTasks: {
-        where: {
-          authorId: filter === "assigned-by-you" ? userId : undefined,
         },
-      },
-    },
-  });
-
-  return prisma.organizationTasksBoards.findMany({
-    where: {
-      organizationId,
-    },
-    include: {
-      organizationTasks: organizationTasksWhere
-        ? {
-            where: organizationTasksWhere,
-          }
-        : true,
-    },
-  });
-}
-
-// Tasks
-export async function retrieveAllBoardTasks(
-  organizationTaskBoardId: OrganizationTasksBoards["id"],
-) {
-  return prisma.organizationTask.findMany({
-    where: {
-      organizationTasksBoardId: organizationTaskBoardId,
-    },
-  });
+      });
+    case "assigned-by-you":
+      return prisma.organizationTask.findMany({
+        where: {
+          organizationTasksBoardId: organizationTaskBoardId,
+          authorId: userId,
+        },
+      });
+    default:
+      return prisma.organizationTask.findMany({
+        where: {
+          organizationTasksBoardId: organizationTaskBoardId,
+        },
+      });
+  }
 }
 
 export async function retrieveOrganizationMembers(organizationId: string) {
@@ -163,7 +202,7 @@ export async function createTask({
 
   return prisma.organizationTask.create({
     data: {
-      status: priority, // TODO: Hanle the status
+      status: priority,
       authorId: userId,
       organizationId,
       title,
