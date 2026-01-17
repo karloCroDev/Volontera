@@ -58,7 +58,7 @@ export async function createTaskBoardService(data: CreateTaskBoardArgs) {
 }
 
 export async function updateOrganizationTaskBoardTitleService(
-  data: UpdateOrganizationTaskBoardTitleArgs
+  data: UpdateOrganizationTaskBoardTitleArgs,
 ) {
   await updateOrganizationTaskBoardTitle(data);
 
@@ -141,8 +141,17 @@ export async function retrieveAllBoardTasksService({
   });
 }
 
-export async function createTaskService(data: CreateTaskArgs) {
-  await createTask(data);
+export async function createTaskService({
+  data,
+  userId,
+}: {
+  data: CreateTaskArgs;
+  userId: User["id"];
+}) {
+  await createTask({
+    ...data,
+    userId,
+  });
 
   return toastResponseOutput({
     status: 200,

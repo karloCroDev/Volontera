@@ -4,6 +4,7 @@
 import * as React from 'react';
 import * as RadixSelect from '@radix-ui/react-select';
 import { ChevronDown } from 'lucide-react';
+import { twMerge } from 'tailwind-merge';
 
 export const SelectContainer: React.FC<
 	React.ComponentPropsWithoutRef<'div'> & RadixSelect.SelectProps
@@ -30,17 +31,18 @@ export const SelectContainer: React.FC<
 	</RadixSelect.Root>
 );
 
-export const SelectItem: React.FC<{
-	itemProps: React.ComponentPropsWithoutRef<'div'> &
-		RadixSelect.SelectItemProps;
-	title: string;
-}> = ({ itemProps, title }) => {
+export const SelectItem: React.FC<
+	React.ComponentPropsWithoutRef<'div'> & RadixSelect.SelectItemProps
+> = ({ children, className, ...rest }) => {
 	return (
 		<RadixSelect.Item
-			{...itemProps}
-			className="border-b-input-border hover:bg-accent hover:text-accent-foreground bg-muted cursor-pointer border-b px-2 py-3 outline-none transition-colors last:border-b-0"
+			{...rest}
+			className={twMerge(
+				'border-b-input-border hover:bg-accent hover:text-accent-foreground bg-muted cursor-pointer border-b px-2 py-3 outline-none transition-colors last:border-b-0',
+				className
+			)}
 		>
-			<RadixSelect.ItemText>{title}</RadixSelect.ItemText>
+			<RadixSelect.ItemText>{children}</RadixSelect.ItemText>
 		</RadixSelect.Item>
 	);
 };

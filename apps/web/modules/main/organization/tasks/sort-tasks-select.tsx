@@ -6,6 +6,8 @@ import { useSearchParams } from 'next/navigation';
 
 // Components
 import { SelectContainer, SelectItem } from '@/components/ui/select';
+
+// Hooks
 import { useSetParams } from '@/hooks/utils/useSetParams';
 
 export const SortTasksSelect = () => {
@@ -22,13 +24,10 @@ export const SortTasksSelect = () => {
 				setParams({ filter: value });
 			}}
 		>
-			<SelectItem itemProps={{ value: 'all-tasks' }} title="All tasks" />
-			<SelectItem itemProps={{ value: 'your-tasks' }} title="Your tasks" />
+			<SelectItem value="all-tasks">All tasks</SelectItem>
+			<SelectItem value="your-tasks">Your tasks</SelectItem>
 			{/* Admins only */}
-			<SelectItem
-				itemProps={{ value: 'assigned-by-you' }}
-				title="Assigned by you"
-			/>
+			<SelectItem value="assigned-by-you">Assigned by you</SelectItem>
 		</SelectContainer>
 	);
 };

@@ -5,6 +5,7 @@ import {
   OrganizationTaskInfo,
   OrganizationTaskQuestions,
   OrganizationTask,
+  User,
 } from "@repo/database";
 
 // Boards
@@ -42,7 +43,7 @@ export async function updateOrganizationTaskBoardTitle({
 }
 
 export async function deleteOrganizationTaskBoard(
-  organizationTaskBoardId: OrganizationTasksBoards["id"]
+  organizationTaskBoardId: OrganizationTasksBoards["id"],
 ) {
   return prisma.organizationTasksBoards.deleteMany({
     where: {
@@ -52,7 +53,7 @@ export async function deleteOrganizationTaskBoard(
 }
 
 export async function retrieveAllOrganizationBoards(
-  organizationId: OrganizationTasksBoards["organizationId"]
+  organizationId: OrganizationTasksBoards["organizationId"],
 ) {
   return prisma.organizationTasksBoards.findMany({
     where: {
@@ -69,7 +70,7 @@ export async function retrieveAllOrganizationBoardsWithTasks({
 }: {
   organizationId: OrganizationTasksBoards["organizationId"];
   filter?: "all-tasks" | "your-tasks" | "assigned-by-you";
-  userId: string;
+  userId: User["id"];
 }) {
   const organizationTasksWhere =
     filter === "your-tasks"
@@ -93,6 +94,19 @@ export async function retrieveAllOrganizationBoardsWithTasks({
       organizationId,
     },
     include: {
+      organizationTasks: {
+        where: {
+          authorId: filter === "assigned-by-you" ? userId : undefined,
+        },
+      },
+    },
+  });
+
+  return prisma.organizationTasksBoards.findMany({
+    where: {
+      organizationId,
+    },
+    include: {
       organizationTasks: organizationTasksWhere
         ? {
             where: organizationTasksWhere,
@@ -104,7 +118,7 @@ export async function retrieveAllOrganizationBoardsWithTasks({
 
 // Tasks
 export async function retrieveAllBoardTasks(
-  organizationTaskBoardId: OrganizationTasksBoards["id"]
+  organizationTaskBoardId: OrganizationTasksBoards["id"],
 ) {
   return prisma.organizationTask.findMany({
     where: {
@@ -131,6 +145,8 @@ export async function createTask({
   title,
   organizationTasksBoardId,
   assignedMembers,
+  userId,
+  priority,
 }: {
   organizationId: OrganizationTask["organizationId"];
   description: OrganizationTaskInfo["description"];
@@ -138,6 +154,8 @@ export async function createTask({
   title: OrganizationTask["title"];
   assignedMembers: string[];
   organizationTasksBoardId: OrganizationTask["organizationTasksBoardId"];
+  userId: User["id"];
+  priority: OrganizationTask["status"];
 }) {
   const assignedMembersData = assignedMembers.map((memberId) => ({
     organizationMemberId: memberId,
@@ -145,6 +163,8 @@ export async function createTask({
 
   return prisma.organizationTask.create({
     data: {
+      status: priority, // TODO: Hanle the status
+      authorId: userId,
       organizationId,
       title,
       dueDate,
@@ -252,7 +272,7 @@ export async function deleteTaskById(taskId: OrganizationTask["id"]) {
 
 // Questions
 export async function retrieveTaskQuestions(
-  taskId: OrganizationTaskQuestions["organizationTaskId"]
+  taskId: OrganizationTaskQuestions["organizationTaskId"],
 ) {
   return prisma.organizationTaskQuestions.findMany({
     where: {

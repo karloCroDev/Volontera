@@ -20,9 +20,9 @@ export const TaskCard: React.FC<{
 					<div className="flex items-center gap-4">
 						<Dot
 							state={
-								task.status === 'COMPLETED'
+								task.status === 'LOW_PRIORITY'
 									? 'success'
-									: task.status === 'PENDING'
+									: task.status === 'MEDIUM_PRIORITY'
 										? 'pending'
 										: 'destructive'
 							}

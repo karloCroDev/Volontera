@@ -9,9 +9,9 @@ import { SelectContainer, SelectItem } from '@/components/ui/select';
 export const PostsSelect = () => {
 	return (
 		<SelectContainer defaultValue={'recommended'}>
-			<SelectItem itemProps={{ value: 'recommended' }} title="Recommended" />
-			<SelectItem itemProps={{ value: 'newest' }} title="Newest" />
-			<SelectItem itemProps={{ value: 'oldest' }} title="Oldest" />
+			<SelectItem value="recommended">Recommended</SelectItem>
+			<SelectItem value="newest">Newest</SelectItem>
+			<SelectItem value="oldest">Oldest</SelectItem>
 		</SelectContainer>
 	);
 };

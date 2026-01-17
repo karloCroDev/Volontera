@@ -437,19 +437,9 @@ model OrganizationTasksBoards {
 }
 
 enum OrganizationTaskStatus {
-  // Change to 
-  /**
-   * /**
-   * /**
-   * /**
-   * /**
-   * LOW_PRIORITY
-   * MEDIUM_PRIORITY
-   * HIGH_PRIORITY
-   */
-  FAILURE
-  PENDING
-  COMPLETED
+  LOW_PRIORITY
+  MEDIUM_PRIORITY
+  HIGH_PRIORITY
 }
 
 model OrganizationTask {
@@ -459,7 +449,8 @@ model OrganizationTask {
   organizationTaskQuestions OrganizationTaskQuestions[]
   title                     String
   dueDate                   String
-  status                    OrganizationTaskStatus      @default(PENDING)
+  status                    OrganizationTaskStatus
+  authorId                  String
   organizationTasksBoard    OrganizationTasksBoards?    @relation(fields: [organizationTasksBoardId], references: [id])
   organizationTasksBoardId  String?
   createdAt                 DateTime                    @default(now())

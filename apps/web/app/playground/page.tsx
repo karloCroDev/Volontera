@@ -33,11 +33,10 @@ export default function PlaygroundPage() {
 
 			<div className="ml-40">
 				<SelectContainer>
-					<SelectItem itemProps={{ value: 'option1' }} title="Option 1" />
-					<SelectItem itemProps={{ value: 'option2' }} title="Option 2" />
-					<SelectItem itemProps={{ value: 'option3' }} title="Option 3" />
-					<SelectItem itemProps={{ value: 'option4' }} title="Option 4" />
-					<SelectItem itemProps={{ value: 'option5' }} title="Option 5" />
+					<SelectItem value="option-1">Option1 </SelectItem>
+					<SelectItem value="option-2">Option 2</SelectItem>
+					<SelectItem value="option-3">Option 3</SelectItem>
+					<SelectItem value="option-4">Option 4</SelectItem>
 				</SelectContainer>
 			</div>
 

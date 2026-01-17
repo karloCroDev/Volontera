@@ -68,6 +68,7 @@ export const createTaskSchema = z
     description: z.string().min(1),
     title: z.string().min(1),
     dueDate: z.string().min(1, "Due date is required"),
+    priority: z.enum(["LOW_PRIORITY", "MEDIUM_PRIORITY", "HIGH_PRIORITY"]),
     assignedMembers: z
       .array(z.string())
       .min(1, "At least one member must be assigned"),

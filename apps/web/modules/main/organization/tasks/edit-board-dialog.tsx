@@ -4,21 +4,21 @@
 import * as React from 'react';
 import { Form } from 'react-aria-components';
 import { Ellipsis } from 'lucide-react';
+import { useParams } from 'next/navigation';
 
 // Components
 import { Button } from '@/components/ui/button';
 import { Dialog } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
 
 // Modules
 import { DeleteConfirmationDialog } from '@/modules/main/organization/tasks/delete-confirmaton-dialog';
-import {
-	useDeleteOrganizationTaskBoard,
-	useRetrieveTaskInfo,
-} from '@/hooks/data/organization-tasks';
-import { useParams } from 'next/navigation';
+
+// Hooks
+import { useDeleteOrganizationTaskBoard } from '@/hooks/data/organization-tasks';
+
+// Lib
 import { toast } from '@/lib/utils/toast';
 
 export const EditBoardDialog: React.FC<{

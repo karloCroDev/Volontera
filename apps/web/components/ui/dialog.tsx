@@ -9,8 +9,9 @@ import {
 	DialogTrigger,
 	DialogTriggerProps,
 	Heading,
+	DialogProps,
 } from 'react-aria-components';
-import { twJoin } from 'tailwind-merge';
+import { twJoin, twMerge } from 'tailwind-merge';
 import { X } from 'lucide-react';
 
 // Components
@@ -28,6 +29,7 @@ export const Dialog: React.FC<
 			subtitle?: string;
 			startDesktop?: ColumnsNumbers;
 			endDesktop?: ColumnsNumbers;
+			dialogProps?: React.ComponentPropsWithoutRef<'div'> & DialogProps;
 		}
 > = ({
 	children,
@@ -36,6 +38,7 @@ export const Dialog: React.FC<
 	subtitle,
 	startDesktop = 4,
 	endDesktop = 10,
+	dialogProps,
 	...rest
 }) => (
 	<DialogTrigger {...rest}>
@@ -53,10 +56,11 @@ export const Dialog: React.FC<
 					<Modal
 						isKeyboardDismissDisabled
 						className={({ isEntering, isExiting }) =>
-							twJoin(
+							twMerge(
 								'bg-muted border-primary no-scrollbar relative z-20 rounded-2xl border px-6 py-6 text-left lg:px-8',
 								isEntering && 'animate-in fade-in',
-								isExiting && 'animate-out fade-out'
+								isExiting && 'animate-out fade-out',
+								dialogProps?.className
 							)
 						}
 					>

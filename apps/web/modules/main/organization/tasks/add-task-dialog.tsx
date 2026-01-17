@@ -9,12 +9,18 @@ import { Button } from '@/components/ui/button';
 import { Dialog } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
-import { Checkbox, CheckboxGroup, Form } from 'react-aria-components';
+import {
+	Checkbox,
+	CheckboxGroup,
+	Form,
+	Radio,
+	RadioGroup,
+} from 'react-aria-components';
 import { DatePicker } from '@/components/ui/date-picker';
 import { Tag } from '@/components/ui/tag';
 import { Avatar } from '@/components/ui/avatar';
 import { CheckboxVisually } from '@/components/ui/checkbox';
-import { convertCalendarDate } from '@/lib/utils/converter';
+import { convertCalendarDate, convertToFullname } from '@/lib/utils/converter';
 import { useParams } from 'next/navigation';
 import { Controller, useForm } from 'react-hook-form';
 import {
@@ -30,6 +36,8 @@ import { Textarea } from '@/components/ui/textarea';
 import { toast } from '@/lib/utils/toast';
 import { getLocalTimeZone, today } from '@internationalized/date';
 import { Error } from '@/components/ui/error';
+import { Dot } from '@/components/ui/dot';
+import { RadioIconVisual } from '@/components/ui/radio';
 
 export const AddTaskDialog: React.FC<{
 	organizationTasksBoardId: string;
@@ -53,6 +61,7 @@ export const AddTaskDialog: React.FC<{
 			description: '',
 			dueDate: '',
 			assignedMembers: [],
+			priority: 'MEDIUM_PRIORITY',
 		},
 	});
 
@@ -90,6 +99,9 @@ export const AddTaskDialog: React.FC<{
 			isOpen={isOpen}
 			title="Add new task"
 			subtitle="Please enter the information about the new task"
+			dialogProps={{
+				className: 'max-h-[600px] overflow-y-scroll',
+			}}
 			triggerChildren={
 				<Button
 					isFullyRounded
@@ -157,6 +169,48 @@ export const AddTaskDialog: React.FC<{
 				</div>
 
 				<div className="w-full">
+					<Label className="mb-2">Priority</Label>
+					<Controller
+						control={control}
+						name="priority"
+						render={({ field }) => (
+							<RadioGroup
+								value={field.value}
+								onChange={field.onChange}
+								className="flex w-fit flex-wrap gap-3"
+							>
+								<Radio className="group" value="LOW_PRIORITY">
+									<Tag className="flex items-center gap-4">
+										<Dot state="success" />
+										<p>Low Priority</p>
+
+										<RadioIconVisual className="rounded-full" />
+									</Tag>
+								</Radio>
+								<Radio className="group" value="MEDIUM_PRIORITY">
+									<Tag className="flex items-center gap-4">
+										<Dot state="pending" />
+										<p>Medium Priority</p>
+
+										<RadioIconVisual className="rounded-full" />
+									</Tag>
+								</Radio>
+								<Radio className="group" value="HIGH_PRIORITY">
+									<Tag className="flex items-center gap-4">
+										<Dot state="destructive" />
+										<p>High Priority</p>
+
+										<RadioIconVisual className="rounded-full" />
+									</Tag>
+								</Radio>
+							</RadioGroup>
+						)}
+					/>
+
+					<Error>{errors.priority?.message}</Error>
+				</div>
+
+				<div className="w-full">
 					<Label className="mb-2">Assgin members</Label>
 					<Controller
 						control={control}
@@ -173,14 +227,19 @@ export const AddTaskDialog: React.FC<{
 											<Avatar
 												imageProps={{
 													src: member.user.image || '',
-													alt: `${member.user.firstName} ${member.user.lastName}`,
 												}}
 												size="xs"
 											>
-												{member.user.firstName} {member.user.lastName}
+												{convertToFullname({
+													firstname: member.user.firstName,
+													lastname: member.user.lastName,
+												})}
 											</Avatar>
 											<p>
-												{member.user.firstName} {member.user.lastName}
+												{convertToFullname({
+													firstname: member.user.firstName,
+													lastname: member.user.lastName,
+												})}
 											</p>
 
 											<CheckboxVisually
