@@ -12,15 +12,52 @@ import {
 export async function createTaskBoard({
   title,
   organizationId,
+  authorId,
+  tasks,
 }: {
   title: OrganizationTasksBoards["title"];
-
   organizationId: OrganizationTasksBoards["organizationId"];
+
+  // Optional initial tasks (e.g. AI-generated)
+  authorId?: User["id"];
+  tasks?: Array<{
+    title: OrganizationTask["title"];
+    dueDate: OrganizationTask["dueDate"];
+    status: OrganizationTask["status"];
+    description: OrganizationTaskInfo["description"];
+  }>;
 }) {
+  if (!tasks?.length) {
+    return prisma.organizationTasksBoards.create({
+      data: {
+        title,
+        organizationId,
+      },
+    });
+  }
+
+  if (!authorId) {
+    throw new Error("authorId is required when creating tasks with a board");
+  }
+
   return prisma.organizationTasksBoards.create({
     data: {
       title,
       organizationId,
+      organizationTasks: {
+        create: tasks.map((task) => ({
+          organizationId,
+          authorId,
+          title: task.title,
+          dueDate: task.dueDate,
+          status: task.status,
+          organizationTaskInfos: {
+            create: {
+              description: task.description,
+            },
+          },
+        })),
+      },
     },
   });
 }

@@ -36,7 +36,6 @@ import {
   RetrieveAllBoardTasksQueryArgs,
   RetrieveAllOrganizationBoardsArgs,
   RetrieveAllOrganizationBoardsWithTasksArgs,
-  RetrieveAllOrganizationBoardsWithTasksQueryArgs,
   RetrieveTaskInfoArgs,
   RetrieveTaskQuestionsArgs,
   RetrieveOrganizationMembersArgs,
@@ -45,16 +44,74 @@ import {
 } from "@repo/schemas/organization-tasks";
 
 // Database
-import { User } from "@repo/database";
+import { User, OrganizationTaskStatus } from "@repo/database";
+import { createTasksLlmWithBoard } from "@/lib/structured-llm-response";
+import { z } from "zod";
+
+const aiTasksSchema = z.object({
+  tasks: z
+    .array(
+      z.object({
+        title: z.string().min(1),
+        description: z.string().min(1),
+        dueDate: z.string().min(1),
+        status: z.enum(["LOW_PRIORITY", "MEDIUM_PRIORITY", "HIGH_PRIORITY"]),
+      }),
+    )
+    .min(1)
+    .max(3),
+});
 
 // Boards
-export async function createTaskBoardService(data: CreateTaskBoardArgs) {
-  await createTaskBoard(data);
+export async function createTaskBoardService({
+  data,
+  userId,
+}: {
+  data: CreateTaskBoardArgs;
+  userId: User["id"];
+}) {
+  let generatedTasks: z.infer<typeof aiTasksSchema>["tasks"] | undefined;
+
+  if (data.generateTasksWithAi) {
+    const llmRaw = await createTasksLlmWithBoard({
+      boardTitle: data.title,
+      description: data.descriptionAi,
+    });
+
+    if (typeof llmRaw !== "string") {
+      throw new Error("AI task generation failed: invalid response type");
+    }
+
+    console.log("LLM RAW:", llmRaw);
+    const parsed = aiTasksSchema.parse(llmRaw);
+    if (!parsed) {
+      throw new Error("AI task generation failed: could not parse tasks JSON");
+    }
+
+    generatedTasks = parsed.tasks.map((t) => ({
+      title: t.title,
+      description: t.description,
+      dueDate: t.dueDate,
+      status: t.status,
+    }));
+  }
+
+  await createTaskBoard({
+    title: data.title,
+    organizationId: data.organizationId,
+    authorId: userId,
+    tasks: generatedTasks,
+  });
+
+  const createdTasksCount = generatedTasks?.length ?? 0;
 
   return toastResponseOutput({
     status: 200,
     title: "Board Created",
-    message: "Task board created successfully",
+    message:
+      createdTasksCount > 0
+        ? `Task board created (+${createdTasksCount} AI tasks)`
+        : "Task board created successfully",
   });
 }
 
@@ -101,7 +158,7 @@ export async function retrieveAllOrganizationBoardsWithTasksService({
   filter,
   userId,
 }: RetrieveAllOrganizationBoardsWithTasksArgs &
-  RetrieveAllOrganizationBoardsWithTasksQueryArgs & { userId: string }) {
+  RetrieveAllBoardTasksQueryArgs & { userId: User["id"] }) {
   const boardsWithTasks = await retrieveAllOrganizationBoardsWithTasks({
     organizationId,
     filter,

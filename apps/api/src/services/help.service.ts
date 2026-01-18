@@ -46,15 +46,15 @@ export async function addQuestionService({
         ? "You are a helpful AI assistant that has context about this application [app] and tries to assist and navigate organizators throughout the application. Awesome so here are the app features once the organization is logged in."
         : "Your admin you have full access to the application and its features, including the questons and answers";
 
-  // Mitiganiting jailbreaks (lighweight model for checking the )
-  const AIGuard = await safetyCheckLlmReponse();
+  // Lightweight model koji koristi kako bi provjerili je li korisnik pita harmful pitanja
+  const AIGuard = await safetyCheckLlmReponse(data.message);
 
   if (AIGuard === "Y") {
     return innapropriateContent;
   }
 
   const llmResponse = await getLlmResponse(
-    `${appRules} \n Users response:${data.message}`
+    `${appRules} \n Users response:${data.message}`,
   );
 
   await addUsersQuestionWithLLMResponse({

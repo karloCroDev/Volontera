@@ -45,7 +45,6 @@ import {
   retrieveAllBoardTasksQuerySchema,
   retrieveAllOrganizationBoardSchema,
 } from "@repo/schemas/organization-tasks";
-import { retrieveAllBoardTasks } from "@/models/organization-tasks.model";
 
 export const organizationTasksRoutes = Router();
 

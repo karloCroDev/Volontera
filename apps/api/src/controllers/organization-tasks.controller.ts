@@ -46,9 +46,10 @@ import { handleServerErrorResponse } from "@/lib/utils/error-response";
 // Boards
 export async function createTaskBoardController(req: Request, res: Response) {
   try {
-    const result = await createTaskBoardService(
-      req.body as CreateTaskBoardArgs,
-    );
+    const result = await createTaskBoardService({
+      data: req.body as CreateTaskBoardArgs,
+      userId: req.user.userId,
+    });
     return res.status(result.status).json(result.body);
   } catch (err) {
     handleServerErrorResponse(res, err);
