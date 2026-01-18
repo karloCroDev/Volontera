@@ -6,7 +6,7 @@ import { Plus } from 'lucide-react';
 import { Controller, useForm } from 'react-hook-form';
 import { Form, Radio, RadioGroup } from 'react-aria-components';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 
 // Components
 import { Button } from '@/components/ui/button';
@@ -31,6 +31,7 @@ import { Textarea } from '@/components/ui/textarea';
 export const AddBoardDialog = () => {
 	const [isOpen, setIsOpen] = React.useState(false);
 	const params = useParams<{ organizationId: string }>();
+	const router = useRouter();
 	const {
 		handleSubmit,
 		control,
@@ -56,6 +57,7 @@ export const AddBoardDialog = () => {
 					content: message,
 					variant: 'success',
 				});
+
 				reset({
 					title: '',
 					organizationId: params.organizationId,
@@ -159,6 +161,7 @@ export const AddBoardDialog = () => {
 								<Textarea
 									label="Enter your tasks for AI"
 									textAreaProps={field}
+									error={errors.descriptionAi?.message}
 								/>
 							)}
 						/>

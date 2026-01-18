@@ -9,6 +9,8 @@ import { Dot } from '@/components/ui/dot';
 import { EllipsisVertical } from 'lucide-react';
 import { Button } from 'react-aria-components';
 import { RetrieveAllOrganizationBoardsWithTasksResponse } from '@repo/types/organization-tasks';
+import { convertToPascalCase } from '@/lib/utils/converter';
+import { formatDate } from '@/lib/utils/time-adjustments';
 
 export const TaskCard: React.FC<{
 	task: RetrieveAllOrganizationBoardsWithTasksResponse['boardsWithTasks'][0]['organizationTasks'][0];
@@ -33,11 +35,13 @@ export const TaskCard: React.FC<{
 
 				<EllipsisVertical className="text-muted-foreground size-4" />
 			</div>
-			<p className="text-muted-foreground text-start text-xs">{task.title}</p>
+			<p className="text-muted-foreground text-start text-xs">
+				{convertToPascalCase(task.status.replace('_', ' '))}
+			</p>
 
 			<div className="mt-3 flex items-center justify-between">
 				<p className="text-muted-foreground text-sm">
-					Deadline: {task.dueDate}
+					Deadline: {formatDate(task.dueDate)}
 				</p>
 				{/* Add different background colors */}
 
@@ -73,10 +77,6 @@ export const TaskCard: React.FC<{
 							John Doe
 						</Avatar>
 					</div>
-
-					{/* <p className="text-muted-foreground text-xs">
-						+ {otherUsersCount} other users {isUserIncluded && 'including you'}
-					</p> */}
 				</div>
 			</div>
 		</Button>

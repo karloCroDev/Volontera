@@ -19,7 +19,6 @@ export async function retrieveRecentAlgoPostsService({
     limit: data.limit,
     filter: data.filter,
   });
-  console.log(data);
   return serverFetchOutput({
     status: 200,
     message: "Successfully retrieved algorithmic posts",

@@ -90,6 +90,15 @@ export const useCreateTaskBoard = (
 				queryKey: [args[1].organizationId, 'organization-boards'],
 			});
 
+			await queryClient.invalidateQueries({
+				predicate: (query) => {
+					return (
+						Array.isArray(query.queryKey) &&
+						query.queryKey[1] === 'organization-tasks'
+					);
+				},
+			});
+
 			await options?.onSuccess?.(...args);
 		},
 	});
@@ -135,6 +144,7 @@ export const useDeleteOrganizationTaskBoard = (
 			await queryClient.invalidateQueries({
 				queryKey: [args[1].organizationId, 'organization-boards'],
 			});
+
 			await options?.onSuccess?.(...args);
 		},
 	});

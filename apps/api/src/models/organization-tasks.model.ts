@@ -17,15 +17,13 @@ export async function createTaskBoard({
 }: {
   title: OrganizationTasksBoards["title"];
   organizationId: OrganizationTasksBoards["organizationId"];
-
-  // Optional initial tasks (e.g. AI-generated)
-  authorId?: User["id"];
-  tasks?: Array<{
+  authorId: User["id"];
+  tasks?: {
     title: OrganizationTask["title"];
     dueDate: OrganizationTask["dueDate"];
     status: OrganizationTask["status"];
     description: OrganizationTaskInfo["description"];
-  }>;
+  }[];
 }) {
   if (!tasks?.length) {
     return prisma.organizationTasksBoards.create({
@@ -34,10 +32,6 @@ export async function createTaskBoard({
         organizationId,
       },
     });
-  }
-
-  if (!authorId) {
-    throw new Error("authorId is required when creating tasks with a board");
   }
 
   return prisma.organizationTasksBoards.create({
@@ -91,7 +85,6 @@ export async function deleteOrganizationTaskBoard(
 
 export async function retrieveAllOrganizationBoards(
   organizationId: OrganizationTasksBoards["organizationId"],
-  filter?: "your-tasks" | "assigned-by-you",
 ) {
   return prisma.organizationTasksBoards.findMany({
     where: {

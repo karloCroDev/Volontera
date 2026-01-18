@@ -7,7 +7,7 @@ export const createTaskBoardSchema = z
   .object({
     title: z.string().min(1).max(100),
     generateTasksWithAi: z.boolean().optional(),
-    descriptionAi: z.string().min(1).max(200).optional(),
+    descriptionAi: z.string().min(1).max(200).or(z.literal("")).optional(),
   })
   .extend(organizationIdSchema.shape);
 export type CreateTaskBoardArgs = z.infer<typeof createTaskBoardSchema>;

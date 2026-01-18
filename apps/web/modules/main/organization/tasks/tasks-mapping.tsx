@@ -64,6 +64,8 @@ export const TasksMapping: React.FC<{
 				success: true,
 				message: 'Prefetched data',
 			},
+			initialDataUpdatedAt: 0,
+			refetchOnMount: 'always',
 		}
 	);
 
@@ -85,6 +87,7 @@ export const TasksMapping: React.FC<{
 		);
 	};
 
+	console.log(tasks);
 	// Ova logika za drag and drop je rađena na ovaj način, po preporuci dokumentaciji react-aria-components za drag and drop: https://react-aria.adobe.com/examples/kanban
 	const { dragAndDropHooks } = useDragAndDrop<Task>({
 		getItems: (_keys, items) => {
