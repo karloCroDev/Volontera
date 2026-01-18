@@ -6,6 +6,7 @@ import { ServerHandleResponse } from '@repo/types/general';
 import {
 	RetirveAllRequestsToJoinOrganizationResponse,
 	RetrieveAllMembersInOrganizationResponse,
+	RetrieveDataAboutOrganizationResponse,
 	RetrieveOrganizationMemberResponse,
 } from '@repo/types/organization-managment';
 
@@ -40,7 +41,10 @@ export async function retrieveAllRequestsToJoinOrganization(
 	});
 }
 
-export async function retrieveDataAboutOrganization(organizationId: string) {
+export async function retrieveDataAboutOrganization(organizationId: string):Promise<
+	RetrieveDataAboutOrganizationResponse | ServerHandleResponse<false>
+> {
+	console.log(organizationId);
 	return await serverFetch({
 		url: `organization-managment/data/${organizationId}`,
 		init: { next: { tags: ['organization-data'] }, cache: 'no-store' },

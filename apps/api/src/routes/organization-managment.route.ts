@@ -80,7 +80,9 @@ organizationManagmentRoutes.get(
     type: "params",
     responseOutput: "server",
   }),
-  organizationRolesMiddleware({}),
+  organizationRolesMiddleware({
+    type: "params",
+  }),
   retrieveDataAboutOrganizationController,
 );
 
