@@ -4,6 +4,7 @@ import {
 	UseMutationOptions,
 	useQuery,
 	useQueryClient,
+	UseQueryOptions,
 } from '@tanstack/react-query';
 
 // Lib
@@ -57,7 +58,15 @@ export const useCreateOrganization = (
 	});
 };
 
-export function useListOrganizations(role?: string) {
+export function useListOrganizations(
+	role?: string,
+	options?: {
+		options?: Omit<
+			UseQueryOptions<ListOrganizationsOrganizatorResponse>,
+			'queryKey' | 'queryFn'
+		>;
+	}
+) {
 	return useQuery<ListOrganizationsOrganizatorResponse>({
 		queryKey: ['organization', role],
 		queryFn:

@@ -64,7 +64,10 @@ export const Organizations = () => {
 	const { data: user } = useSession();
 
 	const { data: organizations, isLoading } = useListOrganizations(
-		user?.role || undefined
+		user?.role || undefined,
+		{
+			options: { enabled: open },
+		}
 	);
 
 	const { data: images } = useGetImageFromKeys({
@@ -85,7 +88,6 @@ export const Organizations = () => {
 
 	const params = useParams<{ organizationId: string }>();
 
-	console.log(organizations);
 	return (
 		<Collapsible
 			open={open}

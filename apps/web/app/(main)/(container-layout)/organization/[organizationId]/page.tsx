@@ -55,7 +55,7 @@ export default async function OrganizationPage({
 					<Tag colorScheme="gray">
 						{organizationDetailsById.organization.organizationInfo.type}
 					</Tag>
-					<SharePost link="" />
+					<SharePost link={`/organization/${organizationId}`} />
 				</div>
 
 				<div className="pt-36 md:ml-10">

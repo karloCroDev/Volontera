@@ -39,20 +39,26 @@ export const CommentsMapping: React.FC<{
 		));
 	}
 
-	return data?.comments.map((comment) => (
-		<div
-			key={comment.id}
-			className="no-scrollbar mt-4 max-h-[600px] overflow-scroll"
-		>
-			<Comment
-				comment={comment}
-				hasUserLiked={comment.postCommentsLikes.some(
-					(like) => like.userId === user?.id
-				)}
-				pfpImages={pfpImages?.urls}
-			/>
-		</div>
-	));
+	return data && data.comments.length > 0 ? (
+		data.comments.map((comment) => (
+			<div
+				key={comment.id}
+				className="no-scrollbar mt-4 max-h-[600px] overflow-scroll"
+			>
+				<Comment
+					comment={comment}
+					hasUserLiked={comment.postCommentsLikes.some(
+						(like) => like.userId === user?.id
+					)}
+					pfpImages={pfpImages?.urls}
+				/>
+			</div>
+		))
+	) : (
+		<p className="text-muted-foreground mt-4 text-center text-sm">
+			No comments yet. Be the first to comment!
+		</p>
+	);
 };
 
 export const CommentOrReplySkeleton = () => (
