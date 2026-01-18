@@ -20,6 +20,7 @@ import {
   updateOrganizationTaskBoardTitleController,
   updateTaskInfoController,
   moveTaskController,
+  createLlmTaskController,
 } from "@/controllers/organization-tasks.controller";
 
 // Middleware
@@ -44,7 +45,9 @@ import {
   retrieveAllBoardTasksSchema,
   retrieveAllBoardTasksQuerySchema,
   retrieveAllOrganizationBoardSchema,
+  createLlmTaskSchema,
 } from "@repo/schemas/organization-tasks";
+import { createLlmTask } from "@/lib/structured-llm-response";
 
 export const organizationTasksRoutes = Router();
 
@@ -165,6 +168,16 @@ organizationTasksRoutes.post(
   }),
   organizationRolesMiddleware({ aquiredRoles: ["MEMBER", "ADMIN"] }),
   createTaskController,
+);
+organizationTasksRoutes.post(
+  "/tasks/create-llm",
+  validate({
+    schema: createLlmTaskSchema,
+    responseOutput: "toast",
+    type: "body",
+  }),
+  organizationRolesMiddleware({ aquiredRoles: ["MEMBER", "ADMIN"] }),
+  createLlmTaskController,
 );
 
 organizationTasksRoutes.get(

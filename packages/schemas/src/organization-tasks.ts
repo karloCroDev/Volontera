@@ -67,7 +67,6 @@ export type RetrieveOrganizationMembersArgs = z.infer<
 // Tasks
 export const createTaskSchema = z
   .object({
-    organizationId: z.cuid(),
     description: z.string().min(1),
     title: z.string().min(1),
     dueDate: z.string().min(1, "Due date is required"),
@@ -79,6 +78,18 @@ export const createTaskSchema = z
   })
   .extend(organizationIdSchema.shape);
 export type CreateTaskArgs = z.infer<typeof createTaskSchema>;
+
+export const createLlmTaskSchema = createTaskSchema
+  .pick({
+    title: true,
+    organizationTasksBoardId: true,
+    assignedMembers: true,
+  })
+  .extend({
+    description: z.string().min(1).or(z.literal("")), // Ai description
+    ...organizationIdSchema.shape,
+  });
+export type CreateLlmTaskArgs = z.infer<typeof createLlmTaskSchema>;
 
 export const retrieveTaskInfoSchema = z
   .object({

@@ -41,26 +41,16 @@ import {
   RetrieveOrganizationMembersArgs,
   UpdateOrganizationTaskBoardTitleArgs,
   UpdateTaskInfoArgs,
+  CreateLlmTaskArgs,
 } from "@repo/schemas/organization-tasks";
 
 // Database
 import { User, OrganizationTaskStatus } from "@repo/database";
-import { createTasksLlmWithBoard } from "@/lib/structured-llm-response";
+import {
+  createLlmTask,
+  createTasksLlmWithBoard,
+} from "@/lib/structured-llm-response";
 import { z } from "zod";
-
-const aiTasksSchema = z.object({
-  tasks: z
-    .array(
-      z.object({
-        title: z.string().min(1),
-        description: z.string().min(1),
-        dueDate: z.string().min(1),
-        status: z.enum(["LOW_PRIORITY", "MEDIUM_PRIORITY", "HIGH_PRIORITY"]),
-      }),
-    )
-    .min(1)
-    .max(3),
-});
 
 // Boards
 export async function createTaskBoardService({
@@ -70,40 +60,21 @@ export async function createTaskBoardService({
   data: CreateTaskBoardArgs;
   userId: User["id"];
 }) {
-  let generatedTasks: z.infer<typeof aiTasksSchema>["tasks"] | undefined;
-
-  if (data.generateTasksWithAi) {
-    const llmRaw = await createTasksLlmWithBoard({
-      boardTitle: data.title,
-      description: data.descriptionAi,
-    });
-
-    if (typeof llmRaw !== "string") {
-      throw new Error("AI task generation failed: invalid response type");
-    }
-
-    console.log("LLM RAW:", llmRaw);
-    const parsed = aiTasksSchema.parse(llmRaw);
-    if (!parsed) {
-      throw new Error("AI task generation failed: could not parse tasks JSON");
-    }
-
-    generatedTasks = parsed.tasks.map((t) => ({
-      title: t.title,
-      description: t.description,
-      dueDate: t.dueDate,
-      status: t.status,
-    }));
-  }
+  const createLlmTasks = data.generateTasksWithAi
+    ? await createTasksLlmWithBoard({
+        boardTitle: data.title,
+        description: data.descriptionAi,
+      })
+    : undefined;
 
   await createTaskBoard({
     title: data.title,
     organizationId: data.organizationId,
     authorId: userId,
-    tasks: generatedTasks,
+    tasks: createLlmTasks,
   });
 
-  const createdTasksCount = generatedTasks?.length ?? 0;
+  const createdTasksCount = createLlmTasks?.length ?? 0;
 
   return toastResponseOutput({
     status: 200,
@@ -222,6 +193,40 @@ export async function createTaskService({
     status: 200,
     title: "Task Created",
     message: "Task created successfully",
+  });
+}
+
+export async function createLlmTaskService({
+  data,
+  userId,
+}: {
+  data: CreateLlmTaskArgs;
+  userId: User["id"];
+}) {
+  // TODO: Three layer protection
+  const llmTask = await createLlmTask({
+    taskTitle: data.title,
+    taskDescription: data.description,
+  });
+
+  console.log("LLM Task created:", llmTask);
+
+  await createTask({
+    assignedMembers: data.assignedMembers,
+    description: llmTask.description,
+    dueDate: llmTask.dueDate,
+    organizationId: data.organizationId,
+    priority: llmTask.status,
+    organizationTasksBoardId: data.organizationTasksBoardId,
+    title: data.title,
+
+    userId,
+  });
+
+  return toastResponseOutput({
+    status: 200,
+    title: "AI Task Created",
+    message: "AI Task created successfully",
   });
 }
 

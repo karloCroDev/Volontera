@@ -25,6 +25,7 @@ import {
 	updateOrganizationTaskBoardTitle,
 	updateTaskInfo,
 	moveTask,
+	createLlmTask,
 } from '@/lib/data/organization-tasks';
 
 // Schemas
@@ -44,6 +45,7 @@ import {
 	UpdateOrganizationTaskBoardTitleArgs,
 	UpdateTaskInfoArgs,
 	MoveTaskArgs,
+	CreateLlmTaskArgs,
 } from '@repo/schemas/organization-tasks';
 
 // Types
@@ -184,6 +186,32 @@ export const useCreateTask = (
 		...options,
 		mutationKey: ['create-task'],
 		mutationFn: (data: CreateTaskArgs) => createTask(data),
+		onSuccess: async (...args) => {
+			await queryClient.invalidateQueries({
+				queryKey: [args[1].organizationTasksBoardId, 'organization-tasks'],
+				predicate: (query) => {
+					return (
+						query.queryKey[0] === args[1].organizationTasksBoardId &&
+						query.queryKey[1] === 'organization-tasks'
+					);
+				},
+			});
+			await options?.onSuccess?.(...args);
+		},
+	});
+};
+export const useCreateLlmTask = (
+	options?: UseMutationOptions<
+		SuccessfulResponse,
+		ErrorToastResponse,
+		CreateLlmTaskArgs
+	>
+) => {
+	const queryClient = useQueryClient();
+	return useMutation({
+		...options,
+		mutationKey: ['create-task'],
+		mutationFn: (data: CreateLlmTaskArgs) => createLlmTask(data),
 		onSuccess: async (...args) => {
 			await queryClient.invalidateQueries({
 				queryKey: [args[1].organizationTasksBoardId, 'organization-tasks'],

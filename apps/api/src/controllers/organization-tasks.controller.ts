@@ -18,6 +18,7 @@ import {
   updateOrganizationTaskBoardTitleService,
   updateTaskInfoService,
   moveTaskService,
+  createLlmTaskService,
 } from "@/services/organization-tasks.service";
 
 // Schema types
@@ -38,6 +39,7 @@ import {
   RetrieveAllBoardTasksArgs,
   RetrieveAllBoardTasksQueryArgs,
   RetrieveAllOrganizationBoardsArgs,
+  CreateLlmTaskArgs,
 } from "@repo/schemas/organization-tasks";
 
 // Lib
@@ -150,6 +152,17 @@ export async function createTaskController(req: Request, res: Response) {
   try {
     const result = await createTaskService({
       data: req.body as CreateTaskArgs,
+      userId: req.user.userId,
+    });
+    return res.status(result.status).json(result.body);
+  } catch (err) {
+    handleServerErrorResponse(res, err);
+  }
+}
+export async function createLlmTaskController(req: Request, res: Response) {
+  try {
+    const result = await createLlmTaskService({
+      data: req.body as CreateLlmTaskArgs,
       userId: req.user.userId,
     });
     return res.status(result.status).json(result.body);

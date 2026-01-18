@@ -19,6 +19,7 @@ import {
 	UpdateOrganizationTaskBoardTitleArgs,
 	UpdateTaskInfoArgs,
 	MoveTaskArgs,
+	CreateLlmTaskArgs,
 } from '@repo/schemas/organization-tasks';
 
 // Boards
@@ -104,6 +105,14 @@ export async function retrieveAllBoardTasks({
 export async function createTask(data: CreateTaskArgs) {
 	try {
 		const res = await API().post('/organization-tasks/tasks/create', data);
+		return res.data;
+	} catch (err) {
+		catchError(err);
+	}
+}
+export async function createLlmTask(data: CreateLlmTaskArgs) {
+	try {
+		const res = await API().post('/organization-tasks/tasks/create-llm', data);
 		return res.data;
 	} catch (err) {
 		catchError(err);

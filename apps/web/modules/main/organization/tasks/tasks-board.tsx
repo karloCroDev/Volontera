@@ -9,6 +9,7 @@ import { Dialog } from '@/components/ui/dialog';
 import { TaskCardDetails } from '@/modules/main/organization/tasks/task-card-details';
 import { TaskCard } from '@/modules/main/organization/tasks/task-card';
 import { TasksMapping } from '@/modules/main/organization/tasks/tasks-mapping';
+import { AddTaskAiDialog } from '@/modules/main/organization/tasks/add-task-ai-dialog';
 
 export const TasksBoard: React.FC<{
 	boardId: string;
@@ -24,7 +25,10 @@ export const TasksBoard: React.FC<{
 
 			{tasks}
 
-			<AddTaskDialog organizationTasksBoardId={boardId} />
+			<div className="flex gap-4">
+				<AddTaskDialog organizationTasksBoardId={boardId} />
+				<AddTaskAiDialog organizationTasksBoardId={boardId} />
+			</div>
 		</div>
 	);
 });
