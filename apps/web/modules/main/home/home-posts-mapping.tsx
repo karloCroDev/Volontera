@@ -8,19 +8,24 @@ import { Post } from '@/components/ui/post/post';
 import { PostSkeleton } from '@/components/ui/post/post-skeleton';
 
 // Hooks
-import { HomeFeed, useInfiniteHomePosts } from '@/hooks/data/home';
+import { useInfiniteHomePosts } from '@/hooks/data/home';
 import { useGetImageFromKeys } from '@/hooks/data/image';
 import { withReactQueryProvider } from '@/lib/utils/react-query';
+import { useSearchParams } from 'next/navigation';
 
-export const HomePostsMapping: React.FC<{
-	feed?: HomeFeed;
-	limit?: number;
-}> = withReactQueryProvider(({ feed = 'home', limit = 6 }) => {
-	const query = useInfiniteHomePosts({ feed, limit });
+export const HomePostsMapping = withReactQueryProvider(() => {
+	const seachParams = useSearchParams();
+
+	const query = useInfiniteHomePosts({
+		data: {
+			filter: seachParams.get('filter') as 'following',
+			limit: 6,
+			offset: 0,
+		},
+	});
 
 	const posts = query.data?.pages.flatMap((p) => p.posts) ?? [];
 
-	//
 	const loadMoreRef = React.useRef<HTMLDivElement>(null);
 	React.useEffect(() => {
 		if (!loadMoreRef.current) return;
@@ -48,7 +53,7 @@ export const HomePostsMapping: React.FC<{
 	});
 
 	if (query.isPending) {
-		return [...Array(limit)].map((_, index) => <PostSkeleton key={index} />);
+		return [...Array(6)].map((_, index) => <PostSkeleton key={index} />);
 	}
 
 	if (query.isError) {

@@ -9,17 +9,18 @@ const coerceFirstQueryValue = <T extends z.ZodTypeAny>(schema: T) =>
 
 const paginationSchema = z.object({
   offset: coerceFirstQueryValue(
-    z.coerce.number().int().min(0).optional().default(0)
+    z.coerce.number().int().min(0).optional().default(0),
   ),
   limit: coerceFirstQueryValue(
-    z.coerce.number().int().min(1).max(100).optional().default(10)
+    z.coerce.number().int().min(1).max(100).optional().default(10),
   ),
 });
 
-export const retrieveAlgoPostsSchema = paginationSchema;
-export type RetrieveAlgoPostsSchema = z.infer<typeof retrieveAlgoPostsSchema>;
-
-export const retrieveFollowedAlgoPostsSchema = paginationSchema;
-export type RetrieveFollowedAlgoPostsSchema = z.infer<
-  typeof retrieveFollowedAlgoPostsSchema
+export const retrieveAlgoPostsSchema = z
+  .object({
+    filter: z.enum(["following"]).optional(),
+  })
+  .extend(paginationSchema.shape);
+export type RetrieveAlgoPostsSchemaArgs = z.infer<
+  typeof retrieveAlgoPostsSchema
 >;

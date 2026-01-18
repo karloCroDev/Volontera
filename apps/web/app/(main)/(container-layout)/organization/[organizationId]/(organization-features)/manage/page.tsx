@@ -117,7 +117,10 @@ const ChartContainer: React.FC<{
 	children: React.ReactNode;
 	title: string;
 	subtitle: string;
-}> = ({ children, title, subtitle }) => (
+}> = (
+	// eslint-disable-next-line react/prop-types
+	{ children, title, subtitle }
+) => (
 	<div className="bg-muted border-input-border flex aspect-[4/3] max-h-80 flex-1 flex-col overflow-hidden rounded-md border p-4 shadow-md">
 		<h4 className="text-md">{title}</h4>
 		<p className="text-muted-foreground mb-4 text-sm">{subtitle}</p>
@@ -128,7 +131,10 @@ const ChartContainer: React.FC<{
 const TaskKPI: React.FC<{
 	title: string;
 	count: number;
-}> = ({ title, count }) => (
+}> = (
+	// eslint-disable-next-line react/prop-types
+	{ title, count }
+) => (
 	<div className="bg-muted border-input-border min-w-80 rounded-md border p-4 shadow">
 		<div className="flex justify-between">
 			<p>

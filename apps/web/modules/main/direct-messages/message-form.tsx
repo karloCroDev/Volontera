@@ -4,7 +4,7 @@
 import * as React from 'react';
 import { Send } from 'lucide-react';
 import { Form } from 'react-aria-components';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 
 // Components
 import { TextEditor } from '@/components/ui/text-editor/text-editor';
@@ -19,7 +19,6 @@ import { useStartConversationOrStartAndSendDirectMessage } from '@/hooks/data/di
 
 // Lib
 import { withReactQueryProvider } from '@/lib/utils/react-query';
-import { toast } from '@/lib/utils/toast';
 import { IRevalidateTag } from '@/lib/server/revalidation';
 
 export const MessageForm = withReactQueryProvider(() => {

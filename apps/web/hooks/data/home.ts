@@ -6,30 +6,25 @@ import {
 } from '@tanstack/react-query';
 
 // Lib
-import {
-	retrieveRecentAlgoHomePosts,
-	retrieveRecentFollowedHomePosts,
-} from '@/lib/data/home';
+import { retrieveRecentAlgoHomePosts } from '@/lib/data/home';
 
 // Types
 import { RetrieveHomePostsResponse } from '@repo/types/home';
+import { RetrieveAlgoPostsSchemaArgs } from '@repo/schemas/home';
 
 //
-export type HomeFeed = 'home' | 'following';
 
 export const homeQueryKeys = {
 	all: ['home'] as const,
-	feed: (feed: HomeFeed, limit: number) =>
+	feed: (feed: RetrieveAlgoPostsSchemaArgs['filter'], limit: number) =>
 		[...homeQueryKeys.all, 'posts', feed, limit] as const,
 };
 
 export const useInfiniteHomePosts = ({
-	feed,
-	limit = 10,
+	data,
 	options,
 }: {
-	feed: HomeFeed;
-	limit?: number;
+	data: RetrieveAlgoPostsSchemaArgs;
 	options?: Omit<
 		UseInfiniteQueryOptions<
 			RetrieveHomePostsResponse,
@@ -42,13 +37,15 @@ export const useInfiniteHomePosts = ({
 	>;
 }) => {
 	const query = useInfiniteQuery({
-		queryKey: homeQueryKeys.feed(feed, limit),
+		queryKey: homeQueryKeys.feed(data.filter, data.limit),
 		initialPageParam: 0,
 		queryFn: ({ pageParam }) => {
 			const offset = pageParam ?? 0;
-			return feed === 'following'
-				? retrieveRecentFollowedHomePosts({ limit, offset })
-				: retrieveRecentAlgoHomePosts({ limit, offset });
+			console.log('Fetching posts with filter:', data.filter);
+			return retrieveRecentAlgoHomePosts({
+				limit: data.limit,
+				offset,
+			});
 		},
 		getNextPageParam: (
 			lastPage: RetrieveHomePostsResponse,
@@ -59,7 +56,7 @@ export const useInfiniteHomePosts = ({
 				0
 			);
 
-			if ((lastPage.posts?.length ?? 0) < limit) return undefined;
+			if ((lastPage.posts?.length ?? 0) < data.limit) return undefined;
 			return loadedCount;
 		},
 		...options,

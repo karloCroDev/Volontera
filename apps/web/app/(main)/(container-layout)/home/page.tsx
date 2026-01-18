@@ -1,6 +1,5 @@
 // Modules
 import { Heading } from '@/components/ui/heading';
-import { Tag } from '@/components/ui/tag';
 import { HomePostsMapping } from '@/modules/main/home/home-posts-mapping';
 import { HomeSelect } from '@/modules/main/home/home-select';
 

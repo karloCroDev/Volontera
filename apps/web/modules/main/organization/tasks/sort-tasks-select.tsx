@@ -2,7 +2,6 @@
 
 // External packages
 import * as React from 'react';
-import { useSearchParams } from 'next/navigation';
 
 // Components
 import { SelectContainer, SelectItem } from '@/components/ui/select';
@@ -11,8 +10,7 @@ import { SelectContainer, SelectItem } from '@/components/ui/select';
 import { useSetParams } from '@/hooks/utils/useSetParams';
 
 export const SortTasksSelect = () => {
-	const { removeParam, setParams } = useSetParams();
-	const searchParams = useSearchParams();
+	const { removeParam, setParams, searchParams } = useSetParams();
 	const currentFilter = searchParams.get('filter') ?? 'all-tasks';
 	return (
 		<SelectContainer
