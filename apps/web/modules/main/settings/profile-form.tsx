@@ -35,7 +35,7 @@ export const ProfileForm: React.FC<{
 	} = useFormContext<SettingsArgs>();
 
 	return (
-		<div className="border-input-border flex flex-col justify-between gap-8 rounded-md border p-6 lg:p-8 xl:flex-row 2xl:p-10">
+		<div className="border-input-border bg-muted flex flex-col justify-between gap-8 rounded-md border p-6 shadow-xl lg:p-8 xl:flex-row 2xl:p-10">
 			<div>
 				<h4 className="text-lg font-semibold">Profile</h4>
 				<p className="text-muted-foreground mt-2">Set your account details</p>

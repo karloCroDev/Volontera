@@ -11,11 +11,15 @@ import {
 	DeleteTaskByIdArgs,
 	DeleteTaskQuestionArgs,
 	RetrieveAllBoardTasksArgs,
+	RetrieveAllBoardTasksQueryArgs,
 	RetrieveAllOrganizationBoardsArgs,
+	RetrieveOrganizationMembersArgs,
 	RetrieveTaskInfoArgs,
 	RetrieveTaskQuestionsArgs,
 	UpdateOrganizationTaskBoardTitleArgs,
 	UpdateTaskInfoArgs,
+	MoveTaskArgs,
+	CreateLlmTaskArgs,
 } from '@repo/schemas/organization-tasks';
 
 // Boards
@@ -68,14 +72,29 @@ export async function deleteOrganizationTaskBoard({
 	}
 }
 
+export async function retrieveOrganizationMembers({
+	organizationId,
+}: RetrieveOrganizationMembersArgs) {
+	try {
+		const res = await API().get(
+			`/organization-tasks/members/${organizationId}`
+		);
+		return res.data;
+	} catch (err) {
+		catchError(err);
+	}
+}
+
 // Tasks
 export async function retrieveAllBoardTasks({
 	organizationId,
 	organizationTaskBoardId,
-}: RetrieveAllBoardTasksArgs) {
+	filter,
+}: RetrieveAllBoardTasksArgs & RetrieveAllBoardTasksQueryArgs) {
 	try {
+		const qs = filter ? `?filter=${filter}` : '';
 		const res = await API().get(
-			`/organization-tasks/tasks/${organizationId}/${organizationTaskBoardId}`
+			`/organization-tasks/tasks/${organizationId}/${organizationTaskBoardId}${qs}`
 		);
 		return res.data;
 	} catch (err) {
@@ -86,6 +105,14 @@ export async function retrieveAllBoardTasks({
 export async function createTask(data: CreateTaskArgs) {
 	try {
 		const res = await API().post('/organization-tasks/tasks/create', data);
+		return res.data;
+	} catch (err) {
+		catchError(err);
+	}
+}
+export async function createLlmTask(data: CreateLlmTaskArgs) {
+	try {
+		const res = await API().post('/organization-tasks/tasks/create-llm', data);
 		return res.data;
 	} catch (err) {
 		catchError(err);
@@ -123,6 +150,15 @@ export async function retrieveTaskQuestions({
 export async function updateTaskInfo(data: UpdateTaskInfoArgs) {
 	try {
 		const res = await API().patch('/organization-tasks/tasks/update', data);
+		return res.data;
+	} catch (err) {
+		catchError(err);
+	}
+}
+
+export async function moveTask(data: MoveTaskArgs) {
+	try {
+		const res = await API().patch('/organization-tasks/tasks/move', data);
 		return res.data;
 	} catch (err) {
 		catchError(err);

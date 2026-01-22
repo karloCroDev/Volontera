@@ -12,6 +12,8 @@ import {
   deleteOrganizationTaskBoard,
   deleteTaskById,
   deleteTaskQuestion,
+  moveTaskToBoard,
+  retrieveOrganizationMembers,
   retrieveAllBoardTasks,
   retrieveAllOrganizationBoards,
   retrieveAllOrganizationBoardsWithTasks,
@@ -29,31 +31,85 @@ import {
   DeleteOrganizationTaskBoardArgs,
   DeleteTaskByIdArgs,
   DeleteTaskQuestionArgs,
+  MoveTaskArgs,
   RetrieveAllBoardTasksArgs,
+  RetrieveAllBoardTasksQueryArgs,
   RetrieveAllOrganizationBoardsArgs,
   RetrieveAllOrganizationBoardsWithTasksArgs,
   RetrieveTaskInfoArgs,
   RetrieveTaskQuestionsArgs,
+  RetrieveOrganizationMembersArgs,
   UpdateOrganizationTaskBoardTitleArgs,
   UpdateTaskInfoArgs,
+  CreateLlmTaskArgs,
 } from "@repo/schemas/organization-tasks";
 
 // Database
 import { User } from "@repo/database";
+import {
+  createLlmTask,
+  createTasksLlmWithBoard,
+} from "@/lib/structured-llm-response";
+import { z } from "zod";
+import { violenceRegex } from "@/lib/utils/regex";
+import { safetyCheckLlmReponse } from "@/lib/llm-response";
 
 // Boards
-export async function createTaskBoardService(data: CreateTaskBoardArgs) {
-  await createTaskBoard(data);
+export async function createTaskBoardService({
+  data,
+  userId,
+}: {
+  data: CreateTaskBoardArgs;
+  userId: User["id"];
+}) {
+  if (data.generateTasksWithAi) {
+    // 3 linije obrane prije slanja u LLM. Pogledajte apps\api\src\services\help.service.ts za objašnjenje
+    const innapropriateContent = toastResponseOutput({
+      status: 400,
+      message: "Inappropriate content detected",
+      title: "Inappropriate content detected",
+    });
+    if (violenceRegex.test(`${data.descriptionAi} ${data.title}`)) {
+      return innapropriateContent;
+    }
+
+    const AIGuard = await safetyCheckLlmReponse(
+      `${data.descriptionAi} ${data.title}`,
+    );
+
+    if (AIGuard === "Y") {
+      return innapropriateContent;
+    }
+  }
+
+  const createLlmTasks = data.generateTasksWithAi
+    ? await createTasksLlmWithBoard({
+        boardTitle: data.title,
+        description: data.descriptionAi,
+      })
+    : undefined;
+
+  await createTaskBoard({
+    title: data.title,
+    organizationId: data.organizationId,
+    authorId: userId,
+    tasks: createLlmTasks,
+  });
+
+  const createdTasksCount = createLlmTasks?.length ?? 0;
 
   return toastResponseOutput({
     status: 200,
     title: "Board Created",
-    message: "Task board created successfully",
+    message:
+      createdTasksCount > 0
+        ? `Task board created (+${createdTasksCount} AI tasks)`
+        : "Task board created successfully",
   });
 }
 
 export async function updateOrganizationTaskBoardTitleService(
-  data: UpdateOrganizationTaskBoardTitleArgs
+  data: UpdateOrganizationTaskBoardTitleArgs,
 ) {
   await updateOrganizationTaskBoardTitle(data);
 
@@ -92,9 +148,15 @@ export async function retrieveAllOrganizationBoardsService({
 // Board with tasks
 export async function retrieveAllOrganizationBoardsWithTasksService({
   organizationId,
-}: RetrieveAllOrganizationBoardsWithTasksArgs) {
-  const boardsWithTasks =
-    await retrieveAllOrganizationBoardsWithTasks(organizationId);
+  filter,
+  userId,
+}: RetrieveAllOrganizationBoardsWithTasksArgs &
+  RetrieveAllBoardTasksQueryArgs & { userId: User["id"] }) {
+  const boardsWithTasks = await retrieveAllOrganizationBoardsWithTasks({
+    organizationId,
+    filter,
+    userId,
+  });
 
   return serverFetchOutput({
     status: 200,
@@ -104,12 +166,31 @@ export async function retrieveAllOrganizationBoardsWithTasksService({
   });
 }
 
+export async function retrieveOrganizationMembersService({
+  organizationId,
+}: RetrieveOrganizationMembersArgs) {
+  const organizationMembers = await retrieveOrganizationMembers(organizationId);
+
+  return serverFetchOutput({
+    status: 200,
+    success: true,
+    message: "Organization members retrieved successfully",
+    data: { organizationMembers },
+  });
+}
+
 // Tasks
 export async function retrieveAllBoardTasksService({
   organizationTaskBoardId,
-}: RetrieveAllBoardTasksArgs) {
-  const tasks = await retrieveAllBoardTasks(organizationTaskBoardId);
-
+  filter,
+  userId,
+}: RetrieveAllBoardTasksArgs &
+  RetrieveAllBoardTasksQueryArgs & { userId: string }) {
+  const tasks = await retrieveAllBoardTasks({
+    organizationTaskBoardId,
+    userId,
+    filter,
+  });
   return serverFetchOutput({
     status: 200,
     success: true,
@@ -118,13 +199,73 @@ export async function retrieveAllBoardTasksService({
   });
 }
 
-export async function createTaskService(data: CreateTaskArgs) {
-  await createTask(data);
+export async function createTaskService({
+  data,
+  userId,
+}: {
+  data: CreateTaskArgs;
+  userId: User["id"];
+}) {
+  await createTask({
+    ...data,
+    userId,
+  });
 
   return toastResponseOutput({
     status: 200,
     title: "Task Created",
     message: "Task created successfully",
+  });
+}
+
+export async function createLlmTaskService({
+  data,
+  userId,
+}: {
+  data: CreateLlmTaskArgs;
+  userId: User["id"];
+}) {
+  // 3 linije obrane prije slanja u LLM. Pogledajte apps\api\src\services\help.service.ts za objašnjenje
+  const innapropriateContent = toastResponseOutput({
+    status: 400,
+    message: "Inappropriate content detected",
+    title: "Inappropriate content detected",
+  });
+
+  if (violenceRegex.test(`${data.description} ${data.title}`)) {
+    return innapropriateContent;
+  }
+
+  const AIGuard = await safetyCheckLlmReponse(
+    `${data.description} ${data.title}`,
+  );
+
+  if (AIGuard === "Y") {
+    return innapropriateContent;
+  }
+
+  //////////////////////////////////////////////////////////////////////////
+  const llmTask = await createLlmTask({
+    taskTitle: data.title,
+    taskDescription: data.description,
+  });
+
+  await createTask({
+    assignedMembers: data.assignedMembers,
+    description: llmTask.description,
+    dueDate: llmTask.dueDate,
+    organizationId: data.organizationId,
+    priority: llmTask.status,
+    organizationTasksBoardId: data.organizationTasksBoardId,
+    title: data.title,
+
+    userId,
+  });
+
+  return toastResponseOutput({
+    status: 200,
+    title: "AI Task Created",
+    message: "AI Task created successfully",
   });
 }
 
@@ -169,6 +310,19 @@ export async function updateTaskInfoService(data: UpdateTaskInfoArgs) {
     status: 200,
     title: "Task Updated",
     message: "Task updated successfully",
+  });
+}
+
+export async function moveTaskService({
+  taskId,
+  organizationTasksBoardId,
+}: MoveTaskArgs) {
+  const task = await moveTaskToBoard({ taskId, organizationTasksBoardId });
+
+  return toastResponseOutput({
+    status: 200,
+    title: `Task: ${task.title} `,
+    message: "Task moved successfully",
   });
 }
 

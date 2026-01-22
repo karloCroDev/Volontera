@@ -7,24 +7,32 @@ import { retrieveAllOrganizationBoardsWithTasks } from '@/lib/server/organizatio
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
 import { BoardsMapping } from '@/modules/main/organization/tasks/boards-mapping';
+import { SortTasksSelect } from '@/modules/main/organization/tasks/sort-tasks-select';
 
 export default async function BoardPage({
 	params,
+	searchParams,
 }: {
 	params: Promise<{ organizationId: string }>;
+	searchParams: Promise<{ [key: string]: string | undefined }>;
 }) {
 	const { organizationId } = await params;
+	const searchParamsResolved = await searchParams;
 
 	return (
 		<div className="flex flex-1 flex-col">
-			<div className="mb-6 flex items-center justify-between">
+			<div className="mb-6 flex flex-col justify-between gap-x-8 gap-y-4 overflow-x-scroll lg:flex-row lg:items-center">
 				<div>
 					<h4 className="text-xl lg:text-2xl">Tasks</h4>
+
 					<p className="text-muted-foreground">
 						All tasks that are assigned inside this organization
 					</p>
 				</div>
-				<AddBoardDialog />
+				<div className="flex justify-between gap-4 lg:justify-start">
+					<SortTasksSelect />
+					<AddBoardDialog />
+				</div>
 			</div>
 			<div className="flex min-h-0 flex-1 gap-4 overflow-scroll">
 				<Suspense
@@ -32,16 +40,27 @@ export default async function BoardPage({
 						<TasksBoardSkeleton key={indx} />
 					))}
 				>
-					<BoardsWithTasks organizationId={organizationId} />
+					<BoardsWithTasks
+						organizationId={organizationId}
+						filter={searchParamsResolved.filter}
+					/>
 				</Suspense>
 			</div>
 		</div>
 	);
 }
 
-async function BoardsWithTasks({ organizationId }: { organizationId: string }) {
-	const boardWithTasks =
-		await retrieveAllOrganizationBoardsWithTasks(organizationId);
+async function BoardsWithTasks({
+	organizationId,
+	filter,
+}: {
+	organizationId: string;
+	filter?: string;
+}) {
+	const boardWithTasks = await retrieveAllOrganizationBoardsWithTasks(
+		organizationId,
+		filter
+	);
 	if (!boardWithTasks.success) notFound();
 
 	return <BoardsMapping prefetchedData={boardWithTasks} />;

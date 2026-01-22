@@ -21,21 +21,13 @@ export const PostsMapping: React.FC<{
 
 	const { data: imagesData } = useGetImageFromKeys({
 		imageUrls: [
-			...data.posts
-				.flatMap((post) => post.postImages.map((image) => image.imageUrl))
-				.filter(
-					(url): url is string => typeof url === 'string' && url.length > 0
-				),
-			...data.posts
-				.map((post) => post.organization.avatarImage)
-				.filter(
-					(url): url is string => typeof url === 'string' && url.length > 0
-				),
+			...data.posts.flatMap((post) =>
+				post.postImages.map((image) => image.imageUrl)
+			),
+			...data.posts.map((post) => post.organization.avatarImage),
 			...data.posts
 				.map((post) => post.author.image)
-				.filter(
-					(url): url is string => typeof url === 'string' && url.length > 0
-				),
+				.filter((url) => url != null),
 		],
 	});
 

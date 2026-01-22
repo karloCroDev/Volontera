@@ -52,7 +52,7 @@ export const Input: React.FC<InputProps> = ({
 				/>
 				<Label
 					className={twJoin(
-						'text-muted-foreground absolute top-1/2 -z-[1] flex origin-left scale-75 items-center gap-2 transition-transform peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100',
+						'text-muted-foreground pointer-events-none absolute top-1/2 z-0 flex origin-left scale-75 items-center gap-2 transition-transform peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100',
 						size === 'sm' && 'left-3 -translate-y-[22px]',
 						size === 'md' && 'left-4 -translate-y-[24px]'
 					)}

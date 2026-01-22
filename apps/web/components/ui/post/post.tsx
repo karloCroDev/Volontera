@@ -39,9 +39,12 @@ export const Post: React.FC<{
 		: undefined;
 
 	return (
-		<div className="border-input-border bg-muted rounded-xl border px-8 py-6">
+		<div className="border-input-border bg-muted rounded-xl border px-8 py-6 shadow-xl">
 			<div className="mb-8 flex gap-4">
-				<div className="flex items-center gap-2">
+				<Link
+					href={`/organization/${post.organizationId}`}
+					className="flex cursor-pointer items-center gap-2"
+				>
 					<Avatar
 						colorScheme="gray"
 						imageProps={{
@@ -55,7 +58,7 @@ export const Post: React.FC<{
 						<p>{post.organization.name}</p>
 						<p className="text-muted-foreground text-sm">20 attendees</p>
 					</div>
-				</div>
+				</Link>
 
 				<div className="ml-auto flex gap-2">
 					{hasAnAdminAccess && <DeletePostDialog postId={post.id} />}

@@ -110,7 +110,7 @@ export const GroupChatMapping: React.FC<{
 		useDeleteOrganizationGroupChatMessage();
 	return (
 		<div
-			className="no-scrollbar min-h-0 flex-1 space-y-4 overflow-y-auto scroll-smooth pb-20"
+			className="no-scrollbar pb-50 h-full min-h-0 overflow-y-auto scroll-smooth"
 			ref={containerRef}
 		>
 			{messages && messages.length > 0 ? (

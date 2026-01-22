@@ -39,23 +39,22 @@ organizationRoutes.post(
     schema: createOrganizationSchema,
     responseOutput: "form",
   }),
-  createOrganizationController
+  createOrganizationController,
 );
 organizationRoutes.get(
   "/list-organizations-organizator",
   organizationMiddleware,
-  listOrganizationsOrganizatorController
+  listOrganizationsOrganizatorController,
 );
 
 // User only
 organizationRoutes.get(
   "/list-organizations-user",
   userMiddleware,
-  listOrganizationsUserController
+  listOrganizationsUserController,
 );
 
 // Everyone
-// TODO: Set this with id, so that it doesn't mess with other routes
 organizationRoutes.get(
   "/id/:organizationId",
   validate({
@@ -63,7 +62,7 @@ organizationRoutes.get(
     responseOutput: "server",
     type: "params",
   }),
-  getOrganizationDetailsByIdController
+  getOrganizationDetailsByIdController,
 );
 
 organizationRoutes.post(
@@ -73,7 +72,7 @@ organizationRoutes.post(
     schema: sendRequestToJoinOrganizationSchema,
     responseOutput: "form",
   }),
-  sendRequestToJoinOrganizationController
+  sendRequestToJoinOrganizationController,
 );
 
 organizationRoutes.post(
@@ -83,5 +82,5 @@ organizationRoutes.post(
     responseOutput: "toast",
     type: "params",
   }),
-  toggleFollowOrganizationController
+  toggleFollowOrganizationController,
 );

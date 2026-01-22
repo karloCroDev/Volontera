@@ -22,3 +22,13 @@ export type RetirveAllRequestsToJoinOrganizationResponse =
 export type RetrieveOrganizationMemberResponse = ServerHandleResponse<true> & {
   organizationMember: OrganizationMember;
 };
+
+export type RetrieveDataAboutOrganizationResponse =
+  ServerHandleResponse<true> & {
+    adminUserCount: number;
+    memberUserCount: number;
+    totalUserCount: number;
+    highPriority: number;
+    lowPriority: number;
+    mediumPriority: number;
+  };

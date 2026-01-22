@@ -43,7 +43,7 @@ export async function createPostService({
     data.images.map((image) => createUploadUrl(image))
   );
 
-  await createPost({
+  const post = await createPost({
     title: data.title,
     content: data.content,
     images: uploadImages.map((img) => img.key),

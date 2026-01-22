@@ -64,7 +64,7 @@ async function PostContent({ postId }: { postId: string }) {
 		<>
 			<Post post={postWithComments.post} images={imageResponse?.urls} />
 			<hr className="bg-muted my-6 h-px w-full border-0" />
-			<div className="border-input-border bg-muted max-h- relative w-full rounded-xl border px-5 py-6">
+			<div className="border-input-border bg-muted max-h- relative w-full rounded-xl border px-5 py-6 shadow-xl">
 				<h4 className="text-lg font-semibold underline underline-offset-4 lg:text-xl">
 					Comments
 				</h4>

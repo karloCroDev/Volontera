@@ -11,20 +11,11 @@ import { Button } from '@/components/ui/button';
 
 export const InsertPhoto: React.FC<
 	React.ComponentPropsWithoutRef<'label'> & {
-		isRequired?: boolean;
 		file?: File;
 		onFileChange?: (file?: File) => void;
 	}
-> = ({
-	children,
-	htmlFor,
-	isRequired = false,
-	file,
-	onFileChange,
-	...rest
-}) => {
+> = ({ children, htmlFor, file, onFileChange, ...rest }) => {
 	const [previewUrl, setPreviewUrl] = React.useState<string | undefined>();
-	const [inputKey, setInputKey] = React.useState(0);
 
 	React.useEffect(() => {
 		if (!file) {
@@ -51,7 +42,6 @@ export const InsertPhoto: React.FC<
 							colorScheme="destructive"
 							onPress={() => {
 								onFileChange?.(undefined);
-								setInputKey((k) => k + 1);
 							}}
 						>
 							<X className="size-4" />
@@ -67,12 +57,11 @@ export const InsertPhoto: React.FC<
 					<>
 						<Camera />
 						<p className="text-center">{children}</p>
-						<p>({isRequired ? 'required' : 'optional'})</p>
+						<p>(required)</p>
 					</>
 				)}
 			</label>
 			<AriaInput
-				key={inputKey}
 				onChange={(e) => {
 					const nextFile = e.target.files?.[0];
 					if (!nextFile) return;

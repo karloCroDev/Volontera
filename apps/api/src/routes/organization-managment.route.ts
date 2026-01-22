@@ -10,6 +10,7 @@ import {
   acceptOrDeclineUsersRequestToJoinOrganizationController,
   demoteOrPromoteOrganizationMemberController,
   leaveOrganizationController,
+  retrieveDataAboutOrganizationController,
 } from "@/controllers/organization-managment.controller";
 
 // Schemas
@@ -20,6 +21,7 @@ import {
   retrieveAllMembersInOrganizationSchema,
   retrieveOrganizationMemberSchema,
   leaveOrganizationSchema,
+  retrieveDataAboutOrganizationSchema,
 } from "@repo/schemas/organization-managment";
 // Middleware
 import { organizationRolesMiddleware } from "@/middleware/organization-roles.middleware";
@@ -40,7 +42,7 @@ organizationManagmentRoutes.get(
     type: "params",
     aquiredRoles: ["MEMBER", "ADMIN"],
   }),
-  retrieveAllRequestsToJoinOrganizationController
+  retrieveAllRequestsToJoinOrganizationController,
 );
 
 organizationManagmentRoutes.get(
@@ -54,7 +56,7 @@ organizationManagmentRoutes.get(
     type: "params",
     aquiredRoles: ["MEMBER", "ADMIN"],
   }),
-  retrieveAllUsersInOrganizationController
+  retrieveAllUsersInOrganizationController,
 );
 organizationManagmentRoutes.get(
   "/member/:organizationId",
@@ -67,7 +69,21 @@ organizationManagmentRoutes.get(
     type: "params",
     aquiredRoles: ["MEMBER", "ADMIN"],
   }),
-  retrieveOrganizationMemberController
+  retrieveOrganizationMemberController,
+);
+
+// Admin
+organizationManagmentRoutes.get(
+  "/data/:organizationId",
+  validate({
+    schema: retrieveDataAboutOrganizationSchema,
+    type: "params",
+    responseOutput: "server",
+  }),
+  organizationRolesMiddleware({
+    type: "params",
+  }),
+  retrieveDataAboutOrganizationController,
 );
 
 organizationManagmentRoutes.post(
@@ -77,7 +93,7 @@ organizationManagmentRoutes.post(
     responseOutput: "toast",
   }),
   organizationRolesMiddleware({}),
-  acceptOrDeclineUsersRequestToJoinOrganizationController
+  acceptOrDeclineUsersRequestToJoinOrganizationController,
 );
 
 organizationManagmentRoutes.post(
@@ -87,9 +103,10 @@ organizationManagmentRoutes.post(
     responseOutput: "toast",
   }),
   organizationRolesMiddleware({}),
-  demoteOrPromoteOrganizationMemberController
+  demoteOrPromoteOrganizationMemberController,
 );
 
+// Ovo je za sve korisnike, također iako i owner proba izaći iz organizacije (iako nije prikazan na UI, već se zove endpoint), neće moći zbog provjere u samom modelu. (TODO: probaj to handleati u middleware, ovo je sada privremena solucija)
 organizationManagmentRoutes.delete(
   "/leave/:organizationId",
   validate({
@@ -101,5 +118,5 @@ organizationManagmentRoutes.delete(
     type: "params",
     aquiredRoles: ["MEMBER", "ADMIN"],
   }),
-  leaveOrganizationController
+  leaveOrganizationController,
 );

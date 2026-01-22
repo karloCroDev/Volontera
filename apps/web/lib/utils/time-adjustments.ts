@@ -6,3 +6,13 @@ export function formatTime(date: Date) {
 	const year = new Date(date).getFullYear();
 	return `${hours}:${minutes} | ${day}.${month}. ${year}`;
 }
+
+export function formatDate(dateString: string) {
+	const date = new Date(dateString);
+
+	const day = date.getDate();
+	const month = date.getMonth() + 1;
+	const year = date.getFullYear().toString().slice(-2);
+
+	return `${day}.${month}.${year}.`;
+}

@@ -36,6 +36,8 @@ import { commentRoutes } from "@/routes/comment.route";
 import { organizationManagmentRoutes } from "@/routes/organization-managment.route";
 import { organizationGroupChatRoute } from "@/routes/organization-group-chat.route";
 import { organizationTasksRoutes } from "@/routes/organization-tasks.route";
+import { homeRoute } from "@/routes/home.route";
+import { postAlgorithmJob } from "@/jobs/cron/posts-algorithm.job";
 
 // Security middleware
 app.use(helmet());
@@ -96,11 +98,15 @@ app.use(
 app.use("/search", authMiddleware, hasRoleMiddleware, searchRoutes);
 app.use("/post", authMiddleware, hasRoleMiddleware, postRoutes);
 app.use("/comment", authMiddleware, hasRoleMiddleware, commentRoutes);
+app.use("/home", authMiddleware, hasRoleMiddleware, homeRoute);
 
 // Test
 app.get("/protected-user", authMiddleware, userMiddleware, (req, res) => {
   res.json({ message: "Awesome you accessed the proteced route" });
 });
+
+// Cron job
+postAlgorithmJob.start();
 
 app.post("/test", async (req, res) => {
   // Redis: works fine!

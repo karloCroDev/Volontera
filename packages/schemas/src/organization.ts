@@ -18,10 +18,30 @@ export const createOrganizationSchema = z.object({
   external_form_link: z.url().or(z.literal("")).optional(),
   additional_links: z
     .array(
-      z.object({
-        label: z.string().min(1),
-        url: z.url(),
-      })
+      z
+        .object({
+          // Allow empty rows in the UI; we'll validate pair completeness below.
+          label: z.string(),
+          url: z.string(),
+        })
+        .superRefine((link) => {
+          const label = link.label.trim();
+          const url = link.url.trim();
+
+          const hasLabel = label.length > 0;
+          const hasUrl = url.length > 0;
+
+          // Fully empty row is allowed (user didn't want to add a link).
+          if (!hasLabel && !hasUrl) return;
+        }),
+    )
+    .transform((links) =>
+      links
+        .map((link) => ({
+          label: link.label.trim(),
+          url: link.url.trim(),
+        }))
+        .filter((link) => link.label !== "" && link.url !== ""),
     )
     .optional(),
   assignPredefinedTasks: z.boolean(),

@@ -6,6 +6,7 @@ import { ServerHandleResponse } from '@repo/types/general';
 import {
 	RetirveAllRequestsToJoinOrganizationResponse,
 	RetrieveAllMembersInOrganizationResponse,
+	RetrieveDataAboutOrganizationResponse,
 	RetrieveOrganizationMemberResponse,
 } from '@repo/types/organization-managment';
 
@@ -37,5 +38,15 @@ export async function retrieveAllRequestsToJoinOrganization(
 	return await serverFetch({
 		url: `organization-managment/requests/${organizationId}`,
 		init: { next: { tags: ['organization-join-requests'] }, cache: 'no-store' },
+	});
+}
+
+export async function retrieveDataAboutOrganization(organizationId: string):Promise<
+	RetrieveDataAboutOrganizationResponse | ServerHandleResponse<false>
+> {
+	console.log(organizationId);
+	return await serverFetch({
+		url: `organization-managment/data/${organizationId}`,
+		init: { next: { tags: ['organization-data'] }, cache: 'no-store' },
 	});
 }

@@ -29,6 +29,7 @@ import {
 } from '@repo/schemas/organization';
 import { useCreateOrganization } from '@/hooks/data/organization';
 import { Error } from '@/components/ui/error';
+import { Textarea } from '@/components/ui/textarea';
 
 export const CreateOrganizationForm = () => {
 	const [assignTasks, setAssignTasks] = React.useState(false);
@@ -38,7 +39,6 @@ export const CreateOrganizationForm = () => {
 	const { mutate, isPending } = useCreateOrganization();
 	const {
 		control,
-
 		handleSubmit,
 		setError,
 		watch,
@@ -53,12 +53,7 @@ export const CreateOrganizationForm = () => {
 			organization_type: '',
 			organization_location: '',
 			external_form_link: '',
-			additional_links: [
-				{
-					label: '',
-					url: '',
-				},
-			],
+			additional_links: [{ label: '', url: '' }],
 			assignPredefinedTasks: false,
 		},
 	});
@@ -69,45 +64,17 @@ export const CreateOrganizationForm = () => {
 		remove,
 	} = useFieldArray({
 		control,
-		name: 'additional_links' as unknown as never,
+		name: 'additional_links' as never,
 	});
-
-	React.useEffect(() => {
-		if (arrFields.length === 0) {
-			append({ label: '', url: '' } as never);
-		}
-	}, [arrFields.length, append]);
 
 	const router = useRouter();
 	const onSubmit = (data: CreateOrganizationArgs) => {
-		const cleanedAdditionalLinks = (data.additional_links || [])
-			.map((l) =>
-				l.label.trim().length > 0 && l.url.trim().length > 0
-					? {
-							label: l.label.trim(),
-							url: l.url.trim(),
-						}
-					: null
-			)
-			.filter((l): l is { label: string; url: string } => l !== null);
-
-		const payload: CreateOrganizationArgs = {
-			...data,
-			external_form_link: data.external_form_link?.trim()
-				? data.external_form_link.trim()
-				: undefined,
-			additional_links: cleanedAdditionalLinks.length
-				? cleanedAdditionalLinks
-				: undefined,
-			assignPredefinedTasks: assignTasks,
-		};
-
 		const files = [];
 		if (avatarFile) files.push(avatarFile);
 		if (coverFile) files.push(coverFile);
 		mutate(
 			{
-				data: payload,
+				data,
 				files: files.length > 0 ? files : undefined,
 			},
 			{
@@ -224,10 +191,10 @@ export const CreateOrganizationForm = () => {
 									control={control}
 									name="organization_bio"
 									render={({ field }) => (
-										<Input
+										<Textarea
 											label="Enter your organization's bio"
 											className="mt-2"
-											inputProps={field}
+											textAreaProps={field}
 											error={errors.organization_bio?.message}
 										/>
 									)}

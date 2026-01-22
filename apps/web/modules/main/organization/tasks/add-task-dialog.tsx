@@ -9,12 +9,18 @@ import { Button } from '@/components/ui/button';
 import { Dialog } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
-import { Checkbox, CheckboxGroup, Form } from 'react-aria-components';
+import {
+	Checkbox,
+	CheckboxGroup,
+	Form,
+	Radio,
+	RadioGroup,
+} from 'react-aria-components';
 import { DatePicker } from '@/components/ui/date-picker';
 import { Tag } from '@/components/ui/tag';
 import { Avatar } from '@/components/ui/avatar';
 import { CheckboxVisually } from '@/components/ui/checkbox';
-import { convertCalendarDate } from '@/lib/utils/converter';
+import { convertCalendarDate, convertToFullname } from '@/lib/utils/converter';
 import { useParams } from 'next/navigation';
 import { Controller, useForm } from 'react-hook-form';
 import {
@@ -22,26 +28,30 @@ import {
 	createTaskSchema,
 } from '@repo/schemas/organization-tasks';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useCreateTask } from '@/hooks/data/organization-tasks';
+import {
+	useCreateTask,
+	useRetrieveOrganizationMembers,
+} from '@/hooks/data/organization-tasks';
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from '@/lib/utils/toast';
+import { getLocalTimeZone, today } from '@internationalized/date';
 import { Error } from '@/components/ui/error';
+import { Dot } from '@/components/ui/dot';
+import { RadioIconVisual } from '@/components/ui/radio';
 
 export const AddTaskDialog: React.FC<{
 	organizationTasksBoardId: string;
 }> = ({ organizationTasksBoardId }) => {
-	const [assignedMemberIds, setAssignedMemberIds] = React.useState<string[]>([
-		'0',
-	]);
-
 	const [isOpen, setIsOpen] = React.useState(false);
 	const params = useParams<{ organizationId: string }>();
+	const { data: organizationMembersData } = useRetrieveOrganizationMembers({
+		organizationId: params.organizationId,
+	});
 	const {
 		handleSubmit,
 		control,
 		formState: { errors, isDirty },
 		reset,
-		watch,
 	} = useForm<CreateTaskArgs>({
 		resolver: zodResolver(createTaskSchema),
 		defaultValues: {
@@ -50,6 +60,8 @@ export const AddTaskDialog: React.FC<{
 			title: '',
 			description: '',
 			dueDate: '',
+			assignedMembers: [],
+			priority: 'MEDIUM_PRIORITY',
 		},
 	});
 
@@ -67,6 +79,7 @@ export const AddTaskDialog: React.FC<{
 					description: '',
 					title: '',
 					dueDate: '',
+					assignedMembers: [],
 				});
 				setIsOpen(false);
 			},
@@ -80,13 +93,15 @@ export const AddTaskDialog: React.FC<{
 		});
 	};
 
-	console.log(watch().dueDate);
 	return (
 		<Dialog
 			onOpenChange={setIsOpen}
 			isOpen={isOpen}
 			title="Add new task"
-			subtitle="Please enter the information about your organization inside these fields"
+			subtitle="Please enter the information about the new task"
+			dialogProps={{
+				className: 'max-h-[600px] overflow-y-scroll',
+			}}
 			triggerChildren={
 				<Button
 					isFullyRounded
@@ -139,6 +154,7 @@ export const AddTaskDialog: React.FC<{
 						name="dueDate"
 						render={({ field: { onChange } }) => (
 							<DatePicker
+								minValue={today(getLocalTimeZone())}
 								onChange={(val) => {
 									if (!val) return;
 
@@ -152,39 +168,93 @@ export const AddTaskDialog: React.FC<{
 					<Error>{errors.dueDate?.message}</Error>
 				</div>
 
-				{/* TODO: Handle if there is some more time */}
-				{/* <div className="w-full">
-					<Label className="mb-2">Assgin members</Label>
-
-					<CheckboxGroup
-						value={assignedMemberIds}
-						onChange={setAssignedMemberIds}
-						className="mx-auto flex w-fit flex-wrap gap-3"
-					>
-						{[...Array(4)].map((_, indx) => {
-							return (
-								<Checkbox className="group" key={indx} value={indx.toString()}>
+				<div className="w-full">
+					<Label className="mb-2">Priority</Label>
+					<Controller
+						control={control}
+						name="priority"
+						render={({ field }) => (
+							<RadioGroup
+								value={field.value}
+								onChange={field.onChange}
+								className="flex w-fit flex-wrap gap-3"
+							>
+								<Radio className="group" value="LOW_PRIORITY">
 									<Tag className="flex items-center gap-4">
-										<Avatar
-											imageProps={{
-												src: '',
-											}}
-											size="xs"
-										>
-											Ante
-										</Avatar>
-										<p>Ante</p>
+										<Dot state="success" />
+										<p>Low Priority</p>
 
-										<CheckboxVisually
-											className="rounded-full"
-											variant="secondary"
-										/>
+										<RadioIconVisual className="rounded-full" />
 									</Tag>
-								</Checkbox>
-							);
-						})}
-					</CheckboxGroup>
-				</div> */}
+								</Radio>
+								<Radio className="group" value="MEDIUM_PRIORITY">
+									<Tag className="flex items-center gap-4">
+										<Dot state="pending" />
+										<p>Medium Priority</p>
+
+										<RadioIconVisual className="rounded-full" />
+									</Tag>
+								</Radio>
+								<Radio className="group" value="HIGH_PRIORITY">
+									<Tag className="flex items-center gap-4">
+										<Dot state="destructive" />
+										<p>High Priority</p>
+
+										<RadioIconVisual className="rounded-full" />
+									</Tag>
+								</Radio>
+							</RadioGroup>
+						)}
+					/>
+
+					<Error>{errors.priority?.message}</Error>
+				</div>
+
+				<div className="w-full">
+					<Label className="mb-2">Assgin members</Label>
+					<Controller
+						control={control}
+						name="assignedMembers"
+						render={({ field }) => (
+							<CheckboxGroup
+								value={field.value}
+								onChange={field.onChange}
+								className="flex w-fit flex-wrap gap-3"
+							>
+								{organizationMembersData?.organizationMembers?.map((member) => (
+									<Checkbox className="group" key={member.id} value={member.id}>
+										<Tag className="flex items-center gap-4">
+											<Avatar
+												imageProps={{
+													src: member.user.image || '',
+												}}
+												size="xs"
+											>
+												{convertToFullname({
+													firstname: member.user.firstName,
+													lastname: member.user.lastName,
+												})}
+											</Avatar>
+											<p>
+												{convertToFullname({
+													firstname: member.user.firstName,
+													lastname: member.user.lastName,
+												})}
+											</p>
+
+											<CheckboxVisually
+												className="rounded-full"
+												variant="secondary"
+											/>
+										</Tag>
+									</Checkbox>
+								))}
+							</CheckboxGroup>
+						)}
+					/>
+
+					<Error>{errors.assignedMembers?.message}</Error>
+				</div>
 
 				<Button
 					type="submit"

@@ -21,12 +21,23 @@ import { PostSkeleton } from '@/components/ui/post/post-skeleton';
 
 // Lib
 import { toast } from '@/lib/utils/toast';
+import { HomePostsMapping } from '@/modules/main/home/home-posts-mapping';
+import { SelectContainer, SelectItem } from '@/components/ui/select';
 
 export default function PlaygroundPage() {
 	return (
 		<div>
 			<div className="m-20">
 				<Volontera />
+			</div>
+
+			<div className="ml-40">
+				<SelectContainer>
+					<SelectItem value="option-1">Option1 </SelectItem>
+					<SelectItem value="option-2">Option 2</SelectItem>
+					<SelectItem value="option-3">Option 3</SelectItem>
+					<SelectItem value="option-4">Option 4</SelectItem>
+				</SelectContainer>
 			</div>
 
 			<p>Hello world</p>
@@ -112,6 +123,13 @@ export default function PlaygroundPage() {
 
 			<div className="size-80">
 				<PostSkeleton />
+			</div>
+
+			<div
+				className="h-96 w-96 overflow-x-hidden overflow-y-scroll"
+				id="x-scroll"
+			>
+				<HomePostsMapping />
 			</div>
 		</div>
 	);

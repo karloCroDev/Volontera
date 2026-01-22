@@ -119,6 +119,9 @@ export async function createOrganization({
           role: "OWNER",
         },
       },
+      groupChat: {
+        create: {},
+      },
     },
   });
 }

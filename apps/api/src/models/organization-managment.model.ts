@@ -8,7 +8,7 @@ import {
 } from "@repo/database";
 
 export async function retirveAllRequestsToJoinOrganization(
-  organizationId: Organization["id"]
+  organizationId: Organization["id"],
 ) {
   return prisma.organizationJoinRequest.findMany({
     where: {
@@ -148,5 +148,54 @@ export async function leaveOrganization({
         },
       });
     }
+  });
+}
+
+export async function retrieveDataAboutOrganization(
+  organizationId: Organization["id"],
+) {
+  return prisma.$transaction(async (tx) => {
+    const highPriority = await tx.organizationTask.count({
+      where: {
+        organizationId,
+        status: "HIGH_PRIORITY",
+      },
+    });
+    const mediumPriority = await tx.organizationTask.count({
+      where: {
+        organizationId,
+        status: "MEDIUM_PRIORITY",
+      },
+    });
+    const lowPriority = await tx.organizationTask.count({
+      where: {
+        organizationId,
+        status: "LOW_PRIORITY",
+      },
+    });
+
+    const adminUserCount = await tx.organizationMember.count({
+      where: {
+        organizationId,
+        role: "ADMIN",
+      },
+    });
+    const memberUserCount = await tx.organizationMember.count({
+      where: {
+        organizationId,
+        role: "MEMBER",
+      },
+    });
+
+    const totalUserCount = adminUserCount + memberUserCount + 1;
+
+    return {
+      highPriority,
+      mediumPriority,
+      lowPriority,
+      adminUserCount,
+      memberUserCount,
+      totalUserCount,
+    };
   });
 }

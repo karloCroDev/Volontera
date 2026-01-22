@@ -8,6 +8,7 @@ import {
   leaveOrganizationService,
   retirveAllRequestsToJoinOrganizationService,
   retrieveAllMembersInOrganizationService,
+  retrieveDataAboutOrganizationService,
   retrieveOrganizationMemberService,
 } from "@/services/organization-managment.service";
 
@@ -16,6 +17,7 @@ import {
   LeaveOrganizationArgs,
   RetirveAllRequestsToJoinOrganizationArgs,
   RetrieveAllMembersInOrganizationArgs,
+  RetrieveDataAboutOrganizationArgs,
   RetrieveOrganizationMemberArgs,
 } from "@repo/schemas/organization-managment";
 
@@ -24,11 +26,11 @@ import { handleServerErrorResponse } from "@/lib/utils/error-response";
 
 export async function retrieveAllRequestsToJoinOrganizationController(
   req: Request,
-  res: Response
+  res: Response,
 ) {
   try {
     const result = await retirveAllRequestsToJoinOrganizationService(
-      req.params as RetirveAllRequestsToJoinOrganizationArgs
+      req.params as RetirveAllRequestsToJoinOrganizationArgs,
     );
 
     return res.status(result.status).json(result.body);
@@ -39,7 +41,7 @@ export async function retrieveAllRequestsToJoinOrganizationController(
 
 export async function retrieveAllUsersInOrganizationController(
   req: Request,
-  res: Response
+  res: Response,
 ) {
   try {
     const result = await retrieveAllMembersInOrganizationService({
@@ -55,7 +57,7 @@ export async function retrieveAllUsersInOrganizationController(
 
 export async function retrieveOrganizationMemberController(
   req: Request,
-  res: Response
+  res: Response,
 ) {
   try {
     const result = await retrieveOrganizationMemberService({
@@ -70,7 +72,7 @@ export async function retrieveOrganizationMemberController(
 
 export async function demoteOrPromoteOrganizationMemberController(
   req: Request,
-  res: Response
+  res: Response,
 ) {
   try {
     const result = await demoteOrPromoteOrganizationMemberService(req.body);
@@ -82,11 +84,11 @@ export async function demoteOrPromoteOrganizationMemberController(
 
 export async function acceptOrDeclineUsersRequestToJoinOrganizationController(
   req: Request,
-  res: Response
+  res: Response,
 ) {
   try {
     const result = await acceptOrDeclineUsersRequestToJoinOrganizationService(
-      req.body
+      req.body,
     );
     return res.status(result.status).json(result.body);
   } catch (err) {
@@ -103,5 +105,19 @@ export async function leaveOrganizationController(req: Request, res: Response) {
     return res.status(result.status).json(result.body);
   } catch (err) {
     handleServerErrorResponse(res, err);
+  }
+}
+
+export async function retrieveDataAboutOrganizationController(
+  req: Request,
+  res: Response,
+) {
+  try {
+    const result = await retrieveDataAboutOrganizationService(
+      req.params as RetrieveDataAboutOrganizationArgs,
+    );
+    return res.status(result.status).json(result.body);
+  } catch (error) {
+    handleServerErrorResponse(res, error);
   }
 }

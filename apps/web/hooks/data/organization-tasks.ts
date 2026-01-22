@@ -17,12 +17,15 @@ import {
 	deleteOrganizationTaskBoard,
 	deleteTaskById,
 	deleteTaskQuestion,
+	retrieveOrganizationMembers,
 	retrieveAllOrganizationBoards,
 	retrieveAllBoardTasks,
 	retrieveTaskInfo,
 	retrieveTaskQuestions,
 	updateOrganizationTaskBoardTitle,
 	updateTaskInfo,
+	moveTask,
+	createLlmTask,
 } from '@/lib/data/organization-tasks';
 
 // Schemas
@@ -34,11 +37,15 @@ import {
 	DeleteTaskByIdArgs,
 	DeleteTaskQuestionArgs,
 	RetrieveAllBoardTasksArgs,
+	RetrieveAllBoardTasksQueryArgs,
 	RetrieveAllOrganizationBoardsArgs,
+	RetrieveOrganizationMembersArgs,
 	RetrieveTaskInfoArgs,
 	RetrieveTaskQuestionsArgs,
 	UpdateOrganizationTaskBoardTitleArgs,
 	UpdateTaskInfoArgs,
+	MoveTaskArgs,
+	CreateLlmTaskArgs,
 } from '@repo/schemas/organization-tasks';
 
 // Types
@@ -46,6 +53,7 @@ import { ErrorToastResponse, SuccessfulResponse } from '@repo/types/general';
 import {
 	RetrieveAllBoardTasksResponse,
 	RetrieveAllOrganizationBoardsResponse,
+	RetrieveOrganizationMembersResponse,
 	RetrieveTaskInfoResponse,
 	RetrieveTaskQuestionsResponse,
 } from '@repo/types/organization-tasks';
@@ -59,7 +67,7 @@ export const useRetrieveAllOrganizationBoards = (
 	>
 ) => {
 	return useSuspenseQuery<RetrieveAllOrganizationBoardsResponse>({
-		queryKey: ['organization-boards', data.organizationId],
+		queryKey: [data.organizationId, 'organization-boards'],
 		queryFn: () => retrieveAllOrganizationBoards(data),
 		...options,
 	});
@@ -79,7 +87,16 @@ export const useCreateTaskBoard = (
 		mutationFn: (data: CreateTaskBoardArgs) => createTaskBoard(data),
 		onSuccess: async (...args) => {
 			await queryClient.invalidateQueries({
-				queryKey: ['organization-boards', args[1].organizationId],
+				queryKey: [args[1].organizationId, 'organization-boards'],
+			});
+
+			await queryClient.invalidateQueries({
+				predicate: (query) => {
+					return (
+						Array.isArray(query.queryKey) &&
+						query.queryKey[1] === 'organization-tasks'
+					);
+				},
 			});
 
 			await options?.onSuccess?.(...args);
@@ -102,7 +119,7 @@ export const useUpdateOrganizationTaskBoardTitle = (
 			updateOrganizationTaskBoardTitle(data),
 		onSuccess: async (...args) => {
 			await queryClient.invalidateQueries({
-				queryKey: ['organization-boards', args[1].organizationId],
+				queryKey: [args[1].organizationId, 'organization-boards'],
 			});
 
 			await options?.onSuccess?.(...args);
@@ -125,24 +142,44 @@ export const useDeleteOrganizationTaskBoard = (
 			deleteOrganizationTaskBoard(data),
 		onSuccess: async (...args) => {
 			await queryClient.invalidateQueries({
-				queryKey: ['organization-boards', args[1].organizationId],
+				queryKey: [args[1].organizationId, 'organization-boards'],
 			});
+
 			await options?.onSuccess?.(...args);
 		},
 	});
 };
 
+export const useRetrieveOrganizationMembers = (
+	data: RetrieveOrganizationMembersArgs,
+	options?: Omit<
+		UseQueryOptions<RetrieveOrganizationMembersResponse>,
+		'queryKey' | 'queryFn'
+	>
+) => {
+	return useQuery<RetrieveOrganizationMembersResponse>({
+		queryKey: ['organization-members', data.organizationId],
+		queryFn: () => retrieveOrganizationMembers(data),
+		...options,
+	});
+};
+
 // Tasks
 export const useRetrieveAllBoardTasksArgs = (
-	data: RetrieveAllBoardTasksArgs,
+	data: RetrieveAllBoardTasksArgs & RetrieveAllBoardTasksQueryArgs,
 	options?: Omit<
 		UseSuspenseQueryOptions<RetrieveAllBoardTasksResponse>,
 		'queryKey' | 'queryFn'
 	>
 ) => {
 	return useSuspenseQuery<RetrieveAllBoardTasksResponse>({
-		queryKey: ['organization-tasks', data.organizationTaskBoardId],
+		queryKey: [
+			data.organizationTaskBoardId,
+			'organization-tasks',
+			data.filter ?? null,
+		],
 		queryFn: () => retrieveAllBoardTasks(data),
+
 		...options,
 	});
 };
@@ -161,7 +198,39 @@ export const useCreateTask = (
 		mutationFn: (data: CreateTaskArgs) => createTask(data),
 		onSuccess: async (...args) => {
 			await queryClient.invalidateQueries({
-				queryKey: ['organization-tasks', args[1].organizationTasksBoardId],
+				queryKey: [args[1].organizationTasksBoardId, 'organization-tasks'],
+				predicate: (query) => {
+					return (
+						query.queryKey[0] === args[1].organizationTasksBoardId &&
+						query.queryKey[1] === 'organization-tasks'
+					);
+				},
+			});
+			await options?.onSuccess?.(...args);
+		},
+	});
+};
+export const useCreateLlmTask = (
+	options?: UseMutationOptions<
+		SuccessfulResponse,
+		ErrorToastResponse,
+		CreateLlmTaskArgs
+	>
+) => {
+	const queryClient = useQueryClient();
+	return useMutation({
+		...options,
+		mutationKey: ['create-task'],
+		mutationFn: (data: CreateLlmTaskArgs) => createLlmTask(data),
+		onSuccess: async (...args) => {
+			await queryClient.invalidateQueries({
+				queryKey: [args[1].organizationTasksBoardId, 'organization-tasks'],
+				predicate: (query) => {
+					return (
+						query.queryKey[0] === args[1].organizationTasksBoardId &&
+						query.queryKey[1] === 'organization-tasks'
+					);
+				},
 			});
 			await options?.onSuccess?.(...args);
 		},
@@ -210,7 +279,13 @@ export const useUpdateTaskInfo = (
 		mutationFn: (data: UpdateTaskInfoArgs) => updateTaskInfo(data),
 		onSuccess: async (...args) => {
 			await queryClient.invalidateQueries({
-				queryKey: ['organization-tasks', args[1].organizationTasksBoardId],
+				queryKey: [args[1].organizationTasksBoardId, 'organization-tasks'],
+				predicate: (query) => {
+					return (
+						query.queryKey[0] === args[1].organizationTasksBoardId &&
+						query.queryKey[1] === 'organization-tasks'
+					);
+				},
 			});
 
 			await options?.onSuccess?.(...args);
@@ -233,11 +308,31 @@ export const useDeleteTaskById = (
 		mutationFn: (data: DeleteTaskByIdArgs) => deleteTaskById(data),
 		onSuccess: async (...args) => {
 			await queryClient.invalidateQueries({
-				queryKey: ['organization-tasks', boardId],
+				queryKey: [boardId, 'organization-tasks'],
+				predicate: (query) => {
+					return (
+						query.queryKey[0] === boardId &&
+						query.queryKey[1] === 'organization-tasks'
+					);
+				},
 			});
 
 			await options?.onSuccess?.(...args);
 		},
+	});
+};
+
+export const useMoveTask = (
+	options?: UseMutationOptions<
+		SuccessfulResponse,
+		ErrorToastResponse,
+		MoveTaskArgs
+	>
+) => {
+	return useMutation({
+		...options,
+		mutationKey: ['move-task'],
+		mutationFn: (data: MoveTaskArgs) => moveTask(data),
 	});
 };
 
@@ -256,8 +351,7 @@ export const useCreateTaskQuestion = (
 		mutationFn: (data: CreateTaskQuestionArgs) => createTaskQuestion(data),
 		onSuccess: async (...args) => {
 			await queryClient.invalidateQueries({
-				queryKey: ['organization-task-questions'],
-				exact: false,
+				queryKey: ['organization-task-questions', args[1].taskId],
 			});
 			await options?.onSuccess?.(...args);
 		},
@@ -279,7 +373,9 @@ export const useDeleteTaskQuestion = (
 		onSuccess: async (...args) => {
 			await queryClient.invalidateQueries({
 				queryKey: ['organization-task-questions'],
-				exact: false,
+				predicate: (query) => {
+					return query.queryKey[0] === 'organization-task-questions';
+				},
 			});
 			await options?.onSuccess?.(...args);
 		},

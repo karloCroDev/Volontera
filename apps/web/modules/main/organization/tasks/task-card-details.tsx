@@ -13,13 +13,10 @@ import {
 import { Textarea } from '@/components/ui/textarea';
 import { Tag } from '@/components/ui/tag';
 import { Avatar } from '@/components/ui/avatar';
-import { ResizableTextArea } from '@/components/ui/resizable-input';
-import { Message } from '@/components/ui/message/message';
 import { Button } from '@/components/ui/button';
-import { Send } from 'lucide-react';
 import { CheckboxVisually } from '@/components/ui/checkbox';
 import { DatePicker } from '@/components/ui/date-picker';
-import { convertCalendarDate } from '@/lib/utils/converter';
+import { convertCalendarDate, convertToFullname } from '@/lib/utils/converter';
 import { DeleteConfirmationDialog } from '@/modules/main/organization/tasks/delete-confirmaton-dialog';
 import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -29,16 +26,13 @@ import {
 } from '@repo/schemas/organization-tasks';
 import { useParams } from 'next/navigation';
 import {
-	useCreateTask,
 	useDeleteTaskById,
+	useRetrieveOrganizationMembers,
 	useRetrieveTaskInfo,
 	useUpdateTaskInfo,
 } from '@/hooks/data/organization-tasks';
-import { useDeleteAccount } from '@/hooks/data/settings';
 import { toast } from '@/lib/utils/toast';
 import { getLocalTimeZone, parseDate, today } from '@internationalized/date';
-import { FilledInput } from '@/components/ui/filled-input';
-import { Input } from '@/components/ui/input';
 import { Error } from '@/components/ui/error';
 import { TaskCardQuestions } from '@/modules/main/organization/tasks/task-card-questions';
 
@@ -47,6 +41,9 @@ export const TaskCardDetails: React.FC<{
 	boardId: string;
 }> = ({ taskId, boardId }) => {
 	const params = useParams<{ organizationId: string }>();
+	const { data: organizationMembersData } = useRetrieveOrganizationMembers({
+		organizationId: params.organizationId,
+	});
 	const { data } = useRetrieveTaskInfo({
 		organizationId: params.organizationId,
 		taskId,
@@ -65,6 +62,7 @@ export const TaskCardDetails: React.FC<{
 			title: '',
 			organizationId: params.organizationId,
 			organizationTasksBoardId: boardId,
+			assignedMembers: [],
 			taskId,
 		},
 	});
@@ -77,6 +75,9 @@ export const TaskCardDetails: React.FC<{
 			title: data.taskInfo.organizationTask.title,
 			organizationId: params.organizationId,
 			organizationTasksBoardId: boardId,
+			assignedMembers: data.taskInfo.organizatonMembersAsiggnedToTaskCards.map(
+				(assignment) => assignment.organizationMember.id
+			),
 			taskId,
 		});
 	}, [data]);
@@ -165,35 +166,47 @@ export const TaskCardDetails: React.FC<{
 				/>
 
 				<p className="text-md mb-3 mt-4">All members on this task</p>
+				<Controller
+					control={control}
+					name="assignedMembers"
+					render={({ field }) => (
+						<CheckboxGroup
+							className="no-scrollbar mb-4 flex w-full flex-wrap gap-3 pb-2"
+							value={field.value}
+							onChange={field.onChange}
+						>
+							{organizationMembersData?.organizationMembers?.map((member) => (
+								<Checkbox className="group" key={member.id} value={member.id}>
+									<Tag className="flex items-center gap-4">
+										<Avatar
+											imageProps={{
+												src: member.user.image || '',
+												alt: `${member.user.firstName} ${member.user.lastName}`,
+											}}
+											size="xs"
+										>
+											{convertToFullname({
+												firstname: member.user.firstName,
+												lastname: member.user.lastName,
+											})}
+										</Avatar>
+										<p>
+											{convertToFullname({
+												firstname: member.user.firstName,
+												lastname: member.user.lastName,
+											})}
+										</p>
 
-				<CheckboxGroup
-					className="no-scrollbar mx-auto grid max-h-60 w-fit grid-cols-2 place-content-start gap-4 self-center overflow-y-scroll lg:max-h-full lg:grid-cols-3"
-					// value={assignedMemberIds}
-					// onChange={setAssignedMemberIds}
-				>
-					{[...Array(6)].map((_, indx) => {
-						return (
-							<Checkbox className="group" key={indx} value={indx.toString()}>
-								<Tag className="flex items-center gap-4">
-									<Avatar
-										imageProps={{
-											src: '',
-										}}
-										size="xs"
-									>
-										Ante
-									</Avatar>
-									<p>Ante</p>
-
-									<CheckboxVisually
-										className="rounded-full"
-										variant={indx === 0 ? 'success' : 'secondary'}
-									/>
-								</Tag>
-							</Checkbox>
-						);
-					})}
-				</CheckboxGroup>
+										<CheckboxVisually
+											className="rounded-full"
+											variant="secondary"
+										/>
+									</Tag>
+								</Checkbox>
+							))}
+						</CheckboxGroup>
+					)}
+				/>
 
 				<div className="mt-auto flex justify-between">
 					<DeleteConfirmationDialog

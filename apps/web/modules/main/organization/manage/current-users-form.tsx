@@ -62,10 +62,10 @@ export const CurrentUsersForm: React.FC<{
 	});
 
 	return (
-		<div className="border-input-border min-h-1/2 max-h-3/4 overflow-scroll rounded-xl border py-1">
+		<div className="border-input-border min-h-1/2 max-h-3/4 overflow-scroll rounded-xl border shadow-xl">
 			{users.members.map((memeber) => (
 				<div
-					className="border-input-border flex w-full items-center gap-4 border-b px-6 py-3 lg:gap-6"
+					className="border-input-border bg-muted flex w-full items-center gap-4 border-b px-6 py-3 lg:gap-6"
 					key={memeber.id}
 				>
 					<Link

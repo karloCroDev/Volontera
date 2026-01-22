@@ -11,6 +11,7 @@ import {
   deleteOrganizationTaskBoardController,
   deleteTaskByIdController,
   deleteTaskQuestionController,
+  retrieveOrganizationMembersController,
   retrieveAllBoardTasksController,
   retrieveAllOrganizationBoardsController,
   retrieveAllOrganizationBoardsWithTasksController,
@@ -18,6 +19,8 @@ import {
   retrieveTaskQuestionsController,
   updateOrganizationTaskBoardTitleController,
   updateTaskInfoController,
+  moveTaskController,
+  createLlmTaskController,
 } from "@/controllers/organization-tasks.controller";
 
 // Middleware
@@ -32,15 +35,19 @@ import {
   deleteOrganizationTaskBoardSchema,
   deleteTaskByIdSchema,
   retrieveAllOrganizationBoardsWithTasksSchema,
+  retrieveOrganizationMembersSchema,
   retrieveTaskInfoSchema,
   retrieveTaskQuestionsSchema,
   updateOrganizationTaskBoardTitleSchema,
   updateTaskInfoSchema,
+  moveTaskSchema,
   deleteTaskQuestionSchema,
   retrieveAllBoardTasksSchema,
+  retrieveAllBoardTasksQuerySchema,
   retrieveAllOrganizationBoardSchema,
+  createLlmTaskSchema,
 } from "@repo/schemas/organization-tasks";
-import { retrieveAllBoardTasks } from "@/models/organization-tasks.model";
+import { createLlmTask } from "@/lib/structured-llm-response";
 
 export const organizationTasksRoutes = Router();
 
@@ -55,7 +62,7 @@ organizationTasksRoutes.post(
     type: "body",
   }),
   organizationRolesMiddleware({ aquiredRoles: ["MEMBER", "ADMIN"] }),
-  createTaskBoardController
+  createTaskBoardController,
 );
 
 organizationTasksRoutes.patch(
@@ -66,7 +73,7 @@ organizationTasksRoutes.patch(
     type: "body",
   }),
   organizationRolesMiddleware({ aquiredRoles: ["MEMBER", "ADMIN"] }),
-  updateOrganizationTaskBoardTitleController
+  updateOrganizationTaskBoardTitleController,
 );
 
 organizationTasksRoutes.delete(
@@ -80,7 +87,7 @@ organizationTasksRoutes.delete(
     aquiredRoles: ["MEMBER", "ADMIN"],
     type: "params",
   }),
-  deleteOrganizationTaskBoardController
+  deleteOrganizationTaskBoardController,
 );
 
 organizationTasksRoutes.get(
@@ -94,7 +101,7 @@ organizationTasksRoutes.get(
     type: "params",
     aquiredRoles: ["MEMBER", "ADMIN"],
   }),
-  retrieveAllOrganizationBoardsController
+  retrieveAllOrganizationBoardsController,
 );
 
 // Boards with tasks
@@ -105,11 +112,31 @@ organizationTasksRoutes.get(
     type: "params",
     responseOutput: "server",
   }),
+  validate({
+    schema: retrieveAllBoardTasksQuerySchema,
+    type: "query",
+    responseOutput: "server",
+  }),
   organizationRolesMiddleware({
     type: "params",
     aquiredRoles: ["MEMBER", "ADMIN"],
   }),
-  retrieveAllOrganizationBoardsWithTasksController
+  retrieveAllOrganizationBoardsWithTasksController,
+);
+
+// Members (for task assignment)
+organizationTasksRoutes.get(
+  "/members/:organizationId",
+  validate({
+    schema: retrieveOrganizationMembersSchema,
+    responseOutput: "server",
+    type: "params",
+  }),
+  organizationRolesMiddleware({
+    type: "params",
+    aquiredRoles: ["MEMBER", "ADMIN"],
+  }),
+  retrieveOrganizationMembersController,
 );
 
 // Tasks
@@ -120,11 +147,16 @@ organizationTasksRoutes.get(
     responseOutput: "server",
     type: "params",
   }),
+  validate({
+    schema: retrieveAllBoardTasksQuerySchema,
+    responseOutput: "server",
+    type: "query",
+  }),
   organizationRolesMiddleware({
     type: "params",
     aquiredRoles: ["MEMBER", "ADMIN"],
   }),
-  retrieveAllBoardTasksController
+  retrieveAllBoardTasksController,
 );
 
 organizationTasksRoutes.post(
@@ -135,7 +167,17 @@ organizationTasksRoutes.post(
     type: "body",
   }),
   organizationRolesMiddleware({ aquiredRoles: ["MEMBER", "ADMIN"] }),
-  createTaskController
+  createTaskController,
+);
+organizationTasksRoutes.post(
+  "/tasks/create-llm",
+  validate({
+    schema: createLlmTaskSchema,
+    responseOutput: "toast",
+    type: "body",
+  }),
+  organizationRolesMiddleware({ aquiredRoles: ["MEMBER", "ADMIN"] }),
+  createLlmTaskController,
 );
 
 organizationTasksRoutes.get(
@@ -149,7 +191,7 @@ organizationTasksRoutes.get(
     aquiredRoles: ["MEMBER", "ADMIN"],
     type: "params",
   }),
-  retrieveTaskInfoController
+  retrieveTaskInfoController,
 );
 
 organizationTasksRoutes.get(
@@ -163,7 +205,7 @@ organizationTasksRoutes.get(
     aquiredRoles: ["MEMBER", "ADMIN"],
     type: "params",
   }),
-  retrieveTaskQuestionsController
+  retrieveTaskQuestionsController,
 );
 
 organizationTasksRoutes.patch(
@@ -174,7 +216,18 @@ organizationTasksRoutes.patch(
     type: "body",
   }),
   organizationRolesMiddleware({ aquiredRoles: ["MEMBER", "ADMIN"] }),
-  updateTaskInfoController
+  updateTaskInfoController,
+);
+
+organizationTasksRoutes.patch(
+  "/tasks/move",
+  validate({
+    schema: moveTaskSchema,
+    responseOutput: "toast",
+    type: "body",
+  }),
+  organizationRolesMiddleware({ aquiredRoles: ["MEMBER", "ADMIN"] }),
+  moveTaskController,
 );
 
 organizationTasksRoutes.delete(
@@ -188,7 +241,7 @@ organizationTasksRoutes.delete(
     aquiredRoles: ["MEMBER", "ADMIN"],
     type: "params",
   }),
-  deleteTaskByIdController
+  deleteTaskByIdController,
 );
 
 // Questions
@@ -200,7 +253,7 @@ organizationTasksRoutes.post(
     type: "body",
   }),
   organizationRolesMiddleware({ aquiredRoles: ["MEMBER", "ADMIN"] }),
-  createTaskQuestionController
+  createTaskQuestionController,
 );
 
 organizationTasksRoutes.delete(
@@ -214,5 +267,5 @@ organizationTasksRoutes.delete(
     aquiredRoles: ["MEMBER", "ADMIN"],
     type: "params",
   }),
-  deleteTaskQuestionController
+  deleteTaskQuestionController,
 );

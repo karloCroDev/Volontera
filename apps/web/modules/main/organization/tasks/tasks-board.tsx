@@ -9,6 +9,7 @@ import { Dialog } from '@/components/ui/dialog';
 import { TaskCardDetails } from '@/modules/main/organization/tasks/task-card-details';
 import { TaskCard } from '@/modules/main/organization/tasks/task-card';
 import { TasksMapping } from '@/modules/main/organization/tasks/tasks-mapping';
+import { AddTaskAiDialog } from '@/modules/main/organization/tasks/add-task-ai-dialog';
 
 export const TasksBoard: React.FC<{
 	boardId: string;
@@ -16,10 +17,7 @@ export const TasksBoard: React.FC<{
 	tasks: React.ReactNode;
 }> = withReactQueryProvider(({ boardId, title, tasks }) => {
 	return (
-		<div
-			suppressHydrationWarning // TODO: FIX HYDRA
-			className="border-input-border bg-muted flex min-h-[600px] w-full min-w-96 flex-col gap-5 rounded-xl border p-4 sm:w-2/3 lg:w-1/2 2xl:w-2/5"
-		>
+		<div className="border-input-border bg-muted flex min-h-[600px] w-full min-w-96 flex-col gap-5 rounded-xl border p-4 shadow-xl sm:w-2/3 lg:w-1/2 2xl:w-2/5">
 			<div className="flex items-center justify-between">
 				<h4 className="text-lg underline underline-offset-4">{title}</h4>
 				<EditBoardDialog boardId={boardId} title={title} />
@@ -27,7 +25,10 @@ export const TasksBoard: React.FC<{
 
 			{tasks}
 
-			<AddTaskDialog organizationTasksBoardId={boardId} />
+			<div className="flex gap-4">
+				<AddTaskDialog organizationTasksBoardId={boardId} />
+				<AddTaskAiDialog organizationTasksBoardId={boardId} />
+			</div>
 		</div>
 	);
 });

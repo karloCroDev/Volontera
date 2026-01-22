@@ -214,15 +214,15 @@ enum OrganizationJoinRequestStatus {
 }
 
 model OrganizationMember {
-  id                   String                 @id @default(cuid())
-  organization         Organization           @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  organizationId       String
-  user                 User                   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId               String
-  role                 OrganizationMemberRole @default(MEMBER)
-  createdAt            DateTime               @default(now())
-  updatedAt            DateTime               @updatedAt
-  taskCardInformations OrganizationTaskInfo[] @relation("TaskCardMembersAssigned")
+  id                                    String                             @id @default(cuid())
+  organization                          Organization                       @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  organizationId                        String
+  user                                  User                               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId                                String
+  role                                  OrganizationMemberRole             @default(MEMBER)
+  createdAt                             DateTime                           @default(now())
+  updatedAt                             DateTime                           @updatedAt
+  organizatonMembersAsiggnedToTaskCards OrganizatonMembersAsiggnedToTask[]
 
   @@unique([organizationId, userId])
   @@index([userId])
@@ -437,9 +437,9 @@ model OrganizationTasksBoards {
 }
 
 enum OrganizationTaskStatus {
-  FAILURE
-  PENDING
-  COMPLETED
+  LOW_PRIORITY
+  MEDIUM_PRIORITY
+  HIGH_PRIORITY
 }
 
 model OrganizationTask {
@@ -449,22 +449,36 @@ model OrganizationTask {
   organizationTaskQuestions OrganizationTaskQuestions[]
   title                     String
   dueDate                   String
-  status                    OrganizationTaskStatus      @default(PENDING)
-  organizationTasksBoard    OrganizationTasksBoards?    @relation(fields: [organizationTasksBoardId], references: [id])
+  status                    OrganizationTaskStatus
+  authorId                  String
+  organizationTasksBoard    OrganizationTasksBoards?    @relation(fields: [organizationTasksBoardId], references: [id], onDelete: Cascade)
   organizationTasksBoardId  String?
   createdAt                 DateTime                    @default(now())
   updatedAt                 DateTime                    @updatedAt
 }
 
 model OrganizationTaskInfo {
-  id                 String               @id @default(cuid())
+  id                 String           @id @default(cuid())
   description        String
-  membersAssigned    OrganizationMember[] @relation("TaskCardMembersAssigned")
-  organizationTask   OrganizationTask     @relation(fields: [organizationTaskId], references: [id], onDelete: Cascade)
-  organizationTaskId String               @unique
+  organizationTask   OrganizationTask @relation(fields: [organizationTaskId], references: [id], onDelete: Cascade)
+  organizationTaskId String           @unique
+
+  createdAt                             DateTime                           @default(now())
+  updatedAt                             DateTime                           @updatedAt
+  organizatonMembersAsiggnedToTaskCards OrganizatonMembersAsiggnedToTask[]
+}
+
+model OrganizatonMembersAsiggnedToTask {
+  id                     String               @id @default(cuid())
+  organizationMember     OrganizationMember   @relation(fields: [organizationMemberId], references: [id], onDelete: Cascade)
+  organizationMemberId   String
+  organizationTaskInfo   OrganizationTaskInfo @relation(fields: [organizationTaskInfoId], references: [id], onDelete: Cascade)
+  organizationTaskInfoId String
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@unique([organizationMemberId, organizationTaskInfoId])
 }
 
 model OrganizationTaskQuestions {
