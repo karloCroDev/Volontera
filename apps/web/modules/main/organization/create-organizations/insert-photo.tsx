@@ -32,7 +32,7 @@ export const InsertPhoto: React.FC<
 			<label
 				{...rest}
 				htmlFor={htmlFor}
-				className="border-input-border text-muted-foreground relative flex min-h-96 flex-1 cursor-pointer flex-col items-center justify-center overflow-hidden rounded-2xl border border-dashed px-4"
+				className="border-input-border text-muted-foreground relative flex aspect-[4/3] flex-1 cursor-pointer flex-col items-center justify-center overflow-hidden rounded-2xl border border-dashed px-4"
 			>
 				{file && previewUrl ? (
 					<>

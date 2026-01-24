@@ -72,7 +72,9 @@ export const HomePostsMapping = withReactQueryProvider(() => {
 						<Post key={post.id} post={post} images={imagesData?.urls} />
 					))
 				) : (
-					<p className="text-muted-foreground text-center">No posts found.</p>
+					<p className="text-muted-foreground text-center xl:col-span-2">
+						No posts found.
+					</p>
 				)}
 				{query.isFetchingNextPage &&
 					[...Array(2)].map((_, indx) => <PostSkeleton key={indx} />)}

@@ -92,7 +92,7 @@ export async function getHelpMessagesService(userId: string) {
       success: true,
       title: allMessages.length
         ? undefined
-        : "Ask our AI assistant any question about [app]!",
+        : "Ask our AI assistant any question about Volontera!",
       message: "Messages retrieved successfully",
       messages: allMessages, // empty array if no messages
     },

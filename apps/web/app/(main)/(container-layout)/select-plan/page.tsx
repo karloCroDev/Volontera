@@ -23,7 +23,7 @@ export default async function SelectPlan() {
 	return (
 		<>
 			<div className="flex items-center justify-between">
-				<Heading subtitle="Choose the additional features that you can use with [app]">
+				<Heading subtitle="Choose the additional features that you can use with Volontera">
 					Select plan
 				</Heading>
 

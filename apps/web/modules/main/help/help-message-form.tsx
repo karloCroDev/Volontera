@@ -3,7 +3,7 @@
 // External packages
 import * as React from 'react';
 import { Form } from 'react-aria-components';
-import { Send } from 'lucide-react';
+import { Send, Trash2 } from 'lucide-react';
 import { Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
@@ -32,12 +32,7 @@ import { HelpConversationSuccess } from '@repo/types/help';
 export const HelpMessageForm: React.FC<{
 	setMutating: React.Dispatch<React.SetStateAction<boolean>>;
 }> = withReactQueryProvider(({ setMutating }) => {
-	const {
-		control,
-		handleSubmit,
-
-		reset,
-	} = useForm<HelpConversationSchemaArgs>({
+	const { control, handleSubmit, reset } = useForm<HelpConversationSchemaArgs>({
 		resolver: zodResolver(helpConversationSchema),
 	});
 
@@ -110,6 +105,17 @@ export const HelpMessageForm: React.FC<{
 						label="Enter your question for AI"
 						textAreaProps={field}
 						className="bg-background"
+						iconsLeft={
+							<Button
+								type="submit"
+								className="p-2"
+								isDisabled={isPending}
+								colorScheme="destructive"
+								variant="outline"
+							>
+								<Trash2 />
+							</Button>
+						}
 						iconsRight={
 							<Button type="submit" className="p-2" isDisabled={isPending}>
 								<Send />

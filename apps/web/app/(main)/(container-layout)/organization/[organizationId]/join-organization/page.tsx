@@ -30,10 +30,7 @@ export default async function JoinOrganizationPage({
 
 	return (
 		<>
-			<Heading
-				subtitle="Please enter the information about joining the organization"
-				className="ml-0 md:ml-8"
-			>
+			<Heading subtitle="Please enter the information about joining the organization">
 				Let&apos;s join {organization.organization.name} organization
 			</Heading>
 

@@ -19,10 +19,7 @@ export default async function CreateOrganizationPage() {
 	console.log(user);
 	return (
 		<>
-			<Heading
-				subtitle="Please enter the information about your organization inside these fields"
-				className="ml-0 md:ml-8"
-			>
+			<Heading subtitle="Please enter the information about your organization inside these fields">
 				Let&apos;s create new organization
 			</Heading>
 

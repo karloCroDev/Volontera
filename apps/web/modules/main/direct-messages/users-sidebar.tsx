@@ -53,7 +53,15 @@ export const UsersSidebar: React.FC<{
 			<div>
 				<p className="text-md">{username} </p>
 				<div className="text-muted-foreground text-xs md:text-sm">
-					{lastMessage ? <Markdown>{lastMessage}</Markdown> : userRole}
+					{lastMessage ? (
+						<Markdown>
+							{lastMessage.length < 20
+								? lastMessage
+								: lastMessage.substring(0, 20) + '...'}
+						</Markdown>
+					) : (
+						userRole
+					)}
 				</div>
 			</div>
 

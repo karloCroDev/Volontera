@@ -14,15 +14,18 @@ export async function createPost({
   images,
   userId,
   organizationId,
+  rankingScore,
 }: PostMangmentArgs & {
   userId: User["id"];
   organizationId: Organization["id"];
+  rankingScore: number;
 }) {
   return prisma.post.create({
     data: {
       title,
       content,
       organizationId,
+      rankingScore,
       authorId: userId,
       postImages: {
         create: images.map((imageUrl) => ({ imageUrl })),

@@ -13,7 +13,7 @@ import { twJoin, twMerge } from 'tailwind-merge';
 import { Error } from '@/components/ui/error';
 
 export const getTextFieldBasicStyles =
-	'border-input-border data-[invalid]:border-destructive hover:border-popover text-background-foreground focus:border-popover peer h-14 w-full rounded-md border outline-none transition-[border] placeholder-shown:pt-0';
+	'border-input-border data-[invalid]:border-destructive hover:border-popover  text-background-foreground focus:border-popover peer h-14 w-full rounded-md border outline-none transition-[border] placeholder-shown:pt-0';
 
 export type InputProps = React.ComponentPropsWithoutRef<'input'> & {
 	label: string;
