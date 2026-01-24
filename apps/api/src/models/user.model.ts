@@ -19,6 +19,13 @@ export async function retrieveAllOrganizationsForUser(userId: User["id"]) {
         },
       },
     },
+    include: {
+      owner: {
+        omit: {
+          password: true,
+        },
+      },
+    },
   });
 }
 

@@ -50,6 +50,7 @@ export const MessagesMapping: React.FC<{
 													? (user.image ?? undefined)
 													: '',
 										}}
+										isVerified={user.subscriptionTier === 'PRO'}
 									>
 										{message.senderType === 'USER'
 											? convertToFullname({

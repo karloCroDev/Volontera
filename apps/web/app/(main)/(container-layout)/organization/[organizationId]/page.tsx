@@ -67,6 +67,10 @@ export default async function OrganizationPage({
 								}}
 								colorScheme="gray"
 								size="2xl"
+								isVerified={
+									organizationDetailsById.organization.owner
+										.subscriptionTier === 'PRO'
+								}
 							>
 								{organizationDetailsById.organization.name}
 							</Avatar>

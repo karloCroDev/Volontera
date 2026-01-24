@@ -50,6 +50,7 @@ export const Post: React.FC<{
 						imageProps={{
 							src: images?.[post.organization.avatarImage],
 						}}
+						isVerified={post.organization.owner.subscriptionTier === 'PRO'}
 					>
 						{post.organization.name}
 					</Avatar>
@@ -153,6 +154,7 @@ export const Post: React.FC<{
 						imageProps={{
 							src: post.author.image ? images?.[post.author.image] : undefined,
 						}}
+						isVerified={post.author.subscriptionTier === 'PRO'}
 						size="xs"
 						className="ml-2"
 					>

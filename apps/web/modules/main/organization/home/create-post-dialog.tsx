@@ -117,6 +117,7 @@ export const CreatePostDialog = () => {
 						imageProps={{
 							src: user?.image || undefined,
 						}}
+						isVerified={user?.subscriptionTier === 'PRO'}
 						colorScheme="gray"
 						size="md"
 					>

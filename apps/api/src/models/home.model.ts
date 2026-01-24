@@ -60,16 +60,13 @@ export async function retrieveCronPosts() {
         },
       },
       organization: {
-        include: {
+        select: {
+          createdAt: true,
           owner: {
             select: {
               subscriptionTier: true,
             },
           },
-        },
-
-        select: {
-          createdAt: true,
           _count: {
             select: {
               organizationFollowers: true,
@@ -87,7 +84,6 @@ export async function retrieveCronPosts() {
       },
     },
     orderBy: {
-      // Od najnovijih do najstarijih postova (najnoviji imaju prednost kod vrednovanja unutar algoritma)
       createdAt: "desc",
     },
   });

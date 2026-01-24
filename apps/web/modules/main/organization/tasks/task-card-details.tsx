@@ -179,6 +179,7 @@ export const TaskCardDetails: React.FC<{
 								<Checkbox className="group" key={member.id} value={member.id}>
 									<Tag className="flex items-center gap-4">
 										<Avatar
+											isVerified={member.user.subscriptionTier === 'PRO'}
 											imageProps={{
 												src: member.user.image || '',
 												alt: `${member.user.firstName} ${member.user.lastName}`,

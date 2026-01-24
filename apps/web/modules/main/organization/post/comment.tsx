@@ -120,6 +120,7 @@ export const Comment: React.FC<{
 					imageProps={{
 						src: pfpImages ? pfpImages[comment.author.image || ''] : undefined,
 					}}
+					isVerified={comment.author.subscriptionTier === 'PRO'}
 					colorScheme="gray"
 				>
 					{convertToFullname({

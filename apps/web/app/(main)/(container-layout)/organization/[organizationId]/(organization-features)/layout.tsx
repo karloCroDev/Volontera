@@ -39,6 +39,10 @@ export default async function OrganizationFeaturesLayout({
 					}}
 					size="xl"
 					colorScheme="gray"
+					isVerified={
+						organizationDetailsById.organization.owner.subscriptionTier ===
+						'PRO'
+					}
 				>
 					{organizationDetailsById.organization.name}
 				</Avatar>

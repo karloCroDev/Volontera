@@ -79,6 +79,7 @@ export const CurrentUsersForm: React.FC<{
 									? images?.urls[memeber.user.image]
 									: undefined,
 							}}
+							isVerified={memeber.user.subscriptionTier === 'PRO'}
 						>
 							{convertToFullname({
 								firstname: memeber.user.firstName || '',

@@ -125,6 +125,7 @@ export const GroupChatMapping: React.FC<{
 										? images?.urls[message.author.image]
 										: undefined,
 								}}
+								isVerified={message.author.subscriptionTier === 'PRO'}
 							>
 								{convertToFullname({
 									firstname: message.author.firstName,

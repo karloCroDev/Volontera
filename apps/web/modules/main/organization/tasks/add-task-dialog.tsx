@@ -229,6 +229,7 @@ export const AddTaskDialog: React.FC<{
 													src: member.user.image || '',
 												}}
 												size="xs"
+												isVerified={member.user.subscriptionTier === 'PRO'}
 											>
 												{convertToFullname({
 													firstname: member.user.firstName,

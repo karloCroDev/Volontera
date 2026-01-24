@@ -31,6 +31,13 @@ export async function searchUsers({
       where: {
         name: { contains: query, mode: "insensitive" },
       },
+      include: {
+        owner: {
+          omit: {
+            password: true,
+          },
+        },
+      },
     });
     return {
       users,

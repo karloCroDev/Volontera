@@ -150,6 +150,7 @@ export const RequestsForm: React.FC<{
 											? images?.urls[request.requester.image]
 											: undefined,
 									}}
+									isVerified={request.requester.subscriptionTier === 'PRO'}
 								>
 									{convertToFullname({
 										firstname: request.requester.firstName || '',

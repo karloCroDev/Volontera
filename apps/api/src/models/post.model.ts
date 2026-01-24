@@ -80,7 +80,15 @@ export async function retrieveOrganizationPosts({
 }) {
   return prisma.post.findMany({
     include: {
-      organization: true,
+      organization: {
+        include: {
+          owner: {
+            omit: {
+              password: true,
+            },
+          },
+        },
+      },
       postImages: true,
       postLikes: {
         where: {
@@ -118,7 +126,15 @@ export async function retrievePostWithComments({
   return prisma.post.findUnique({
     where: { id: postId },
     include: {
-      organization: true,
+      organization: {
+        include: {
+          owner: {
+            omit: {
+              password: true,
+            },
+          },
+        },
+      },
       postImages: true,
       author: true,
       postLikes: {
@@ -217,7 +233,15 @@ export async function dislikePost({
 export async function retrieveHomePosts() {
   return prisma.post.findMany({
     include: {
-      organization: true,
+      organization: {
+        include: {
+          owner: {
+            omit: {
+              password: true,
+            },
+          },
+        },
+      },
       postImages: true,
       author: true,
     },

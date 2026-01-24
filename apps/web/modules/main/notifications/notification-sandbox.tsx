@@ -121,6 +121,9 @@ export const NotificationSandbox: React.FC<{
 												imageProps={{
 													src: notification?.user.image || '',
 												}}
+												isVerified={
+													notification.user.subscriptionTier === 'PRO'
+												}
 											>
 												{convertToFullname({
 													firstname: notification.user.firstName,

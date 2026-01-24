@@ -59,6 +59,7 @@ export const ListUsers: React.FC<{
 							isOnline={onlineUsers.includes(conversation.participant.id)}
 							username={`${conversation.participant.firstName} ${conversation.participant.lastName}`}
 							lastMessage={conversation.lastMessage || undefined}
+							isVerified={conversation.participant.subscriptionTier === 'PRO'}
 							id={conversation.participant.id}
 							key={conversation.participant.id}
 						/>

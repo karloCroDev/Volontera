@@ -109,6 +109,7 @@ export const ProfileForm: React.FC<{
 												'',
 											alt: 'Avatar',
 										}}
+										isVerified={user?.subscriptionTier === 'PRO'}
 										size="4xl"
 										isInput
 										deleteButton={

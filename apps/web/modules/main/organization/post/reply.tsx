@@ -35,6 +35,7 @@ export const Reply: React.FC<{
 					imageProps={{
 						src: pfpImages ? pfpImages[reply.author.image || ''] : undefined,
 					}}
+					isVerified={reply.author.subscriptionTier === 'PRO'}
 					colorScheme="gray"
 				>
 					{convertToFullname({

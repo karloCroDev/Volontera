@@ -9,8 +9,9 @@ import {
 } from "@repo/database";
 import { ServerHandleResponse, SuccessfulResponse } from "./general";
 import { PostCommentsResponse } from "./comment";
+import type { OrganizationWithOwner } from "./organization";
 type SharedPostValues = Post & {
-  organization: Organization;
+  organization: OrganizationWithOwner;
   postImages: PostImages[];
   author: User;
   postLikes: PostLikes[];

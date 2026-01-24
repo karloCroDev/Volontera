@@ -64,7 +64,7 @@ export const Organizations = () => {
 	const { data: organizations, isLoading } = useListOrganizations(
 		user?.role || undefined,
 		{
-			options: { enabled: open },
+			enabled: open,
 		}
 	);
 
@@ -216,7 +216,6 @@ export const Organizations = () => {
 export const OrganizationSidebarItem: React.FC<{
 	organization: ListOrganizationsOrganizatorResponse['attendingOrganizations'][0]; // Nebitno koja je organizacija, sve vrate isti tip podataka
 	isSelected?: boolean;
-
 	imageUrl?: string;
 }> = ({ organization, isSelected = false, imageUrl }) => {
 	const isMobile = useIsMobile();
@@ -239,6 +238,7 @@ export const OrganizationSidebarItem: React.FC<{
 					imageProps={{
 						src: imageUrl,
 					}}
+					isVerified={organization.owner.subscriptionTier === 'PRO'}
 					size={isMobile ? 'sm' : 'md'}
 					colorScheme={'gray'}
 				>

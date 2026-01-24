@@ -161,6 +161,7 @@ export const AddTaskAiDialog: React.FC<{
 												imageProps={{
 													src: member.user.image || '',
 												}}
+												isVerified={member.user.subscriptionTier === 'PRO'}
 												size="xs"
 											>
 												{convertToFullname({

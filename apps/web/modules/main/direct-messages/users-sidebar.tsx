@@ -17,6 +17,7 @@ export const UsersSidebar: React.FC<{
 	removeUnderline?: boolean;
 	isOnline?: boolean;
 	imageUrl?: string;
+	isVerified?: boolean;
 }> = ({
 	id,
 	username,
@@ -25,6 +26,7 @@ export const UsersSidebar: React.FC<{
 	removeUnderline = false,
 	isOnline,
 	imageUrl,
+	isVerified,
 }) => {
 	const searchParams = useSearchParams();
 
@@ -46,6 +48,7 @@ export const UsersSidebar: React.FC<{
 					src: imageUrl,
 				}}
 				size="lg"
+				isVerified={isVerified}
 			>
 				{username}
 			</Avatar>
