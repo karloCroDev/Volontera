@@ -60,12 +60,11 @@ export const useCreateOrganization = (
 
 export function useListOrganizations(
 	role?: string,
-	options?: {
-		options?: Omit<
-			UseQueryOptions<ListOrganizationsOrganizatorResponse>,
-			'queryKey' | 'queryFn'
-		>;
-	}
+
+	options?: Omit<
+		UseQueryOptions<ListOrganizationsOrganizatorResponse>,
+		'queryKey' | 'queryFn'
+	>
 ) {
 	return useQuery<ListOrganizationsOrganizatorResponse>({
 		queryKey: ['organization', role],
@@ -75,6 +74,7 @@ export function useListOrganizations(
 				: listOrganizationsUser,
 		enabled: !!role,
 		refetchOnWindowFocus: false,
+		...options,
 	});
 }
 
