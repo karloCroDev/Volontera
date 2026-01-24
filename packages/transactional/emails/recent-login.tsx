@@ -22,7 +22,7 @@ export const RecentLogin: React.FC<{
 		<Html>
 			<Tailwind>
 				<Head />
-				<Body className="mx-auto my-auto bg-white px-4 font-sans lg:px-6">
+				<Body className="mx-auto my-auto bg-white font-sans lg:px-6">
 					<Container className="my-10 rounded-lg border-2 border-solid border-[#f59f0a] p-4">
 						<Section>
 							<Row>
@@ -60,7 +60,7 @@ export const RecentLogin: React.FC<{
 							<Text className="text-lg text-[#91400d]">
 								Time:
 								<span className="ml-2 italic">
-									{`${lastTimeLoggedIn.getHours()}:${lastTimeLoggedIn.getMinutes()} | ${lastTimeLoggedIn.getDate()}.${lastTimeLoggedIn.getMonth()}${lastTimeLoggedIn.getFullYear()}`}
+									{`${lastTimeLoggedIn.getHours()}:${lastTimeLoggedIn.getMinutes()} | ${lastTimeLoggedIn.getDate()}.${lastTimeLoggedIn.getMonth() + 1} ${lastTimeLoggedIn.getFullYear()}`}
 								</span>
 							</Text>
 						</Section>

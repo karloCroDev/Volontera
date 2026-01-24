@@ -30,11 +30,11 @@ export const UsersSidebar: React.FC<{
 
 	const pathname = usePathname();
 
-	const isActive = searchParams.get('user') === id;
+	const isActive = searchParams.get('userId') === id;
 
 	return (
 		<Link
-			href={`${pathname}?user=${id}`}
+			href={`${pathname}?userId=${id}`}
 			className={twJoin(
 				'border-input-border hover:bg-background-foreground/10 flex items-center gap-4 rounded-lg px-2 py-3 backdrop-blur-2xl',
 				isActive && 'border-b-muted-foreground font-semibold',

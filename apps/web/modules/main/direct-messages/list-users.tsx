@@ -21,7 +21,7 @@ export const ListUsers: React.FC<{
 }> = ({ listOfAllDirectMessages }) => {
 	const searchParams = useSearchParams();
 
-	const isActive = searchParams.get('user');
+	const isActive = searchParams.get('userId');
 
 	const { onlineUsers } = useSocketContext();
 

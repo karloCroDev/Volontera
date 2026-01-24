@@ -34,7 +34,7 @@ import { DeleteDirectMessageArgs } from '@repo/schemas/direct-messages';
 
 export const ConversationMapping = withReactQueryProvider(() => {
 	const searchParams = useSearchParams();
-	const recieverId = searchParams.get('user');
+	const recieverId = searchParams.get('userId');
 
 	console.log(recieverId);
 	const { data: conversation, isLoading } =
@@ -103,71 +103,67 @@ export const ConversationMapping = withReactQueryProvider(() => {
 		el.scrollTop = el.scrollHeight;
 	}, [messages]);
 
-	// Abilty to delete message
+	// Brisanje poruke
 	const { mutate: mutateDeleteMessage } = useDeleteDirectMessageById();
 	return (
-		<>
-			<div
-				className="no-scrollbar min-h-0 flex-1 space-y-4 overflow-y-auto scroll-smooth pb-20"
-				ref={containerRef}
-			>
-				{isLoading &&
-					[...Array(5)].map((_, indx) => (
-						<MessageSkeleton
-							key={indx}
-							variant={indx % 2 === 0 ? 'primary' : 'secondary'}
-						/>
-					))}
+		<div
+			className="no-scrollbar pb-50 h-full min-h-0 overflow-y-auto scroll-smooth"
+			ref={containerRef}
+		>
+			{isLoading &&
+				[...Array(5)].map((_, indx) => (
+					<MessageSkeleton
+						key={indx}
+						variant={indx % 2 === 0 ? 'primary' : 'secondary'}
+					/>
+				))}
 
-				{!isLoading &&
-					(messages && messages.length > 0 ? (
-						messages.map((message) => (
-							<Message
-								key={message.id}
-								variant={
-									message.author.id === user?.id ? 'primary' : 'secondary'
-								}
-								date={new Date(message.createdAt)}
-								avatar={
-									<Link href={`/profile/${message.author.id}`}>
-										<Avatar
-											imageProps={{
-												src: message.author.image
-													? userImages?.urls[message.author.image]
-													: '',
-											}}
-										>
-											{convertToFullname({
-												firstname: message.author.firstName,
-												lastname: message.author.lastName,
-											})}
-										</Avatar>
-									</Link>
-								}
-								images={
-									message.directMessagesImages[0]?.imageUrl && (
-										<MessageImages
-											imageUrls={message.directMessagesImages
-												.map((img) => img.imageUrl)
-												.filter(Boolean)}
-										/>
-									)
-								}
-								deleteAction={() =>
-									mutateDeleteMessage({
-										messageId: message.id,
-									})
-								}
-							>
-								<Markdown>{message.content}</Markdown>
-							</Message>
-						))
-					) : (
-						<p className="text-muted-foreground text-center">
-							No messages found. Start a new conversation
-						</p>
-					))}
-			</div>
-		</>
+			{!isLoading &&
+				(messages && messages.length > 0 ? (
+					messages.map((message) => (
+						<Message
+							key={message.id}
+							variant={message.author.id === user?.id ? 'primary' : 'secondary'}
+							date={new Date(message.createdAt)}
+							avatar={
+								<Link href={`/profile/${message.author.id}`}>
+									<Avatar
+										imageProps={{
+											src: message.author.image
+												? userImages?.urls[message.author.image]
+												: '',
+										}}
+									>
+										{convertToFullname({
+											firstname: message.author.firstName,
+											lastname: message.author.lastName,
+										})}
+									</Avatar>
+								</Link>
+							}
+							images={
+								message.directMessagesImages[0]?.imageUrl && (
+									<MessageImages
+										imageUrls={message.directMessagesImages
+											.map((img) => img.imageUrl)
+											.filter(Boolean)}
+									/>
+								)
+							}
+							deleteAction={() =>
+								mutateDeleteMessage({
+									messageId: message.id,
+								})
+							}
+						>
+							<Markdown>{message.content}</Markdown>
+						</Message>
+					))
+				) : (
+					<p className="text-muted-foreground text-center">
+						No messages found. Start a new conversation
+					</p>
+				))}
+		</div>
 	);
 });

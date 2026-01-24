@@ -24,7 +24,6 @@ import { RetrieveAllOrganizationGroupChatMessagesResponse } from '@repo/types/or
 import { useSocketContext } from '@/modules/main/direct-messages/socket-context';
 import { useSession } from '@/hooks/data/user';
 import { MessageImages } from '@/components/ui/message/message-images';
-import { toast } from '@/lib/utils/toast';
 
 export const GroupChatMapping: React.FC<{
 	groupChat: RetrieveAllOrganizationGroupChatMessagesResponse;

@@ -10,10 +10,10 @@ export const MessageWrapper: React.FC<{
 }> = ({ children }) => {
 	const searchParams = useSearchParams();
 
-	const isActive = searchParams.get('user');
+	const isActive = searchParams.get('userId');
 
 	return isActive ? (
-		<div className="flex w-full flex-col pb-40">{children}</div>
+		<div className="flex flex-1 flex-col overflow-hidden">{children}</div>
 	) : (
 		<div className="hidden h-full flex-1 flex-col items-center justify-center text-balance px-4 text-center lg:flex">
 			<h1 className="text-xl font-medium italic">

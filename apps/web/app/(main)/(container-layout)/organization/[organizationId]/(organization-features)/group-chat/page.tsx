@@ -20,7 +20,7 @@ export default async function GroupChatPage({
 	if (!groupChat.success) notFound();
 	return (
 		<SocketRoomContext>
-			<div className="relative min-h-[800px] flex-1 gap-4 px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
+			<div className="relative min-h-[600px] flex-1 gap-4 px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
 				<GroupChatMapping groupChat={groupChat} />
 				<AddMessageForm groupChatId={groupChat.organizationGroupChat.id} />
 			</div>

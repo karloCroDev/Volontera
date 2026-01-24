@@ -308,6 +308,7 @@ model Post {
   title        String
   content      String
   authorId     String
+  rankingScore        Int            @default(0)
   postImages   PostImages[]
   postComments PostComments[]
 
