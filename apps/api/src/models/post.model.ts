@@ -93,6 +93,12 @@ export async function retrieveOrganizationPosts({
     include: {
       organization: {
         include: {
+          _count: {
+            select: {
+              organizationFollowers: true,
+              organizationMembers: true,
+            },
+          },
           owner: {
             omit: {
               password: true,

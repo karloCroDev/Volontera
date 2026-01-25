@@ -29,6 +29,12 @@ export async function retrieveAlgoPosts({
     include: {
       organization: {
         include: {
+          _count: {
+            select: {
+              organizationFollowers: true,
+              organizationMembers: true,
+            },
+          },
           organizationFollowers:
             filter === "following"
               ? {

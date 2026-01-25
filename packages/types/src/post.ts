@@ -1,17 +1,17 @@
 // Database
-import {
-  Post,
-  PostComments,
-  PostImages,
-  Organization,
-  User,
-  PostLikes,
-} from "@repo/database";
-import { ServerHandleResponse, SuccessfulResponse } from "./general";
+import { Post, PostImages, User, PostLikes } from "@repo/database";
+
+import { ServerHandleResponse } from "./general";
 import { PostCommentsResponse } from "./comment";
-import type { OrganizationWithOwner } from "./organization";
+import { OrganizationWithOwner } from "./organization";
+
 type SharedPostValues = Post & {
-  organization: OrganizationWithOwner;
+  organization: OrganizationWithOwner & {
+    _count: {
+      organizationFollowers: number;
+      organizationMembers: number;
+    };
+  };
   postImages: PostImages[];
   author: User;
   postLikes: PostLikes[];

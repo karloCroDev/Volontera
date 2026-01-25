@@ -19,6 +19,7 @@ import { RetrieveOrganizationPostsResponse } from '@repo/types/post';
 
 // Lib
 import { convertToFullname } from '@/lib/utils/converter';
+import { formatTime } from '@/lib/utils/time-adjustments';
 
 export const Post: React.FC<{
 	post: RetrieveOrganizationPostsResponse['posts'][0];
@@ -58,7 +59,10 @@ export const Post: React.FC<{
 
 					<div>
 						<p>{post.organization.name}</p>
-						<p className="text-muted-foreground text-sm">20 members</p>
+						<p className="text-muted-foreground text-sm">
+							{post.organization._count.organizationMembers} members |{' '}
+							{post.organization._count.organizationFollowers} followers
+						</p>
 					</div>
 				</Link>
 
@@ -173,6 +177,10 @@ export const Post: React.FC<{
 							lastname: post.author.lastName,
 						})}
 					</Link>
+					<div className="bg-muted-foreground h-5.5 w-px" />
+					<p className="text-muted-foreground text-sm">
+						{formatTime(new Date(post.createdAt))}
+					</p>
 				</div>
 
 				<PostLike
