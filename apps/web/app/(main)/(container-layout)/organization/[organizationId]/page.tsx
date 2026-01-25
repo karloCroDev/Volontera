@@ -30,12 +30,21 @@ import { PostsSelect } from '@/modules/main/organization/home/posts-select';
 
 export default async function OrganizationPage({
 	params,
+	searchParams,
 }: {
 	params: Promise<{
 		organizationId: string;
 	}>;
+	searchParams?: Promise<{ filter?: string }>;
 }) {
 	const { organizationId } = await params;
+	const resolvedSearchParams = await searchParams;
+	const filter =
+		resolvedSearchParams?.filter === 'recommended' ||
+		resolvedSearchParams?.filter === 'newest' ||
+		resolvedSearchParams?.filter === 'oldest'
+			? resolvedSearchParams.filter
+			: undefined;
 	const [organizationDetailsById, member] = await Promise.all([
 		getOrganizationDetailsById(organizationId),
 		retrieveOrganizationMember(organizationId),
@@ -299,7 +308,7 @@ export default async function OrganizationPage({
 				(member.organizationMember.role === 'ADMIN' ||
 					member.organizationMember.role === 'OWNER') && <CreatePostDialog />}
 
-			<div className="flex justify-between">
+			<div className="mt-6 flex justify-between">
 				<h2 className="text-xl lg:text-2xl">Posts</h2>
 				<PostsSelect />
 			</div>
@@ -309,15 +318,21 @@ export default async function OrganizationPage({
 						<PostSkeleton key={indx} />
 					))}
 				>
-					<Posts organizationId={organizationId} />
+					<Posts organizationId={organizationId} filter={filter} />
 				</Suspense>
 			</div>
 		</>
 	);
 }
 
-async function Posts({ organizationId }: { organizationId: string }) {
-	const posts = await retrieveOrganizationPosts(organizationId);
+async function Posts({
+	organizationId,
+	filter,
+}: {
+	organizationId: string;
+	filter?: 'recommended' | 'newest' | 'oldest';
+}) {
+	const posts = await retrieveOrganizationPosts(organizationId, filter);
 
 	if (!posts.success) return <p>There was an error with loading posts</p>;
 	return <PostsMapping posts={posts} />;

@@ -1,5 +1,6 @@
 // Database
 import { Organization, Post, prisma, User } from "@repo/database";
+import { RetrieveOrganizationPostsQueryArgs } from "@repo/schemas/post";
 
 // Organization admins only
 type PostMangmentArgs = {
@@ -74,10 +75,20 @@ export async function retrievePostData(postId: Post["id"]) {
 export async function retrieveOrganizationPosts({
   userId,
   organizationId,
+  filter,
 }: {
   userId: User["id"];
   organizationId: Organization["id"];
+  filter?: RetrieveOrganizationPostsQueryArgs["filter"];
 }) {
+  const orderBy =
+    filter === "oldest"
+      ? [{ createdAt: "asc" as const }]
+      : filter === "newest"
+        ? [{ createdAt: "desc" as const }]
+        : // recommended (default)
+          [{ rankingScore: "desc" as const }, { createdAt: "desc" as const }];
+
   return prisma.post.findMany({
     include: {
       organization: {
@@ -110,9 +121,7 @@ export async function retrieveOrganizationPosts({
     where: {
       organizationId,
     },
-    orderBy: {
-      createdAt: "desc",
-    },
+    orderBy,
   });
 }
 

@@ -9,6 +9,7 @@ import {
 	UpdatePostArgs,
 	RetrievePostArgs,
 	RetrieveOrganizationPostsArgs,
+	RetrieveOrganizationPostsQueryArgs,
 	LikeOrDislikePostArgs,
 } from '@repo/schemas/post';
 import { DataWithFiles } from '@repo/types/upload';
@@ -47,9 +48,12 @@ export async function deletePost({ postId }: DeletePostArgs) {
 
 export async function retrieveOrganizationPosts({
 	organizationId,
-}: RetrieveOrganizationPostsArgs) {
+	filter,
+}: RetrieveOrganizationPostsArgs & RetrieveOrganizationPostsQueryArgs) {
 	try {
-		const res = await API().get(`/post/${organizationId}`);
+		const res = await API().get(`/post/${organizationId}`, {
+			params: filter ? { filter } : undefined,
+		});
 		return res.data;
 	} catch (err) {
 		catchError(err);

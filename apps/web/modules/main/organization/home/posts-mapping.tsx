@@ -1,22 +1,35 @@
 'use client';
 
 // External packages
+import { useParams, useSearchParams } from 'next/navigation';
 import * as React from 'react';
 
 // Components
 import { Post } from '@/components/ui/post/post';
-import { useRetrieveOrganizationPosts } from '@/hooks/data/post';
-import { useParams } from 'next/navigation';
+
+// Types
 import { RetrieveOrganizationPostsResponse } from '@repo/types/post';
+import { RetrieveOrganizationPostsQueryArgs } from '@repo/schemas/post';
+
+// Hooks
 import { useGetImageFromKeys } from '@/hooks/data/image';
+import { useRetrieveOrganizationPosts } from '@/hooks/data/post';
 import { useRetrieveOrganizationMember } from '@/hooks/data/organization-managment';
 
 export const PostsMapping: React.FC<{
 	posts: RetrieveOrganizationPostsResponse;
 }> = ({ posts }) => {
 	const params = useParams<{ organizationId: string }>();
+	const searchParams = useSearchParams();
+	const rawFilter = searchParams.get('filter');
+	const filter: RetrieveOrganizationPostsQueryArgs['filter'] =
+		rawFilter === 'recommended' ||
+		rawFilter === 'newest' ||
+		rawFilter === 'oldest'
+			? rawFilter
+			: undefined;
 
-	const { data } = useRetrieveOrganizationPosts(params.organizationId, {
+	const { data } = useRetrieveOrganizationPosts(params.organizationId, filter, {
 		initialData: posts,
 	});
 

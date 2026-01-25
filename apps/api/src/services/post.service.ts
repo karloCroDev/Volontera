@@ -29,6 +29,7 @@ import {
   DeletePostArgs,
   LikeOrDislikePostArgs,
   RetrieveOrganizationPostsArgs,
+  RetrieveOrganizationPostsRequestArgs,
   RetrievePostArgs,
   UpdatePostArgs,
 } from "@repo/schemas/post";
@@ -142,12 +143,13 @@ export async function retrieveOrganizationPostsService({
   data,
   userId,
 }: {
-  data: RetrieveOrganizationPostsArgs;
+  data: RetrieveOrganizationPostsRequestArgs;
   userId: string;
 }) {
   const posts = await retrieveOrganizationPosts({
     organizationId: data.organizationId,
     userId,
+    filter: data.filter,
   });
 
   return serverFetchOutput({

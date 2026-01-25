@@ -38,6 +38,21 @@ export type RetrieveOrganizationPostsArgs = z.infer<
   typeof retrieveOrganizationPostsSchema
 >;
 
+export const retrieveOrganizationPostsQuerySchema = z.object({
+  filter: z.enum(["recommended", "newest", "oldest"]).optional(),
+});
+
+export type RetrieveOrganizationPostsQueryArgs = z.infer<
+  typeof retrieveOrganizationPostsQuerySchema
+>;
+
+export const retrieveOrganizationPostsRequestSchema =
+  retrieveOrganizationPostsSchema.merge(retrieveOrganizationPostsQuerySchema);
+
+export type RetrieveOrganizationPostsRequestArgs = z.infer<
+  typeof retrieveOrganizationPostsRequestSchema
+>;
+
 export const retrievePost = z.object({
   postId: z.cuid(),
 });

@@ -35,6 +35,7 @@ import {
 	LikeOrDislikePostArgs,
 	RetrievePostArgs,
 	UpdatePostArgs,
+	RetrieveOrganizationPostsQueryArgs,
 } from '@repo/schemas/post';
 import {
 	RetrieveOrganizationPostsResponse,
@@ -107,14 +108,15 @@ export const useToggleLike = (
 
 export const useRetrieveOrganizationPosts = (
 	organizationId: string,
+	filter?: RetrieveOrganizationPostsQueryArgs['filter'],
 	options?: Omit<
 		UseSuspenseQueryOptions<RetrieveOrganizationPostsResponse>,
 		'queryKey' | 'queryFn'
 	>
 ) => {
 	return useSuspenseQuery({
-		queryKey: ['posts', organizationId],
-		queryFn: () => retrieveOrganizationPosts({ organizationId }),
+		queryKey: ['posts', organizationId, filter ?? 'recommended'],
+		queryFn: () => retrieveOrganizationPosts({ organizationId, filter }),
 		...options,
 	});
 };

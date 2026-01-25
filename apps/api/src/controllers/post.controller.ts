@@ -15,6 +15,8 @@ import {
 // Schema types
 import {
   RetrieveOrganizationPostsArgs,
+  retrieveOrganizationPostsQuerySchema,
+  RetrieveOrganizationPostsRequestArgs,
   RetrievePostArgs,
 } from "@repo/schemas/post";
 import { RetrievePostCommentsArgs } from "@repo/schemas/comment";
@@ -56,7 +58,7 @@ export async function updatePostController(req: Request, res: Response) {
 export async function retrievePostDataController(req: Request, res: Response) {
   try {
     const result = await retrievePostDataService(
-      req.params as RetrievePostArgs
+      req.params as RetrievePostArgs,
     );
 
     return res.status(result.status).json(result.body);
@@ -68,11 +70,15 @@ export async function retrievePostDataController(req: Request, res: Response) {
 // Everyone
 export async function retrieveOrganizationPostsController(
   req: Request,
-  res: Response
+  res: Response,
 ) {
   try {
+    const query = retrieveOrganizationPostsQuerySchema.parse(req.query);
     const result = await retrieveOrganizationPostsService({
-      data: req.params as RetrieveOrganizationPostsArgs,
+      data: {
+        ...(req.params as RetrieveOrganizationPostsArgs),
+        ...query,
+      } as RetrieveOrganizationPostsRequestArgs,
       userId: req.user.userId,
     });
     return res.status(result.status).json(result.body);
@@ -83,7 +89,7 @@ export async function retrieveOrganizationPostsController(
 
 export async function retrievePostWithCommentsController(
   req: Request,
-  res: Response
+  res: Response,
 ) {
   try {
     const result = await retrievePostWithCommentsService({
