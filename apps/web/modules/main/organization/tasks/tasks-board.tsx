@@ -10,12 +10,18 @@ import { TaskCardDetails } from '@/modules/main/organization/tasks/task-card-det
 import { TaskCard } from '@/modules/main/organization/tasks/task-card';
 import { TasksMapping } from '@/modules/main/organization/tasks/tasks-mapping';
 import { AddTaskAiDialog } from '@/modules/main/organization/tasks/add-task-ai-dialog';
+import { useParams } from 'next/navigation';
+import { useRetrieveOrganizationMember } from '@/hooks/data/organization-managment';
 
 export const TasksBoard: React.FC<{
 	boardId: string;
 	title: string;
 	tasks: React.ReactNode;
 }> = withReactQueryProvider(({ boardId, title, tasks }) => {
+	const params = useParams<{ organizationId: string }>();
+	const { data: member } = useRetrieveOrganizationMember({
+		organizationId: params.organizationId,
+	});
 	return (
 		<div className="border-input-border bg-muted flex min-h-[600px] w-full min-w-96 flex-col gap-5 rounded-xl border p-4 shadow-xl sm:w-2/3 lg:w-1/2 2xl:w-2/5">
 			<div className="flex items-center justify-between">
@@ -26,8 +32,13 @@ export const TasksBoard: React.FC<{
 			{tasks}
 
 			<div className="flex gap-4">
-				<AddTaskDialog organizationTasksBoardId={boardId} />
-				<AddTaskAiDialog organizationTasksBoardId={boardId} />
+				{(member?.organizationMember.role === 'ADMIN' ||
+					member?.organizationMember.role === 'OWNER') && (
+					<>
+						<AddTaskDialog organizationTasksBoardId={boardId} />
+						<AddTaskAiDialog organizationTasksBoardId={boardId} />
+					</>
+				)}
 			</div>
 		</div>
 	);

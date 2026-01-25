@@ -50,9 +50,9 @@ import {
   createLlmTask,
   createTasksLlmWithBoard,
 } from "@/lib/structured-llm-response";
-import { z } from "zod";
 import { violenceRegex } from "@/lib/utils/regex";
 import { safetyCheckLlmReponse } from "@/lib/llm-response";
+import { isUserOnProPlan } from "@/lib/payment";
 
 // Boards
 export async function createTaskBoardService({
@@ -63,6 +63,17 @@ export async function createTaskBoardService({
   userId: User["id"];
 }) {
   if (data.generateTasksWithAi) {
+    // Ovo ne handleam u middlewaru jer se i dalje salju isti podatci, te nema velikog smisla da budu dva odvojena api-a
+    const isUserPro = await isUserOnProPlan(userId);
+
+    if (!isUserPro) {
+      return toastResponseOutput({
+        status: 400,
+        title: "Pro Plan Required",
+        message: "Generating tasks with AI requires a Pro plan",
+      });
+    }
+
     // 3 linije obrane prije slanja u LLM. Pogledajte apps\api\src\services\help.service.ts za objašnjenje
     const innapropriateContent = toastResponseOutput({
       status: 400,

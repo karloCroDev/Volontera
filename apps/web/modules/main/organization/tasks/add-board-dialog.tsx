@@ -6,7 +6,7 @@ import { Plus } from 'lucide-react';
 import { Controller, useForm } from 'react-hook-form';
 import { Form, Radio, RadioGroup } from 'react-aria-components';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams } from 'next/navigation';
 
 // Components
 import { Button } from '@/components/ui/button';
@@ -14,6 +14,8 @@ import { Dialog } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { RadioIconVisual } from '@/components/ui/radio';
+import { Textarea } from '@/components/ui/textarea';
+import { Paywall } from '@/components/ui/paywall';
 
 // Schemas
 import {
@@ -26,7 +28,7 @@ import { useCreateTaskBoard } from '@/hooks/data/organization-tasks';
 
 // Lib
 import { toast } from '@/lib/utils/toast';
-import { Textarea } from '@/components/ui/textarea';
+import { useRetrieveOrganizationMember } from '@/hooks/data/organization-managment';
 
 export const AddBoardDialog = () => {
 	const [isOpen, setIsOpen] = React.useState(false);
@@ -75,6 +77,9 @@ export const AddBoardDialog = () => {
 		});
 	};
 
+	const { data: member } = useRetrieveOrganizationMember({
+		organizationId: params.organizationId,
+	});
 	return (
 		<Dialog
 			title="Add new board"
@@ -120,31 +125,38 @@ export const AddBoardDialog = () => {
 						Assign predefined tasks with the data you have entered in previous
 						fields
 					</p>
-					<div className="mt-4 flex justify-center gap-4">
-						<Controller
-							name="generateTasksWithAi"
-							control={control}
-							render={({ field }) => (
-								<RadioGroup
-									className="flex gap-8"
-									defaultValue="NO"
-									onChange={(val) =>
-										field.onChange(val === 'YES' ? true : false)
-									}
-								>
-									<Radio className="group flex items-center gap-4" value="YES">
-										<RadioIconVisual />
+					{member?.organizationMember.user.subscriptionTier === 'PRO' ? (
+						<div className="mt-4 flex justify-center gap-4">
+							<Controller
+								name="generateTasksWithAi"
+								control={control}
+								render={({ field }) => (
+									<RadioGroup
+										className="flex gap-8"
+										defaultValue="NO"
+										onChange={(val) =>
+											field.onChange(val === 'YES' ? true : false)
+										}
+									>
+										<Radio
+											className="group flex items-center gap-4"
+											value="YES"
+										>
+											<RadioIconVisual />
 
-										<p>Yes</p>
-									</Radio>
-									<Radio className="group flex items-center gap-4" value="NO">
-										<RadioIconVisual />
-										<p>No</p>
-									</Radio>
-								</RadioGroup>
-							)}
-						/>
-					</div>
+											<p>Yes</p>
+										</Radio>
+										<Radio className="group flex items-center gap-4" value="NO">
+											<RadioIconVisual />
+											<p>No</p>
+										</Radio>
+									</RadioGroup>
+								)}
+							/>
+						</div>
+					) : (
+						<Paywall className="mt-6" />
+					)}
 				</div>
 
 				{watch('generateTasksWithAi') && (

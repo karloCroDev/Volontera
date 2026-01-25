@@ -36,6 +36,8 @@ import {
 
 // Lib
 import { toast } from '@/lib/utils/toast';
+import { useRetrieveOrganizationMember } from '@/hooks/data/organization-managment';
+import { Paywall } from '@/components/ui/paywall';
 
 export const AddTaskAiDialog: React.FC<{
 	organizationTasksBoardId: string;
@@ -88,6 +90,9 @@ export const AddTaskAiDialog: React.FC<{
 		});
 	};
 
+	const { data: member } = useRetrieveOrganizationMember({
+		organizationId: params.organizationId,
+	});
 	return (
 		<Dialog
 			onOpenChange={setIsOpen}
@@ -108,98 +113,108 @@ export const AddTaskAiDialog: React.FC<{
 				</Button>
 			}
 		>
-			<Form
-				className="flex flex-col gap-4 overflow-y-scroll"
-				onSubmit={handleSubmit(onSubmit)}
-			>
-				<div>
-					<Label className="mb-2">Title</Label>
-					<Controller
-						control={control}
-						name="title"
-						render={({ field }) => (
-							<Input
-								label="Enter your board title"
-								inputProps={field}
-								error={errors.title?.message}
-							/>
-						)}
-					/>
-				</div>
-				<div>
-					<Label className="mb-2" isOptional>
-						Description (AI)
-					</Label>
-					<Controller
-						control={control}
-						name="description"
-						render={({ field }) => (
-							<Textarea
-								label="Enter your task AI description"
-								textAreaProps={field}
-								error={errors.description?.message}
-							/>
-						)}
-					/>
-				</div>
-
-				<div className="w-full">
-					<Label className="mb-2">Assgin members</Label>
-					<Controller
-						control={control}
-						name="assignedMembers"
-						render={({ field }) => (
-							<CheckboxGroup
-								value={field.value}
-								onChange={field.onChange}
-								className="flex w-fit flex-wrap gap-3"
-							>
-								{organizationMembersData?.organizationMembers?.map((member) => (
-									<Checkbox className="group" key={member.id} value={member.id}>
-										<Tag className="flex items-center gap-4">
-											<Avatar
-												imageProps={{
-													src: member.user.image || '',
-												}}
-												isVerified={member.user.subscriptionTier === 'PRO'}
-												size="xs"
-											>
-												{convertToFullname({
-													firstname: member.user.firstName,
-													lastname: member.user.lastName,
-												})}
-											</Avatar>
-											<p>
-												{convertToFullname({
-													firstname: member.user.firstName,
-													lastname: member.user.lastName,
-												})}
-											</p>
-
-											<CheckboxVisually
-												className="rounded-full"
-												variant="secondary"
-											/>
-										</Tag>
-									</Checkbox>
-								))}
-							</CheckboxGroup>
-						)}
-					/>
-
-					<Error>{errors.assignedMembers?.message}</Error>
-				</div>
-
-				<Button
-					type="submit"
-					className="self-end"
-					size="md"
-					isDisabled={!isDirty || isPending}
-					isLoading={isPending}
+			{member?.organizationMember.user.subscriptionTier === 'PRO' ? (
+				<Form
+					className="flex flex-col gap-4 overflow-y-scroll"
+					onSubmit={handleSubmit(onSubmit)}
 				>
-					Submit
-				</Button>
-			</Form>
+					<div>
+						<Label className="mb-2">Title</Label>
+						<Controller
+							control={control}
+							name="title"
+							render={({ field }) => (
+								<Input
+									label="Enter your board title"
+									inputProps={field}
+									error={errors.title?.message}
+								/>
+							)}
+						/>
+					</div>
+					<div>
+						<Label className="mb-2" isOptional>
+							Description (AI)
+						</Label>
+						<Controller
+							control={control}
+							name="description"
+							render={({ field }) => (
+								<Textarea
+									label="Enter your task AI description"
+									textAreaProps={field}
+									error={errors.description?.message}
+								/>
+							)}
+						/>
+					</div>
+
+					<div className="w-full">
+						<Label className="mb-2">Assgin members</Label>
+						<Controller
+							control={control}
+							name="assignedMembers"
+							render={({ field }) => (
+								<CheckboxGroup
+									value={field.value}
+									onChange={field.onChange}
+									className="flex w-fit flex-wrap gap-3"
+								>
+									{organizationMembersData?.organizationMembers?.map(
+										(member) => (
+											<Checkbox
+												className="group"
+												key={member.id}
+												value={member.id}
+											>
+												<Tag className="flex items-center gap-4">
+													<Avatar
+														imageProps={{
+															src: member.user.image || '',
+														}}
+														isVerified={member.user.subscriptionTier === 'PRO'}
+														size="xs"
+													>
+														{convertToFullname({
+															firstname: member.user.firstName,
+															lastname: member.user.lastName,
+														})}
+													</Avatar>
+													<p>
+														{convertToFullname({
+															firstname: member.user.firstName,
+															lastname: member.user.lastName,
+														})}
+													</p>
+
+													<CheckboxVisually
+														className="rounded-full"
+														variant="secondary"
+													/>
+												</Tag>
+											</Checkbox>
+										)
+									)}
+								</CheckboxGroup>
+							)}
+						/>
+
+						<Error>{errors.assignedMembers?.message}</Error>
+					</div>
+
+					<Button
+						type="submit"
+						className="self-end"
+						size="md"
+						isDisabled={!isDirty || isPending}
+						isLoading={isPending}
+					>
+						Submit
+					</Button>
+				</Form>
+			) : (
+				<Paywall className="mt-6" />
+			)}
 		</Dialog>
 	);
 };

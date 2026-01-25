@@ -48,6 +48,7 @@ import {
   createLlmTaskSchema,
 } from "@repo/schemas/organization-tasks";
 import { createLlmTask } from "@/lib/structured-llm-response";
+import { proPlanUserMiddleware } from "@/middleware/payment.middleware";
 
 export const organizationTasksRoutes = Router();
 
@@ -61,10 +62,11 @@ organizationTasksRoutes.post(
     responseOutput: "toast",
     type: "body",
   }),
-  organizationRolesMiddleware({ aquiredRoles: ["MEMBER", "ADMIN"] }),
+  organizationRolesMiddleware({ aquiredRoles: ["ADMIN"] }),
   createTaskBoardController,
 );
 
+// TODO: More consistent naming
 organizationTasksRoutes.patch(
   "/boards/update-title",
   validate({
@@ -72,7 +74,7 @@ organizationTasksRoutes.patch(
     responseOutput: "toast",
     type: "body",
   }),
-  organizationRolesMiddleware({ aquiredRoles: ["MEMBER", "ADMIN"] }),
+  organizationRolesMiddleware({ aquiredRoles: ["ADMIN"] }),
   updateOrganizationTaskBoardTitleController,
 );
 
@@ -84,7 +86,7 @@ organizationTasksRoutes.delete(
     type: "params",
   }),
   organizationRolesMiddleware({
-    aquiredRoles: ["MEMBER", "ADMIN"],
+    aquiredRoles: ["ADMIN"],
     type: "params",
   }),
   deleteOrganizationTaskBoardController,
@@ -166,7 +168,7 @@ organizationTasksRoutes.post(
     responseOutput: "toast",
     type: "body",
   }),
-  organizationRolesMiddleware({ aquiredRoles: ["MEMBER", "ADMIN"] }),
+  organizationRolesMiddleware({ aquiredRoles: ["ADMIN"] }),
   createTaskController,
 );
 organizationTasksRoutes.post(
@@ -176,7 +178,8 @@ organizationTasksRoutes.post(
     responseOutput: "toast",
     type: "body",
   }),
-  organizationRolesMiddleware({ aquiredRoles: ["MEMBER", "ADMIN"] }),
+  organizationRolesMiddleware({ aquiredRoles: ["ADMIN"] }),
+  proPlanUserMiddleware, // TODO: See if I am going to handle if the organization is premium or the user
   createLlmTaskController,
 );
 
@@ -215,7 +218,7 @@ organizationTasksRoutes.patch(
     responseOutput: "toast",
     type: "body",
   }),
-  organizationRolesMiddleware({ aquiredRoles: ["MEMBER", "ADMIN"] }),
+  organizationRolesMiddleware({ aquiredRoles: ["ADMIN"] }),
   updateTaskInfoController,
 );
 
@@ -226,7 +229,7 @@ organizationTasksRoutes.patch(
     responseOutput: "toast",
     type: "body",
   }),
-  organizationRolesMiddleware({ aquiredRoles: ["MEMBER", "ADMIN"] }),
+  organizationRolesMiddleware({ aquiredRoles: ["ADMIN"] }),
   moveTaskController,
 );
 
@@ -238,7 +241,7 @@ organizationTasksRoutes.delete(
     type: "params",
   }),
   organizationRolesMiddleware({
-    aquiredRoles: ["MEMBER", "ADMIN"],
+    aquiredRoles: ["ADMIN"],
     type: "params",
   }),
   deleteTaskByIdController,

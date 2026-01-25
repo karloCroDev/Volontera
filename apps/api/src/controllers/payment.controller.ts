@@ -17,7 +17,7 @@ export async function stripePayment(req: Request, res: Response) {
 
     if (typeof sig !== "string") {
       return res
-        .status(402)
+        .status(400)
         .json({ success: false, message: "Missing signature" });
     }
 

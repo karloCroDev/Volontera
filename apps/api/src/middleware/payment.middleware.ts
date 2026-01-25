@@ -11,7 +11,7 @@ export async function proPlanOrganizationMiddleware(
     const isOwnerOnProPlan = await isOrganizationOwnerOnProPlan(req[type]);
 
     if (!isOwnerOnProPlan)
-      return res.status(402).json({
+      return res.status(400).json({
         message:
           "Payment Required: The owner of organization needs to be on Pro plan",
         success: false,
@@ -30,7 +30,7 @@ export async function proPlanUserMiddleware(
 
   if (!isUserPro) {
     return res
-      .status(402)
+      .status(400)
       .json({ message: "Payment Required: Pro plan needed", success: false });
   }
 

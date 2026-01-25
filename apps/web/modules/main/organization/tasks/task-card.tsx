@@ -2,13 +2,17 @@
 
 // External packages
 import * as React from 'react';
+import { EllipsisVertical } from 'lucide-react';
+import { Button } from 'react-aria-components';
 
 // Components
 import { Avatar } from '@/components/ui/avatar';
 import { Dot } from '@/components/ui/dot';
-import { EllipsisVertical } from 'lucide-react';
-import { Button } from 'react-aria-components';
+
+// Types
 import { RetrieveAllOrganizationBoardsWithTasksResponse } from '@repo/types/organization-tasks';
+
+// Lib
 import { convertToPascalCase } from '@/lib/utils/converter';
 import { formatDate } from '@/lib/utils/time-adjustments';
 
