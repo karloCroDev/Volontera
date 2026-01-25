@@ -11,11 +11,13 @@ import {
   demoteOrPromoteOrganizationMemberController,
   leaveOrganizationController,
   retrieveDataAboutOrganizationController,
+  deleteOrganizationController,
 } from "@/controllers/organization-managment.controller";
 
 // Schemas
 import {
   acceptOrDeclineUsersRequestToJoinOrganizationSchema,
+  deleteOrganizationSchema,
   demoteOrPromoteOrganizationMemberSchema,
   retirveAllRequestsToJoinOrganizationSchema,
   retrieveAllMembersInOrganizationSchema,
@@ -122,4 +124,18 @@ organizationManagmentRoutes.delete(
     aquiredRoles: ["MEMBER", "ADMIN"],
   }),
   leaveOrganizationController,
+);
+
+// Owner only
+organizationManagmentRoutes.delete(
+  "/delete/:organizationId",
+  validate({
+    schema: deleteOrganizationSchema,
+    type: "params",
+    responseOutput: "toast",
+  }),
+  organizationRolesMiddleware({
+    type: "params",
+  }),
+  deleteOrganizationController,
 );

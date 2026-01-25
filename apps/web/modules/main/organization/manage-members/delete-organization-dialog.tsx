@@ -2,21 +2,24 @@
 
 // External packages
 import * as React from 'react';
-import { Trash2 } from 'lucide-react';
 
 // Components
 import { Button } from '@/components/ui/button';
 import { Dialog } from '@/components/ui/dialog';
 
 // Hooks
-import { useDeleteHelpConversation } from '@/hooks/data/help';
+import { useDeleteOrganization } from '@/hooks/data/organization-managment';
 
 // Lib
 import { toast } from '@/lib/utils/toast';
 
-export const DeleteOrganizationDialog = () => {
+export const DeleteOrganizationDialog = ({
+	organizationId,
+}: {
+	organizationId: string;
+}) => {
 	const [open, setOpen] = React.useState(false);
-	const { mutate, isPending } = useDeleteHelpConversation();
+	const { mutate, isPending } = useDeleteOrganization();
 
 	return (
 		<Dialog
@@ -39,12 +42,15 @@ export const DeleteOrganizationDialog = () => {
 				<Button
 					colorScheme="destructive"
 					onPress={() => {
-						mutate(undefined, {
-							onSuccess: ({ title, message }) => {
-								setOpen(false);
-								toast({ title, content: message, variant: 'success' });
-							},
-						});
+						mutate(
+							{ organizationId },
+							{
+								onSuccess: ({ title, message }) => {
+									setOpen(false);
+									toast({ title, content: message, variant: 'success' });
+								},
+							}
+						);
 					}}
 					isLoading={isPending}
 					isDisabled={isPending}

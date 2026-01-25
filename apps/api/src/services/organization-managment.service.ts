@@ -13,6 +13,7 @@ import {
   acceptOrDeclineUsersRequestToJoinOrganization,
   leaveOrganization,
   retrieveDataAboutOrganization,
+  deleteOrganizationAsOwner,
 } from "@/models/organization-managment.model";
 
 // Database
@@ -21,6 +22,7 @@ import { User } from "@repo/database";
 // Schemas
 import {
   AcceptOrDeclineUsersRequestToJoinOrganizationArgs,
+  DeleteOrganizationArgs,
   DemoteOrPromoteOrganizationMemberArgs,
   LeaveOrganizationArgs,
   RetirveAllRequestsToJoinOrganizationArgs,
@@ -166,5 +168,24 @@ export async function retrieveDataAboutOrganizationService({
       memberUserCount,
       totalUserCount,
     },
+  });
+}
+
+export async function deleteOrganizationService({
+  data,
+  userId,
+}: {
+  data: DeleteOrganizationArgs;
+  userId: User["id"];
+}) {
+  await deleteOrganizationAsOwner({
+    organizationId: data.organizationId,
+    userId,
+  });
+
+  return toastResponseOutput({
+    status: 200,
+    title: "Organization Deleted",
+    message: "Your organization has been deleted successfully",
   });
 }

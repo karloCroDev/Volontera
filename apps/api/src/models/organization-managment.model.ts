@@ -7,6 +7,18 @@ import {
   User,
 } from "@repo/database";
 
+export async function deleteOrganizationAsOwner({
+  organizationId,
+  userId,
+}: {
+  organizationId: Organization["id"];
+  userId: User["id"];
+}) {
+  return prisma.organization.delete({
+    where: { id: organizationId },
+  });
+}
+
 export async function retirveAllRequestsToJoinOrganization(
   organizationId: Organization["id"],
 ) {

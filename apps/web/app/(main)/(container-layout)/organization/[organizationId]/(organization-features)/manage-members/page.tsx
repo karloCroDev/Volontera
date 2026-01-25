@@ -73,7 +73,7 @@ export default async function ManagePage({
 				Settings
 			</h2>
 			<div className="flex justify-between">
-				<DeleteOrganizationDialog />
+				<DeleteOrganizationDialog organizationId={organizationId} />
 
 				{/* TODO: Ako bude vremena stavi da se mogu uredjivati informacije od organizacije */}
 				<LinkAsButton href={`/organization/${organizationId}/edit`}>

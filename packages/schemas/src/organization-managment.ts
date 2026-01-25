@@ -48,3 +48,6 @@ export const retrieveDataAboutOrganizationSchema = organizationIdSchema;
 export type RetrieveDataAboutOrganizationArgs = z.infer<
   typeof retrieveDataAboutOrganizationSchema
 >;
+
+export const deleteOrganizationSchema = organizationIdSchema;
+export type DeleteOrganizationArgs = z.infer<typeof deleteOrganizationSchema>;

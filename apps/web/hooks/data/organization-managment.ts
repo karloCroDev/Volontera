@@ -12,6 +12,7 @@ import {
 // Schemas
 import {
 	AcceptOrDeclineUsersRequestToJoinOrganizationArgs,
+	DeleteOrganizationArgs,
 	DemoteOrPromoteOrganizationMemberArgs,
 	RetirveAllRequestsToJoinOrganizationArgs,
 	RetrieveOrganizationMemberArgs,
@@ -20,6 +21,7 @@ import {
 } from '@repo/schemas/organization-managment';
 import {
 	acceptOrDeclineUsersRequestToJoinOrganization,
+	deleteOrganization,
 	demoteOrPromoteOrganizationMember,
 	retrieveAllUsersInOrganization,
 	retrieveOrganizationMember,
@@ -135,6 +137,28 @@ export const useLeaveOrganization = (
 	return useMutation({
 		mutationKey: ['leave-organization'],
 		mutationFn: (data: LeaveOrganizationArgs) => leaveOrganization(data),
+		onSuccess: async (...args) => {
+			await queryClient.invalidateQueries({
+				queryKey: ['organization'],
+				exact: false,
+			});
+			await options?.onSuccess?.(...args);
+		},
+		...options,
+	});
+};
+
+export const useDeleteOrganization = (
+	options?: UseMutationOptions<
+		SuccessfulResponse,
+		ErrorToastResponse,
+		DeleteOrganizationArgs
+	>
+) => {
+	const queryClient = useQueryClient();
+	return useMutation({
+		mutationKey: ['delete-organization'],
+		mutationFn: (data: DeleteOrganizationArgs) => deleteOrganization(data),
 		onSuccess: async (...args) => {
 			await queryClient.invalidateQueries({
 				queryKey: ['organization'],
