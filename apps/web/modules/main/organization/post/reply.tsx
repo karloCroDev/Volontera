@@ -18,6 +18,7 @@ import { formatTime } from '@/lib/utils/time-adjustments';
 
 // Types
 import { PostCommentRepliesResponse } from '@repo/types/comment';
+import { useSession } from '@/hooks/data/user';
 
 export const Reply: React.FC<{
 	reply: PostCommentRepliesResponse['replies'][0];
@@ -27,6 +28,8 @@ export const Reply: React.FC<{
 		commentId: reply.commentId,
 		replyId: reply.id,
 	});
+
+	const { data: user } = useSession();
 	return (
 		<div className="ml-8 flex items-center gap-4" key={reply.id}>
 			<div className="bg-muted-foreground h-full min-h-16 w-px" />
@@ -55,13 +58,15 @@ export const Reply: React.FC<{
 					<p>{reply.content}</p>
 				</div>
 
-				<Button
-					variant="blank"
-					className="text-muted-foreground hover:text-destructive ml-auto self-end p-0 text-sm"
-					onPress={() => mutate()}
-				>
-					<Trash2 />
-				</Button>
+				{user?.id === reply.author.id && (
+					<Button
+						variant="blank"
+						className="text-muted-foreground hover:text-destructive ml-auto self-end p-0 text-sm"
+						onPress={() => mutate()}
+					>
+						<Trash2 />
+					</Button>
+				)}
 			</div>
 		</div>
 	);

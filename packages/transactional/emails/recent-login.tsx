@@ -34,7 +34,7 @@ export const RecentLogin: React.FC<{
 								<Column>
 									<Row>
 										<Column align="right">
-											<Text>[app name]</Text>
+											<Text>Volontera</Text>
 										</Column>
 										<Column align="right">
 											{/* Stavi sliku 
@@ -52,7 +52,7 @@ export const RecentLogin: React.FC<{
 						<Section className="text-center">
 							<Text className="text-3xl font-semibold">Hi {firstName}</Text>
 							<Text className="text-lg">
-								We noticed a recent login to your [app name] account.{' '}
+								We noticed a recent login to your Volontera account.{' '}
 							</Text>
 						</Section>
 

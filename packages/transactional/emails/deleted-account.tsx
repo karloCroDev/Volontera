@@ -12,7 +12,6 @@ import {
 	Img,
 	Row,
 	Column,
-	Button,
 } from '@react-email/components';
 
 export const DeletedAccount: React.FC<{
@@ -34,7 +33,7 @@ export const DeletedAccount: React.FC<{
 								<Column>
 									<Row>
 										<Column align="right">
-											<Text>[app name]</Text>
+											<Text>Volontera</Text>
 										</Column>
 										<Column align="right">
 											{/* Stavi sliku 

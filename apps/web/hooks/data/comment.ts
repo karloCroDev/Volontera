@@ -37,6 +37,28 @@ import {
 	RetrievePostCommentsArgs,
 } from '@repo/schemas/comment';
 
+const findPostCommentsCacheEntryByCommentId = (
+	queryClient: ReturnType<typeof useQueryClient>,
+	commentId: string
+) => {
+	const queries = queryClient.getQueriesData<PostCommentsResponse>({
+		queryKey: ['comments'],
+	});
+
+	for (const [queryKey, data] of queries) {
+		const maybePostId = (queryKey as unknown as [string, string])[1];
+		const comment = data?.comments?.find((c) => c.id === commentId);
+		if (comment) {
+			return {
+				postId: comment.postId ?? maybePostId,
+				repliesCount: comment._count?.postCommentsReplies,
+			};
+		}
+	}
+
+	return undefined;
+};
+
 export const useRetrievePostComments = (
 	postId: RetrievePostCommentsArgs['postId'],
 	options?: Omit<
@@ -66,8 +88,7 @@ export const useCreateComment = (
 		mutationFn: (data: CreateCommentArgs) => createComment({ data }),
 		onSuccess: async (...args) => {
 			await queryClient.invalidateQueries({
-				queryKey: ['comments'],
-				exact: false,
+				queryKey: ['comments', args[1].postId],
 			});
 			await options?.onSuccess?.(...args);
 		},
@@ -90,10 +111,17 @@ export const useDeleteComment = (
 
 		mutationFn: () => deleteComment({ commentId }),
 		onSuccess: async (...args) => {
-			await queryClient.invalidateQueries({
-				queryKey: ['comments'],
-				exact: false,
-			});
+			const cacheEntry = findPostCommentsCacheEntryByCommentId(
+				queryClient,
+				commentId
+			);
+			if (cacheEntry?.postId) {
+				await queryClient.invalidateQueries({
+					queryKey: ['comments', cacheEntry.postId],
+				});
+			} else {
+				await queryClient.invalidateQueries({ queryKey: ['comments'] });
+			}
 			await options?.onSuccess?.(...args);
 		},
 	});
@@ -134,7 +162,6 @@ export const useRetrieveCommentReplies = (
 	});
 };
 
-// See if I need to be specific with revalidation!
 export const useCreateReply = (
 	options?: UseMutationOptions<
 		SuccessfulResponse,
@@ -146,13 +173,25 @@ export const useCreateReply = (
 	return useMutation({
 		...options,
 		mutationKey: ['create-reply'],
-		// mutation receives a single variable object { data, file }
 		mutationFn: (data: CreateReplyArgs) => createReply(data),
 		onSuccess: async (...args) => {
+			const commentId = args[1].commentId;
+			const cacheEntry = findPostCommentsCacheEntryByCommentId(
+				queryClient,
+				commentId
+			);
+
+			// Always refresh replies for that specific comment
 			await queryClient.invalidateQueries({
-				queryKey: ['replies', args[1].commentId],
-				exact: false,
+				queryKey: ['replies', commentId],
 			});
+
+			// If this was the first reply (0 -> 1), refresh comments to update reply counter
+			if (cacheEntry?.postId && cacheEntry.repliesCount === 0) {
+				await queryClient.invalidateQueries({
+					queryKey: ['comments', cacheEntry.postId],
+				});
+			}
 			await options?.onSuccess?.(...args);
 		},
 	});

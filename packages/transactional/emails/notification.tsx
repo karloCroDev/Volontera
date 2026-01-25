@@ -37,7 +37,7 @@ export const Notification: React.FC<{
 								<Column>
 									<Row>
 										<Column align="right">
-											<Text>[app name]</Text>
+											<Text>Volontera</Text>
 										</Column>
 										<Column align="right">
 											{/* Stavi sliku 
@@ -56,7 +56,7 @@ export const Notification: React.FC<{
 							<Text className="text-3xl font-semibold">Hi {firstName} </Text>
 							<Text className="text-base">
 								We wanted to let you know that you have new notifications in
-								your [app name] account.
+								your Volontera account.
 							</Text>
 						</Section>
 

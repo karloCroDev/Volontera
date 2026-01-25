@@ -69,13 +69,15 @@ async function PostContent({ postId }: { postId: string }) {
 					Comments
 				</h4>
 				<hr className="bg-input-border my-2 h-px w-full border-0" />
-				<CommentsMapping
-					comments={{
-						message: postWithComments.message,
-						comments: postWithComments.post.postComments,
-						success: postWithComments.success,
-					}}
-				/>
+				<div className="max-h-96 overflow-y-scroll">
+					<CommentsMapping
+						comments={{
+							message: postWithComments.message,
+							comments: postWithComments.post.postComments,
+							success: postWithComments.success,
+						}}
+					/>
+				</div>
 				<CommentTextArea />
 			</div>
 		</>

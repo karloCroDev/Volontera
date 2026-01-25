@@ -9,7 +9,6 @@ import {
 	Section,
 	Tailwind,
 	Text,
-	Img,
 	Row,
 	Column,
 } from '@react-email/components';
@@ -33,7 +32,7 @@ export const VerificationCode: React.FC<{
 								<Column>
 									<Row>
 										<Column align="right">
-											<Text>[app name]</Text>
+											<Text>Volontera</Text>
 										</Column>
 										<Column align="right">
 											{/* Stavi sliku 
