@@ -3,12 +3,7 @@
 // Modules
 import { AddTaskDialog } from '@/modules/main/organization/tasks/add-task-dialog';
 import { EditBoardDialog } from '@/modules/main/organization/tasks/edit-board-dialog';
-import { RetrieveAllOrganizationBoardsWithTasksResponse } from '@repo/types/organization-tasks';
 import { withReactQueryProvider } from '@/lib/utils/react-query';
-import { Dialog } from '@/components/ui/dialog';
-import { TaskCardDetails } from '@/modules/main/organization/tasks/task-card-details';
-import { TaskCard } from '@/modules/main/organization/tasks/task-card';
-import { TasksMapping } from '@/modules/main/organization/tasks/tasks-mapping';
 import { AddTaskAiDialog } from '@/modules/main/organization/tasks/add-task-ai-dialog';
 import { useParams } from 'next/navigation';
 import { useRetrieveOrganizationMember } from '@/hooks/data/organization-managment';

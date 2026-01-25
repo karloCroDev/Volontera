@@ -55,7 +55,7 @@ export async function addQuestionService({
       : role === "ORGANIZATION" &&
         `You are a helpful AI assistant that has context about this application Volontera and tries to assist and navigate organizators throughout the application. Awesome so here are the app features once the organization is logged in.
           ${routesDescription}
-           /organization/manage - Organization heads can manage all the members of the organization, approve or reject join requests, and assign roles to members. Also it includes in the pro plan a dashboard that can be easily used inside the app.
+           /organization/manage-members - Organization heads can manage all the members of the organization, approve or reject join requests, and assign roles to members. Also it includes in the pro plan a dashboard that can be easily used inside the app.
         `;
 
   // 2. linija obrane - Lightweight model koji koristi kako bi provjerili je li korisnik pita harmful pitanja

@@ -9,6 +9,7 @@ import { useRetrieveOrganizationPosts } from '@/hooks/data/post';
 import { useParams } from 'next/navigation';
 import { RetrieveOrganizationPostsResponse } from '@repo/types/post';
 import { useGetImageFromKeys } from '@/hooks/data/image';
+import { useRetrieveOrganizationMember } from '@/hooks/data/organization-managment';
 
 export const PostsMapping: React.FC<{
 	posts: RetrieveOrganizationPostsResponse;
@@ -31,6 +32,9 @@ export const PostsMapping: React.FC<{
 		],
 	});
 
+	const { data: member } = useRetrieveOrganizationMember({
+		organizationId: params.organizationId,
+	});
 	return data.posts.length > 0 ? (
 		data.posts.map((post) => (
 			<Post
@@ -38,7 +42,10 @@ export const PostsMapping: React.FC<{
 				post={post}
 				isInsideOrganization
 				// TODO: Only organization admins can delete posts handle this!
-				hasAnAdminAccess
+				hasAnAdminAccess={
+					member?.organizationMember.role === 'OWNER' ||
+					member?.organizationMember.role === 'ADMIN'
+				}
 				images={imagesData?.urls}
 			/>
 		))

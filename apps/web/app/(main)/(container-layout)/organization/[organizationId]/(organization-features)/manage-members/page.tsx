@@ -1,9 +1,15 @@
 // External packages
 import { notFound } from 'next/navigation';
+import { ChartArea } from 'lucide-react';
 
 // Modules
-import { CurrentUsersForm } from '@/modules/main/organization/manage/current-users-form';
-import { RequestsForm } from '@/modules/main/organization/manage/requests-form';
+import { CurrentUsersForm } from '@/modules/main/organization/manage-members/current-users-form';
+import { RequestsForm } from '@/modules/main/organization/manage-members/requests-form';
+import { PieChart } from '@/modules/main/organization/manage-members/pie-chart';
+import { BarChart } from '@/modules/main/organization/manage-members/bar-chart';
+
+// Components
+import { Paywall } from '@/components/ui/paywall';
 
 // Lib
 import {
@@ -12,11 +18,9 @@ import {
 	retrieveAllUsersInOrganization,
 	retrieveDataAboutOrganization,
 } from '@/lib/server/organization-managment';
-import { PieChart } from '@/modules/main/organization/manage/pie-chart';
-import { BarChart } from '@/modules/main/organization/manage/bar-chart';
-import { ChartArea } from 'lucide-react';
 import { RetrieveDataAboutOrganizationResponse } from '@repo/types/organization-managment';
-import { Paywall } from '@/components/ui/paywall';
+import { Button } from '@/components/ui/button';
+import { LinkAsButton } from '@/components/ui/link-as-button';
 
 export default async function ManagePage({
 	params,
@@ -67,6 +71,15 @@ export default async function ManagePage({
 			<h2 className="mb-6 mt-10 text-xl underline underline-offset-4 lg:text-2xl">
 				Settings
 			</h2>
+			<div className="flex justify-between">
+				<Button variant="outline" colorScheme="destructive">
+					Delete Organization
+				</Button>
+
+				<LinkAsButton href={`/organization/${organizationId}/edit`}>
+					Edit organization
+				</LinkAsButton>
+			</div>
 			{/* TODO: Ako bude vremena stavi da se mogu uredjivati informacije od organizacije */}
 		</>
 	);
