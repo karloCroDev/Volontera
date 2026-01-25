@@ -38,6 +38,11 @@ export async function retrievePostComments({
         },
       },
     },
+    orderBy: {
+      postCommentsLikes: {
+        _count: "desc",
+      },
+    },
   });
 }
 
@@ -147,12 +152,16 @@ export async function retrieveCommentReplies({
           userId,
         },
       },
+
       // _count: {
       //   select: {
       //     postCommentsReplyLikes: true,
       //   },
       // },
       // TODO: See if I am going to handle likes for replies
+    },
+    orderBy: {
+      createdAt: "asc",
     },
   });
 }
