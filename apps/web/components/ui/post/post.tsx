@@ -1,3 +1,6 @@
+/* eslint react/prop-types: 0 */
+'use client';
+
 // External packages
 import Link from 'next/link';
 import Image from 'next/image';
@@ -21,25 +24,28 @@ import { RetrieveOrganizationPostsResponse } from '@repo/types/post';
 import { convertToFullname } from '@/lib/utils/converter';
 import { formatTime } from '@/lib/utils/time-adjustments';
 
+// Hooks
+import { useSession } from '@/hooks/data/user';
+
 export const Post: React.FC<{
 	post: RetrieveOrganizationPostsResponse['posts'][0];
 	isInsideOrganization?: boolean;
 	images?: Record<string, string>;
 	hasAnAdminAccess?: boolean;
 }> = ({
-	/* eslint react/prop-types: 0 */
 	images,
 	post,
 	isInsideOrganization = false,
 	hasAnAdminAccess = false,
 }) => {
+	const { data: user } = useSession();
+	const hasUserLiked = post.postLikes.some((like) => like.userId === user?.id);
+
 	const splittedContent = post.content.split('.');
 	const singlePostImage = post.postImages[0];
 	const singlePostImageSrc = singlePostImage
 		? images?.[singlePostImage.imageUrl]
 		: undefined;
-
-	console.log(post.organization);
 	return (
 		<div className="border-input-border bg-muted rounded-xl border px-8 py-6 shadow-xl">
 			<div className="mb-8 flex gap-4">
@@ -185,7 +191,7 @@ export const Post: React.FC<{
 
 				<PostLike
 					count={post._count.postLikes}
-					hasUserLiked={post.postLikes.length > 0}
+					hasUserLiked={hasUserLiked}
 					postId={post.id}
 				/>
 				<LinkAsButton

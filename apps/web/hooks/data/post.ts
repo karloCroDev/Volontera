@@ -40,6 +40,7 @@ import {
 import {
 	RetrieveOrganizationPostsResponse,
 	RetrievePostData,
+	RetrievePostWithComments,
 } from '@repo/types/post';
 
 export const useCreatePost = (
@@ -82,12 +83,12 @@ export const useDeletePost = (
 	});
 };
 
-export const useToggleLike = (
+export const useToggleLike = <TContext = unknown>(
 	options?: UseMutationOptions<
 		SuccessfulResponse,
 		ErrorToastResponse,
 		LikeOrDislikePostArgs,
-		{ previousPost: RetrieveOrganizationPostsResponse | undefined }
+		TContext
 	>
 ) => {
 	const queryClient = useQueryClient();
@@ -124,7 +125,7 @@ export const useRetrieveOrganizationPosts = (
 export const useRetrievePostWithComments = (
 	postId: string,
 	options?: Omit<
-		UseSuspenseQueryOptions<RetrieveOrganizationPostsResponse>,
+		UseSuspenseQueryOptions<RetrievePostWithComments>,
 		'queryKey' | 'queryFn'
 	>
 ) => {

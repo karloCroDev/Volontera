@@ -61,6 +61,7 @@ export const Comment: React.FC<{
 
 			const previousPost = queryClient.getQueryData([
 				'comments',
+				params.postId,
 			]) as PostCommentsResponse;
 
 			queryClient.setQueryData(
@@ -83,7 +84,9 @@ export const Comment: React.FC<{
 											],
 									_count: {
 										...comment._count,
-										postCommentsLikes: hasUserLiked
+										postCommentsLikes: comment.postCommentsLikes.some(
+											(like) => like.userId === user?.id
+										)
 											? comment._count.postCommentsLikes - 1
 											: comment._count.postCommentsLikes + 1,
 									},

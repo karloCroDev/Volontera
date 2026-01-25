@@ -66,6 +66,16 @@ export async function retrievePostData(postId: Post["id"]) {
   return prisma.post.findUnique({
     where: { id: postId },
     include: {
+      organization: {
+        include: {
+          _count: {
+            select: {
+              organizationFollowers: true,
+              organizationMembers: true,
+            },
+          },
+        },
+      },
       postImages: true,
     },
   });
@@ -143,6 +153,13 @@ export async function retrievePostWithComments({
     include: {
       organization: {
         include: {
+          _count: {
+            select: {
+              organizationFollowers: true,
+              organizationMembers: true,
+            },
+          },
+
           owner: {
             omit: {
               password: true,
