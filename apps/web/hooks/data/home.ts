@@ -45,6 +45,7 @@ export const useInfiniteHomePosts = ({
 			return retrieveRecentAlgoHomePosts({
 				limit: data.limit,
 				offset,
+				filter: data.filter,
 			});
 		},
 		getNextPageParam: (

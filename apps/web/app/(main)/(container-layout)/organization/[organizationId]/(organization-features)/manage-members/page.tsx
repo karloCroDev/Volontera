@@ -21,6 +21,7 @@ import {
 import { RetrieveDataAboutOrganizationResponse } from '@repo/types/organization-managment';
 import { Button } from '@/components/ui/button';
 import { LinkAsButton } from '@/components/ui/link-as-button';
+import { DeleteOrganizationDialog } from '@/modules/main/organization/manage-members/delete-organization-dialog';
 
 export default async function ManagePage({
 	params,
@@ -72,15 +73,13 @@ export default async function ManagePage({
 				Settings
 			</h2>
 			<div className="flex justify-between">
-				<Button variant="outline" colorScheme="destructive">
-					Delete Organization
-				</Button>
+				<DeleteOrganizationDialog />
 
+				{/* TODO: Ako bude vremena stavi da se mogu uredjivati informacije od organizacije */}
 				<LinkAsButton href={`/organization/${organizationId}/edit`}>
 					Edit organization
 				</LinkAsButton>
 			</div>
-			{/* TODO: Ako bude vremena stavi da se mogu uredjivati informacije od organizacije */}
 		</>
 	);
 }

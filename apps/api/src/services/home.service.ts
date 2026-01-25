@@ -13,6 +13,7 @@ export async function retrieveRecentAlgoPostsService({
   userId: User["id"];
   data: RetrieveAlgoPostsSchemaArgs;
 }) {
+  console.log(data.filter);
   const posts = await retrieveAlgoPosts({
     userId,
     offset: data.offset,

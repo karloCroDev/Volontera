@@ -89,6 +89,7 @@ export const PostLike: React.FC<{
 	return (
 		<div className="ml-auto flex items-center gap-4">
 			<Button
+				size="xs"
 				variant="blank"
 				onPress={() => {
 					mutate({ postId });
@@ -102,7 +103,7 @@ export const PostLike: React.FC<{
 					)}
 				/>
 			</Button>
-			<p className="font-semibold italic underline underline-offset-4">
+			<p className="text-sm font-semibold italic underline underline-offset-4">
 				{count}
 			</p>
 		</div>

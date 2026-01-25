@@ -57,7 +57,7 @@ export const Dialog: React.FC<
 						isKeyboardDismissDisabled
 						className={({ isEntering, isExiting }) =>
 							twMerge(
-								'bg-muted border-primary no-scrollbar relative z-20 min-h-80 rounded-2xl border px-6 py-6 text-left lg:px-8',
+								'bg-muted border-primary no-scrollbar relative z-20 rounded-2xl border px-6 py-6 text-left lg:px-8',
 								isEntering && 'animate-in fade-in',
 								isExiting && 'animate-out fade-out',
 								dialogProps?.className

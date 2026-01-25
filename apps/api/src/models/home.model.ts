@@ -11,9 +11,21 @@ export async function retrieveAlgoPosts({
   userId: User["id"];
   offset?: number;
   limit?: number;
-  filter: RetrieveAlgoPostsSchemaArgs["filter"];
+  filter?: RetrieveAlgoPostsSchemaArgs["filter"];
 }) {
   return prisma.post.findMany({
+    where:
+      filter === "following"
+        ? {
+            organization: {
+              organizationFollowers: {
+                some: {
+                  followerUserId: userId,
+                },
+              },
+            },
+          }
+        : undefined,
     include: {
       organization: {
         include: {
@@ -25,6 +37,11 @@ export async function retrieveAlgoPosts({
                   },
                 }
               : false,
+          owner: {
+            omit: {
+              password: true,
+            },
+          },
         },
       },
 

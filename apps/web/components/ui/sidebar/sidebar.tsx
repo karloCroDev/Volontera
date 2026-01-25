@@ -43,7 +43,7 @@ export const Sidebar: React.FC<{
 		<>
 			<aside
 				className={twJoin(
-					`border-input-border relative mx-10 my-7 hidden h-[calc(100vh-28px-28px)] rounded-lg border p-4 transition-all duration-300 lg:flex lg:flex-col`,
+					`border-input-border relative mx-10 my-7 hidden h-[calc(100vh-28px-28px)] rounded-lg border p-4 shadow transition-all duration-300 lg:flex lg:flex-col`,
 					desktopOpen && 'w-80',
 					!desktopOpen && 'w-36 items-center'
 				)}

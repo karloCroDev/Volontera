@@ -15,10 +15,12 @@ import { useSearchParams } from 'next/navigation';
 
 export const HomePostsMapping = withReactQueryProvider(() => {
 	const seachParams = useSearchParams();
+	const filterParam = seachParams.get('filter');
+	const filter = filterParam === 'following' ? 'following' : undefined;
 
 	const query = useInfiniteHomePosts({
 		data: {
-			filter: seachParams.get('filter') as 'following',
+			filter,
 			limit: 6,
 			offset: 0,
 		},

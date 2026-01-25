@@ -38,6 +38,7 @@ export const Post: React.FC<{
 		? images?.[singlePostImage.imageUrl]
 		: undefined;
 
+	console.log(post.organization);
 	return (
 		<div className="border-input-border bg-muted rounded-xl border px-8 py-6 shadow-xl">
 			<div className="mb-8 flex gap-4">
