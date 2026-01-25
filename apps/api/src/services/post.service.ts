@@ -28,7 +28,6 @@ import {
   CreatePostArgs,
   DeletePostArgs,
   LikeOrDislikePostArgs,
-  RetrieveOrganizationPostsArgs,
   RetrieveOrganizationPostsRequestArgs,
   RetrievePostArgs,
   UpdatePostArgs,
@@ -57,6 +56,7 @@ export async function createPostService({
       }),
     ]);
 
+  // Odmah na početku računam vrijednost posta kako ne bi odmah pao na dno ljestvice
   const rankingScore = calculatePostRankingScore({
     likes: 0,
     comments: 0,

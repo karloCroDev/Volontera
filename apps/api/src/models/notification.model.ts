@@ -57,18 +57,25 @@ export async function deleteOneNotification({
   });
 }
 
+type NotificationCreationArgs = {
+  userId: User["id"];
+  content: Notification["content"];
+};
+
 export async function createNotification({
   userId,
   content,
-}: {
-  userId: User["id"];
-  content: Notification["content"];
-}) {
+}: NotificationCreationArgs) {
   return await prisma.notification.create({
     data: {
       userId,
       content,
     },
+  });
+}
+export async function createNotifications(data: NotificationCreationArgs[]) {
+  return await prisma.notification.createMany({
+    data,
   });
 }
 

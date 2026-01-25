@@ -3,6 +3,10 @@ import {
   serverFetchOutput,
   toastResponseOutput,
 } from "@/lib/utils/service-output";
+import {
+  createNotification,
+  createNotifications,
+} from "@/models/notification.model";
 
 // Models
 import {
@@ -68,11 +72,24 @@ export async function retrieveAllMembersInOrganizationService({
 export async function acceptOrDeclineUsersRequestToJoinOrganizationService(
   data: AcceptOrDeclineUsersRequestToJoinOrganizationArgs,
 ) {
-  await acceptOrDeclineUsersRequestToJoinOrganization(data);
+  const affectedRequesterIds =
+    await acceptOrDeclineUsersRequestToJoinOrganization(data);
+
+  // Ili su svi prihvaćeni ili su svi odbijeni
+  const isApproved = data.status === "APPROVED";
+
+  await createNotifications(
+    affectedRequesterIds.map((requesterId) => ({
+      userId: requesterId,
+      content: isApproved
+        ? "Your request to join the organization has been accepted."
+        : "Your request to join the organization has been declined.",
+    })),
+  );
 
   return toastResponseOutput({
     title: "Requests Updated",
-    message: data.status
+    message: isApproved
       ? "Users request to join organization updated successfully"
       : "Users request to join organization rejected successfully",
     status: 200,
@@ -82,7 +99,14 @@ export async function acceptOrDeclineUsersRequestToJoinOrganizationService(
 export async function demoteOrPromoteOrganizationMemberService(
   data: DemoteOrPromoteOrganizationMemberArgs,
 ) {
-  await demoteOrPromoteOrganizationMember(data);
+  const result = await demoteOrPromoteOrganizationMember(data);
+  await createNotification({
+    content:
+      result.role === "ADMIN"
+        ? "You have been promoted to admin in the organization."
+        : "You have been demoted to member in the organization.",
+    userId: data.userId,
+  });
 
   return toastResponseOutput({
     message: "Organization member role updated successfully",

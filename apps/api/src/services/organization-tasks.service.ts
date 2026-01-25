@@ -45,7 +45,7 @@ import {
 } from "@repo/schemas/organization-tasks";
 
 // Database
-import { User } from "@repo/database";
+import { OrganizationTask, User } from "@repo/database";
 import {
   createLlmTask,
   createTasksLlmWithBoard,
@@ -53,6 +53,30 @@ import {
 import { violenceRegex } from "@/lib/utils/regex";
 import { safetyCheckLlmReponse } from "@/lib/llm-response";
 import { isUserOnProPlan } from "@/lib/payment";
+import { createNotifications } from "@/models/notification.model";
+
+// Ovo je model samo za notifikacije korisnicima koji su dodijeljeni na task (nakon update ili kreacije)
+async function notifyAssignedMembersForTask({
+  taskId,
+  content,
+}: {
+  taskId: OrganizationTask["id"];
+  content: string;
+}) {
+  const taskInfo = await retrieveTaskInfo(taskId);
+
+  const assignedUserIds =
+    taskInfo?.organizatonMembersAsiggnedToTaskCards.map(
+      (assignedMember) => assignedMember.organizationMember.userId,
+    ) ?? [];
+
+  await createNotifications(
+    assignedUserIds.map((userId) => ({
+      userId,
+      content,
+    })),
+  );
+}
 
 // Boards
 export async function createTaskBoardService({
@@ -217,9 +241,14 @@ export async function createTaskService({
   data: CreateTaskArgs;
   userId: User["id"];
 }) {
-  await createTask({
+  const task = await createTask({
     ...data,
     userId,
+  });
+
+  await notifyAssignedMembersForTask({
+    taskId: task.id,
+    content: `You've been assigned to a task: ${data.title}`,
   });
 
   return toastResponseOutput({
@@ -260,8 +289,7 @@ export async function createLlmTaskService({
     taskTitle: data.title,
     taskDescription: data.description,
   });
-
-  await createTask({
+  const createdTask = await createTask({
     assignedMembers: data.assignedMembers,
     description: llmTask.description,
     dueDate: llmTask.dueDate,
@@ -269,8 +297,12 @@ export async function createLlmTaskService({
     priority: llmTask.status,
     organizationTasksBoardId: data.organizationTasksBoardId,
     title: data.title,
-
     userId,
+  });
+
+  await notifyAssignedMembersForTask({
+    taskId: createdTask.id,
+    content: `You've been assigned to a task: ${data.title}`,
   });
 
   return toastResponseOutput({
@@ -316,6 +348,11 @@ export async function retrieveTaskQuestionsService({
 
 export async function updateTaskInfoService(data: UpdateTaskInfoArgs) {
   await updateTaskInfo(data);
+
+  await notifyAssignedMembersForTask({
+    taskId: data.taskId,
+    content: `Task updated: ${data.title}`,
+  });
 
   return toastResponseOutput({
     status: 200,

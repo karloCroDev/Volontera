@@ -15,6 +15,7 @@ import {
 // Schema types
 import { CreateCheckoutSessionArgs } from "@repo/schemas/payment";
 import { toastResponseOutput } from "@/lib/utils/service-output";
+import { createNotification } from "@/models/notification.model";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
@@ -36,14 +37,14 @@ export async function webhookService({
   const event = stripe.webhooks.constructEvent(
     body,
     sig,
-    process.env.STRIPE_WEBHOOK_SECRET!
+    process.env.STRIPE_WEBHOOK_SECRET!,
   );
 
   switch (event.type) {
     case "checkout.session.completed": {
       const session = await stripe.checkout.sessions.retrieve(
         event.data.object.id,
-        { expand: ["line_items"] }
+        { expand: ["line_items"] },
       );
 
       console.log("Completed");
@@ -75,12 +76,18 @@ export async function webhookService({
         subscriptionType,
       });
 
+      await createNotification({
+        userId,
+        content:
+          "Your subscription has been activated successfully! Thank you for choosing our pro plan",
+      });
+
       break;
     }
 
     case "customer.subscription.deleted": {
       const subscription = await stripe.subscriptions.retrieve(
-        event.data.object.id
+        event.data.object.id,
       );
 
       if (typeof subscription.customer === "string") {
@@ -88,6 +95,14 @@ export async function webhookService({
           customerId: subscription.customer,
           pricingId: null,
         });
+
+        if (subscription.metadata?.userId) {
+          // TODO: If this doesn't work then I need to handle with the customerId
+          await createNotification({
+            userId: subscription.metadata.userId,
+            content: "Your subscription has been cancelled.",
+          });
+        }
       }
 
       break;
@@ -122,6 +137,13 @@ export async function webhookService({
           subscriptionType,
           subscriptionTier: "PRO",
         });
+
+        if (subscription.metadata?.userId) {
+          await createNotification({
+            userId: subscription.metadata.userId, // Bit će sigurno, ali onako za svaki slučaj
+            content: "Your subscription has been updated successfully.",
+          });
+        }
       }
 
       if (status === "canceled" || status === "incomplete_expired") {

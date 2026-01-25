@@ -26,6 +26,7 @@ import {
   serverFetchOutput,
   toastResponseOutput,
 } from "@/lib/utils/service-output";
+import { createNotification } from "@/models/notification.model";
 
 export async function presignDirectMessageImagesService({
   images: dataImages,
@@ -36,8 +37,8 @@ export async function presignDirectMessageImagesService({
         contentType: image.contentType,
         filename: image.filename,
         size: image.size,
-      })
-    )
+      }),
+    ),
   );
 
   return serverFetchOutput({
@@ -75,7 +76,7 @@ export async function searchAllUsersWithQueryService({
 }
 
 export async function listAllDirectMessagesConversationsService(
-  userId: User["id"]
+  userId: User["id"],
 ) {
   const conversations = await listAllDirectMessagesConversation(userId);
 
@@ -87,7 +88,7 @@ export async function listAllDirectMessagesConversationsService(
       conversations: conversations.map((conversation) => ({
         ...conversation,
         participant: conversation.participants.find(
-          (participant) => participant.userId !== userId
+          (participant) => participant.userId !== userId,
         )!.user,
       })),
     },
@@ -166,6 +167,11 @@ export async function startConversationOrStartAndSendDirectMessageService({
 
   // Prikazivanje poruke sebi
   if (senderSocketId) io.to(senderSocketId).emit("new-chat", message);
+
+  await createNotification({
+    content: `New direct message from ${message.author.firstName} ${message.author.lastName}: ${data.content.substring(0, 20)}`,
+    userId: data.particpantId,
+  });
 
   return toastResponseOutput({
     status: 200,
