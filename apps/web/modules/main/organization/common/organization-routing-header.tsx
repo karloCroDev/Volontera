@@ -78,7 +78,7 @@ export const OrganizationRoutingHeader: React.FC<{
 								)
 							}
 						>
-							Manage attendees
+							Manage members
 						</LinkAsButton>
 					</>
 				)}

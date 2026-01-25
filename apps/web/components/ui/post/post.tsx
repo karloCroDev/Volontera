@@ -57,7 +57,7 @@ export const Post: React.FC<{
 
 					<div>
 						<p>{post.organization.name}</p>
-						<p className="text-muted-foreground text-sm">20 attendees</p>
+						<p className="text-muted-foreground text-sm">20 members</p>
 					</div>
 				</Link>
 

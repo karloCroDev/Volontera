@@ -23,9 +23,11 @@ import {
   leaveOrganizationSchema,
   retrieveDataAboutOrganizationSchema,
 } from "@repo/schemas/organization-managment";
+
 // Middleware
 import { organizationRolesMiddleware } from "@/middleware/organization-roles.middleware";
 import { validate } from "@/middleware/validate.middleware";
+import { proPlanUserMiddleware } from "@/middleware/payment.middleware";
 
 export const organizationManagmentRoutes = Router();
 
@@ -80,6 +82,7 @@ organizationManagmentRoutes.get(
     type: "params",
     responseOutput: "server",
   }),
+  proPlanUserMiddleware,
   organizationRolesMiddleware({
     type: "params",
   }),

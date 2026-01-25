@@ -15,6 +15,8 @@ import {
 import { PieChart } from '@/modules/main/organization/manage/pie-chart';
 import { BarChart } from '@/modules/main/organization/manage/bar-chart';
 import { ChartArea } from 'lucide-react';
+import { RetrieveDataAboutOrganizationResponse } from '@repo/types/organization-managment';
+import { Paywall } from '@/components/ui/paywall';
 
 export default async function ManagePage({
 	params,
@@ -32,21 +34,49 @@ export default async function ManagePage({
 		retrieveDataAboutOrganization(organizationId),
 	]);
 
-	console.log(organizationData);
-
 	if (
 		!member.success ||
 		member.organizationMember.role !== 'OWNER' ||
 		!requests.success ||
-		!users.success ||
-		!organizationData.success
+		!users.success
 	) {
 		notFound();
 	}
 
-	// Tasks
-	// Taks (pie) and users (bar)
+	return (
+		<>
+			<h2 className="mb-6 text-xl underline underline-offset-4 lg:text-2xl">
+				Dashboard
+			</h2>
+			{organizationData.success ? (
+				<Dashboard organizationData={organizationData} />
+			) : (
+				<Paywall />
+			)}
 
+			<h2 className="mb-6 text-xl underline underline-offset-4 lg:text-2xl">
+				Requests
+			</h2>
+			<RequestsForm requests={requests} />
+			<h2 className="mb-6 mt-10 text-xl underline underline-offset-4 lg:text-2xl">
+				Members{' '}
+				{/* <span className="italic">({organizationData.totalUserCount - 1})</span> */}
+			</h2>
+			<CurrentUsersForm users={users} />
+
+			<h2 className="mb-6 mt-10 text-xl underline underline-offset-4 lg:text-2xl">
+				Settings
+			</h2>
+			{/* TODO: Ako bude vremena stavi da se mogu uredjivati informacije od organizacije */}
+		</>
+	);
+}
+
+const Dashboard = ({
+	organizationData,
+}: {
+	organizationData: RetrieveDataAboutOrganizationResponse;
+}) => {
 	const pieTasks = [
 		{
 			count: organizationData.highPriority,
@@ -65,53 +95,36 @@ export default async function ManagePage({
 		{ value: organizationData.memberUserCount, name: 'Members' },
 	];
 	return (
-		<>
-			<h2 className="mb-6 text-xl underline underline-offset-4 lg:text-2xl">
-				Dashboard (pro)
-			</h2>
-			<div className="mb-6 flex flex-col gap-8 lg:flex-row">
-				<div className="no-scrollbar flex gap-4 overflow-x-scroll lg:flex-col">
-					<TaskKPI
-						count={organizationData.highPriority}
-						title="High Priority"
-					/>
-					<TaskKPI
-						count={organizationData.mediumPriority}
-						title="Medium Priority"
-					/>
-					<TaskKPI count={organizationData.lowPriority} title="Low Priority" />
-				</div>
-
-				<ChartContainer
-					title="Tasks ratio"
-					subtitle="Total tasks ration between priorities inside the organization"
-				>
-					<div className="mt-auto aspect-square">
-						<PieChart data={pieTasks} dataKey="count" />
-					</div>
-				</ChartContainer>
-
-				<ChartContainer
-					title="Members"
-					subtitle="Total members ratio between roles inside the organization"
-				>
-					<div className="mx-auto mt-auto w-3/4 flex-1 text-sm">
-						<BarChart data={barUser} xKey="name" yKey="value" />
-					</div>
-				</ChartContainer>
+		<div className="mb-6 flex flex-col gap-8 lg:flex-row">
+			<div className="no-scrollbar flex gap-4 overflow-x-scroll lg:flex-col">
+				<TaskKPI count={organizationData.highPriority} title="High Priority" />
+				<TaskKPI
+					count={organizationData.mediumPriority}
+					title="Medium Priority"
+				/>
+				<TaskKPI count={organizationData.lowPriority} title="Low Priority" />
 			</div>
-			<h2 className="mb-6 text-xl underline underline-offset-4 lg:text-2xl">
-				Requests
-			</h2>
-			<RequestsForm requests={requests} />
-			<h2 className="mb-6 mt-10 text-xl underline underline-offset-4 lg:text-2xl">
-				Members{' '}
-				<span className="italic">({organizationData.totalUserCount - 1})</span>
-			</h2>
-			<CurrentUsersForm users={users} />
-		</>
+
+			<ChartContainer
+				title="Tasks ratio"
+				subtitle="Total tasks ration between priorities inside the organization"
+			>
+				<div className="mt-auto aspect-square">
+					<PieChart data={pieTasks} dataKey="count" />
+				</div>
+			</ChartContainer>
+
+			<ChartContainer
+				title="Members"
+				subtitle="Total members ratio between roles inside the organization"
+			>
+				<div className="mx-auto mt-auto w-3/4 flex-1 text-sm">
+					<BarChart data={barUser} xKey="name" yKey="value" />
+				</div>
+			</ChartContainer>
+		</div>
 	);
-}
+};
 
 const ChartContainer: React.FC<{
 	children: React.ReactNode;

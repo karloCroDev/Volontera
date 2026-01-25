@@ -107,6 +107,9 @@ export async function retrieveOrganizationMember({
         userId,
       },
     },
+    include: {
+      user: true,
+    },
   });
 }
 

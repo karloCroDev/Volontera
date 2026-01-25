@@ -31,7 +31,6 @@ import { Textarea } from '@/components/ui/textarea';
 export const AddBoardDialog = () => {
 	const [isOpen, setIsOpen] = React.useState(false);
 	const params = useParams<{ organizationId: string }>();
-	const router = useRouter();
 	const {
 		handleSubmit,
 		control,

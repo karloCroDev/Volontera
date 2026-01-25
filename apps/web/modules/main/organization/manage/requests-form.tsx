@@ -75,7 +75,7 @@ export const RequestsForm: React.FC<{
 
 	return (
 		<div className="border-input-border min-h-1/2 max-h-3/4 overflow-scroll rounded-xl border shadow-xl">
-			<div className="border-input-border bg-muted mb-4 flex items-center justify-between border-b px-6 py-4">
+			<div className="border-input-border bg-muted flex items-center justify-between border-b px-6 py-4">
 				<CheckboxWithLabel
 					checkboxVisuallyProps={{
 						size: 'lg',
