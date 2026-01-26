@@ -22,8 +22,16 @@ export async function searchUsers({
           },
         ],
       },
-      omit: {
-        password: true,
+      select: {
+        id: true,
+        firstName: true,
+        lastName: true,
+        email: true,
+        image: true,
+        role: true,
+        subscriptionTier: true,
+        subscriptionType: true,
+        onboardingFinished: true,
       },
     });
 
@@ -31,10 +39,22 @@ export async function searchUsers({
       where: {
         name: { contains: query, mode: "insensitive" },
       },
-      include: {
+      select: {
+        id: true,
+        name: true,
+        bio: true,
+        avatarImage: true,
         owner: {
-          omit: {
-            password: true,
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            email: true,
+            image: true,
+            role: true,
+            subscriptionTier: true,
+            subscriptionType: true,
+            onboardingFinished: true,
           },
         },
       },

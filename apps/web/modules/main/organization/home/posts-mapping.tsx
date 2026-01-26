@@ -1,8 +1,8 @@
 'use client';
 
 // External packages
-import { useParams, useSearchParams } from 'next/navigation';
 import * as React from 'react';
+import { useParams, useSearchParams } from 'next/navigation';
 
 // Components
 import { Post } from '@/components/ui/post/post';
@@ -45,6 +45,13 @@ export const PostsMapping: React.FC<{
 		],
 	});
 
+	console.log('PostsMapping render with posts:', [
+		...data.posts.flatMap((post) =>
+			post.postImages.map((image) => image.imageUrl)
+		),
+		...data.posts.map((post) => post.organization.avatarImage),
+		...data.posts.map((post) => post.author.image).filter((url) => url != null),
+	]);
 	const { data: member } = useRetrieveOrganizationMember({
 		organizationId: params.organizationId,
 	});

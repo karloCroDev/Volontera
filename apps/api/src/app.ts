@@ -45,7 +45,7 @@ app.use(
   cors({
     origin: process.env.WEB_URL!,
     credentials: true,
-  })
+  }),
 );
 app.use(cookieParser());
 
@@ -58,7 +58,7 @@ app.use(
   "/onboarding",
   authMiddleware,
   onboardingProcessMiddleware,
-  onboardingRoutes
+  onboardingRoutes,
 );
 app.use("/user", authMiddleware, userRoutes);
 app.use("/settings", authMiddleware, hasRoleMiddleware, settingsRoutes);
@@ -67,13 +67,13 @@ app.use(
   "/notifications",
   authMiddleware,
   hasRoleMiddleware,
-  notificationRoutes
+  notificationRoutes,
 );
 app.use(
   "/direct-messages",
   authMiddleware,
   hasRoleMiddleware,
-  directMessagesRoutes
+  directMessagesRoutes,
 );
 app.use("/image", imageRoutes);
 app.use("/organization", authMiddleware, hasRoleMiddleware, organizationRoutes);
@@ -81,19 +81,19 @@ app.use(
   "/organization-managment",
   authMiddleware,
   hasRoleMiddleware,
-  organizationManagmentRoutes
+  organizationManagmentRoutes,
 );
 app.use(
   "/organization-group-chat",
   authMiddleware,
   hasRoleMiddleware,
-  organizationGroupChatRoute
+  organizationGroupChatRoute,
 );
 app.use(
   "/organization-tasks",
   authMiddleware,
   hasRoleMiddleware,
-  organizationTasksRoutes
+  organizationTasksRoutes,
 );
 app.use("/search", authMiddleware, hasRoleMiddleware, searchRoutes);
 app.use("/post", authMiddleware, hasRoleMiddleware, postRoutes);
@@ -121,5 +121,5 @@ app.get(
   organizationMiddleware,
   (req, res) => {
     res.json({ message: "Awesome you accessed the proteced route" });
-  }
+  },
 );
