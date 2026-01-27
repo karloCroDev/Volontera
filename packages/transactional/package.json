@@ -3,11 +3,15 @@
 	"version": "0.0.0",
 	"private": true,
 	"scripts": {
+		"build": "tsc -p tsconfig.build.json",
 		"dev": "email dev -p 3001",
 		"export": "email export"
 	},
 	"exports": {
-		"./*": "./emails/*.tsx"
+		"./*": {
+			"types": "./dist/emails/*.d.ts",
+			"default": "./dist/emails/*.js"
+		}
 	},
 	"dependencies": {
 		"@react-email/components": "^0.5.5",

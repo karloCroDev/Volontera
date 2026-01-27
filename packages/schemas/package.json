@@ -4,7 +4,10 @@
   "private": true,
   "description": "Shared schemas between backend and frontend",
   "exports": {
-    "./*": "./src/*.ts"
+    "./*": {
+      "types": "./dist/*.d.ts",
+      "default": "./dist/*.js"
+    }
   },
   "dependencies": {
     "zod": "^4.0.17"

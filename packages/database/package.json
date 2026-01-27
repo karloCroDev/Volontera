@@ -1,6 +1,8 @@
 {
   "name": "@repo/database",
   "version": "0.0.0",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "dependencies": {
     "@faker-js/faker": "^10.1.0",
     "@prisma/adapter-pg": "^7.2.0",
@@ -9,13 +11,17 @@
     "prisma": "^7.2.0"
   },
   "scripts": {
+    "build": "tsc -p tsconfig.build.json",
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate dev --skip-generate",
     "db:deploy": "prisma migrate deploy",
     "db:seed": "tsx src/seed.ts"
   },
   "exports": {
-    ".": "./src/index.ts"
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
   },
   "devDependencies": {
     "@faker-js/faker": "^10.1.0",
