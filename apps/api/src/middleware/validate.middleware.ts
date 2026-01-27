@@ -13,7 +13,6 @@ export function validate<T>({
 }) {
   return (req: Request, res: Response, next: NextFunction) => {
     const result = schema.safeParse(req[type]);
-
     if (!result.success) {
       //   console.log("Validation result:", zodErrorDetecter(result.error));  Koristiti za debugiranje kod korisništejna controllera
 

@@ -26,6 +26,7 @@ export async function webhookService({
   sig: string;
   body: unknown;
 }) {
+  console.log("Webhook received");
   if (typeof body !== "string" && !(body instanceof Buffer)) {
     return toastResponseOutput({
       status: 400,

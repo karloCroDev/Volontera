@@ -26,9 +26,13 @@ export const useSetParams = () => {
 		const url = query ? `${pathname}?${query}` : pathname;
 
 		if (options?.replace) {
-			router.replace(url);
+			router.replace(url, {
+				scroll: false,
+			});
 		} else {
-			router.push(url);
+			router.push(url, {
+				scroll: false,
+			});
 		}
 	};
 

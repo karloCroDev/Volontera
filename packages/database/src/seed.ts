@@ -425,7 +425,11 @@ async function main() {
   }
 
   for (const p of posts) {
-    const commenters = faker.helpers.shuffle(volunteers).slice(0, 3);
+    const commenterCount = faker.number.int({ min: 0, max: 8 });
+    const likeCount = faker.number.int({ min: 0, max: 20 });
+    const commenters = faker.helpers
+      .shuffle(volunteers)
+      .slice(0, Math.min(commenterCount, volunteers.length));
     const comments = [] as Array<{ id: string }>;
 
     for (const c of commenters) {
@@ -445,7 +449,7 @@ async function main() {
       );
     }
 
-    if (comments.length > 0) {
+    if (comments.length > 0 && faker.datatype.boolean()) {
       const first = comments[0]!;
       const replier = faker.helpers.arrayElement(volunteers);
       const reply = await prisma.postCommentsReply.create({
@@ -458,7 +462,10 @@ async function main() {
       });
 
       // Reply likes
-      for (const liker of faker.helpers.shuffle(volunteers).slice(0, 2)) {
+      const replyLikeCount = faker.number.int({ min: 0, max: 6 });
+      for (const liker of faker.helpers
+        .shuffle(volunteers)
+        .slice(0, Math.min(replyLikeCount, volunteers.length))) {
         await prisma.postCommentsReplyLikes.upsert({
           where: {
             replyId_userId: { replyId: reply.id, userId: liker.id },
@@ -470,7 +477,9 @@ async function main() {
     }
 
     // Post likes
-    for (const liker of faker.helpers.shuffle(volunteers).slice(0, 4)) {
+    for (const liker of faker.helpers
+      .shuffle(volunteers)
+      .slice(0, Math.min(likeCount, volunteers.length))) {
       await prisma.postLikes.upsert({
         where: { postId_userId: { postId: p.id, userId: liker.id } },
         create: { postId: p.id, userId: liker.id },
@@ -480,7 +489,10 @@ async function main() {
 
     // Comment likes
     for (const c of comments) {
-      for (const liker of faker.helpers.shuffle(volunteers).slice(0, 2)) {
+      const commentLikeCount = faker.number.int({ min: 0, max: 6 });
+      for (const liker of faker.helpers
+        .shuffle(volunteers)
+        .slice(0, Math.min(commentLikeCount, volunteers.length))) {
         await prisma.postCommentsLikes.upsert({
           where: {
             commentId_userId: { commentId: c.id, userId: liker.id },

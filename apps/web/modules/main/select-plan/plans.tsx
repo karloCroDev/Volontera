@@ -16,8 +16,8 @@ import { Button } from '@/components/ui/button';
 import { PaymentPlanCard } from '@/modules/main/select-plan/payment-plan-card';
 
 // Lib
-import { toast } from '@/lib/utils/toast';
 import { withReactQueryProvider } from '@/lib/utils/react-query';
+import { toast } from '@/lib/utils/toast';
 
 const stripePriceIds = {
 	yearlyPriceId: 'price_1S3ysJKRaMWWrCqznIxUk44x',
@@ -36,16 +36,24 @@ export const Plans: React.FC<{
 	const generateLink = ({ priceId }: { priceId: string }) => {
 		setPendingPriceId(priceId);
 
-		mutate(priceId, {
-			onSuccess: ({ url, message, title }) => {
-				toast({
-					title,
-					content: message,
-					variant: 'success',
-				});
-				window.location.href = url;
+		mutate(
+			{
+				priceId,
 			},
-		});
+			{
+				onSuccess: ({ url }) => {
+					window.location.href = url;
+				},
+				onError: ({ message, title }) => {
+					toast({
+						content: message,
+						title,
+						variant: 'error',
+					});
+					setPendingPriceId(null);
+				},
+			}
+		);
 	};
 
 	const slides = [
