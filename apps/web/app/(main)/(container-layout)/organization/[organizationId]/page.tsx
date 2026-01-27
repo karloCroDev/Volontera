@@ -27,6 +27,7 @@ import { convertToFullname } from '@/lib/utils/converter';
 import { FollowOrganizationButton } from '@/modules/main/organization/common/follow-organization-button';
 import { LeaveOrganizationDialog } from '@/modules/main/organization/common/leave-organization-dialog';
 import { PostsSelect } from '@/modules/main/organization/home/posts-select';
+import { getSession } from '@/lib/server/user';
 
 export default async function OrganizationPage({
 	params,
@@ -45,7 +46,8 @@ export default async function OrganizationPage({
 		resolvedSearchParams?.filter === 'oldest'
 			? resolvedSearchParams.filter
 			: undefined;
-	const [organizationDetailsById, member] = await Promise.all([
+	const [session, organizationDetailsById, member] = await Promise.all([
+		getSession(),
 		getOrganizationDetailsById(organizationId),
 		retrieveOrganizationMember(organizationId),
 	]);
@@ -96,13 +98,16 @@ export default async function OrganizationPage({
 										organizationName={organizationDetailsById.organization.name}
 									/>
 								) : (
-									<LinkAsButton
-										colorScheme="orange"
-										size="md"
-										href={`/organization/${organizationId}/join-organization`}
-									>
-										Join
-									</LinkAsButton>
+									session.success &&
+									session.role !== 'ORGANIZATION' && (
+										<LinkAsButton
+											colorScheme="orange"
+											size="md"
+											href={`/organization/${organizationId}/join-organization`}
+										>
+											Join
+										</LinkAsButton>
+									)
 								)}
 							</div>
 						)}

@@ -68,22 +68,21 @@ export const Avatar: React.FC<
 						.split(' ')
 						.map((l) => l[0])}
 				</RadixAvatar.Fallback>
-
-				{isInput && (
-					<div
-						className={twJoin(
-							'absolute bottom-2 right-0 z-20 flex gap-4',
-							!deleteButton ? 'right-2' : 'right-0'
-						)}
-					>
-						<div className="bg-primary text-background rounded-full p-3">
-							<Pen className="size-4" />
-						</div>
-
-						{deleteButton}
-					</div>
-				)}
 			</div>
+			{isInput && (
+				<div
+					className={twJoin(
+						'absolute bottom-2 right-0 z-20 flex gap-4',
+						!deleteButton ? 'right-2' : 'right-0'
+					)}
+				>
+					<div className="bg-primary text-background rounded-full p-3">
+						<Pen className="size-4" />
+					</div>
+
+					{deleteButton}
+				</div>
+			)}
 
 			{isVerified && (
 				<div

@@ -13,6 +13,7 @@ import {
 } from "@/controllers/user.controller";
 import { validate } from "@/middleware/validate.middleware";
 import { userSchema, UserSchemaArgs } from "@repo/schemas/user";
+import { authMiddleware } from "@/middleware/auth.middleware";
 
 export const userRoutes = Router();
 
@@ -20,30 +21,33 @@ userRoutes.use(express.json());
 
 userRoutes.get(
   "/id/:userId",
+  authMiddleware,
   validate({
     schema: userSchema,
     type: "params",
     responseOutput: "server",
   }),
-  getUserByIdController
+  getUserByIdController,
 );
 userRoutes.get(
   "/organizations/:userId",
+  authMiddleware,
   validate({
     schema: userSchema,
     type: "params",
     responseOutput: "server",
   }),
-  retrieveAllOrganizationsForUserController
+  retrieveAllOrganizationsForUserController,
 );
 userRoutes.get(
   "/posts/:userId",
+  authMiddleware,
   validate({
     schema: userSchema,
     type: "params",
     responseOutput: "server",
   }),
-  retrieveAllPostsForUserController
+  retrieveAllPostsForUserController,
 );
-userRoutes.get("/session", userSessionController);
-userRoutes.post("/logout", logoutController);
+userRoutes.get("/session", authMiddleware, userSessionController);
+userRoutes.post("/logout", authMiddleware, logoutController);

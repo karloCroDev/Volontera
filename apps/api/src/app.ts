@@ -60,7 +60,7 @@ app.use(
   onboardingProcessMiddleware,
   onboardingRoutes,
 );
-app.use("/user", authMiddleware, userRoutes);
+app.use("/user", userRoutes);
 app.use("/settings", authMiddleware, hasRoleMiddleware, settingsRoutes);
 app.use("/help", authMiddleware, hasRoleMiddleware, helpRoutes);
 app.use(
