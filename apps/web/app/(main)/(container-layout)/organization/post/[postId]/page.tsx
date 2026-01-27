@@ -21,11 +21,12 @@ import {
 
 // Async server component for Post
 
-export default function PostWithCommentsPage({
+export default async function PostWithCommentsPage({
 	params,
 }: {
-	params: { postId: string };
+	params: Promise<{ postId: string }>;
 }) {
+	const { postId } = await params;
 	return (
 		<Suspense
 			fallback={
@@ -41,7 +42,7 @@ export default function PostWithCommentsPage({
 				</>
 			}
 		>
-			<PostContent postId={params.postId} />
+			<PostContent postId={postId} />
 		</Suspense>
 	);
 }

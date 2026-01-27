@@ -1,9 +1,6 @@
 // Database
 import { prisma, User } from "@repo/database";
 
-// Types
-import { AppType } from "@repo/types/onboarding";
-
 export async function updateUserOnboarding({
   data,
   userId,
@@ -34,7 +31,7 @@ export async function updateUserAppType({
   type,
 }: {
   userId: string;
-  type: AppType;
+  type: User["role"];
 }) {
   return prisma.user.update({
     where: { id: userId },

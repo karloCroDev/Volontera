@@ -11,7 +11,7 @@ import {
 	Heading,
 	DialogProps,
 } from 'react-aria-components';
-import { twJoin, twMerge } from 'tailwind-merge';
+import { twMerge } from 'tailwind-merge';
 import { X } from 'lucide-react';
 
 // Components

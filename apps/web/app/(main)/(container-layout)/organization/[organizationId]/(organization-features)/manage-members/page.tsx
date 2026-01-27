@@ -10,6 +10,7 @@ import { BarChart } from '@/modules/main/organization/manage-members/bar-chart';
 
 // Components
 import { Paywall } from '@/components/ui/paywall';
+import { LinkAsButton } from '@/components/ui/link-as-button';
 
 // Lib
 import {
@@ -19,8 +20,6 @@ import {
 	retrieveDataAboutOrganization,
 } from '@/lib/server/organization-managment';
 import { RetrieveDataAboutOrganizationResponse } from '@repo/types/organization-managment';
-import { Button } from '@/components/ui/button';
-import { LinkAsButton } from '@/components/ui/link-as-button';
 import { DeleteOrganizationDialog } from '@/modules/main/organization/manage-members/delete-organization-dialog';
 
 export default async function ManagePage({

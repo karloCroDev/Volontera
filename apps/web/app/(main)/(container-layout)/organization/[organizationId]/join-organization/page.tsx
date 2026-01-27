@@ -3,7 +3,6 @@ import { redirect } from 'next/navigation';
 
 // Components
 import { Heading } from '@/components/ui/heading';
-import { Layout, LayoutColumn } from '@/components/ui/layout-grid';
 
 // Lib
 import { getOrganizationDetailsById } from '@/lib/server/organization';
