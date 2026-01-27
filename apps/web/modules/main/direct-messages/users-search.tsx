@@ -16,39 +16,40 @@ import { searchAllUsers } from '@/lib/data/direct-messages';
 
 // Hooks
 import { useDebounce } from '@/hooks/utils/useDebounce';
+
+// Modules
 import {
 	UsersSidebar,
 	UsersSidebarSkeleton,
 } from '@/modules/main/direct-messages/users-sidebar';
 
-type SearchUser = {
-	id: string;
-	firstName: string;
-	lastName: string;
-	role?: string | null;
-};
+// Types
+import { SearchResponse } from '@repo/types/search';
 
 export const UsersSearch = () => {
 	const [query, setQuery] = React.useState('');
 	const debouncedQuery = useDebounce(query, 300);
 	const isTyping = query !== debouncedQuery;
 
-	const list = useAsyncList<SearchUser>({
+	const list = useAsyncList<SearchResponse['users'][0]>({
 		async load({ filterText }) {
 			const q = (filterText ?? '').trim();
 			if (!q) return { items: [] };
 
 			const res = await searchAllUsers({ query: q });
-			return { items: (res?.users ?? []) as SearchUser[] };
+			return { items: (res?.users ?? []) as SearchResponse['users'][0][] };
 		},
 	});
-	const { filterText, setFilterText } = list;
 
-	React.useEffect(() => {
-		if (filterText !== debouncedQuery) {
-			setFilterText(debouncedQuery);
-		}
-	}, [debouncedQuery, filterText, setFilterText]);
+	React.useEffect(
+		() => {
+			if (list.filterText !== debouncedQuery) {
+				list.setFilterText(debouncedQuery);
+			}
+		},
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+		[debouncedQuery, list.filterText, list.setFilterText]
+	);
 
 	const showLoading = query.trim().length > 0 && (isTyping || list.isLoading);
 	const showNoUsers =
