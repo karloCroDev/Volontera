@@ -41,6 +41,7 @@ export function ComboBoxWrapper<T extends object>({
 		</AriaComboBox>
 	);
 }
+
 export const ComboBoxItems: React.FC<
 	React.ComponentPropsWithoutRef<'div'> &
 		ListBoxItemProps & {
