@@ -292,6 +292,7 @@ export async function getOrganizationDetailsById({
             },
           },
         },
+
         orderBy: {
           createdAt: "asc",
         },
@@ -314,7 +315,7 @@ export async function getOrganizationDetailsById({
         orderBy: {
           createdAt: "asc",
         },
-        take: 5,
+        take: 3,
       }),
     ]);
 

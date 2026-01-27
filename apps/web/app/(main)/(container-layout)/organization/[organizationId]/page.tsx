@@ -134,7 +134,7 @@ export default async function OrganizationPage({
 					</div>
 					<hr className="bg-input-border my-6 h-px w-full border-0" />
 
-					<div className="flex justify-between lg:gap-8">
+					<div className="flex justify-between gap-4 lg:gap-8">
 						<div className="flex-1">
 							{organizationDetailsById.organization.organizationInfo
 								.additionalLinks.length > 0 && (
@@ -142,7 +142,7 @@ export default async function OrganizationPage({
 									<h4 className="text-lg underline underline-offset-4 lg:text-xl">
 										Additional links
 									</h4>
-									<div className="mb-6 mt-3 flex gap-4">
+									<div className="mb-6 mt-3 flex flex-col gap-4 lg:flex-row">
 										{organizationDetailsById.organization.organizationInfo.additionalLinks.map(
 											({ name, url, id }) => (
 												<AnchorAsButton
@@ -164,7 +164,7 @@ export default async function OrganizationPage({
 								About
 							</h4>
 
-							<p className="mt-2">
+							<p className="mt-2 text-balance">
 								{organizationDetailsById.organization.organizationInfo.bio}
 							</p>
 
@@ -219,7 +219,7 @@ export default async function OrganizationPage({
 							</LinkAsTag>
 
 							<Indicators className="mb-3">Admins</Indicators>
-							<div className="flex items-center gap-4">
+							<div className="flex flex-col gap-4 lg:flex-row lg:items-center">
 								{organizationDetailsById.membersHierarchy.admins.map(
 									(admin) => (
 										<LinkAsTag
@@ -249,7 +249,7 @@ export default async function OrganizationPage({
 							</div>
 
 							<Indicators className="mb-3">Members</Indicators>
-							<div className="flex items-center gap-4">
+							<div className="flex flex-col gap-4 lg:flex-row lg:items-center">
 								{organizationDetailsById.membersHierarchy.members.map(
 									(member) => (
 										<LinkAsTag
@@ -282,7 +282,7 @@ export default async function OrganizationPage({
 									<Tag colorScheme="gray">
 										+
 										{organizationDetailsById.organization._count
-											.organizationMembers - 5}{' '}
+											.organizationMembers - 3}{' '}
 										more
 									</Tag>
 								)}

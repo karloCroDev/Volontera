@@ -18,14 +18,18 @@ export type CreatePostArgs = z.infer<typeof createPostSchema>;
 
 export const updatePostSchema = z.object({
   postId: z.cuid(),
+  organizationId: z.cuid(),
   ...createPostSchema.omit({ organizationId: true, images: true }).shape,
-  images: z.array(z.union([z.string(), uploadImageSchema.shape.image])),
+  images: z
+    .array(z.union([z.string(), uploadImageSchema.shape.image]))
+    .min(1, "Please upload at least one image"),
 });
 
 export type UpdatePostArgs = z.infer<typeof updatePostSchema>;
 
 export const deletePostSchema = z.object({
   postId: z.cuid(),
+  organizationId: z.cuid(),
 });
 export type DeletePostArgs = z.infer<typeof deletePostSchema>;
 

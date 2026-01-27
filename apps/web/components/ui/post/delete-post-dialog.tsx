@@ -13,9 +13,10 @@ import { useQueryClient } from '@tanstack/react-query';
 
 export const DeletePostDialog: React.FC<{
 	postId: string;
-}> = ({ postId }) => {
+	organizationId: string;
+}> = ({ postId, organizationId }) => {
 	const queryClient = useQueryClient();
-	const { mutate, isPending } = useDeletePost(postId, {
+	const { mutate, isPending } = useDeletePost({
 		onSuccess: () => {
 			queryClient.setQueriesData(
 				{ queryKey: ['posts'], exact: false }, // Targets any key starting with 'posts'
@@ -51,7 +52,7 @@ export const DeletePostDialog: React.FC<{
 					colorScheme="destructive"
 					onPress={() => {
 						mutate(
-							{ postId },
+							{ postId, organizationId },
 							{
 								onSuccess: ({ message, title }) => {
 									toast({

@@ -69,17 +69,17 @@ export const useCreatePost = (
 
 // Optimistic update za brisanje posta (implementiran unutar componenata)
 export const useDeletePost = (
-	postId: DeletePostArgs['postId'],
 	options?: UseMutationOptions<
 		SuccessfulResponse,
 		ErrorToastResponse,
 		DeletePostArgs
 	>
+	// postId: DeletePostArgs['postId'],
 ) => {
 	return useMutation({
 		...options,
 		mutationKey: ['delete-post'],
-		mutationFn: () => deletePost({ postId }),
+		mutationFn: (data: DeletePostArgs) => deletePost(data),
 	});
 };
 

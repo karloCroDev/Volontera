@@ -109,20 +109,24 @@ async function main() {
   await clearDatabase();
 
   const users = await Promise.all(
-    Array.from({ length: 40 }).map(() =>
+    Array.from({ length: 40 }).map((_, indx) =>
       prisma.user.create({
         data: {
           email: `user_${faker.string.uuid()}@demo.test`,
           firstName: faker.person.firstName(),
           lastName: faker.person.lastName(),
           password: faker.internet.password(),
+          role: indx % 2 === 0 ? "ORGANIZATION" : "USER",
         },
       }),
     ),
   );
 
-  const orgOwners = faker.helpers.shuffle(users).slice(0, 8);
-  const volunteers = faker.helpers.shuffle(users).slice(8);
+  const organizationUsers = users.filter((u) => u.role === "ORGANIZATION");
+  const regularUsers = users.filter((u) => u.role === "USER");
+
+  const orgOwners = faker.helpers.shuffle(organizationUsers).slice(0, 8);
+  const volunteers = faker.helpers.shuffle(regularUsers);
 
   await Promise.all(
     users.slice(0, 5).map((u, idx) =>
@@ -405,7 +409,9 @@ async function main() {
       posts.push({ id: post.id, organizationId: org.id });
 
       // Ensure every post has at least one image.
-      const imageKeys = tpl.imageKeys ?? pickCombinedPostImages(1, 3);
+      const imageKeys = tpl.imageKeys?.length
+        ? tpl.imageKeys
+        : pickCombinedPostImages(1, 3);
 
       if (imageKeys?.length) {
         await prisma.postImages.createMany({

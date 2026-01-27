@@ -33,6 +33,7 @@ export async function searchUsers({
         subscriptionType: true,
         onboardingFinished: true,
       },
+      take: 5,
     });
 
     const organizations = await tx.organization.findMany({
@@ -58,6 +59,7 @@ export async function searchUsers({
           },
         },
       },
+      take: 5,
     });
     return {
       users,

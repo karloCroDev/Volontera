@@ -121,7 +121,6 @@ export async function updatePostService(data: UpdatePostArgs) {
     }),
   );
 
-  console.log(data);
   // Maybe return if I want to see it immediately!
   await updatePost({
     postId: data.postId,

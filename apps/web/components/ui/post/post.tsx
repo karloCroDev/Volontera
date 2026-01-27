@@ -47,7 +47,7 @@ export const Post: React.FC<{
 		? images?.[singlePostImage.imageUrl]
 		: undefined;
 	return (
-		<div className="border-input-border bg-muted rounded-xl border px-8 py-6 shadow-xl">
+		<div className="border-input-border bg-muted flex flex-col rounded-xl border px-8 py-6 shadow-xl">
 			<div className="mb-8 flex gap-4">
 				<Link
 					href={`/organization/${post.organizationId}`}
@@ -73,7 +73,12 @@ export const Post: React.FC<{
 				</Link>
 
 				<div className="ml-auto flex gap-2">
-					{hasAnAdminAccess && <DeletePostDialog postId={post.id} />}
+					{hasAnAdminAccess && (
+						<DeletePostDialog
+							postId={post.id}
+							organizationId={post.organizationId}
+						/>
+					)}
 					{!isInsideOrganization && (
 						<LinkAsButton
 							href={`/organization/${post.organizationId}`}
@@ -85,7 +90,12 @@ export const Post: React.FC<{
 						</LinkAsButton>
 					)}
 
-					{hasAnAdminAccess && <EditPostDialog postId={post.id} />}
+					{hasAnAdminAccess && (
+						<EditPostDialog
+							postId={post.id}
+							organizationId={post.organizationId}
+						/>
+					)}
 				</div>
 			</div>
 			<Link
@@ -121,7 +131,7 @@ export const Post: React.FC<{
 				</div>
 			)}
 
-			<div className="mt-4">
+			<div className="mb-6 mt-4">
 				{post.postImages.length > 1 ? (
 					<Carousel
 						slides={post.postImages.map(({ imageUrl, id }) => {
@@ -158,9 +168,9 @@ export const Post: React.FC<{
 				)}
 			</div>
 
-			<div className="mt-6 flex items-center gap-8">
+			<div className="mt-auto flex items-center gap-8">
 				<div className="flex items-center gap-2">
-					Written by:
+					By:
 					<Avatar
 						imageProps={{
 							src: post.author.image ? images?.[post.author.image] : undefined,
@@ -183,8 +193,8 @@ export const Post: React.FC<{
 							lastname: post.author.lastName,
 						})}
 					</Link>
-					<div className="bg-muted-foreground h-5.5 w-px" />
-					<p className="text-muted-foreground text-sm">
+					<div className="bg-muted-foreground h-5.5 hidden w-px md:block" />
+					<p className="text-muted-foreground hidden text-sm md:block">
 						{formatTime(new Date(post.createdAt))}
 					</p>
 				</div>

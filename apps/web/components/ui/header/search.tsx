@@ -17,7 +17,7 @@ import { Avatar } from '@/components/ui/avatar';
 // Hooks
 import { useSearch } from '@/hooks/data/search';
 import { useDebounce } from '@/hooks/utils/useDebounce';
-import { convertToFullname } from '@/lib/utils/converter';
+import { convertToFullname, convertToPascalCase } from '@/lib/utils/converter';
 
 export const Search = () => {
 	const isMobile = useIsMobile();
@@ -102,7 +102,7 @@ export const Search = () => {
 										firstname: user.firstName,
 										lastname: user.lastName,
 									})}
-									info={user.email}
+									info={convertToPascalCase(user.role!.replaceAll('-', ' '))}
 									mainLink={`/profile/${user.id}`}
 									// TODO: See how I handled if there is no conversation ID, but the message still works
 									chatLink={`/direct-messages?user=${user.id}&conversationId`}
