@@ -20,11 +20,8 @@ export const homeQueryKeys = {
 		[...homeQueryKeys.all, 'posts', feed, limit] as const,
 };
 
-export const useInfiniteHomePosts = ({
-	data,
-	options,
-}: {
-	data: RetrieveAlgoPostsSchemaArgs;
+export const useInfiniteHomePosts = (
+	data: RetrieveAlgoPostsSchemaArgs,
 	options?: Omit<
 		UseInfiniteQueryOptions<
 			RetrieveHomePostsResponse,
@@ -34,8 +31,8 @@ export const useInfiniteHomePosts = ({
 			number
 		>,
 		'queryKey' | 'queryFn' | 'initialPageParam' | 'getNextPageParam'
-	>;
-}) => {
+	>
+) => {
 	const query = useInfiniteQuery({
 		queryKey: homeQueryKeys.feed(data.filter, data.limit),
 		initialPageParam: 0,

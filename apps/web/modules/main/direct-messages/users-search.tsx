@@ -24,8 +24,9 @@ export const UsersSearch = withReactQueryProvider(() => {
 	const [query, setQuery] = React.useState('');
 	// TODO: Find out if there is some problems with fetching this data
 	const debouncedQuery = useDebounce(query);
-	const { data } = useSearchAllUsers(
+	const { data, isPending } = useSearchAllUsers(
 		{
+			// Debouncam vrijednost ako je duzina veca od 2 karaktera (bolji iskustvo za korisnika)
 			query: debouncedQuery,
 		},
 		{
@@ -45,7 +46,7 @@ export const UsersSearch = withReactQueryProvider(() => {
 				},
 			}}
 		>
-			{query &&
+			{(query !== debouncedQuery || isPending) &&
 				[...Array(4)].map((_, indx) => (
 					<ComboBoxItems key={indx}>
 						<UsersSidebarSkeleton />

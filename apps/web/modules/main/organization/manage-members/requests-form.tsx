@@ -74,7 +74,7 @@ export const RequestsForm: React.FC<{
 	};
 
 	return (
-		<div className="border-input-border min-h-1/2 max-h-3/4 overflow-scroll rounded-xl border shadow-xl">
+		<div className="border-input-border min-h-1/2 max-h-3/4 flex flex-col overflow-scroll rounded-xl border shadow-xl">
 			<div className="border-input-border bg-muted flex items-center justify-between border-b px-6 py-4">
 				<CheckboxWithLabel
 					checkboxVisuallyProps={{
@@ -113,74 +113,79 @@ export const RequestsForm: React.FC<{
 					</div>
 				)}
 			</div>
-
-			<Accordion
-				type="multiple"
-				items={requests.requests.map((request) => ({
-					value: `item-${request.id}`,
-					trigger: (
-						<div
-							className="border-input-border flex w-full items-center gap-4 border-t px-6 py-3 lg:gap-6"
-							key={request.id}
-						>
-							<Checkbox
-								className="group"
-								isSelected={ids.includes(request.requester.id)}
-								onChange={(val) => {
-									if (val) {
-										setIds((prev) => [...prev, request.requester.id]);
-									} else {
-										setIds((prev) =>
-											prev.filter((id) => id !== request.requester.id)
-										);
-									}
-								}}
+			{requests.requests.length > 0 ? (
+				<Accordion
+					type="multiple"
+					items={requests.requests.map((request) => ({
+						value: `item-${request.id}`,
+						trigger: (
+							<div
+								className="border-input-border flex w-full items-center gap-4 border-t px-6 py-3 lg:gap-6"
+								key={request.id}
 							>
-								<CheckboxVisually variant="secondary" />
-							</Checkbox>
-
-							<Link
-								href={`/profile/${request.requester.id}`}
-								className="flex items-center gap-4"
-							>
-								<Avatar
-									size="sm"
-									imageProps={{
-										src: request.requester.image
-											? images?.urls[request.requester.image]
-											: undefined,
+								<Checkbox
+									className="group"
+									isSelected={ids.includes(request.requester.id)}
+									onChange={(val) => {
+										if (val) {
+											setIds((prev) => [...prev, request.requester.id]);
+										} else {
+											setIds((prev) =>
+												prev.filter((id) => id !== request.requester.id)
+											);
+										}
 									}}
-									isVerified={request.requester.subscriptionTier === 'PRO'}
 								>
-									{convertToFullname({
-										firstname: request.requester.firstName || '',
-										lastname: request.requester.lastName || '',
-									})}
-								</Avatar>
+									<CheckboxVisually variant="secondary" />
+								</Checkbox>
 
-								<p className="text-muted-foreground text-sm underline-offset-2 hover:underline">
-									{convertToFullname({
-										firstname: request.requester.firstName || '',
-										lastname: request.requester.lastName || '',
-									})}
-								</p>
-							</Link>
+								<Link
+									href={`/profile/${request.requester.id}`}
+									className="flex items-center gap-4"
+								>
+									<Avatar
+										size="sm"
+										imageProps={{
+											src: request.requester.image
+												? images?.urls[request.requester.image]
+												: undefined,
+										}}
+										isVerified={request.requester.subscriptionTier === 'PRO'}
+									>
+										{convertToFullname({
+											firstname: request.requester.firstName || '',
+											lastname: request.requester.lastName || '',
+										})}
+									</Avatar>
 
-							<ChevronDown className="ml-auto transition-transform duration-300 group-data-[state=closed]:rotate-0 group-data-[state=open]:rotate-180" />
-						</div>
-					),
-					contentProps: {
-						children: (
-							<div className="p-4">
-								<h4 className="mb-4 text-lg font-semibold underline underline-offset-4">
-									{request.title}
-								</h4>
-								<Markdown>{request.content}</Markdown>
+									<p className="text-muted-foreground text-sm underline-offset-2 hover:underline">
+										{convertToFullname({
+											firstname: request.requester.firstName || '',
+											lastname: request.requester.lastName || '',
+										})}
+									</p>
+								</Link>
+
+								<ChevronDown className="ml-auto transition-transform duration-300 group-data-[state=closed]:rotate-0 group-data-[state=open]:rotate-180" />
 							</div>
 						),
-					},
-				}))}
-			/>
+						contentProps: {
+							children: (
+								<div className="p-4">
+									<h4 className="mb-4 text-lg font-semibold underline underline-offset-4">
+										{request.title}
+									</h4>
+									<Markdown>{request.content}</Markdown>
+								</div>
+							),
+						},
+					}))}
+				/>
+			) : (
+				<p className="text-muted-foreground my-auto text-center">
+					No requests to join the organization.
+				</p>
+			)}
 		</div>
 	);
 };

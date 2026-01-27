@@ -154,15 +154,18 @@ export const Post: React.FC<{
 						})}
 					/>
 				) : (
-					post.postImages.length === 1 &&
-					singlePostImageSrc && (
+					post.postImages.length === 1 && (
 						<div className="rouded-md border-input-border relative mt-4 aspect-[4/3] max-h-[600px] w-full rounded border">
-							<Image
-								src={singlePostImageSrc}
-								alt="Post image"
-								fill
-								className="object-contain"
-							/>
+							{singlePostImageSrc ? (
+								<Image
+									src={singlePostImageSrc}
+									alt="Post image"
+									fill
+									className="object-contain"
+								/>
+							) : (
+								<div className="bg-muted-foreground/20 size-full animate-pulse" />
+							)}
 						</div>
 					)
 				)}

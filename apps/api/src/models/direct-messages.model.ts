@@ -101,6 +101,7 @@ export async function searchAllUsers({
       ],
     },
     orderBy: [{ updatedAt: "desc" }, { createdAt: "desc" }],
+    take: 5,
   });
 }
 

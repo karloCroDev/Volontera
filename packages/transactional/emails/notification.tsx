@@ -20,7 +20,6 @@ export const Notification: React.FC<{
 	firstName: string;
 	notificationsCount: number;
 }> = ({ firstName, notificationsCount }) => {
-	console.log(process.env.NEXT_PUBLIC_URL);
 	return (
 		<Html>
 			<Tailwind>
