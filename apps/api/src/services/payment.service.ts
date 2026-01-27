@@ -26,7 +26,6 @@ export async function webhookService({
   sig: string;
   body: unknown;
 }) {
-  console.log("Webhook received");
   if (typeof body !== "string" && !(body instanceof Buffer)) {
     return toastResponseOutput({
       status: 400,
@@ -97,6 +96,7 @@ export async function webhookService({
           pricingId: null,
         });
 
+        console.log(subscription.metadata);
         if (subscription.metadata?.userId) {
           // TODO: If this doesn't work then I need to handle with the customerId
           await createNotification({

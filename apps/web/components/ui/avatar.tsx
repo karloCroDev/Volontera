@@ -86,8 +86,26 @@ export const Avatar: React.FC<
 			</div>
 
 			{isVerified && (
-				<div className="bg-pending absolute -right-2 -top-1 rounded-full p-1">
-					<Star className="size-3.5 text-white" />
+				<div
+					className={twJoin(
+						'bg-pending absolute rounded-full p-1',
+						size === 'sm' ||
+							size === 'md' ||
+							size === 'xs' ||
+							size === 'lg' ||
+							size === 'xl' ||
+							size === '2xl'
+							? '-right-2 -top-1'
+							: 'right-1.5 top-2'
+					)}
+				>
+					<Star
+						className={twJoin(
+							'size-3.5 text-white',
+							size === 'xs' && 'size-2!',
+							size === 'md' ? 'size-3' : 'size-5'
+						)}
+					/>
 				</div>
 			)}
 		</div>

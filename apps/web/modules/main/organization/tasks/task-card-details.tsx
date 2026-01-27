@@ -236,7 +236,6 @@ export const TaskCardDetails: React.FC<{
 									}
 								);
 							}}
-							name={data?.taskInfo?.organizationTask.title || 'work'}
 						/>
 						<Button
 							size="sm"

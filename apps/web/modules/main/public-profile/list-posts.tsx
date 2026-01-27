@@ -57,13 +57,13 @@ export const ListPosts = () => {
 				}
 				contentProps={{
 					children: (
-						<div className="mt-6 flex flex-col gap-6">
+						<div className="mt-8 grid grid-cols-1 gap-4 xl:grid-cols-2">
 							{data && data.posts.length > 0 ? (
 								data.posts.map((post) => (
 									<Post key={post.id} post={post} images={images?.urls} />
 								))
 							) : (
-								<p className="text-muted-foreground">
+								<p className="text-muted-foreground col-span-2 text-center">
 									This user has not made any posts.
 								</p>
 							)}

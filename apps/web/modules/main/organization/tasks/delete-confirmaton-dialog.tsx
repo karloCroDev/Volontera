@@ -8,12 +8,12 @@ import { Button } from '@/components/ui/button';
 import { Dialog } from '@/components/ui/dialog';
 
 export const DeleteConfirmationDialog: React.FC<{
-	name: string;
+	type?: 'task' | 'board';
 	action: () => void;
-}> = ({ name, action }) => {
+}> = ({ type = 'task', action }) => {
 	return (
 		<Dialog
-			title={`Delete board ${name}?`}
+			title={`Delete ${type}?`}
 			triggerChildren={
 				<Button
 					type="button"
@@ -21,15 +21,14 @@ export const DeleteConfirmationDialog: React.FC<{
 					colorScheme="destructive"
 					size="md"
 				>
-					{/* Enter board name */}
-					Delete {name}
+					Delete {type}
 				</Button>
 			}
 			// isOpen={isOpen}
 			// onOpenChange={setIsOpen}
 		>
 			<p className="text-muted-foreground">
-				Are you sure you want to delete your board? This action cannot be
+				Are you sure you want to delete your {type}? This action cannot be
 				undone.
 			</p>
 

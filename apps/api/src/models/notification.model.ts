@@ -73,6 +73,7 @@ export async function createNotification({
     },
   });
 }
+
 export async function createNotifications(data: NotificationCreationArgs[]) {
   return await prisma.notification.createMany({
     data,

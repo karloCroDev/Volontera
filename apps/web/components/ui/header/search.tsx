@@ -104,8 +104,7 @@ export const Search = () => {
 									})}
 									info={convertToPascalCase(user.role!.replaceAll('-', ' '))}
 									mainLink={`/profile/${user.id}`}
-									// TODO: See how I handled if there is no conversation ID, but the message still works
-									chatLink={`/direct-messages?user=${user.id}&conversationId`}
+									chatLink={`/direct-messages?userId=${user.id}&conversationId`}
 								/>
 							))
 						) : (

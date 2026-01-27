@@ -6,8 +6,8 @@ type RankingPostInputArgs = {
   comments: number;
   images: number;
   orgFollowers: number;
-  isAuthorPremium: boolean;
-  isOrgPremium: boolean;
+  isAuthorPro: boolean;
+  isOrgPro: boolean;
   createdAt: Date;
 };
 
@@ -39,8 +39,8 @@ export function calculatePostRankingScore(input: RankingPostInputArgs): number {
     rankingWeights.orgFollowers * Math.log1p(input.orgFollowers);
 
   const premium =
-    (input.isAuthorPremium ? rankingWeights.authorPremium : 0) +
-    (input.isOrgPremium ? rankingWeights.orgPremium : 0);
+    (input.isAuthorPro ? rankingWeights.authorPremium : 0) +
+    (input.isOrgPro ? rankingWeights.orgPremium : 0);
 
   const engagementBoost =
     Math.sqrt(Math.max(0, engagement)) *

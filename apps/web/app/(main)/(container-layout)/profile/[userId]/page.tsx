@@ -58,7 +58,7 @@ export default async function PublicProfilePage({
 
 				{user.id !== session.id && (
 					<LinkAsButton
-						href={`/direct-messages?user=${userId}`}
+						href={`/direct-messages?userId=${userId}`}
 						variant="outline"
 						colorScheme="bland"
 						className="p-3"

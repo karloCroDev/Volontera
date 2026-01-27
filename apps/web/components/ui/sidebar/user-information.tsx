@@ -68,6 +68,7 @@ export const UserInformation: React.FC<{
 							}}
 							colorScheme="gray"
 							size="md"
+							isVerified={user.subscriptionTier === 'PRO'}
 						>
 							{convertToFullname({
 								firstname: user.firstName,
@@ -157,7 +158,7 @@ export const UserInformation: React.FC<{
 									>
 										Manage plans
 										<p className="text-muted-foreground ml-auto text-xs">
-											{user.subscriptionTier === 'PRO' ? 'Premium' : 'Free'}
+											{user.subscriptionTier === 'PRO' ? 'Pro' : 'Free'}
 										</p>
 									</LinkAsButton>
 								</li>

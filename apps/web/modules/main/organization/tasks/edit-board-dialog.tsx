@@ -72,7 +72,7 @@ export const EditBoardDialog: React.FC<{
 								}
 							)
 						}
-						name={title}
+						type="board"
 					/>
 					<Button type="submit" size="md">
 						Submit

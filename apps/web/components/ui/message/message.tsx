@@ -26,14 +26,14 @@ export const Message: React.FC<
 	...rest
 }) => {
 	return (
-		<>
-			{images}
+		<div className="mb-4 flex flex-col gap-4">
+			<div className={twJoin(variant === 'primary' && 'ml-auto')}>{images}</div>
 
 			<div
 				{...rest}
 				className={twMerge(
 					'group flex gap-4 md:gap-8',
-					variant === 'secondary' && 'ml-auto flex-row-reverse',
+					variant === 'primary' && 'flex-row-reverse',
 
 					className
 				)}
@@ -65,7 +65,7 @@ export const Message: React.FC<
 					<DeleteMessageButton action={deleteAction} />
 				)}
 			</div>
-		</>
+		</div>
 	);
 };
 
