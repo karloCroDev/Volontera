@@ -12,6 +12,7 @@ import { useDeleteHelpConversation } from '@/hooks/data/help';
 
 // Lib
 import { toast } from '@/lib/utils/toast';
+import { Trash2 } from 'lucide-react';
 
 export const DeleteConversationDialog = () => {
 	const [open, setOpen] = React.useState(false);
@@ -22,8 +23,14 @@ export const DeleteConversationDialog = () => {
 			isOpen={open}
 			onOpenChange={setOpen}
 			triggerChildren={
-				<Button variant="outline" colorScheme="destructive">
-					Delete Organization
+				<Button
+					colorScheme="destructive"
+					variant="outline"
+					className="p-2"
+					isLoading={isPending}
+					isDisabled={isPending}
+				>
+					<Trash2 />
 				</Button>
 			}
 			title="Delete your help conversation?"

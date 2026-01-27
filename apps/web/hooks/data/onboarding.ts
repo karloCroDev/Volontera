@@ -33,6 +33,7 @@ export const useAppType = (
 		mutationFn: (values: AppTypeSchemaArgs) => appType(values),
 		onSuccess: async (...args) => {
 			await queryClient.invalidateQueries({ queryKey: ['onboarding'] });
+			await queryClient.invalidateQueries({ queryKey: ['session'] });
 			await options?.onSuccess?.(...args);
 		},
 		...options,
@@ -53,6 +54,7 @@ export const useAdditionalInformation = (
 			additionalInformation(values),
 		onSuccess: async (...args) => {
 			await queryClient.invalidateQueries({ queryKey: ['onboarding'] });
+			await queryClient.invalidateQueries({ queryKey: ['session'] });
 			await options?.onSuccess?.(...args);
 		},
 		...options,
@@ -68,6 +70,7 @@ export const useSkipAdditionalInformation = (
 		mutationFn: skipAdditionalInformation,
 		onSuccess: async (...args) => {
 			await queryClient.invalidateQueries({ queryKey: ['onboarding'] });
+			await queryClient.invalidateQueries({ queryKey: ['session'] });
 			await options?.onSuccess?.(...args);
 		},
 		...options,

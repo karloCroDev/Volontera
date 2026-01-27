@@ -1,5 +1,4 @@
 // External packages
-import { cache } from 'react';
 import {
 	useMutation,
 	UseMutationOptions,
@@ -30,7 +29,7 @@ import { User } from '../../../../packages/database/generated/prisma';
 export const useSession = () => {
 	return useQuery<UserResponse, ServerHandleResponse<false>>({
 		queryKey: ['session'],
-		queryFn: cache(clientSession),
+		queryFn: clientSession,
 		staleTime: 5 * 60 * 1000,
 	});
 };

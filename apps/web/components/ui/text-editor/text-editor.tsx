@@ -93,7 +93,7 @@ export const TextEditor: React.FC<
 		<div
 			{...rest}
 			className={twMerge(
-				'border-input-border rounded-md border p-4 px-4',
+				'border-input-border rounded-md border p-4 px-4 shadow',
 				className
 			)}
 		>

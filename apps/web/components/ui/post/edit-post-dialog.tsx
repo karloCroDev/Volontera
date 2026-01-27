@@ -5,6 +5,8 @@ import * as React from 'react';
 import { EllipsisVertical } from 'lucide-react';
 import { Form } from 'react-aria-components';
 import { Controller, useForm } from 'react-hook-form';
+import { useRouter } from 'next/navigation';
+import { zodResolver } from '@hookform/resolvers/zod';
 
 // Components
 import { Button } from '@/components/ui/button';
@@ -24,9 +26,9 @@ import { UpdatePostArgs, updatePostSchema } from '@repo/schemas/post';
 // Hooks
 import { useRetrievePostData, useUpadatePost } from '@/hooks/data/post';
 import { useGetImageFromKeys } from '@/hooks/data/image';
-import { useRouter } from 'next/navigation';
+
+// Lib
 import { toast } from '@/lib/utils/toast';
-import { zodResolver } from '@hookform/resolvers/zod';
 
 export const EditPostDialog: React.FC<{
 	postId: string;
@@ -52,18 +54,25 @@ export const EditPostDialog: React.FC<{
 			content: '',
 			images: [],
 			organizationId,
+			postId,
 		},
 	});
 
 	React.useEffect(() => {
-		const localImages = images.filter(isLocalImageItem);
 		setValue(
 			'images',
-			localImages.map((img) => ({
-				filename: img.filename,
-				contentType: img.contentType,
-				size: img.size,
-			})),
+			images.flatMap((img): Array<UpdatePostArgs['images'][number]> => {
+				if (isLocalImageItem(img)) {
+					return [
+						{
+							filename: img.filename,
+							contentType: img.contentType,
+							size: img.size,
+						},
+					];
+				}
+				return img.imageUrl ? [img.imageUrl] : [];
+			}),
 			{ shouldDirty: true, shouldValidate: true }
 		);
 	}, [images, setValue]);
@@ -85,19 +94,20 @@ export const EditPostDialog: React.FC<{
 				})
 			);
 			reset({
+				postId,
 				title: data.post.title,
 				content: data.post.content,
 				organizationId: data.post.organizationId,
-
 				images: data.post.postImages.map((img) => img.imageUrl),
 			});
 		}
-	}, [data, image, reset]);
+	}, [data, image, postId, reset]);
 
 	const { mutate, isPending } = useUpadatePost();
 
 	const router = useRouter();
 	const onSubmit = (data: UpdatePostArgs) => {
+		console.log(data);
 		mutate(
 			{
 				data: {
@@ -115,12 +125,11 @@ export const EditPostDialog: React.FC<{
 							return img.imageUrl;
 						})
 						.filter((img) => img !== undefined),
-
-					postId,
 				},
 				files: images
 					.filter((img) => img.kind === 'local')
 					.map((img) => img.file),
+				...data,
 			},
 			{
 				onSuccess: ({ title, message }) => {
@@ -135,6 +144,7 @@ export const EditPostDialog: React.FC<{
 		);
 	};
 
+	console.log(errors);
 	return (
 		<Dialog
 			title="Edit post"

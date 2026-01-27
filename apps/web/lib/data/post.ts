@@ -35,11 +35,9 @@ export async function createPost({
 	}
 }
 
-export async function deletePost({ postId }: DeletePostArgs) {
+export async function deletePost(data: DeletePostArgs) {
 	try {
-		const res = await API().delete(`/post`, {
-			data: { postId },
-		});
+		const res = await API().delete(`/post`, { data });
 		return res.data;
 	} catch (err) {
 		catchError(err);

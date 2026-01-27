@@ -1,5 +1,5 @@
 // External packages
-import { array, string, z } from "zod";
+import { z } from "zod";
 
 // Schemas
 import { uploadImageSchema } from "./image";

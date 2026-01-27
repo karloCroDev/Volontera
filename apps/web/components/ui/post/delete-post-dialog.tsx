@@ -19,7 +19,11 @@ export const DeletePostDialog: React.FC<{
 	const { mutate, isPending } = useDeletePost({
 		onSuccess: () => {
 			queryClient.setQueriesData(
-				{ queryKey: ['posts'], exact: false }, // Targets any key starting with 'posts'
+				{
+					queryKey: ['posts', organizationId],
+					predicate: ({ queryKey }) =>
+						queryKey[0] === 'posts' && queryKey[1] === organizationId,
+				},
 				(oldData: RetrieveOrganizationPostsResponse | undefined) => {
 					if (!oldData) return oldData;
 					return {

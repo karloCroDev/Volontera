@@ -52,9 +52,6 @@ export async function additionalInformation(req: Request, res: Response) {
         role: result.body.user.role,
         onboardingFinished: true,
       });
-
-      // Prevent sending user data in response (for security reasons) --> telling ts to ignore the formatted strucutre of object with user
-      delete (result.body as any).user;
     }
 
     return res.status(result.status).json(result.body);
@@ -74,8 +71,6 @@ export async function skipAdditionalInformation(req: Request, res: Response) {
         role: result.body.user.role,
         onboardingFinished: true,
       });
-      // Prevent sending user data in response
-      delete (result.body as any).user;
     }
     return res.status(result.status).json(result.body);
   } catch (err) {

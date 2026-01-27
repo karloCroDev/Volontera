@@ -88,20 +88,15 @@ export const Avatar: React.FC<
 				<div
 					className={twJoin(
 						'bg-pending absolute rounded-full p-1',
-						size === 'sm' ||
-							size === 'md' ||
-							size === 'xs' ||
-							size === 'lg' ||
-							size === 'xl' ||
-							size === '2xl'
-							? '-right-2 -top-1'
-							: 'right-1.5 top-2'
+						size === 'xl' || size === '2xl' || size === '4xl' || size === 'full'
+							? 'right-2 top-1'
+							: '-right-1 -top-1'
 					)}
 				>
 					<Star
 						className={twJoin(
 							'size-3.5 text-white',
-							size === 'xs' && 'size-2!',
+							(size === 'xs' || size === 'sm') && 'size-2!',
 							size === 'md' ? 'size-3' : 'size-5'
 						)}
 					/>

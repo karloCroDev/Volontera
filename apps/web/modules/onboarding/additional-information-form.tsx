@@ -83,6 +83,7 @@ export const AdditionalInformationForm = withReactQueryProvider(() => {
 						content: message,
 						variant: 'success',
 					});
+					router.refresh();
 					router.push('/home');
 				},
 				onError(err) {
@@ -103,6 +104,7 @@ export const AdditionalInformationForm = withReactQueryProvider(() => {
 						content: message,
 						variant: 'success',
 					});
+					router.refresh();
 					router.push('/home');
 				},
 				onError(err) {
@@ -114,7 +116,6 @@ export const AdditionalInformationForm = withReactQueryProvider(() => {
 			}
 		);
 	};
-	console.log(errors);
 	return (
 		<Form
 			className="mt-20 flex flex-col items-center gap-6 lg:gap-8"
