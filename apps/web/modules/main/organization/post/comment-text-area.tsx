@@ -131,6 +131,7 @@ export const CommentTextArea = withReactQueryProvider(() => {
 									imageProps={{
 										src: user?.image || '',
 									}}
+									isVerified={user.subscriptionTier === 'PRO'}
 									size="sm"
 									colorScheme="gray"
 									className="mt-4 self-start"

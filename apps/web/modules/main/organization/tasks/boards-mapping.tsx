@@ -51,6 +51,6 @@ export const BoardsMapping: React.FC<{
 			/>
 		))
 	) : (
-		<p className="text-muted-foreground text-center">No boards found.</p>
+		<p className="text-muted-foreground mx-auto w-fit">No boards found.</p>
 	);
 });

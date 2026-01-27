@@ -4,7 +4,6 @@ import { UserLock } from 'lucide-react';
 
 // Components
 import { Avatar } from '@/components/ui/avatar';
-import { Button } from '@/components/ui/button';
 import { OrganizationRoutingHeader } from '@/modules/main/organization/common/organization-routing-header';
 import { LinkAsButton } from '@/components/ui/link-as-button';
 
@@ -39,6 +38,10 @@ export default async function OrganizationFeaturesLayout({
 					}}
 					size="xl"
 					colorScheme="gray"
+					isVerified={
+						organizationDetailsById.organization.owner.subscriptionTier ===
+						'PRO'
+					}
 				>
 					{organizationDetailsById.organization.name}
 				</Avatar>

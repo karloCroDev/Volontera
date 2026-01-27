@@ -33,6 +33,13 @@ export async function listOrganizationsOrganizator(userId: User["id"]) {
         },
       ],
     },
+    include: {
+      owner: {
+        omit: {
+          password: true,
+        },
+      },
+    },
   });
 }
 
@@ -43,12 +50,26 @@ export async function listOrganizationsOrganizatorGrouped(userId: User["id"]) {
         where: {
           ownerId: userId,
         },
+        include: {
+          owner: {
+            omit: {
+              password: true,
+            },
+          },
+        },
       }),
       prisma.organization.findMany({
         where: {
           organizationFollowers: {
             some: {
               followerUserId: userId,
+            },
+          },
+        },
+        include: {
+          owner: {
+            omit: {
+              password: true,
             },
           },
         },
@@ -65,6 +86,13 @@ export async function listOrganizationsOrganizatorGrouped(userId: User["id"]) {
               },
             },
           ],
+        },
+        include: {
+          owner: {
+            omit: {
+              password: true,
+            },
+          },
         },
       }),
     ]);
@@ -138,12 +166,26 @@ export async function listOrganizationsUser(userId: User["id"]) {
             },
           },
         },
+        include: {
+          owner: {
+            omit: {
+              password: true,
+            },
+          },
+        },
       }),
       prisma.organization.findMany({
         where: {
           organizationMembers: {
             some: {
               userId,
+            },
+          },
+        },
+        include: {
+          owner: {
+            omit: {
+              password: true,
             },
           },
         },
@@ -180,6 +222,13 @@ export async function searchOrganizationsByName(query: string) {
       name: {
         contains: query,
         mode: "insensitive",
+      },
+    },
+    include: {
+      owner: {
+        omit: {
+          password: true,
+        },
       },
     },
     take: 10,
@@ -243,6 +292,7 @@ export async function getOrganizationDetailsById({
             },
           },
         },
+
         orderBy: {
           createdAt: "asc",
         },
@@ -265,7 +315,7 @@ export async function getOrganizationDetailsById({
         orderBy: {
           createdAt: "asc",
         },
-        take: 5,
+        take: 3,
       }),
     ]);
 

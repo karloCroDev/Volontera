@@ -33,13 +33,13 @@ export const MessageForm = withReactQueryProvider(() => {
 
 	const onSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
-		if (!searchParams.get('user') || !value) return;
+		if (!searchParams.get('userId') || !value) return;
 
 		mutate(
 			{
 				data: {
 					content: value,
-					particpantId: searchParams.get('user') || '',
+					particpantId: searchParams.get('userId') || '',
 					images: images
 						.filter(isLocalImageItem)
 						.map(({ contentType, filename, size }) => ({

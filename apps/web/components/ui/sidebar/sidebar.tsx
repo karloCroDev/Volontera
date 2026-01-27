@@ -43,7 +43,7 @@ export const Sidebar: React.FC<{
 		<>
 			<aside
 				className={twJoin(
-					`border-input-border relative mx-10 my-7 hidden h-[calc(100vh-28px-28px)] rounded-lg border p-4 transition-all duration-300 lg:flex lg:flex-col`,
+					`border-input-border relative mx-10 my-7 hidden h-[calc(100vh-28px-28px)] rounded-lg border p-4 shadow transition-all duration-300 lg:flex lg:flex-col`,
 					desktopOpen && 'w-80',
 					!desktopOpen && 'w-36 items-center'
 				)}
@@ -53,7 +53,7 @@ export const Sidebar: React.FC<{
 					colorScheme="bland"
 					isFullyRounded
 					onClick={() => setDesktopOpen((prev) => !prev)}
-					className="bg-background top-22 absolute -right-6 z-[1] p-2"
+					className="bg-background top-22 absolute -right-6 p-2"
 				>
 					<ChevronLast
 						className={twJoin(
@@ -71,7 +71,9 @@ export const Sidebar: React.FC<{
 					</Link>
 				)}
 				<hr className="bg-input-border my-6 h-px w-full border-0" />
-				<div className={`flex flex-col ${desktopOpen ? 'gap-4' : 'gap-6'}`}>
+				<div
+					className={`no-scrollbar flex flex-col overflow-y-scroll ${desktopOpen ? 'gap-4' : 'gap-6'}`}
+				>
 					<Link href="/home">
 						{desktopOpen ? (
 							<SidebarItem

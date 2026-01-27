@@ -2,10 +2,8 @@
 import { DataWithFiles } from '@repo/types/upload';
 
 // Schemas
-import { MessageArgs } from '@repo/schemas/direct-messages';
 import { PresignImagesSchemaArgs } from '@repo/schemas/image';
 import {
-	CreateOrganizationGroupChatMessageArgs,
 	DeleteOrganizationGroupChatMessageArgs,
 	OrganizationGroupChatMessageArgs,
 	RetrieveAllOrganizationGroupChatMessagesArgs,

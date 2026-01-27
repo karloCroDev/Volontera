@@ -61,7 +61,7 @@ export const UserInformation: React.FC<{
 
 			<DialogTrigger>
 				{desktopOpen ? (
-					<AriaButton className="border-input-border bg-muted hover:bg-muted/80 flex h-fit w-full cursor-pointer items-center gap-4 rounded-lg border p-3 outline-none sm:w-3/4 md:w-3/5 lg:w-full">
+					<AriaButton className="border-input-border bg-muted hover:bg-muted/80 flex h-fit w-full cursor-pointer items-center gap-4 rounded-lg border p-3 shadow-md outline-none sm:w-3/4 md:w-3/5 lg:w-full">
 						<Avatar
 							imageProps={{
 								src: user.image ?? undefined,

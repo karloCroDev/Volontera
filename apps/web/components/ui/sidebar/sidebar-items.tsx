@@ -7,9 +7,6 @@ import { ButtonProps } from 'react-aria-components';
 import { Building2, ChevronDown, Plus } from 'lucide-react';
 import { useParams } from 'next/navigation';
 
-// Hooks
-import { useIsMobile } from '@/hooks/utils/useIsMobile';
-
 // Components
 import { Collapsible } from '@/components/ui/collapsible';
 import { Button } from '@/components/ui/button';
@@ -20,15 +17,16 @@ import {
 import { Avatar } from '@/components/ui/avatar';
 import { useSidebarContext } from '@/components/ui/sidebar/sidebar-provider';
 import { Indicators } from '@/components/ui/indicators';
+import { Dot } from '@/components/ui/dot';
 
 // Hooks
 import { useSession } from '@/hooks/data/user';
 import { useListOrganizations } from '@/hooks/data/organization';
 import { useGetImageFromKeys } from '@/hooks/data/image';
+import { useIsMobile } from '@/hooks/utils/useIsMobile';
 
 // Types
 import { ListOrganizationsOrganizatorResponse } from '@repo/types/organization';
-import { Dot } from '@/components/ui/dot';
 
 export const SidebarItem: React.FC<
 	React.ComponentPropsWithoutRef<'button'> &
@@ -66,7 +64,7 @@ export const Organizations = () => {
 	const { data: organizations, isLoading } = useListOrganizations(
 		user?.role || undefined,
 		{
-			options: { enabled: open },
+			enabled: open,
 		}
 	);
 
@@ -132,46 +130,52 @@ export const Organizations = () => {
 							)}
 						</ul>
 
-						{organizations?.ownedOrganizations && (
-							<Indicators>Managing</Indicators>
+						{user && user.role === 'ORGANIZATION' && (
+							<>
+								<Indicators>Managing</Indicators>
+								<ul className="ml-4">
+									{organizations?.ownedOrganizations &&
+										(organizations.ownedOrganizations.length > 0 ? (
+											organizations.ownedOrganizations.map((organization) => (
+												<OrganizationSidebarItem
+													key={organization.id}
+													organization={organization}
+													isSelected={organization.id === params.organizationId}
+													imageUrl={images?.urls[organization.avatarImage]}
+												/>
+											))
+										) : (
+											<p className="text-muted-foreground mt-4 text-center text-xs sm:text-sm lg:text-base">
+												No organizations found.
+											</p>
+										))}
+								</ul>
+							</>
 						)}
-						<ul className="ml-4">
-							{organizations?.ownedOrganizations &&
-								(organizations.ownedOrganizations.length > 0 ? (
-									organizations.ownedOrganizations.map((organization) => (
-										<OrganizationSidebarItem
-											key={organization.id}
-											organization={organization}
-											isSelected={organization.id === params.organizationId}
-											imageUrl={images?.urls[organization.avatarImage]}
-										/>
-									))
-								) : (
-									<p className="text-muted-foreground mt-4 text-center text-xs sm:text-sm lg:text-base">
-										No organizations found.
-									</p>
-								))}
-						</ul>
-						<Indicators>Attending</Indicators>
-						<ul className="ml-4">
-							{organizations &&
-							organizations.attendingOrganizations.length > 0 ? (
-								organizations.attendingOrganizations.map((organization) => (
-									<OrganizationSidebarItem
-										key={organization.id}
-										organization={organization}
-										isSelected={organization.id === params.organizationId}
-										imageUrl={
-											images?.urls[organization.avatarImage] || undefined
-										}
-									/>
-								))
-							) : (
-								<p className="text-muted-foreground mt-4 text-center text-xs sm:text-sm lg:text-base">
-									No organizations found.
-								</p>
-							)}
-						</ul>
+						{user && user.role === 'USER' && (
+							<>
+								<Indicators>Attending</Indicators>
+								<ul className="ml-4">
+									{organizations &&
+									organizations.attendingOrganizations.length > 0 ? (
+										organizations.attendingOrganizations.map((organization) => (
+											<OrganizationSidebarItem
+												key={organization.id}
+												organization={organization}
+												isSelected={organization.id === params.organizationId}
+												imageUrl={
+													images?.urls[organization.avatarImage] || undefined
+												}
+											/>
+										))
+									) : (
+										<p className="text-muted-foreground mt-4 text-center text-xs sm:text-sm lg:text-base">
+											No organizations found.
+										</p>
+									)}
+								</ul>
+							</>
+						)}
 						<Indicators>Following</Indicators>
 						<ul className="ml-4">
 							{organizations &&
@@ -212,7 +216,6 @@ export const Organizations = () => {
 export const OrganizationSidebarItem: React.FC<{
 	organization: ListOrganizationsOrganizatorResponse['attendingOrganizations'][0]; // Nebitno koja je organizacija, sve vrate isti tip podataka
 	isSelected?: boolean;
-
 	imageUrl?: string;
 }> = ({ organization, isSelected = false, imageUrl }) => {
 	const isMobile = useIsMobile();
@@ -235,6 +238,7 @@ export const OrganizationSidebarItem: React.FC<{
 					imageProps={{
 						src: imageUrl,
 					}}
+					isVerified={organization.owner.subscriptionTier === 'PRO'}
 					size={isMobile ? 'sm' : 'md'}
 					colorScheme={'gray'}
 				>

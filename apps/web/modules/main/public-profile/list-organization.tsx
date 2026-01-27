@@ -74,6 +74,7 @@ export const ListOrganizations = () => {
 											imageProps={{
 												src: image?.urls[organization.avatarImage],
 											}}
+											isVerified={organization.owner.subscriptionTier === 'PRO'}
 											colorScheme="gray"
 										>
 											{organization.name}

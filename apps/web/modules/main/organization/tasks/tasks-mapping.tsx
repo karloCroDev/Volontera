@@ -27,6 +27,7 @@ import { TaskCardDetails } from '@/modules/main/organization/tasks/task-card-det
 // Hooks
 import { useRetrieveAllBoardTasksArgs } from '@/hooks/data/organization-tasks';
 import { useMoveTask } from '@/hooks/data/organization-tasks';
+import { useRetrieveOrganizationMember } from '@/hooks/data/organization-managment';
 
 // Lib
 import { toast } from '@/lib/utils/toast';
@@ -50,6 +51,13 @@ export const TasksMapping: React.FC<{
 		| 'your-tasks'
 		| 'assigned-by-you'
 		| null;
+
+	const { data: member } = useRetrieveOrganizationMember({
+		organizationId: params.organizationId,
+	});
+	const canMoveTasks =
+		member?.organizationMember.role === 'ADMIN' ||
+		member?.organizationMember.role === 'OWNER';
 
 	const { mutate: mutateMoveTask } = useMoveTask();
 	const { data } = useRetrieveAllBoardTasksArgs(
@@ -87,10 +95,10 @@ export const TasksMapping: React.FC<{
 		);
 	};
 
-	console.log(tasks);
 	// Ova logika za drag and drop je rađena na ovaj način, po preporuci dokumentaciji react-aria-components za drag and drop: https://react-aria.adobe.com/examples/kanban
 	const { dragAndDropHooks } = useDragAndDrop<Task>({
 		getItems: (_keys, items) => {
+			if (!canMoveTasks) return [];
 			// Ovo je više manje samo da se podese podaci koji se salju prilikom drag and drop-a. Msm da je preglednije nego da se šalje item.id i sl.
 			return items.map((item) => ({
 				'task-id': item.id,
@@ -106,11 +114,12 @@ export const TasksMapping: React.FC<{
 				/>
 			);
 		},
-		acceptedDragTypes: ['task-id'],
+		acceptedDragTypes: canMoveTasks ? ['task-id'] : [],
 		getDropOperation: () => 'move',
 
 		// Moram hadleati dva slučaja: reorder unutar istog boarda i insert iz drugog boarda, te također i drop na root (van bilo koje liste)
 		onReorder: (e) => {
+			if (!canMoveTasks) return;
 			if (!e.target?.key) return;
 
 			const keys = Array.from(e.keys);
@@ -150,6 +159,7 @@ export const TasksMapping: React.FC<{
 			});
 		},
 		onInsert: async (e) => {
+			if (!canMoveTasks) return;
 			const dropped = e.items.filter(isTextDropItem);
 			const pairsRaw = await Promise.all(
 				dropped.map(async (i) => ({
@@ -261,6 +271,7 @@ export const TasksMapping: React.FC<{
 			});
 		},
 		onRootDrop: async (e) => {
+			if (!canMoveTasks) return;
 			// Ako je dropano na root onda je skoro isti proces
 			const dropped = e.items.filter(isTextDropItem);
 			const pairsRaw = await Promise.all(
@@ -349,7 +360,7 @@ export const TasksMapping: React.FC<{
 			items={data?.tasks ?? []}
 			aria-label="Tasks"
 			selectionMode="single"
-			dragAndDropHooks={dragAndDropHooks}
+			dragAndDropHooks={canMoveTasks ? dragAndDropHooks : undefined}
 			renderEmptyState={() => (
 				<div className="flex h-full items-center justify-center">
 					<p className="text-muted-foreground text-center">No tasks found.</p>
@@ -374,12 +385,14 @@ export const TasksMapping: React.FC<{
 							<TaskCardDetails taskId={task.id} boardId={boardId} />
 						</Dialog>
 
-						<AriaButton
-							slot="drag"
-							className="group-hover:text-muted-foreground hover:cursor-pointer"
-						>
-							<GripVertical className="size-4" />
-						</AriaButton>
+						{canMoveTasks ? (
+							<AriaButton
+								slot="drag"
+								className="group-hover:text-muted-foreground hover:cursor-pointer"
+							>
+								<GripVertical className="size-4" />
+							</AriaButton>
+						) : null}
 					</div>
 				</GridListItem>
 			)}

@@ -31,7 +31,7 @@ export const DeleteAccountDialog = () => {
 				undone.
 			</p>
 
-			{/* If use has password then he must enter password to enter the application */}
+			{/* Ako korisnik ima */}
 			<div className="mt-4 flex justify-center gap-4">
 				<Button
 					colorScheme="destructive"

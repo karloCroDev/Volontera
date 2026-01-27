@@ -4,71 +4,104 @@
 import * as React from 'react';
 import { Search } from 'lucide-react';
 
+import { useAsyncList } from 'react-stately';
+
 // Components
 import { ComboBoxItems, ComboBoxWrapper } from '@/components/ui/combo-box';
 
 // Schemas
 
 // Lib
-import { withReactQueryProvider } from '@/lib/utils/react-query';
+import { searchAllUsers } from '@/lib/data/direct-messages';
 
 // Hooks
-import { useSearchAllUsers } from '@/hooks/data/direct-messages';
 import { useDebounce } from '@/hooks/utils/useDebounce';
+
+// Modules
 import {
 	UsersSidebar,
 	UsersSidebarSkeleton,
 } from '@/modules/main/direct-messages/users-sidebar';
 
-export const UsersSearch = withReactQueryProvider(() => {
+// Types
+import { SearchResponse } from '@repo/types/search';
+
+export const UsersSearch = () => {
 	const [query, setQuery] = React.useState('');
-	// TODO: Find out if there is some problems with fetching this data
-	const debouncedQuery = useDebounce(query);
-	const { data } = useSearchAllUsers(
-		{
-			query: debouncedQuery,
+	const debouncedQuery = useDebounce(query, 300);
+	const isTyping = query !== debouncedQuery;
+
+	const list = useAsyncList<SearchResponse['users'][0]>({
+		async load({ filterText }) {
+			const q = (filterText ?? '').trim();
+			if (!q) return { items: [] };
+
+			const res = await searchAllUsers({ query: q });
+			return { items: (res?.users ?? []) as SearchResponse['users'][0][] };
 		},
-		{
-			enabled: debouncedQuery.length > 0,
-			refetchOnWindowFocus: false,
-		}
+	});
+
+	React.useEffect(
+		() => {
+			if (list.filterText !== debouncedQuery) {
+				list.setFilterText(debouncedQuery);
+			}
+		},
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+		[debouncedQuery, list.filterText, list.setFilterText]
 	);
+
+	const showLoading = query.trim().length > 0 && (isTyping || list.isLoading);
+	const showNoUsers =
+		debouncedQuery.trim().length > 0 && !showLoading && list.items.length === 0;
 
 	return (
 		<ComboBoxWrapper
+			inputValue={query}
+			onInputChange={setQuery}
+			defaultFilter={() => true}
+			menuTrigger="input"
 			inputProps={{
 				label: 'Search users...',
 				iconLeft: <Search className="size-4" />,
-				inputProps: {
-					onChange: (e) => setQuery(e.target.value),
-					value: query,
-				},
 			}}
 		>
-			{query &&
+			{showLoading &&
 				[...Array(4)].map((_, indx) => (
-					<ComboBoxItems key={indx}>
+					<ComboBoxItems
+						key={`loading-${indx}`}
+						id={`loading-${indx}`}
+						isDisabled
+					>
 						<UsersSidebarSkeleton />
 					</ComboBoxItems>
 				))}
-			{data &&
-				data.users.length > 0 &&
-				data?.users.map((user, indx) => (
+
+			{showNoUsers && (
+				<ComboBoxItems id="no-users" isDisabled removeUnderline>
+					<div className="text-muted-foreground px-2 py-1 text-sm">
+						No users found
+					</div>
+				</ComboBoxItems>
+			)}
+
+			{!showLoading &&
+				!showNoUsers &&
+				list.items.map((user, indx) => (
 					<ComboBoxItems
 						key={user.id}
 						id={user.id}
 						textValue={`${user.firstName} ${user.lastName}`}
-						removeUnderline={indx === data.users.length - 1}
+						removeUnderline={indx === list.items.length - 1}
 					>
 						<UsersSidebar
-							key={user.id}
 							username={`${user.firstName} ${user.lastName}`}
 							userRole={user.role!}
 							id={user.id}
-							removeUnderline={indx === data.users.length - 1}
+							removeUnderline={indx === list.items.length - 1}
 						/>
 					</ComboBoxItems>
 				))}
 		</ComboBoxWrapper>
 	);
-});
+};

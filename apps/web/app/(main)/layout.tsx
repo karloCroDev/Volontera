@@ -29,7 +29,7 @@ export default async function MainLayout({
 					<Sidebar user={user} />
 
 					<div className="flex flex-1 flex-col">
-						<div className="border-input-border rounded-lg lg:my-7 lg:mb-5 lg:mr-10 lg:h-[calc(100vh-28px-28px)] lg:border">
+						<div className="border-input-border rounded-lg shadow lg:my-7 lg:mb-5 lg:mr-10 lg:h-[calc(100vh-28px-28px)] lg:border">
 							<Header />
 							<main className="no-scrollbar flex h-[calc(100vh-96px)] flex-col overflow-x-hidden overflow-y-scroll lg:h-[calc(100vh-28px-28px-112px)]">
 								{children}

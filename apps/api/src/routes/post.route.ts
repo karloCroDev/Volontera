@@ -25,6 +25,7 @@ import {
   updatePostSchema,
   likeOrDislikePostSchema,
   retrieveOrganizationPostsSchema,
+  retrieveOrganizationPostsQuerySchema,
 } from "@repo/schemas/post";
 import { retrievePostCommentsSchema } from "@repo/schemas/comment";
 import { organizationRolesMiddleware } from "@/middleware/organization-roles.middleware";
@@ -45,7 +46,7 @@ postRoutes
       aquiredRoles: ["ADMIN"],
       type: "body",
     }),
-    createPostController
+    createPostController,
   )
   .delete(
     organizationRolesMiddleware({
@@ -56,7 +57,7 @@ postRoutes
       schema: deletePostSchema,
       responseOutput: "form",
     }),
-    deletePostController
+    deletePostController,
   )
   .patch(
     organizationRolesMiddleware({
@@ -67,7 +68,7 @@ postRoutes
       responseOutput: "form",
       type: "body",
     }),
-    updatePostController
+    updatePostController,
   );
 
 // TODO: Adjust this after the middleware and change it so that it has the same strucutre as in the comment routes
@@ -79,7 +80,7 @@ postRoutes.get(
     responseOutput: "server",
     type: "params",
   }),
-  retrievePostDataController
+  retrievePostDataController,
 );
 
 postRoutes.get(
@@ -89,7 +90,12 @@ postRoutes.get(
     responseOutput: "server",
     type: "params",
   }),
-  retrieveOrganizationPostsController
+  validate({
+    schema: retrieveOrganizationPostsQuerySchema,
+    responseOutput: "server",
+    type: "query",
+  }),
+  retrieveOrganizationPostsController,
 );
 
 // Everyone
@@ -100,7 +106,7 @@ postRoutes.get(
     responseOutput: "server",
     type: "params",
   }),
-  retrievePostWithCommentsController
+  retrievePostWithCommentsController,
 );
 
 postRoutes.patch(
@@ -110,7 +116,7 @@ postRoutes.patch(
     responseOutput: "server",
     type: "body",
   }),
-  toggleLikePostController
+  toggleLikePostController,
 );
 
 // postRoutes.route('/home')

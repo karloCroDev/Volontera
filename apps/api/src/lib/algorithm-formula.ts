@@ -5,13 +5,9 @@ type RankingPostInputArgs = {
   likes: number;
   comments: number;
   images: number;
-
-  authorFollowers: number;
   orgFollowers: number;
-
   isAuthorPremium: boolean;
   isOrgPremium: boolean;
-
   createdAt: Date;
 };
 
@@ -21,7 +17,6 @@ export function calculatePostRankingScore(input: RankingPostInputArgs): number {
     likes: 1.0,
     comments: 2.0,
     images: 0.3,
-    authorFollowers: 0.5,
     orgFollowers: 0.4,
     authorPremium: 1.5,
     orgPremium: 1.0,
@@ -41,7 +36,6 @@ export function calculatePostRankingScore(input: RankingPostInputArgs): number {
     rankingWeights.images * input.images;
 
   const authority =
-    rankingWeights.authorFollowers * Math.log1p(input.authorFollowers) +
     rankingWeights.orgFollowers * Math.log1p(input.orgFollowers);
 
   const premium =

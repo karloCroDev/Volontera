@@ -34,7 +34,7 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextAreaProps>(
 				<div
 					{...rest}
 					className={twMerge(
-						'border-input-border flex items-end rounded-md border px-4 pb-4',
+						'border-input-border flex items-end gap-2 rounded-md border px-4 pb-4',
 						className
 					)}
 				>

@@ -20,7 +20,9 @@ export type RetirveAllRequestsToJoinOrganizationResponse =
   };
 
 export type RetrieveOrganizationMemberResponse = ServerHandleResponse<true> & {
-  organizationMember: OrganizationMember;
+  organizationMember: OrganizationMember & {
+    user: Omit<User, "password">;
+  };
 };
 
 export type RetrieveDataAboutOrganizationResponse =

@@ -1,4 +1,4 @@
-// TODO: If I have any additional time, then I need to handle this!
+// TODO: If I have more time make the landing page!
 
 export default function LandingPage() {
 	return (

@@ -105,6 +105,7 @@ export const TaskCardQuestions: React.FC<{
 										? image?.urls[question.author.image]
 										: undefined,
 								}}
+								isVerified={question.author.subscriptionTier === 'PRO'}
 							>
 								{convertToFullname({
 									firstname: question.author.firstName,

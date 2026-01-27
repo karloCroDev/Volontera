@@ -17,6 +17,7 @@ import {
 import {
   DeleteCommentArgs,
   DeleteReplyArgs,
+  LikeOrDislikeCommentArgs,
   LikeOrDislikeReplyArgs,
   RetrieveCommentRepliesArgs,
   RetrievePostCommentsArgs,
@@ -25,7 +26,7 @@ import { handleServerErrorResponse } from "@/lib/utils/error-response";
 
 export async function retrievePostCommentsController(
   req: Request,
-  res: Response
+  res: Response,
 ) {
   try {
     const result = await retrievePostCommentsService({
@@ -67,7 +68,7 @@ export async function deleteCommentController(req: Request, res: Response) {
 export async function toggleLikeCommentController(req: Request, res: Response) {
   try {
     const result = await toggleLikeCommentService({
-      data: req.body,
+      data: req.params as LikeOrDislikeCommentArgs,
       userId: req.user.userId,
     });
 
@@ -119,7 +120,7 @@ export async function toggleLikeReplyController(req: Request, res: Response) {
 
 export async function retrieveCommentRepliesController(
   req: Request,
-  res: Response
+  res: Response,
 ) {
   try {
     const result = await retrieveCommentRepliesService({

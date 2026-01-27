@@ -99,272 +99,215 @@ export const CreateOrganizationForm = () => {
 	const externalFormLink = watch('external_form_link') ?? '';
 
 	return (
-		<>
-			<Layout>
-				<LayoutColumn
-					start={{
-						base: 1,
-						// Malo od manje centra (bolje izgleda)
-						md: 4,
-						xl: 3,
-					}}
-					end={{
-						base: 13,
-						// Malo od manje centra (bolje izgleda)
-						md: 10,
-						xl: 9,
-					}}
-					className="flex flex-col"
-				>
-					<Form onSubmit={handleSubmit(onSubmit)}>
-						<div className="flex gap-4">
-							<Controller
-								control={control}
-								name="organization_avatar_image"
-								render={({ field: { onChange } }) => (
-									<InsertPhoto
-										htmlFor="avatar-photo"
-										file={avatarFile}
-										onFileChange={(file) => {
-											setAvatarFile(file);
-											if (!file) {
-												onChange(undefined);
-												return;
-											}
-											onChange({
-												filename: file.name,
-												contentType: file.type,
-												size: file.size,
-											});
-										}}
-									>
-										Insert organization <strong>avatar</strong> photo
-									</InsertPhoto>
-								)}
-							/>
-							<Controller
-								control={control}
-								name="organization_cover_image"
-								render={({ field: { onChange } }) => (
-									<InsertPhoto
-										htmlFor="cover-photo"
-										file={coverFile}
-										onFileChange={(file) => {
-											setCoverFile(file);
-											if (!file) {
-												onChange(undefined);
-												return;
-											}
-											onChange({
-												filename: file.name,
-												contentType: file.type,
-												size: file.size,
-											});
-										}}
-									>
-										Insert organization <strong>cover</strong> photo
-									</InsertPhoto>
-								)}
-							/>
-						</div>
-
-						<div className="mt-8 flex flex-col gap-6">
-							<div>
-								<Label>Organization&apos;s name</Label>
-								<Controller
-									control={control}
-									name="organization_name"
-									render={({ field }) => (
-										<Input
-											label="Enter your organization's name"
-											className="mt-2"
-											inputProps={field}
-											error={errors.organization_name?.message}
-										/>
-									)}
-								/>
-							</div>
-							<div>
-								<Label>Organization&apos;s bio</Label>
-
-								<Controller
-									control={control}
-									name="organization_bio"
-									render={({ field }) => (
-										<Textarea
-											label="Enter your organization's bio"
-											className="mt-2"
-											textAreaProps={field}
-											error={errors.organization_bio?.message}
-										/>
-									)}
-								/>
-							</div>
-							<div>
-								<Label>Organization type</Label>
-
-								<Controller
-									control={control}
-									name="organization_type"
-									render={({ field }) => (
-										<Input
-											label="Enter more information about the organization"
-											className="mt-2"
-											inputProps={field}
-											error={errors.organization_type?.message}
-										/>
-									)}
-								/>
-							</div>
-							<div>
-								<Label isOptional>Organization location</Label>
-
-								<Controller
-									control={control}
-									name="organization_location"
-									render={({ field }) => (
-										<Input
-											label="Enter the location (if it exists)"
-											className="mt-2"
-											inputProps={field}
-											error={errors.organization_location?.message}
-										/>
-									)}
-								/>
-							</div>
-
-							<div>
-								<Label isOptional>Additional Links</Label>
-
-								{arrFields.map((field, index) => (
-									<div key={field.id} className="flex gap-4">
-										<Controller
-											control={control}
-											name={`additional_links.${index}.label` as const}
-											render={({ field }) => (
-												<Input
-													label="Enter the name"
-													className="mt-2"
-													inputProps={field}
-													error={
-														errors.additional_links?.[index]?.label?.message
-													}
-												/>
-											)}
-										/>
-										<Controller
-											control={control}
-											name={`additional_links.${index}.url` as const}
-											render={({ field }) => (
-												<Input
-													label="Enter the URL"
-													className="min-w-3/5 mt-2 flex-1"
-													inputProps={field}
-													error={errors.additional_links?.[index]?.url?.message}
-												/>
-											)}
-										/>
-									</div>
-								))}
-							</div>
-
-							<div className="flex justify-between">
-								{arrFields.length > 1 && (
-									<Button
-										colorScheme="destructive"
-										variant="outline"
-										className="p-2"
-										onPress={() => remove(arrFields.length - 1)}
-									>
-										<Minus />
-									</Button>
-								)}
-								<Button
-									colorScheme="yellow"
-									variant="outline"
-									className="ml-auto p-2"
-									onPress={() => append({ label: '', url: '' } as never)}
-								>
-									<Plus />
-								</Button>
-							</div>
-							<hr className="bg-input-border h-px w-full border-0" />
-
-							<h4 className="text-xl italic underline underline-offset-4">
-								Joinment information{' '}
-							</h4>
-							<div>
-								<div className="flex items-baseline justify-between">
-									<Label isOptional>Embbedd the form link </Label>
-
-									{externalFormLink.length > 0 && (
-										<PreviewForm src={externalFormLink} />
-									)}
-								</div>
-								<Controller
-									control={control}
-									name="external_form_link"
-									render={({ field }) => (
-										<Input
-											label="Enter your form link"
-											className="mt-2"
-											inputProps={field}
-											error={errors.external_form_link?.message}
-										/>
-									)}
-								/>
-							</div>
-
-							<hr className="bg-input-border h-px w-full border-0" />
-							<h4 className="text-xl italic underline underline-offset-4">
-								Addtional features
-							</h4>
-							<div>
-								<Label isOptional>Assign predefined tasks (PRO)</Label>
-								<p className="text-muted-foreground text-sm">
-									Assign predefined tasks with the data you have entered in
-									previous fields
-								</p>
-								<div className="mt-4 flex justify-center gap-4">
-									<RadioGroup
-										className="flex gap-8"
-										onChange={(val) =>
-											setAssignTasks(val === 'YES' ? true : false)
-										}
-										defaultValue={assignTasks ? 'YES' : 'NO'}
-									>
-										<Radio
-											className="group flex items-center gap-4"
-											value="YES"
-										>
-											<RadioIconVisual />
-
-											<p>Yes</p>
-										</Radio>
-										<Radio className="group flex items-center gap-4" value="NO">
-											<RadioIconVisual />
-											<p>No</p>
-										</Radio>
-									</RadioGroup>
-								</div>
-							</div>
-
-							<Error>{errors.root?.message}</Error>
-						</div>
-						<hr className="bg-input-border my-8 h-px w-full border-0" />
-
-						<Button
-							size="md"
-							className="ml-auto"
-							type="submit"
-							isDisabled={isPending || !isDirty}
-							isLoading={isPending}
+		<Form onSubmit={handleSubmit(onSubmit)}>
+			<div className="flex gap-4">
+				<Controller
+					control={control}
+					name="organization_avatar_image"
+					render={({ field: { onChange } }) => (
+						<InsertPhoto
+							htmlFor="avatar-photo"
+							file={avatarFile}
+							onFileChange={(file) => {
+								setAvatarFile(file);
+								if (!file) {
+									onChange(undefined);
+									return;
+								}
+								onChange({
+									filename: file.name,
+									contentType: file.type,
+									size: file.size,
+								});
+							}}
 						>
-							Let&apos;s go
+							Insert organization <strong>avatar</strong> photo
+						</InsertPhoto>
+					)}
+				/>
+				<Controller
+					control={control}
+					name="organization_cover_image"
+					render={({ field: { onChange } }) => (
+						<InsertPhoto
+							htmlFor="cover-photo"
+							file={coverFile}
+							onFileChange={(file) => {
+								setCoverFile(file);
+								if (!file) {
+									onChange(undefined);
+									return;
+								}
+								onChange({
+									filename: file.name,
+									contentType: file.type,
+									size: file.size,
+								});
+							}}
+						>
+							Insert organization <strong>cover</strong> photo
+						</InsertPhoto>
+					)}
+				/>
+			</div>
+
+			<div className="mt-8 flex flex-col gap-6">
+				<div>
+					<Label>Organization&apos;s name</Label>
+					<Controller
+						control={control}
+						name="organization_name"
+						render={({ field }) => (
+							<Input
+								label="Enter your organization's name"
+								className="mt-2"
+								inputProps={field}
+								error={errors.organization_name?.message}
+							/>
+						)}
+					/>
+				</div>
+				<div>
+					<Label>Organization&apos;s bio</Label>
+
+					<Controller
+						control={control}
+						name="organization_bio"
+						render={({ field }) => (
+							<Textarea
+								label="Enter your organization's bio"
+								className="mt-2"
+								textAreaProps={field}
+								error={errors.organization_bio?.message}
+							/>
+						)}
+					/>
+				</div>
+				<div>
+					<Label>Organization type</Label>
+
+					<Controller
+						control={control}
+						name="organization_type"
+						render={({ field }) => (
+							<Input
+								label="Enter more information about the organization"
+								className="mt-2"
+								inputProps={field}
+								error={errors.organization_type?.message}
+							/>
+						)}
+					/>
+				</div>
+				<div>
+					<Label isOptional>Organization location</Label>
+
+					<Controller
+						control={control}
+						name="organization_location"
+						render={({ field }) => (
+							<Input
+								label="Enter the location (if it exists)"
+								className="mt-2"
+								inputProps={field}
+								error={errors.organization_location?.message}
+							/>
+						)}
+					/>
+				</div>
+
+				<div>
+					<Label isOptional>Additional Links</Label>
+
+					{arrFields.map((field, index) => (
+						<div key={field.id} className="flex gap-4">
+							<Controller
+								control={control}
+								name={`additional_links.${index}.label` as const}
+								render={({ field }) => (
+									<Input
+										label="Enter the name"
+										className="mt-2"
+										inputProps={field}
+										error={errors.additional_links?.[index]?.label?.message}
+									/>
+								)}
+							/>
+							<Controller
+								control={control}
+								name={`additional_links.${index}.url` as const}
+								render={({ field }) => (
+									<Input
+										label="Enter the URL"
+										className="min-w-3/5 mt-2 flex-1"
+										inputProps={field}
+										error={errors.additional_links?.[index]?.url?.message}
+									/>
+								)}
+							/>
+						</div>
+					))}
+				</div>
+
+				<div className="flex justify-between">
+					{arrFields.length > 1 && (
+						<Button
+							colorScheme="destructive"
+							variant="outline"
+							className="p-2"
+							onPress={() => remove(arrFields.length - 1)}
+						>
+							<Minus />
 						</Button>
-					</Form>
-				</LayoutColumn>
-			</Layout>
-		</>
+					)}
+					<Button
+						colorScheme="yellow"
+						variant="outline"
+						className="ml-auto p-2"
+						onPress={() => append({ label: '', url: '' } as never)}
+					>
+						<Plus />
+					</Button>
+				</div>
+				<hr className="bg-input-border h-px w-full border-0" />
+
+				<h4 className="text-xl italic underline underline-offset-4">
+					Joinment information{' '}
+				</h4>
+				<div>
+					<div className="flex items-baseline justify-between">
+						<Label isOptional>Embbedd the form link </Label>
+
+						{externalFormLink.length > 0 && (
+							<PreviewForm src={externalFormLink} />
+						)}
+					</div>
+					<Controller
+						control={control}
+						name="external_form_link"
+						render={({ field }) => (
+							<Input
+								label="Enter your form link"
+								className="mt-2"
+								inputProps={field}
+								error={errors.external_form_link?.message}
+							/>
+						)}
+					/>
+				</div>
+
+				<Error>{errors.root?.message}</Error>
+			</div>
+
+			<Button
+				size="md"
+				className="ml-auto"
+				type="submit"
+				isDisabled={isPending || !isDirty}
+				isLoading={isPending}
+			>
+				Let&apos;s go
+			</Button>
+		</Form>
 	);
 };

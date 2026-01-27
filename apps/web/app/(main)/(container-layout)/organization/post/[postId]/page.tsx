@@ -21,11 +21,12 @@ import {
 
 // Async server component for Post
 
-export default function PostWithCommentsPage({
+export default async function PostWithCommentsPage({
 	params,
 }: {
-	params: { postId: string };
+	params: Promise<{ postId: string }>;
 }) {
+	const { postId } = await params;
 	return (
 		<Suspense
 			fallback={
@@ -41,7 +42,7 @@ export default function PostWithCommentsPage({
 				</>
 			}
 		>
-			<PostContent postId={params.postId} />
+			<PostContent postId={postId} />
 		</Suspense>
 	);
 }
@@ -69,13 +70,15 @@ async function PostContent({ postId }: { postId: string }) {
 					Comments
 				</h4>
 				<hr className="bg-input-border my-2 h-px w-full border-0" />
-				<CommentsMapping
-					comments={{
-						message: postWithComments.message,
-						comments: postWithComments.post.postComments,
-						success: postWithComments.success,
-					}}
-				/>
+				<div className="max-h-96 overflow-y-scroll">
+					<CommentsMapping
+						comments={{
+							message: postWithComments.message,
+							comments: postWithComments.post.postComments,
+							success: postWithComments.success,
+						}}
+					/>
+				</div>
 				<CommentTextArea />
 			</div>
 		</>

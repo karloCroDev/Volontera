@@ -93,7 +93,7 @@ export const AdditionalInformationForm = withReactQueryProvider(() => {
 				onSuccess({ message }) {
 					router.push('/home');
 					toast({
-						title: 'Welcome to [app]',
+						title: 'Welcome to Volontera!',
 						content: message,
 						variant: 'success',
 					});

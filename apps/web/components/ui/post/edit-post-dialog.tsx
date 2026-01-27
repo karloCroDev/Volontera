@@ -30,7 +30,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 
 export const EditPostDialog: React.FC<{
 	postId: string;
-}> = ({ postId }) => {
+	organizationId: string;
+}> = ({ postId, organizationId }) => {
 	const [images, setImages] = React.useState<ImageItemArgs>([]);
 	const { data } = useRetrievePostData(postId);
 
@@ -50,6 +51,7 @@ export const EditPostDialog: React.FC<{
 			title: '',
 			content: '',
 			images: [],
+			organizationId,
 		},
 	});
 
@@ -85,6 +87,7 @@ export const EditPostDialog: React.FC<{
 			reset({
 				title: data.post.title,
 				content: data.post.content,
+				organizationId: data.post.organizationId,
 
 				images: data.post.postImages.map((img) => img.imageUrl),
 			});
@@ -99,6 +102,7 @@ export const EditPostDialog: React.FC<{
 			{
 				data: {
 					...data,
+					organizationId,
 					images: images
 						.map((img) => {
 							if (isLocalImageItem(img)) {

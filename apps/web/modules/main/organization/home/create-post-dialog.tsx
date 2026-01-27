@@ -112,11 +112,12 @@ export const CreatePostDialog = () => {
 			isOpen={isOpen}
 			onOpenChange={setIsOpen}
 			triggerChildren={
-				<AriaButton className="border-input-border mb-6 flex w-full items-center gap-4 rounded-2xl border p-5 outline-none">
+				<AriaButton className="border-input-border flex w-full items-center gap-4 rounded-2xl border p-5 outline-none">
 					<Avatar
 						imageProps={{
 							src: user?.image || undefined,
 						}}
+						isVerified={user?.subscriptionTier === 'PRO'}
 						colorScheme="gray"
 						size="md"
 					>

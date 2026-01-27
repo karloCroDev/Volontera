@@ -3,7 +3,7 @@
 // External packages
 import * as React from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { useParams, usePathname } from 'next/navigation';
 import { Menu } from 'lucide-react';
 import {
 	Breadcrumbs,
@@ -28,11 +28,45 @@ export const Header = () => {
 
 	const { setMobileOpen } = useSidebarContext();
 	const pathname = usePathname();
+	const params = useParams();
+
+	const organizationId = params.organizationId;
+	const userId = params.userId;
+	const postId = params.postId;
 
 	const pathnameWithoutSearchParams = pathname.split('?')[0];
 
 	const splittedPathname =
 		!isMobile && pathnameWithoutSearchParams?.split('/').filter(Boolean);
+
+	// TODO: Fetch the organization names if I have any more time
+
+	const shouldSkipCrumb = (segment: string) => {
+		if (segment === 'organization') return true;
+		if (segment === 'auth') return true;
+		if (segment === 'profile') return true;
+		if (
+			segment === 'post' &&
+			Array.isArray(splittedPathname) &&
+			splittedPathname[0] === 'organization'
+		)
+			return true;
+		if (segment === organizationId) return false;
+		if (segment === userId) return false;
+		if (segment === postId) return false;
+		return false;
+	};
+
+	const getCrumbLabel = (segment: string) => {
+		if (segment === organizationId) return 'Organization';
+		if (segment === userId) return 'Profile';
+		if (segment === postId) return 'Post';
+		return segment
+			.split('-')
+			.filter(Boolean)
+			.map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+			.join(' ');
+	};
 
 	return (
 		<div className="border-input-border border-b">
@@ -47,22 +81,32 @@ export const Header = () => {
 					<Menu />
 				</Button>
 
-				{/* {!isMobile && splittedPathname && (
+				{!isMobile && splittedPathname && (
 					<Breadcrumbs className="flex gap-4 lg:gap-5">
-						{splittedPathname.map((path, index) => {
-							const href = '/' + splittedPathname.slice(0, index + 1).join('/');
-							return (
-								<Breadcrumb
-									href={href}
-									key={index}
-									removeChevrons={splittedPathname.length - 1 !== index}
-								>
-									{path[0]?.toUpperCase() + path.slice(1).toLowerCase()}
-								</Breadcrumb>
-							);
-						})}
+						{splittedPathname
+							.map((segment, index) => {
+								if (shouldSkipCrumb(segment)) return null;
+								const href =
+									'/' + splittedPathname.slice(0, index + 1).join('/');
+								const label = getCrumbLabel(segment);
+								if (!label) return null;
+								return { href, label, key: index };
+							})
+							.filter(Boolean)
+							.map(
+								(crumb, index, arr) =>
+									crumb?.href && (
+										<Breadcrumb
+											href={crumb.href}
+											key={crumb.key}
+											removeChevrons={arr.length - 1 !== index}
+										>
+											{crumb.label}
+										</Breadcrumb>
+									)
+							)}
 					</Breadcrumbs>
-				)} */}
+				)}
 				<div className="ml-auto flex items-center gap-5 lg:gap-8">
 					<Search />
 					<NotificationButton />

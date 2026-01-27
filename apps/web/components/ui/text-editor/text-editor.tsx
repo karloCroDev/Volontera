@@ -24,9 +24,6 @@ import {
 	ImageItemArgs,
 } from '@/components/ui/dnd-mapping-images';
 
-// Types
-import { UploadImageArgs } from '@repo/schemas/image';
-
 export const TextEditor: React.FC<
 	React.ComponentPropsWithoutRef<'div'> & {
 		label: string;

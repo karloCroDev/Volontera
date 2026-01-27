@@ -59,7 +59,7 @@ export async function additionalInformationService({
     await resend.emails.send({
       from: process.env.RESEND_FROM!,
       to: user.email,
-      subject: "Welcome to the [app]",
+      subject: "Welcome to the Volontera",
       react: createElement(WelcomeEmail, {
         firstName: user.firstName,
       }),
@@ -83,7 +83,7 @@ export async function skipAdditionalInformationService(userId: User["id"]) {
     await resend.emails.send({
       from: process.env.RESEND_FROM!,
       to: user.email,
-      subject: "Welcome to the [app]",
+      subject: "Welcome to the Volontera",
       react: createElement(WelcomeEmail, {
         firstName: user.firstName,
       }),

@@ -59,11 +59,7 @@ export const useAddHelpQuestion = (
 };
 
 export const useDeleteHelpConversation = (
-	options?: UseMutationOptions<
-		SuccessfulResponse,
-		ErrorFormResponse,
-		HelpConversationSchemaArgs
-	>
+	options?: UseMutationOptions<SuccessfulResponse, ErrorFormResponse, void>
 ) => {
 	const queryClient = useQueryClient();
 	return useMutation({

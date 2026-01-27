@@ -21,7 +21,7 @@ export const ListUsers: React.FC<{
 }> = ({ listOfAllDirectMessages }) => {
 	const searchParams = useSearchParams();
 
-	const isActive = searchParams.get('user');
+	const isActive = searchParams.get('userId');
 
 	const { onlineUsers } = useSocketContext();
 
@@ -59,6 +59,7 @@ export const ListUsers: React.FC<{
 							isOnline={onlineUsers.includes(conversation.participant.id)}
 							username={`${conversation.participant.firstName} ${conversation.participant.lastName}`}
 							lastMessage={conversation.lastMessage || undefined}
+							isVerified={conversation.participant.subscriptionTier === 'PRO'}
 							id={conversation.participant.id}
 							key={conversation.participant.id}
 						/>

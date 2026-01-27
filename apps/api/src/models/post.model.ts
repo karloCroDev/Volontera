@@ -1,5 +1,6 @@
 // Database
 import { Organization, Post, prisma, User } from "@repo/database";
+import { RetrieveOrganizationPostsQueryArgs } from "@repo/schemas/post";
 
 // Organization admins only
 type PostMangmentArgs = {
@@ -14,15 +15,18 @@ export async function createPost({
   images,
   userId,
   organizationId,
+  rankingScore,
 }: PostMangmentArgs & {
   userId: User["id"];
   organizationId: Organization["id"];
+  rankingScore: number;
 }) {
   return prisma.post.create({
     data: {
       title,
       content,
       organizationId,
+      rankingScore,
       authorId: userId,
       postImages: {
         create: images.map((imageUrl) => ({ imageUrl })),
@@ -62,6 +66,16 @@ export async function retrievePostData(postId: Post["id"]) {
   return prisma.post.findUnique({
     where: { id: postId },
     include: {
+      organization: {
+        include: {
+          _count: {
+            select: {
+              organizationFollowers: true,
+              organizationMembers: true,
+            },
+          },
+        },
+      },
       postImages: true,
     },
   });
@@ -71,13 +85,37 @@ export async function retrievePostData(postId: Post["id"]) {
 export async function retrieveOrganizationPosts({
   userId,
   organizationId,
+  filter,
 }: {
   userId: User["id"];
   organizationId: Organization["id"];
+  filter?: RetrieveOrganizationPostsQueryArgs["filter"];
 }) {
+  const orderBy =
+    filter === "oldest"
+      ? [{ createdAt: "asc" as const }]
+      : filter === "newest"
+        ? [{ createdAt: "desc" as const }]
+        : // recommended (default)
+          [{ rankingScore: "desc" as const }, { createdAt: "desc" as const }];
+
   return prisma.post.findMany({
     include: {
-      organization: true,
+      organization: {
+        include: {
+          _count: {
+            select: {
+              organizationFollowers: true,
+              organizationMembers: true,
+            },
+          },
+          owner: {
+            omit: {
+              password: true,
+            },
+          },
+        },
+      },
       postImages: true,
       postLikes: {
         where: {
@@ -99,9 +137,7 @@ export async function retrieveOrganizationPosts({
     where: {
       organizationId,
     },
-    orderBy: {
-      createdAt: "desc",
-    },
+    orderBy,
   });
 }
 
@@ -115,7 +151,22 @@ export async function retrievePostWithComments({
   return prisma.post.findUnique({
     where: { id: postId },
     include: {
-      organization: true,
+      organization: {
+        include: {
+          _count: {
+            select: {
+              organizationFollowers: true,
+              organizationMembers: true,
+            },
+          },
+
+          owner: {
+            omit: {
+              password: true,
+            },
+          },
+        },
+      },
       postImages: true,
       author: true,
       postLikes: {
@@ -214,7 +265,15 @@ export async function dislikePost({
 export async function retrieveHomePosts() {
   return prisma.post.findMany({
     include: {
-      organization: true,
+      organization: {
+        include: {
+          owner: {
+            omit: {
+              password: true,
+            },
+          },
+        },
+      },
       postImages: true,
       author: true,
     },

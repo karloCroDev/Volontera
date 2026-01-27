@@ -88,7 +88,7 @@ export async function resetPasswordInAppService({
   // Provjeravam je li trenutna lozinka točna
   const matches = await bcrypt.compare(
     data.currentPassword,
-    currentPasswordInUse
+    currentPasswordInUse,
   );
 
   if (!matches) {
@@ -131,7 +131,7 @@ export async function deleteAccountService({ userId }: { userId: User["id"] }) {
     await resend.emails.send({
       from: process.env.RESEND_FROM!,
       to: user.email,
-      subject: "Account successfuly deleted from [app]",
+      subject: "Account successfuly deleted from Volontera",
       react: createElement(DeletedAccount, {
         firstName: user.firstName,
       }),

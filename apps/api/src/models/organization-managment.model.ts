@@ -7,6 +7,18 @@ import {
   User,
 } from "@repo/database";
 
+export async function deleteOrganizationAsOwner({
+  organizationId,
+  userId,
+}: {
+  organizationId: Organization["id"];
+  userId: User["id"];
+}) {
+  return prisma.organization.delete({
+    where: { id: organizationId },
+  });
+}
+
 export async function retirveAllRequestsToJoinOrganization(
   organizationId: Organization["id"],
 ) {
@@ -51,7 +63,7 @@ export async function acceptOrDeclineUsersRequestToJoinOrganization({
   status: OrganizationJoinRequest["status"];
 }) {
   return prisma.$transaction(async (tx) => {
-    await tx.organizationJoinRequest.updateMany({
+    const pendingRequests = await tx.organizationJoinRequest.findMany({
       where: {
         organizationId,
         status: "PENDING",
@@ -59,17 +71,37 @@ export async function acceptOrDeclineUsersRequestToJoinOrganization({
           in: requesterIds,
         },
       },
+      select: {
+        requesterId: true,
+      },
+    });
+
+    const pendingRequesterIds = pendingRequests.map((r) => r.requesterId);
+
+    await tx.organizationJoinRequest.updateMany({
+      where: {
+        organizationId,
+        status: "PENDING",
+        requesterId: {
+          in: pendingRequesterIds,
+        },
+      },
       data: {
         status,
       },
     });
 
-    await tx.organizationMember.createMany({
-      data: requesterIds.map((requesterId) => ({
-        organizationId,
-        userId: requesterId,
-      })),
-    });
+    if (status === "APPROVED" && pendingRequesterIds.length > 0) {
+      await tx.organizationMember.createMany({
+        data: pendingRequesterIds.map((requesterId) => ({
+          organizationId,
+          userId: requesterId,
+        })),
+        skipDuplicates: true,
+      });
+    }
+
+    return pendingRequesterIds;
   });
 }
 
@@ -82,10 +114,12 @@ export async function demoteOrPromoteOrganizationMember({
   userId: User["id"];
   role: OrganizationMember["role"];
 }) {
-  return prisma.organizationMember.updateMany({
+  return prisma.organizationMember.update({
     where: {
-      organizationId,
-      userId,
+      organizationId_userId: {
+        organizationId,
+        userId,
+      },
     },
     data: {
       role,
@@ -106,6 +140,9 @@ export async function retrieveOrganizationMember({
         organizationId,
         userId,
       },
+    },
+    include: {
+      user: true,
     },
   });
 }

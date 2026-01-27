@@ -20,12 +20,11 @@ export const Notification: React.FC<{
 	firstName: string;
 	notificationsCount: number;
 }> = ({ firstName, notificationsCount }) => {
-	console.log(process.env.NEXT_PUBLIC_URL);
 	return (
 		<Html>
 			<Tailwind>
 				<Head />
-				<Body className="mx-auto my-auto bg-white px-4 font-sans lg:px-6">
+				<Body className="mx-auto my-auto bg-white font-sans lg:px-6">
 					<Container className="my-10 rounded-lg border-2 border-solid border-[#f59f0a] p-4">
 						<Section>
 							<Row>
@@ -37,7 +36,7 @@ export const Notification: React.FC<{
 								<Column>
 									<Row>
 										<Column align="right">
-											<Text>[app name]</Text>
+											<Text>Volontera</Text>
 										</Column>
 										<Column align="right">
 											{/* Stavi sliku 
@@ -56,7 +55,7 @@ export const Notification: React.FC<{
 							<Text className="text-3xl font-semibold">Hi {firstName} </Text>
 							<Text className="text-base">
 								We wanted to let you know that you have new notifications in
-								your [app name] account.
+								your Volontera account.
 							</Text>
 						</Section>
 

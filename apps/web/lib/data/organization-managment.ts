@@ -5,6 +5,7 @@ import { catchError } from '@/lib/utils/error';
 // Schemas
 import {
 	AcceptOrDeclineUsersRequestToJoinOrganizationArgs,
+	DeleteOrganizationArgs,
 	DemoteOrPromoteOrganizationMemberArgs,
 	RetirveAllRequestsToJoinOrganizationArgs,
 	RetrieveAllMembersInOrganizationArgs,
@@ -85,6 +86,19 @@ export async function leaveOrganization({
 	try {
 		const res = await API().delete(
 			`/organization-managment/leave/${organizationId}`
+		);
+		return res.data;
+	} catch (err) {
+		catchError(err);
+	}
+}
+
+export async function deleteOrganization({
+	organizationId,
+}: DeleteOrganizationArgs) {
+	try {
+		const res = await API().delete(
+			`/organization-managment/delete/${organizationId}`
 		);
 		return res.data;
 	} catch (err) {

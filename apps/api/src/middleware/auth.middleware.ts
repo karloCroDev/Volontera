@@ -14,7 +14,7 @@ declare module "express-serve-static-core" {
 export function authMiddleware(
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) {
   const token = req.cookies?.token;
 

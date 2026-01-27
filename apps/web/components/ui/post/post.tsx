@@ -1,3 +1,6 @@
+/* eslint react/prop-types: 0 */
+'use client';
+
 // External packages
 import Link from 'next/link';
 import Image from 'next/image';
@@ -19,6 +22,10 @@ import { RetrieveOrganizationPostsResponse } from '@repo/types/post';
 
 // Lib
 import { convertToFullname } from '@/lib/utils/converter';
+import { formatTime } from '@/lib/utils/time-adjustments';
+
+// Hooks
+import { useSession } from '@/hooks/data/user';
 
 export const Post: React.FC<{
 	post: RetrieveOrganizationPostsResponse['posts'][0];
@@ -26,20 +33,21 @@ export const Post: React.FC<{
 	images?: Record<string, string>;
 	hasAnAdminAccess?: boolean;
 }> = ({
-	/* eslint react/prop-types: 0 */
 	images,
 	post,
 	isInsideOrganization = false,
 	hasAnAdminAccess = false,
 }) => {
+	const { data: user } = useSession();
+	const hasUserLiked = post.postLikes.some((like) => like.userId === user?.id);
+
 	const splittedContent = post.content.split('.');
 	const singlePostImage = post.postImages[0];
 	const singlePostImageSrc = singlePostImage
 		? images?.[singlePostImage.imageUrl]
 		: undefined;
-
 	return (
-		<div className="border-input-border bg-muted rounded-xl border px-8 py-6 shadow-xl">
+		<div className="border-input-border bg-muted flex flex-col rounded-xl border px-8 py-6 shadow-xl">
 			<div className="mb-8 flex gap-4">
 				<Link
 					href={`/organization/${post.organizationId}`}
@@ -50,18 +58,27 @@ export const Post: React.FC<{
 						imageProps={{
 							src: images?.[post.organization.avatarImage],
 						}}
+						isVerified={post.organization.owner.subscriptionTier === 'PRO'}
 					>
 						{post.organization.name}
 					</Avatar>
 
 					<div>
 						<p>{post.organization.name}</p>
-						<p className="text-muted-foreground text-sm">20 attendees</p>
+						<p className="text-muted-foreground text-sm">
+							{post.organization._count.organizationMembers} members |{' '}
+							{post.organization._count.organizationFollowers} followers
+						</p>
 					</div>
 				</Link>
 
 				<div className="ml-auto flex gap-2">
-					{hasAnAdminAccess && <DeletePostDialog postId={post.id} />}
+					{hasAnAdminAccess && (
+						<DeletePostDialog
+							postId={post.id}
+							organizationId={post.organizationId}
+						/>
+					)}
 					{!isInsideOrganization && (
 						<LinkAsButton
 							href={`/organization/${post.organizationId}`}
@@ -73,7 +90,12 @@ export const Post: React.FC<{
 						</LinkAsButton>
 					)}
 
-					{hasAnAdminAccess && <EditPostDialog postId={post.id} />}
+					{hasAnAdminAccess && (
+						<EditPostDialog
+							postId={post.id}
+							organizationId={post.organizationId}
+						/>
+					)}
 				</div>
 			</div>
 			<Link
@@ -109,7 +131,7 @@ export const Post: React.FC<{
 				</div>
 			)}
 
-			<div className="mt-4">
+			<div className="mb-6 mt-4">
 				{post.postImages.length > 1 ? (
 					<Carousel
 						slides={post.postImages.map(({ imageUrl, id }) => {
@@ -132,27 +154,31 @@ export const Post: React.FC<{
 						})}
 					/>
 				) : (
-					post.postImages.length === 1 &&
-					singlePostImageSrc && (
+					post.postImages.length === 1 && (
 						<div className="rouded-md border-input-border relative mt-4 aspect-[4/3] max-h-[600px] w-full rounded border">
-							<Image
-								src={singlePostImageSrc}
-								alt="Post image"
-								fill
-								className="object-contain"
-							/>
+							{singlePostImageSrc ? (
+								<Image
+									src={singlePostImageSrc}
+									alt="Post image"
+									fill
+									className="object-contain"
+								/>
+							) : (
+								<div className="bg-muted-foreground/20 size-full animate-pulse" />
+							)}
 						</div>
 					)
 				)}
 			</div>
 
-			<div className="mt-6 flex items-center gap-8">
+			<div className="mt-auto flex items-center gap-8">
 				<div className="flex items-center gap-2">
-					Written by:
+					By:
 					<Avatar
 						imageProps={{
 							src: post.author.image ? images?.[post.author.image] : undefined,
 						}}
+						isVerified={post.author.subscriptionTier === 'PRO'}
 						size="xs"
 						className="ml-2"
 					>
@@ -170,11 +196,15 @@ export const Post: React.FC<{
 							lastname: post.author.lastName,
 						})}
 					</Link>
+					<div className="bg-muted-foreground h-5.5 hidden w-px md:block" />
+					<p className="text-muted-foreground hidden text-sm md:block">
+						{formatTime(new Date(post.createdAt))}
+					</p>
 				</div>
 
 				<PostLike
 					count={post._count.postLikes}
-					hasUserLiked={post.postLikes.length > 0}
+					hasUserLiked={hasUserLiked}
 					postId={post.id}
 				/>
 				<LinkAsButton

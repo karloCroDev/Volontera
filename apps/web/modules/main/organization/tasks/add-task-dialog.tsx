@@ -38,6 +38,7 @@ import { getLocalTimeZone, today } from '@internationalized/date';
 import { Error } from '@/components/ui/error';
 import { Dot } from '@/components/ui/dot';
 import { RadioIconVisual } from '@/components/ui/radio';
+import { useRetrieveOrganizationMember } from '@/hooks/data/organization-managment';
 
 export const AddTaskDialog: React.FC<{
 	organizationTasksBoardId: string;
@@ -229,6 +230,7 @@ export const AddTaskDialog: React.FC<{
 													src: member.user.image || '',
 												}}
 												size="xs"
+												isVerified={member.user.subscriptionTier === 'PRO'}
 											>
 												{convertToFullname({
 													firstname: member.user.firstName,

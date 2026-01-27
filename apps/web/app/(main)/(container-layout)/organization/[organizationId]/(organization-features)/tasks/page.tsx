@@ -8,6 +8,7 @@ import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
 import { BoardsMapping } from '@/modules/main/organization/tasks/boards-mapping';
 import { SortTasksSelect } from '@/modules/main/organization/tasks/sort-tasks-select';
+import { retrieveOrganizationMember } from '@/lib/server/organization-managment';
 
 export default async function BoardPage({
 	params,
@@ -18,6 +19,10 @@ export default async function BoardPage({
 }) {
 	const { organizationId } = await params;
 	const searchParamsResolved = await searchParams;
+
+	const member = await retrieveOrganizationMember(organizationId);
+
+	if (!member.success) return; // Handling in layout
 
 	return (
 		<div className="flex flex-1 flex-col">
@@ -31,7 +36,8 @@ export default async function BoardPage({
 				</div>
 				<div className="flex justify-between gap-4 lg:justify-start">
 					<SortTasksSelect />
-					<AddBoardDialog />
+					{(member.organizationMember.role === 'ADMIN' ||
+						member.organizationMember.role === 'OWNER') && <AddBoardDialog />}
 				</div>
 			</div>
 			<div className="flex min-h-0 flex-1 gap-4 overflow-scroll">

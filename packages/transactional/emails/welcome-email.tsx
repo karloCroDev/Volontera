@@ -23,7 +23,7 @@ export const WelcomeEmail: React.FC<{
 		<Html>
 			<Tailwind>
 				<Head />
-				<Body className="mx-auto my-auto bg-white px-4 font-sans lg:px-6">
+				<Body className="mx-auto my-auto bg-white font-sans lg:px-6">
 					<Container className="my-10 rounded-lg border-2 border-solid border-[#f59f0a] p-4">
 						<Section>
 							<Row>
@@ -35,7 +35,7 @@ export const WelcomeEmail: React.FC<{
 								<Column>
 									<Row>
 										<Column align="right">
-											<Text>[app name]</Text>
+											<Text>Volontera</Text>
 										</Column>
 										<Column align="right">
 											{/* Stavi sliku 
@@ -53,7 +53,7 @@ export const WelcomeEmail: React.FC<{
 						<Section className="text-center">
 							<Text className="text-3xl font-semibold">Hi, {firstName}</Text>
 							<Text className="text-lg">
-								Let&apos; get started with [app name]
+								Let&apos; get started with Volontera
 							</Text>
 						</Section>
 
@@ -68,7 +68,7 @@ export const WelcomeEmail: React.FC<{
 						</Section>
 						<Section>
 							<Text className="text-base">
-								Best <br /> The [app name] team
+								Best <br /> The Volontera team
 							</Text>
 						</Section>
 					</Container>

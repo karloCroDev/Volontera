@@ -3,6 +3,7 @@
 // External packages
 import * as React from 'react';
 import { ArrowRight, MessageCircle, SearchIcon, User } from 'lucide-react';
+import Link from 'next/link';
 
 // Hooks
 import { useIsMobile } from '@/hooks/utils/useIsMobile';
@@ -16,8 +17,7 @@ import { Avatar } from '@/components/ui/avatar';
 // Hooks
 import { useSearch } from '@/hooks/data/search';
 import { useDebounce } from '@/hooks/utils/useDebounce';
-import { convertToFullname } from '@/lib/utils/converter';
-import Link from 'next/link';
+import { convertToFullname, convertToPascalCase } from '@/lib/utils/converter';
 
 export const Search = () => {
 	const isMobile = useIsMobile();
@@ -70,12 +70,12 @@ export const Search = () => {
 						{data?.organizations && data.organizations.length > 0 ? (
 							data.organizations.map((organization) => (
 								<SearchOutput
+									// isVerified={organization. === 'PRO'}
 									key={organization.id}
 									type="organization"
 									name={organization.name}
 									info={organization.bio.substring(0, 20) + '...'}
 									mainLink={`/organization/${organization.id}`}
-									chatLink={`/organization/${organization.id}/messages`}
 								/>
 							))
 						) : (
@@ -95,13 +95,14 @@ export const Search = () => {
 						{data?.users && data.users.length > 0 ? (
 							data.users.map((user) => (
 								<SearchOutput
+									isVerified={user.subscriptionTier === 'PRO'}
 									key={user.id}
 									type="user"
 									name={convertToFullname({
 										firstname: user.firstName,
 										lastname: user.lastName,
 									})}
-									info={user.email}
+									info={convertToPascalCase(user.role!.replaceAll('-', ' '))}
 									mainLink={`/profile/${user.id}`}
 									// TODO: See how I handled if there is no conversation ID, but the message still works
 									chatLink={`/direct-messages?user=${user.id}&conversationId`}
@@ -122,10 +123,11 @@ export const Search = () => {
 const SearchOutput: React.FC<{
 	type: 'user' | 'organization';
 	mainLink: string;
-	chatLink: string;
+	chatLink?: string;
 	name: string;
 	info: string;
-}> = ({ mainLink, chatLink, type, name, info }) => {
+	isVerified?: boolean;
+}> = ({ mainLink, chatLink, type, name, info, isVerified = false }) => {
 	return (
 		<div className="border-input-border flex items-center gap-4 rounded-lg border px-5 py-3">
 			<Avatar
@@ -134,6 +136,7 @@ const SearchOutput: React.FC<{
 				}}
 				size="lg"
 				colorScheme="gray"
+				isVerified={isVerified}
 			>
 				Ante Horvat
 			</Avatar>
@@ -145,12 +148,13 @@ const SearchOutput: React.FC<{
 
 			{/* Ovdje se ne koristi LinkAsButton kako bi se zatvorio dialog (iz tog samo razloga),pa je konstrukcija link -> button*/}
 			<div className="ml-auto flex gap-4">
-				<Link href={chatLink}>
-					<Button className="p-2" variant="outline" colorScheme="yellow">
-						<MessageCircle />
-					</Button>
-				</Link>
-
+				{chatLink && (
+					<Link href={chatLink}>
+						<Button className="p-2" variant="outline" colorScheme="yellow">
+							<MessageCircle />
+						</Button>
+					</Link>
+				)}
 				<Link href={mainLink}>
 					<Button className="p-2">
 						{type === 'user' ? <User /> : <ArrowRight />}

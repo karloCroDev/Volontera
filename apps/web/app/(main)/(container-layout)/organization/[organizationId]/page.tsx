@@ -30,12 +30,21 @@ import { PostsSelect } from '@/modules/main/organization/home/posts-select';
 
 export default async function OrganizationPage({
 	params,
+	searchParams,
 }: {
 	params: Promise<{
 		organizationId: string;
 	}>;
+	searchParams?: Promise<{ filter?: string }>;
 }) {
 	const { organizationId } = await params;
+	const resolvedSearchParams = await searchParams;
+	const filter =
+		resolvedSearchParams?.filter === 'recommended' ||
+		resolvedSearchParams?.filter === 'newest' ||
+		resolvedSearchParams?.filter === 'oldest'
+			? resolvedSearchParams.filter
+			: undefined;
 	const [organizationDetailsById, member] = await Promise.all([
 		getOrganizationDetailsById(organizationId),
 		retrieveOrganizationMember(organizationId),
@@ -67,6 +76,10 @@ export default async function OrganizationPage({
 								}}
 								colorScheme="gray"
 								size="2xl"
+								isVerified={
+									organizationDetailsById.organization.owner
+										.subscriptionTier === 'PRO'
+								}
 							>
 								{organizationDetailsById.organization.name}
 							</Avatar>
@@ -121,7 +134,7 @@ export default async function OrganizationPage({
 					</div>
 					<hr className="bg-input-border my-6 h-px w-full border-0" />
 
-					<div className="flex justify-between lg:gap-8">
+					<div className="flex justify-between gap-4 lg:gap-8">
 						<div className="flex-1">
 							{organizationDetailsById.organization.organizationInfo
 								.additionalLinks.length > 0 && (
@@ -129,7 +142,7 @@ export default async function OrganizationPage({
 									<h4 className="text-lg underline underline-offset-4 lg:text-xl">
 										Additional links
 									</h4>
-									<div className="mb-6 mt-3 flex gap-4">
+									<div className="mb-6 mt-3 flex flex-col gap-4 lg:flex-row">
 										{organizationDetailsById.organization.organizationInfo.additionalLinks.map(
 											({ name, url, id }) => (
 												<AnchorAsButton
@@ -151,7 +164,7 @@ export default async function OrganizationPage({
 								About
 							</h4>
 
-							<p className="mt-2">
+							<p className="mt-2 text-balance">
 								{organizationDetailsById.organization.organizationInfo.bio}
 							</p>
 
@@ -206,7 +219,7 @@ export default async function OrganizationPage({
 							</LinkAsTag>
 
 							<Indicators className="mb-3">Admins</Indicators>
-							<div className="flex items-center gap-4">
+							<div className="flex flex-col gap-4 lg:flex-row lg:items-center">
 								{organizationDetailsById.membersHierarchy.admins.map(
 									(admin) => (
 										<LinkAsTag
@@ -236,7 +249,7 @@ export default async function OrganizationPage({
 							</div>
 
 							<Indicators className="mb-3">Members</Indicators>
-							<div className="flex items-center gap-4">
+							<div className="flex flex-col gap-4 lg:flex-row lg:items-center">
 								{organizationDetailsById.membersHierarchy.members.map(
 									(member) => (
 										<LinkAsTag
@@ -269,7 +282,7 @@ export default async function OrganizationPage({
 									<Tag colorScheme="gray">
 										+
 										{organizationDetailsById.organization._count
-											.organizationMembers - 5}{' '}
+											.organizationMembers - 3}{' '}
 										more
 									</Tag>
 								)}
@@ -295,7 +308,7 @@ export default async function OrganizationPage({
 				(member.organizationMember.role === 'ADMIN' ||
 					member.organizationMember.role === 'OWNER') && <CreatePostDialog />}
 
-			<div className="flex justify-between">
+			<div className="mt-6 flex justify-between">
 				<h2 className="text-xl lg:text-2xl">Posts</h2>
 				<PostsSelect />
 			</div>
@@ -305,15 +318,21 @@ export default async function OrganizationPage({
 						<PostSkeleton key={indx} />
 					))}
 				>
-					<Posts organizationId={organizationId} />
+					<Posts organizationId={organizationId} filter={filter} />
 				</Suspense>
 			</div>
 		</>
 	);
 }
 
-async function Posts({ organizationId }: { organizationId: string }) {
-	const posts = await retrieveOrganizationPosts(organizationId);
+async function Posts({
+	organizationId,
+	filter,
+}: {
+	organizationId: string;
+	filter?: 'recommended' | 'newest' | 'oldest';
+}) {
+	const posts = await retrieveOrganizationPosts(organizationId, filter);
 
 	if (!posts.success) return <p>There was an error with loading posts</p>;
 	return <PostsMapping posts={posts} />;

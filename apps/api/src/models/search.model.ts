@@ -22,15 +22,44 @@ export async function searchUsers({
           },
         ],
       },
-      omit: {
-        password: true,
+      select: {
+        id: true,
+        firstName: true,
+        lastName: true,
+        email: true,
+        image: true,
+        role: true,
+        subscriptionTier: true,
+        subscriptionType: true,
+        onboardingFinished: true,
       },
+      take: 5,
     });
 
     const organizations = await tx.organization.findMany({
       where: {
         name: { contains: query, mode: "insensitive" },
       },
+      select: {
+        id: true,
+        name: true,
+        bio: true,
+        avatarImage: true,
+        owner: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            email: true,
+            image: true,
+            role: true,
+            subscriptionTier: true,
+            subscriptionType: true,
+            onboardingFinished: true,
+          },
+        },
+      },
+      take: 5,
     });
     return {
       users,

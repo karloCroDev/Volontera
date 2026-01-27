@@ -35,13 +35,17 @@ export type GetOrganizationDetailsByIdResponse = ServerHandleResponse<true> & {
   isFollowing: boolean;
 };
 
+export type OrganizationWithOwner = Organization & {
+  owner: Omit<User, "password">;
+};
+
 export type ListOrganizationsOrganizatorResponse = SuccessfulResponse & {
-  ownedOrganizations: Organization[];
-  followingOrganizations: Organization[];
-  attendingOrganizations: Organization[];
+  ownedOrganizations: OrganizationWithOwner[];
+  followingOrganizations: OrganizationWithOwner[];
+  attendingOrganizations: OrganizationWithOwner[];
 };
 
 export type ListOrganizationsUserResponse = SuccessfulResponse & {
-  followingOrganizations: Organization[];
-  attendingOrganizations: Organization[];
+  followingOrganizations: OrganizationWithOwner[];
+  attendingOrganizations: OrganizationWithOwner[];
 };

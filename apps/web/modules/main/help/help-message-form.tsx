@@ -7,11 +7,11 @@ import { Send } from 'lucide-react';
 import { Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
+import { useQueryClient } from '@tanstack/react-query';
 
 // Components
 import { ResizableTextArea } from '@/components/ui/resizable-input';
 import { Button } from '@/components/ui/button';
-import { useQueryClient } from '@tanstack/react-query';
 
 // Schemas
 import {
@@ -28,16 +28,12 @@ import { toast } from '@/lib/utils/toast';
 
 // Types
 import { HelpConversationSuccess } from '@repo/types/help';
+import { DeleteConversationDialog } from '@/modules/main/help/delete-conversation-dialog';
 
 export const HelpMessageForm: React.FC<{
 	setMutating: React.Dispatch<React.SetStateAction<boolean>>;
 }> = withReactQueryProvider(({ setMutating }) => {
-	const {
-		control,
-		handleSubmit,
-
-		reset,
-	} = useForm<HelpConversationSchemaArgs>({
+	const { control, handleSubmit, reset } = useForm<HelpConversationSchemaArgs>({
 		resolver: zodResolver(helpConversationSchema),
 	});
 
@@ -110,6 +106,7 @@ export const HelpMessageForm: React.FC<{
 						label="Enter your question for AI"
 						textAreaProps={field}
 						className="bg-background"
+						iconsLeft={<DeleteConversationDialog />}
 						iconsRight={
 							<Button type="submit" className="p-2" isDisabled={isPending}>
 								<Send />

@@ -69,16 +69,18 @@ export const OrganizationRoutingHeader: React.FC<{
 					<>
 						<LinkAsButton
 							variant="ghost"
-							href={`/organization/${params.organizationId}/manage`}
+							href={`/organization/${params.organizationId}/manage-members`}
 							size="sm"
-							className={pathname.includes('/manage') ? 'font-bold' : undefined}
+							className={
+								pathname.includes('/manage-members') ? 'font-bold' : undefined
+							}
 							iconRight={
-								pathname.includes('/manage') && (
+								pathname.includes('/manage-members') && (
 									<Dot size="md" className="absolute right-0 top-0" />
 								)
 							}
 						>
-							Manage attendees
+							Manage members
 						</LinkAsButton>
 					</>
 				)}

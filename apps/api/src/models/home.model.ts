@@ -1,5 +1,5 @@
 // Database
-import { prisma, User } from "@repo/database";
+import { Post, prisma, User } from "@repo/database";
 import { RetrieveAlgoPostsSchemaArgs } from "@repo/schemas/home";
 
 export async function retrieveAlgoPosts({
@@ -11,12 +11,30 @@ export async function retrieveAlgoPosts({
   userId: User["id"];
   offset?: number;
   limit?: number;
-  filter: RetrieveAlgoPostsSchemaArgs["filter"];
+  filter?: RetrieveAlgoPostsSchemaArgs["filter"];
 }) {
   return prisma.post.findMany({
+    where:
+      filter === "following"
+        ? {
+            organization: {
+              organizationFollowers: {
+                some: {
+                  followerUserId: userId,
+                },
+              },
+            },
+          }
+        : undefined,
     include: {
       organization: {
         include: {
+          _count: {
+            select: {
+              organizationFollowers: true,
+              organizationMembers: true,
+            },
+          },
           organizationFollowers:
             filter === "following"
               ? {
@@ -25,6 +43,11 @@ export async function retrieveAlgoPosts({
                   },
                 }
               : false,
+          owner: {
+            omit: {
+              password: true,
+            },
+          },
         },
       },
 
@@ -48,5 +71,60 @@ export async function retrieveAlgoPosts({
     },
     skip: +offset,
     take: +limit,
+  });
+}
+
+export async function retrieveCronPosts() {
+  return prisma.post.findMany({
+    include: {
+      author: {
+        select: {
+          subscriptionTier: true,
+        },
+      },
+      organization: {
+        select: {
+          createdAt: true,
+          owner: {
+            select: {
+              subscriptionTier: true,
+            },
+          },
+          _count: {
+            select: {
+              organizationFollowers: true,
+              organizationMembers: true,
+            },
+          },
+        },
+      },
+      _count: {
+        select: {
+          postComments: true,
+          postLikes: true,
+          postImages: true,
+        },
+      },
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
+}
+
+export async function updatePostRankingScore({
+  postId,
+  rankingScore,
+}: {
+  postId: Post["id"];
+  rankingScore: Post["rankingScore"];
+}) {
+  return prisma.post.update({
+    where: {
+      id: postId,
+    },
+    data: {
+      rankingScore,
+    },
   });
 }

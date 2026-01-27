@@ -199,6 +199,8 @@ model Organization {
   createdAt                  DateTime                    @default(now())
   updatedAt                  DateTime                    @updatedAt
   organizationLeaveFeedbacks OrganizationLeaveFeedback[]
+  organizationTasksBoards    OrganizationTasksBoards[]
+  organizationTasks          OrganizationTask[]
 }
 
 enum OrganizationMemberRole {
@@ -308,10 +310,11 @@ model Post {
   title        String
   content      String
   authorId     String
+  rankingScore Int
   postImages   PostImages[]
   postComments PostComments[]
 
-  organization   Organization @relation(fields: [organizationId], references: [id])
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   organizationId String
   author         User         @relation(fields: [authorId], references: [id], onDelete: Cascade)
   createdAt      DateTime     @default(now())
@@ -429,11 +432,14 @@ model OrganizationGroupChatMessageImage {
 
 model OrganizationTasksBoards {
   id                String             @id @default(cuid())
+  organization      Organization       @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   organizationId    String
   organizationTasks OrganizationTask[]
   title             String
   createdAt         DateTime           @default(now())
   updatedAt         DateTime           @updatedAt
+
+  @@index([organizationId])
 }
 
 enum OrganizationTaskStatus {
@@ -444,6 +450,7 @@ enum OrganizationTaskStatus {
 
 model OrganizationTask {
   id                        String                      @id @default(cuid())
+  organization              Organization                @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   organizationId            String
   organizationTaskInfos     OrganizationTaskInfo?
   organizationTaskQuestions OrganizationTaskQuestions[]
@@ -455,6 +462,8 @@ model OrganizationTask {
   organizationTasksBoardId  String?
   createdAt                 DateTime                    @default(now())
   updatedAt                 DateTime                    @updatedAt
+
+  @@index([organizationId])
 }
 
 model OrganizationTaskInfo {

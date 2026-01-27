@@ -4,6 +4,7 @@ import { Request, Response } from "express";
 // Services
 import {
   acceptOrDeclineUsersRequestToJoinOrganizationService,
+  deleteOrganizationService,
   demoteOrPromoteOrganizationMemberService,
   leaveOrganizationService,
   retirveAllRequestsToJoinOrganizationService,
@@ -14,6 +15,7 @@ import {
 
 // Schema types
 import {
+  DeleteOrganizationArgs,
   LeaveOrganizationArgs,
   RetirveAllRequestsToJoinOrganizationArgs,
   RetrieveAllMembersInOrganizationArgs,
@@ -116,6 +118,22 @@ export async function retrieveDataAboutOrganizationController(
     const result = await retrieveDataAboutOrganizationService(
       req.params as RetrieveDataAboutOrganizationArgs,
     );
+    return res.status(result.status).json(result.body);
+  } catch (error) {
+    handleServerErrorResponse(res, error);
+  }
+}
+
+export async function deleteOrganizationController(
+  req: Request,
+  res: Response,
+) {
+  try {
+    const result = await deleteOrganizationService({
+      data: req.params as DeleteOrganizationArgs,
+      userId: req.user.userId,
+    });
+
     return res.status(result.status).json(result.body);
   } catch (error) {
     handleServerErrorResponse(res, error);

@@ -35,10 +35,12 @@ import {
 	LikeOrDislikePostArgs,
 	RetrievePostArgs,
 	UpdatePostArgs,
+	RetrieveOrganizationPostsQueryArgs,
 } from '@repo/schemas/post';
 import {
 	RetrieveOrganizationPostsResponse,
 	RetrievePostData,
+	RetrievePostWithComments,
 } from '@repo/types/post';
 
 export const useCreatePost = (
@@ -67,26 +69,26 @@ export const useCreatePost = (
 
 // Optimistic update za brisanje posta (implementiran unutar componenata)
 export const useDeletePost = (
-	postId: DeletePostArgs['postId'],
 	options?: UseMutationOptions<
 		SuccessfulResponse,
 		ErrorToastResponse,
 		DeletePostArgs
 	>
+	// postId: DeletePostArgs['postId'],
 ) => {
 	return useMutation({
 		...options,
 		mutationKey: ['delete-post'],
-		mutationFn: () => deletePost({ postId }),
+		mutationFn: (data: DeletePostArgs) => deletePost(data),
 	});
 };
 
-export const useToggleLike = (
+export const useToggleLike = <TContext = unknown>(
 	options?: UseMutationOptions<
 		SuccessfulResponse,
 		ErrorToastResponse,
 		LikeOrDislikePostArgs,
-		{ previousPost: RetrieveOrganizationPostsResponse | undefined }
+		TContext
 	>
 ) => {
 	const queryClient = useQueryClient();
@@ -107,14 +109,15 @@ export const useToggleLike = (
 
 export const useRetrieveOrganizationPosts = (
 	organizationId: string,
+	filter?: RetrieveOrganizationPostsQueryArgs['filter'],
 	options?: Omit<
 		UseSuspenseQueryOptions<RetrieveOrganizationPostsResponse>,
 		'queryKey' | 'queryFn'
 	>
 ) => {
 	return useSuspenseQuery({
-		queryKey: ['posts', organizationId],
-		queryFn: () => retrieveOrganizationPosts({ organizationId }),
+		queryKey: ['posts', organizationId, filter ?? 'recommended'],
+		queryFn: () => retrieveOrganizationPosts({ organizationId, filter }),
 		...options,
 	});
 };
@@ -122,7 +125,7 @@ export const useRetrieveOrganizationPosts = (
 export const useRetrievePostWithComments = (
 	postId: string,
 	options?: Omit<
-		UseSuspenseQueryOptions<RetrieveOrganizationPostsResponse>,
+		UseSuspenseQueryOptions<RetrievePostWithComments>,
 		'queryKey' | 'queryFn'
 	>
 ) => {

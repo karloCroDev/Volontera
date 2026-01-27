@@ -11,11 +11,13 @@ import {
   demoteOrPromoteOrganizationMemberController,
   leaveOrganizationController,
   retrieveDataAboutOrganizationController,
+  deleteOrganizationController,
 } from "@/controllers/organization-managment.controller";
 
 // Schemas
 import {
   acceptOrDeclineUsersRequestToJoinOrganizationSchema,
+  deleteOrganizationSchema,
   demoteOrPromoteOrganizationMemberSchema,
   retirveAllRequestsToJoinOrganizationSchema,
   retrieveAllMembersInOrganizationSchema,
@@ -23,9 +25,11 @@ import {
   leaveOrganizationSchema,
   retrieveDataAboutOrganizationSchema,
 } from "@repo/schemas/organization-managment";
+
 // Middleware
 import { organizationRolesMiddleware } from "@/middleware/organization-roles.middleware";
 import { validate } from "@/middleware/validate.middleware";
+import { proPlanUserMiddleware } from "@/middleware/payment.middleware";
 
 export const organizationManagmentRoutes = Router();
 
@@ -80,6 +84,7 @@ organizationManagmentRoutes.get(
     type: "params",
     responseOutput: "server",
   }),
+  proPlanUserMiddleware,
   organizationRolesMiddleware({
     type: "params",
   }),
@@ -119,4 +124,18 @@ organizationManagmentRoutes.delete(
     aquiredRoles: ["MEMBER", "ADMIN"],
   }),
   leaveOrganizationController,
+);
+
+// Owner only
+organizationManagmentRoutes.delete(
+  "/delete/:organizationId",
+  validate({
+    schema: deleteOrganizationSchema,
+    type: "params",
+    responseOutput: "toast",
+  }),
+  organizationRolesMiddleware({
+    type: "params",
+  }),
+  deleteOrganizationController,
 );

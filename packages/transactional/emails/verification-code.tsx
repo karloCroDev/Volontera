@@ -9,7 +9,6 @@ import {
 	Section,
 	Tailwind,
 	Text,
-	Img,
 	Row,
 	Column,
 } from '@react-email/components';
@@ -21,7 +20,7 @@ export const VerificationCode: React.FC<{
 		<Html>
 			<Tailwind>
 				<Head />
-				<Body className="mx-auto my-auto bg-white px-4 font-sans lg:px-6">
+				<Body className="mx-auto my-auto bg-white font-sans lg:px-6">
 					<Container className="my-10 rounded-lg border-2 border-solid border-[#f59f0a] p-4">
 						<Section>
 							<Row>
@@ -33,7 +32,7 @@ export const VerificationCode: React.FC<{
 								<Column>
 									<Row>
 										<Column align="right">
-											<Text>[app name]</Text>
+											<Text>Volontera</Text>
 										</Column>
 										<Column align="right">
 											{/* Stavi sliku 

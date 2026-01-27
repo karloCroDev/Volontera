@@ -1,9 +1,12 @@
 // Models
+import { calculatePostRankingScore } from "@/lib/algorithm-formula";
 import { createUploadUrl } from "@/lib/aws-s3-functions";
+import { isOrganizationOwnerOnProPlan, isUserOnProPlan } from "@/lib/payment";
 import {
   serverFetchOutput,
   toastResponseOutput,
 } from "@/lib/utils/service-output";
+import { getOrganizationDetailsById } from "@/models/organization.model";
 import {
   checkIfUserLiked,
   createPost,
@@ -25,7 +28,7 @@ import {
   CreatePostArgs,
   DeletePostArgs,
   LikeOrDislikePostArgs,
-  RetrieveOrganizationPostsArgs,
+  RetrieveOrganizationPostsRequestArgs,
   RetrievePostArgs,
   UpdatePostArgs,
 } from "@repo/schemas/post";
@@ -40,15 +43,38 @@ export async function createPostService({
 }) {
   // TODO: If I am reusing this then make a function
   const uploadImages = await Promise.all(
-    data.images.map((image) => createUploadUrl(image))
+    data.images.map((image) => createUploadUrl(image)),
   );
 
-  const post = await createPost({
+  const [isOrganizationOwnerPro, isAuthorPro, retrieveOrganization] =
+    await Promise.all([
+      isOrganizationOwnerOnProPlan(data.organizationId),
+      isUserOnProPlan(userId),
+      getOrganizationDetailsById({
+        organizationId: data.organizationId,
+        userId,
+      }),
+    ]);
+
+  // Odmah na početku računam vrijednost posta kako ne bi odmah pao na dno ljestvice
+  const rankingScore = calculatePostRankingScore({
+    likes: 0,
+    comments: 0,
+    createdAt: new Date(),
+    images: uploadImages.length,
+    orgFollowers:
+      retrieveOrganization?.organization._count.organizationFollowers || 0,
+    isAuthorPremium: isAuthorPro,
+    isOrgPremium: isOrganizationOwnerPro,
+  });
+
+  await createPost({
     title: data.title,
     content: data.content,
     images: uploadImages.map((img) => img.key),
     userId,
     organizationId: data.organizationId,
+    rankingScore,
   });
 
   return toastResponseOutput({
@@ -92,10 +118,9 @@ export async function updatePostService(data: UpdatePostArgs) {
 
       presignedUrls.push(image.url);
       return image.key;
-    })
+    }),
   );
 
-  console.log(data);
   // Maybe return if I want to see it immediately!
   await updatePost({
     postId: data.postId,
@@ -117,12 +142,13 @@ export async function retrieveOrganizationPostsService({
   data,
   userId,
 }: {
-  data: RetrieveOrganizationPostsArgs;
+  data: RetrieveOrganizationPostsRequestArgs;
   userId: string;
 }) {
   const posts = await retrieveOrganizationPosts({
     organizationId: data.organizationId,
     userId,
+    filter: data.filter,
   });
 
   return serverFetchOutput({

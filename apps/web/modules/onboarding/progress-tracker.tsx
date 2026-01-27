@@ -15,7 +15,7 @@ export const ProgressTracker = () => {
 	return (
 		<aside className="mt-16 flex h-fit flex-col items-center lg:mt-0 lg:h-full lg:justify-center">
 			<h1 className="text-balance text-center text-lg font-semibold lg:text-2xl">
-				A few steps away from accessing the [app]
+				A few steps away from accessing the Volontera
 			</h1>
 
 			<div className="mt-12 flex items-center lg:mt-16 lg:flex-col lg:items-start">

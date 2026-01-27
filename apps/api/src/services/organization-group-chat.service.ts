@@ -21,6 +21,11 @@ import {
   DeleteOrganizationGroupChatMessageArgs,
 } from "@repo/schemas/organization-group-chat";
 import { io } from "@/ws/socket";
+import { createNotifications } from "@/models/notification.model";
+import {
+  retrieveAllMembersInOrganization,
+  retrieveOrganizationMember,
+} from "@/models/organization-managment.model";
 
 export async function retrieveAllOrganizationGroupChatMessagesService({
   organizationId,
@@ -43,15 +48,37 @@ export async function createOrganizationGroupChatMessageService({
   data: CreateOrganizationGroupChatMessageArgs;
   userId: User["id"];
 }) {
-  const messages = await createOrganizationGroupChatMessage({
+  const message = await createOrganizationGroupChatMessage({
     ...data,
     senderId: userId,
   });
 
+  const user = await retrieveOrganizationMember({
+    organizationId: data.organizationId,
+    userId,
+  });
+
   io.to(`organization:${data.organizationId}`).emit(
     "organization-group-chat:new-message",
-    messages
+    message,
   );
+
+  // Ako je admin ili korisnik onda se svima pošalje notifikacija
+  if (user?.role === "ADMIN" || user?.role === "OWNER") {
+    const members = await retrieveAllMembersInOrganization({
+      organizationId: data.organizationId,
+      userId,
+    });
+
+    if (members.length > 0) {
+      await createNotifications(
+        members.map((member) => ({
+          userId: member.userId,
+          content: `New message in organization group chat: ${data.content}`,
+        })),
+      );
+    }
+  }
 
   return toastResponseOutput({
     title: "Success",
@@ -73,11 +100,12 @@ export async function deleteOrganizationGroupChatMessageService({
   });
 
   io.to(
-    `organization:${deletedMessage.organizationGroupChat.organizationId}`
+    `organization:${deletedMessage.organizationGroupChat.organizationId}`,
   ).emit("organization-group-chat:message-deleted", {
     messageId: deletedMessage.id,
     organizationId: deletedMessage.organizationGroupChat.organizationId,
   });
+
   return toastResponseOutput({
     title: "Message deleted",
     message: "Message deleted successfully",
