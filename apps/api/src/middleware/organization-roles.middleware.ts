@@ -6,6 +6,7 @@ import { retrieveOrganizationMember } from "@/models/organization-managment.mode
 
 // Database
 import { Organization, OrganizationMember } from "@repo/database";
+import { cacheKey, redisGetOrSetJson } from "@/lib/cache-middleware";
 
 export function organizationRolesMiddleware({
   aquiredRoles,
@@ -14,15 +15,28 @@ export function organizationRolesMiddleware({
   aquiredRoles?: OrganizationMember["role"][];
   type?: "body" | "query" | "params";
 }) {
-  // TODO: Redis will be sigma sigma and cache this!!
   return async (req: Request, res: Response, next: NextFunction) => {
     const { userId } = req.user;
-    const member = await retrieveOrganizationMember({
-      organizationId: req[type].organizationId as Organization["id"],
-      userId: userId,
+
+    const organizationId = req[type].organizationId;
+    const key = cacheKey(["org", "member-role", organizationId, userId]);
+
+    const cachedMember = await redisGetOrSetJson<{
+      role: OrganizationMember["role"];
+    } | null>({
+      key,
+      ttlSeconds: 60,
+      loader: async () => {
+        const member = await retrieveOrganizationMember({
+          organizationId,
+          userId,
+        });
+
+        return member ? { role: member.role } : null;
+      },
     });
 
-    if (!member) {
+    if (!cachedMember) {
       return res.status(400).json({
         message: "Forbidden: Not a member of the organization",
         success: false,
@@ -30,9 +44,9 @@ export function organizationRolesMiddleware({
     }
 
     // Owner uvijek ima pristup svemu unutar organizacije (osim ako je eksplicitno zabranjeno)
-    if (member.role === "OWNER") return next();
+    if (cachedMember.role === "OWNER") return next();
 
-    // Ako nisu specificirane role, onda ne moze nijedan korisnik osim organizacije pristupiti
+    // Ako nisu specificirane role onda ne moze nijedan korisnik osim organizacije pristupiti
     if (!aquiredRoles) {
       return res.status(400).json({
         message: "Bad Request: No roles specified for access",
@@ -40,7 +54,7 @@ export function organizationRolesMiddleware({
       });
     }
 
-    if (!aquiredRoles.includes(member.role)) {
+    if (!aquiredRoles.includes(cachedMember.role)) {
       return res.status(400).json({
         message: "Forbidden: Insufficient organization role",
         success: false,

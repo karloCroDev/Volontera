@@ -111,7 +111,6 @@ postAlgorithmJob.start();
 app.post("/test", async (req, res) => {
   // Redis: works fine!
   const client = await initalizeRedisClient();
-  console.log(client);
   res.status(200).json({ message: "Redis client initialized" });
 });
 
