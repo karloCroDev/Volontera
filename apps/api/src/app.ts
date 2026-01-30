@@ -111,6 +111,7 @@ postAlgorithmJob.start();
 app.post("/test", async (req, res) => {
   // Redis: works fine!
   const client = await initalizeRedisClient();
+  console.log("Redis Client in Test Route:", client);
   res.status(200).json({ message: "Redis client initialized" });
 });
 
@@ -122,3 +123,9 @@ app.get(
     res.json({ message: "Awesome you accessed the proteced route" });
   },
 );
+
+// IMPORTANT: Stop redis server (wsl)
+
+// redis-start
+// sudo service redis-server status
+// sudo service redis-server stop

@@ -89,7 +89,7 @@ export const Avatar: React.FC<
 					className={twJoin(
 						'bg-pending absolute rounded-full p-1',
 						size === 'xl' || size === '2xl' || size === '4xl' || size === 'full'
-							? 'right-2 top-1'
+							? 'right-2 top-0'
 							: '-right-1 -top-1'
 					)}
 				>

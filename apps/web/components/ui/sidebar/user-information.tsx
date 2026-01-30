@@ -119,6 +119,7 @@ export const UserInformation: React.FC<{
 									}}
 									colorScheme="gray"
 									size="md"
+									isVerified={user.subscriptionTier === 'PRO'}
 								>
 									{convertToFullname({
 										firstname: user.firstName,
