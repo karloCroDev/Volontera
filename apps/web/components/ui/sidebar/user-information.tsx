@@ -44,6 +44,7 @@ export const UserInformation: React.FC<{
 	const { mutate, isPending } = useLogout();
 	const { theme, setTheme } = useTheme();
 
+	console.log(`${process.env.NEXT_PUBLIC_AWS_CLOUDFRONT_URL}/${user.image}`);
 	return (
 		<>
 			<div className="mb-3 mt-auto">
@@ -64,7 +65,9 @@ export const UserInformation: React.FC<{
 					<AriaButton className="border-input-border bg-muted hover:bg-muted/80 flex h-fit w-full cursor-pointer items-center gap-4 rounded-lg border p-3 shadow-md outline-none sm:w-3/4 md:w-3/5 lg:w-full">
 						<Avatar
 							imageProps={{
-								src: user.image ?? undefined,
+								src: user.image
+									? `${process.env.NEXT_PUBLIC_AWS_CLOUDFRONT_URL}/${user.image}`
+									: undefined,
 							}}
 							colorScheme="gray"
 							size="md"
@@ -91,7 +94,9 @@ export const UserInformation: React.FC<{
 					<AriaButton>
 						<Avatar
 							imageProps={{
-								src: user?.image || '',
+								src: user.image
+									? `${process.env.NEXT_PUBLIC_AWS_CLOUDFRONT_URL}/${user.image}`
+									: undefined,
 							}}
 							colorScheme="gray"
 							size="xl"
@@ -115,7 +120,9 @@ export const UserInformation: React.FC<{
 							<div className="flex items-center gap-4">
 								<Avatar
 									imageProps={{
-										src: user?.image || '',
+										src: user.image
+											? `${process.env.NEXT_PUBLIC_AWS_CLOUDFRONT_URL}/${user.image}`
+											: undefined,
 									}}
 									colorScheme="gray"
 									size="md"

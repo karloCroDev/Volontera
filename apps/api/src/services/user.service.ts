@@ -24,18 +24,11 @@ export async function getUserByIdService({ userId }: UserSchemaArgs) {
     });
   }
 
-  let userData = user;
-
-  if (user.image) {
-    const image = await getImagePresignedUrls(user.image);
-    userData = { ...user, image };
-  }
-
   return serverFetchOutput({
     status: 200,
     message: "User fetched successfully",
     success: true,
-    data: userData,
+    data: user,
   });
 }
 

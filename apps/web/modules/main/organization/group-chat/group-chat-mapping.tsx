@@ -39,12 +39,6 @@ export const GroupChatMapping: React.FC<{
 		}
 	);
 
-	const { data: images } = useGetImageFromKeys({
-		imageUrls: data.organizationGroupChat.messages
-			.map((message) => message.author.image)
-			.filter((url) => url !== null),
-	});
-
 	const { socketGlobal } = useSocketContext();
 	React.useEffect(() => {
 		if (!socketGlobal) return;
@@ -122,7 +116,7 @@ export const GroupChatMapping: React.FC<{
 							<Avatar
 								imageProps={{
 									src: message.author.image
-										? images?.urls[message.author.image]
+										? `${process.env.NEXT_PUBLIC_AWS_CLOUDFRONT_URL}/${message.author.image}`
 										: undefined,
 								}}
 								isVerified={message.author.subscriptionTier === 'PRO'}

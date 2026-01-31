@@ -40,7 +40,7 @@ export async function retrievePostComments({
     },
     orderBy: {
       postCommentsLikes: {
-        _count: "desc",
+        _count: "asc",
       },
     },
   });

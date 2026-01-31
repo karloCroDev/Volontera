@@ -54,10 +54,6 @@ export default async function OrganizationPage({
 
 	if (!organizationDetailsById.success) notFound();
 
-	// const images = getImageFromKey({
-	// 	imageUrls:
-	// })
-
 	console.log();
 	return (
 		<>
@@ -74,7 +70,7 @@ export default async function OrganizationPage({
 						<div className="flex w-fit flex-col items-center">
 							<Avatar
 								imageProps={{
-									src: organizationDetailsById.organization.avatarImage,
+									src: `${process.env.NEXT_PUBLIC_AWS_CLOUDFRONT_URL}/${organizationDetailsById.organization.avatarImage}`,
 								}}
 								colorScheme="gray"
 								size="2xl"
@@ -203,7 +199,7 @@ export default async function OrganizationPage({
 							>
 								<Avatar
 									imageProps={{
-										src: '',
+										src: `${process.env.NEXT_PUBLIC_AWS_CLOUDFRONT_URL}/${organizationDetailsById.organization.owner.image}`,
 									}}
 									size="xs"
 								>
@@ -235,7 +231,9 @@ export default async function OrganizationPage({
 										>
 											<Avatar
 												imageProps={{
-													src: '',
+													src: admin.user.image
+														? `${process.env.NEXT_PUBLIC_AWS_CLOUDFRONT_URL}/${admin.user.image}`
+														: undefined,
 												}}
 												size="xs"
 											>
@@ -265,7 +263,9 @@ export default async function OrganizationPage({
 										>
 											<Avatar
 												imageProps={{
-													src: '',
+													src: member.user.image
+														? `${process.env.NEXT_PUBLIC_AWS_CLOUDFRONT_URL}/${member.user.image}`
+														: undefined,
 												}}
 												size="xs"
 											>
@@ -298,9 +298,7 @@ export default async function OrganizationPage({
 
 				<div className="absolute left-0 top-0 -z-[1] h-64 w-full overflow-hidden md:rounded-t-xl">
 					<Image
-						src={
-							organizationDetailsById.organization.organizationInfo.coverImage
-						}
+						src={`${process.env.NEXT_PUBLIC_AWS_CLOUDFRONT_URL}/${organizationDetailsById.organization.organizationInfo.coverImage}`}
 						alt="Cover image url"
 						fill
 						className="object-cover"

@@ -38,7 +38,6 @@ import { getLocalTimeZone, today } from '@internationalized/date';
 import { Error } from '@/components/ui/error';
 import { Dot } from '@/components/ui/dot';
 import { RadioIconVisual } from '@/components/ui/radio';
-import { useRetrieveOrganizationMember } from '@/hooks/data/organization-managment';
 
 export const AddTaskDialog: React.FC<{
 	organizationTasksBoardId: string;
@@ -227,7 +226,9 @@ export const AddTaskDialog: React.FC<{
 										<Tag className="flex items-center gap-4">
 											<Avatar
 												imageProps={{
-													src: member.user.image || '',
+													src: member.user.image
+														? `${process.env.NEXT_PUBLIC_AWS_CLOUDFRONT_URL}/${member.user.image}`
+														: undefined,
 												}}
 												size="xs"
 												isVerified={member.user.subscriptionTier === 'PRO'}

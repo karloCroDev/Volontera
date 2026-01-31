@@ -14,6 +14,7 @@ import { ListPosts } from '@/modules/main/public-profile/list-posts';
 import { getUserData, getSession } from '@/lib/server/user';
 import { convertToFullname, convertToPascalCase } from '@/lib/utils/converter';
 import { ListOrganizations } from '@/modules/main/public-profile/list-organization';
+import { formatDate } from '@/lib/utils/time-adjustments';
 
 export default async function PublicProfilePage({
 	params,
@@ -28,12 +29,15 @@ export default async function PublicProfilePage({
 	]);
 
 	if (!user || !user.success || !session || !session.success) notFound();
+
+	console.log(`${process.env.NEXT_PUBLIC_AWS_CLOUDFRONT_URL}/${user.image}`);
 	return (
 		<div className="my-8 flex flex-col items-center lg:my-12 2xl:mb-16 2xl:mt-12">
 			<Avatar
-				className=""
 				imageProps={{
-					src: user.image || undefined,
+					src: user.image
+						? `${process.env.NEXT_PUBLIC_AWS_CLOUDFRONT_URL}/${user.image}`
+						: undefined,
 				}}
 				size="full"
 			>
@@ -85,7 +89,7 @@ export default async function PublicProfilePage({
 				<div className="mt-6 flex items-center justify-between">
 					<h6 className="text-md lg:text-lg">Date of Birth</h6>
 					<p className="text-muted-foreground">
-						{user.DOB || 'Not fullfilled yet'}
+						{user.DOB ? formatDate(user.DOB) : 'Not fullfilled yet'}
 					</p>
 				</div>
 
