@@ -14,7 +14,6 @@ import { InformationContainer } from '@/modules/main/public-profile/information-
 
 import { useParams } from 'next/navigation';
 import { useRetrieveAllPostsForUser } from '@/hooks/data/user';
-import { useGetImageFromKeys } from '@/hooks/data/image';
 
 export const ListPosts = () => {
 	const [open, setOpen] = React.useState(false);
@@ -23,17 +22,6 @@ export const ListPosts = () => {
 	const { data } = useRetrieveAllPostsForUser(params.userId, {
 		// Samo kada su otvorene, da ne bi odmah fetchao na loadu stranice
 		enabled: open,
-	});
-
-	const { data: images } = useGetImageFromKeys({
-		imageUrls: [
-			...(data?.posts
-				.map((post) => post.author.image)
-				.filter((img) => img !== null) || []),
-			...(data?.posts
-				.flatMap((post) => post.postImages.map((img) => img.imageUrl))
-				.filter((img) => img !== null) || []),
-		],
 	});
 
 	return (
@@ -59,9 +47,7 @@ export const ListPosts = () => {
 					children: (
 						<div className="mt-8 grid grid-cols-1 gap-4 xl:grid-cols-2">
 							{data && data.posts.length > 0 ? (
-								data.posts.map((post) => (
-									<Post key={post.id} post={post} images={images?.urls} />
-								))
+								data.posts.map((post) => <Post key={post.id} post={post} />)
 							) : (
 								<p className="text-muted-foreground col-span-2 text-center">
 									This user has not made any posts.

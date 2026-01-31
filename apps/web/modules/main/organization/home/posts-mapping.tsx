@@ -12,7 +12,6 @@ import { RetrieveOrganizationPostsResponse } from '@repo/types/post';
 import { RetrieveOrganizationPostsQueryArgs } from '@repo/schemas/post';
 
 // Hooks
-import { useGetImageFromKeys } from '@/hooks/data/image';
 import { useRetrieveOrganizationPosts } from '@/hooks/data/post';
 import { useRetrieveOrganizationMember } from '@/hooks/data/organization-managment';
 
@@ -22,36 +21,20 @@ export const PostsMapping: React.FC<{
 	const params = useParams<{ organizationId: string }>();
 	const searchParams = useSearchParams();
 	const rawFilter = searchParams.get('filter');
-	const filter: RetrieveOrganizationPostsQueryArgs['filter'] =
-		rawFilter === 'recommended' ||
-		rawFilter === 'newest' ||
-		rawFilter === 'oldest'
-			? rawFilter
-			: undefined;
+	const filter: RetrieveOrganizationPostsQueryArgs['filter'] = React.useMemo(
+		() =>
+			rawFilter === 'recommended' ||
+			rawFilter === 'newest' ||
+			rawFilter === 'oldest'
+				? rawFilter
+				: undefined,
+		[rawFilter]
+	);
 
 	const { data } = useRetrieveOrganizationPosts(params.organizationId, filter, {
 		initialData: posts,
 	});
 
-	const { data: imagesData } = useGetImageFromKeys({
-		imageUrls: [
-			...data.posts.flatMap((post) =>
-				post.postImages.map((image) => image.imageUrl)
-			),
-			...data.posts.map((post) => post.organization.avatarImage),
-			...data.posts
-				.map((post) => post.author.image)
-				.filter((url) => url != null),
-		],
-	});
-
-	console.log('PostsMapping render with posts:', [
-		...data.posts.flatMap((post) =>
-			post.postImages.map((image) => image.imageUrl)
-		),
-		...data.posts.map((post) => post.organization.avatarImage),
-		...data.posts.map((post) => post.author.image).filter((url) => url != null),
-	]);
 	const { data: member } = useRetrieveOrganizationMember({
 		organizationId: params.organizationId,
 	});
@@ -66,7 +49,6 @@ export const PostsMapping: React.FC<{
 					member?.organizationMember.role === 'OWNER' ||
 					member?.organizationMember.role === 'ADMIN'
 				}
-				images={imagesData?.urls}
 			/>
 		))
 	) : (

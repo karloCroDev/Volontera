@@ -22,7 +22,6 @@ import { Dot } from '@/components/ui/dot';
 // Hooks
 import { useSession } from '@/hooks/data/user';
 import { useListOrganizations } from '@/hooks/data/organization';
-import { useGetImageFromKeys } from '@/hooks/data/image';
 import { useIsMobile } from '@/hooks/utils/useIsMobile';
 
 // Types
@@ -67,22 +66,6 @@ export const Organizations = () => {
 			enabled: open,
 		}
 	);
-
-	const { data: images } = useGetImageFromKeys({
-		imageUrls: organizations
-			? [
-					...organizations.attendingOrganizations
-						.map((org) => org.avatarImage)
-						.filter(Boolean),
-					...(organizations?.ownedOrganizations
-						?.map((org) => org.avatarImage)
-						.filter(Boolean) || []),
-					...organizations.followingOrganizations
-						.map((org) => org.avatarImage)
-						.filter(Boolean),
-				]
-			: [],
-	});
 
 	const params = useParams<{ organizationId: string }>();
 
@@ -141,7 +124,11 @@ export const Organizations = () => {
 													key={organization.id}
 													organization={organization}
 													isSelected={organization.id === params.organizationId}
-													imageUrl={images?.urls[organization.avatarImage]}
+													imageUrl={
+														organization.avatarImage
+															? `${process.env.NEXT_PUBLIC_AWS_CLOUDFRONT_URL}/${organization.avatarImage}`
+															: undefined
+													}
 												/>
 											))
 										) : (
@@ -164,7 +151,9 @@ export const Organizations = () => {
 												organization={organization}
 												isSelected={organization.id === params.organizationId}
 												imageUrl={
-													images?.urls[organization.avatarImage] || undefined
+													organization.avatarImage
+														? `${process.env.NEXT_PUBLIC_AWS_CLOUDFRONT_URL}/${organization.avatarImage}`
+														: undefined
 												}
 											/>
 										))
@@ -185,7 +174,11 @@ export const Organizations = () => {
 										key={organization.id}
 										organization={organization}
 										isSelected={organization.id === params.organizationId}
-										imageUrl={images?.urls[organization.avatarImage]}
+										imageUrl={
+											organization.avatarImage
+												? `${process.env.NEXT_PUBLIC_AWS_CLOUDFRONT_URL}/${organization.avatarImage}`
+												: undefined
+										}
 									/>
 								))
 							) : (

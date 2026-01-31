@@ -39,8 +39,7 @@ import { CommentDelete } from '@/modules/main/organization/post/comment-delete';
 export const Comment: React.FC<{
 	comment: PostCommentsResponse['comments'][0];
 	hasUserLiked: boolean;
-	pfpImages?: Record<string, string>;
-}> = ({ comment, hasUserLiked, pfpImages }) => {
+}> = ({ comment, hasUserLiked }) => {
 	const pathname = usePathname();
 	const params = useParams<{ postId: string }>();
 	const searchParams = useSearchParams();
@@ -121,7 +120,9 @@ export const Comment: React.FC<{
 			<div className="flex items-center gap-4">
 				<Avatar
 					imageProps={{
-						src: pfpImages ? pfpImages[comment.author.image || ''] : undefined,
+						src: comment.author.image
+							? `${process.env.NEXT_PUBLIC_AWS_CLOUDFRONT_URL}/${comment.author.image}`
+							: undefined,
 					}}
 					isVerified={comment.author.subscriptionTier === 'PRO'}
 					colorScheme="gray"

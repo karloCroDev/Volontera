@@ -9,7 +9,6 @@ import { PostSkeleton } from '@/components/ui/post/post-skeleton';
 
 // Hooks
 import { useInfiniteHomePosts } from '@/hooks/data/home';
-import { useGetImageFromKeys } from '@/hooks/data/image';
 import { withReactQueryProvider } from '@/lib/utils/react-query';
 import { useSearchParams } from 'next/navigation';
 import { RetrieveHomePostsResponse } from '@repo/types/home';
@@ -54,16 +53,6 @@ export const HomePostsMapping = withReactQueryProvider(
 			return () => observer.disconnect();
 		}, [query, loadMoreRef]);
 
-		const { data: imagesData } = useGetImageFromKeys({
-			imageUrls: [
-				...posts.flatMap((post) =>
-					post.postImages.map((image) => image.imageUrl)
-				),
-				...posts.map((post) => post.organization.avatarImage),
-				...posts.map((post) => post.author.image).filter((url) => url != null),
-			],
-		});
-
 		if (query.isError) {
 			return (
 				<p className="text-muted-foreground mt-6 text-center">
@@ -75,9 +64,7 @@ export const HomePostsMapping = withReactQueryProvider(
 		return (
 			<>
 				{posts.length > 0 ? (
-					posts.map((post) => (
-						<Post key={post.id} post={post} images={imagesData?.urls} />
-					))
+					posts.map((post) => <Post key={post.id} post={post} />)
 				) : (
 					<p className="text-muted-foreground text-center xl:col-span-2">
 						No posts found.

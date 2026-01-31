@@ -30,22 +30,15 @@ import { useSession } from '@/hooks/data/user';
 export const Post: React.FC<{
 	post: RetrieveOrganizationPostsResponse['posts'][0];
 	isInsideOrganization?: boolean;
-	images?: Record<string, string>;
 	hasAnAdminAccess?: boolean;
-}> = ({
-	images,
-	post,
-	isInsideOrganization = false,
-	hasAnAdminAccess = false,
-}) => {
+}> = ({ post, isInsideOrganization = false, hasAnAdminAccess = false }) => {
 	const { data: user } = useSession();
 	const hasUserLiked = post.postLikes.some((like) => like.userId === user?.id);
 
 	const splittedContent = post.content.split('.');
+
 	const singlePostImage = post.postImages[0];
-	const singlePostImageSrc = singlePostImage
-		? images?.[singlePostImage.imageUrl]
-		: undefined;
+
 	return (
 		<div className="border-input-border bg-muted flex flex-col rounded-xl border px-8 py-6 shadow-xl">
 			<div className="mb-8 flex gap-4">
@@ -56,7 +49,7 @@ export const Post: React.FC<{
 					<Avatar
 						colorScheme="gray"
 						imageProps={{
-							src: images?.[post.organization.avatarImage],
+							src: `${process.env.NEXT_PUBLIC_AWS_CLOUDFRONT_URL}/${post.organization.avatarImage}`,
 						}}
 						isVerified={post.organization.owner.subscriptionTier === 'PRO'}
 					>
@@ -135,16 +128,13 @@ export const Post: React.FC<{
 				{post.postImages.length > 1 ? (
 					<Carousel
 						slides={post.postImages.map(({ imageUrl, id }) => {
-							const src = images?.[imageUrl];
-							if (!src) return null;
-
 							return (
 								<div
 									className="rouded-md border-input-border relative aspect-[4/3] max-h-[600px] w-full rounded border"
 									key={id}
 								>
 									<Image
-										src={src}
+										src={`${process.env.NEXT_PUBLIC_AWS_CLOUDFRONT_URL}/${imageUrl}`}
 										alt="Post image"
 										fill
 										className="object-contain"
@@ -156,9 +146,9 @@ export const Post: React.FC<{
 				) : (
 					post.postImages.length === 1 && (
 						<div className="rouded-md border-input-border relative mt-4 aspect-[4/3] max-h-[600px] w-full rounded border">
-							{singlePostImageSrc ? (
+							{singlePostImage ? (
 								<Image
-									src={singlePostImageSrc}
+									src={`${process.env.NEXT_PUBLIC_AWS_CLOUDFRONT_URL}/${singlePostImage.imageUrl}`}
 									alt="Post image"
 									fill
 									className="object-contain"
@@ -176,7 +166,9 @@ export const Post: React.FC<{
 					By:
 					<Avatar
 						imageProps={{
-							src: post.author.image ? images?.[post.author.image] : undefined,
+							src: post.author.image
+								? `${process.env.NEXT_PUBLIC_AWS_CLOUDFRONT_URL}/${post.author.image}`
+								: undefined,
 						}}
 						isVerified={post.author.subscriptionTier === 'PRO'}
 						size="xs"

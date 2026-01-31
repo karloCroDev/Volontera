@@ -23,7 +23,6 @@ import {
 } from '@repo/schemas/organization-tasks';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from '@/lib/utils/toast';
-import { useGetImageFromKeys } from '@/hooks/data/image';
 import { convertToFullname } from '@/lib/utils/converter';
 
 export const TaskCardQuestions: React.FC<{
@@ -39,18 +38,12 @@ export const TaskCardQuestions: React.FC<{
 		taskId,
 	});
 
-	const { data: image } = useGetImageFromKeys({
-		imageUrls:
-			data?.questions
-				.map((q) => q.author.image)
-				.filter((url) => url !== null) || [],
-	});
 	const { data: user } = useSession();
 
 	const {
 		control,
 		handleSubmit,
-		formState: { isDirty, isLoading },
+		formState: { isDirty },
 		reset,
 	} = useForm<CreateTaskQuestionArgs>({
 		resolver: zodResolver(createTaskQuestionSchema),
@@ -102,7 +95,7 @@ export const TaskCardQuestions: React.FC<{
 							<Avatar
 								imageProps={{
 									src: question.author.image
-										? image?.urls[question.author.image]
+										? `${process.env.NEXT_PUBLIC_AWS_CLOUDFRONT_URL}/${question.author.image}`
 										: undefined,
 								}}
 								isVerified={question.author.subscriptionTier === 'PRO'}

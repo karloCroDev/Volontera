@@ -9,7 +9,6 @@ import { Button } from '@/components/ui/button';
 import { Avatar } from '@/components/ui/avatar';
 import { RetrieveAllMembersInOrganizationResponse } from '@repo/types/organization-managment';
 import { convertToFullname, convertToPascalCase } from '@/lib/utils/converter';
-import { useGetImageFromKeys } from '@/hooks/data/image';
 import { useDemoteOrPromoteOrganizationMember } from '@/hooks/data/organization-managment';
 import { DemoteOrPromoteOrganizationMemberArgs } from '@repo/schemas/organization-managment';
 import { useParams } from 'next/navigation';
@@ -55,12 +54,6 @@ export const CurrentUsersForm: React.FC<{
 		);
 	};
 
-	const { data: images } = useGetImageFromKeys({
-		imageUrls: users.members
-			.map((member) => member.user.image)
-			.filter((image) => image !== null),
-	});
-
 	return (
 		<div className="border-input-border min-h-1/2 max-h-3/4 flex flex-col overflow-scroll rounded-xl border shadow-xl">
 			{users.members.length > 0 ? (
@@ -77,7 +70,7 @@ export const CurrentUsersForm: React.FC<{
 								size="sm"
 								imageProps={{
 									src: memeber.user.image
-										? images?.urls[memeber.user.image]
+										? `${process.env.NEXT_PUBLIC_AWS_CLOUDFRONT_URL}/${memeber.user.image}`
 										: undefined,
 								}}
 								isVerified={memeber.user.subscriptionTier === 'PRO'}

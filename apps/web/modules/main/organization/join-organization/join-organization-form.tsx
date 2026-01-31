@@ -12,7 +12,6 @@ import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { TextEditor } from '@/components/ui/text-editor/text-editor';
 import { Error } from '@/components/ui/error';
-import { Layout, LayoutColumn } from '@/components/ui/layout-grid';
 
 // Hooks
 import { useSendRequestToJoinOrganization } from '@/hooks/data/organization';
