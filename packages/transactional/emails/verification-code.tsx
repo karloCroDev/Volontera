@@ -45,7 +45,7 @@ export const VerificationCode: React.FC<{
 
 						<Hr className="!border-[#91400d]" />
 						<Text className="mt-6 text-base">
-							Thank you for logging in again on [app nane]. We want to make sure
+							Thank you for logging in again on Volontera. We want to make sure
 							it&apos;s really you. Please enter the following verification code
 							when prompted.
 						</Text>

@@ -70,7 +70,7 @@ export const MessagesMapping: React.FC<{
 						{initialData.title}
 					</p>
 				)}
-				{mutating && <MessageSkeleton variant="secondary" />}
+				{mutating && <MessageSkeleton variant="primary" />}
 			</div>
 			<HelpMessageForm setMutating={setMutating} />
 		</>

@@ -34,7 +34,7 @@ export default async function OrganizationFeaturesLayout({
 			<div className="border-input-border bg-muted relative flex flex-shrink-0 flex-col items-center gap-6 rounded-xl border p-4 shadow-lg md:h-32 md:flex-row md:px-6">
 				<Avatar
 					imageProps={{
-						src: organizationDetailsById.organization.avatarImage,
+						src: `${process.env.NEXT_PUBLIC_AWS_CLOUDFRONT_URL}/${organizationDetailsById.organization.avatarImage}`,
 					}}
 					size="xl"
 					colorScheme="gray"

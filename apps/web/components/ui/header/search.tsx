@@ -17,6 +17,8 @@ import { Avatar } from '@/components/ui/avatar';
 // Hooks
 import { useSearch } from '@/hooks/data/search';
 import { useDebounce } from '@/hooks/utils/useDebounce';
+
+// Lib
 import { convertToFullname, convertToPascalCase } from '@/lib/utils/converter';
 
 export const Search = () => {
@@ -63,14 +65,16 @@ export const Search = () => {
 					</h4>
 
 					<div className="mt-4 flex flex-col gap-4">
-						{isLoading &&
+						{(isLoading || debounedValue !== query) &&
 							[...Array(2)].map((_, indx) => (
 								<SearchOutputSkeleton key={indx} />
 							))}
+
 						{data?.organizations && data.organizations.length > 0 ? (
 							data.organizations.map((organization) => (
 								<SearchOutput
-									// isVerified={organization. === 'PRO'}
+									isVerified={organization.owner.subscriptionTier === 'PRO'}
+									image={organization.avatarImage}
 									key={organization.id}
 									type="organization"
 									name={organization.name}
@@ -87,7 +91,7 @@ export const Search = () => {
 
 					<h4 className="text-md mt-6 underline underline-offset-4">People</h4>
 					<div className="mt-4 flex flex-col gap-4">
-						{isLoading &&
+						{(isLoading || debounedValue !== query) &&
 							[...Array(2)].map((_, indx) => (
 								<SearchOutputSkeleton key={indx} />
 							))}
@@ -96,6 +100,7 @@ export const Search = () => {
 							data.users.map((user) => (
 								<SearchOutput
 									isVerified={user.subscriptionTier === 'PRO'}
+									image={user.image}
 									key={user.id}
 									type="user"
 									name={convertToFullname({
@@ -125,19 +130,22 @@ const SearchOutput: React.FC<{
 	chatLink?: string;
 	name: string;
 	info: string;
+	image: string | null;
 	isVerified?: boolean;
-}> = ({ mainLink, chatLink, type, name, info, isVerified = false }) => {
+}> = ({ mainLink, chatLink, type, name, info, image, isVerified = false }) => {
 	return (
 		<div className="border-input-border flex items-center gap-4 rounded-lg border px-5 py-3">
 			<Avatar
 				imageProps={{
-					src: '',
+					src: image
+						? `${process.env.NEXT_PUBLIC_AWS_CLOUDFRONT_URL}/${image}`
+						: undefined,
 				}}
 				size="lg"
 				colorScheme="gray"
 				isVerified={isVerified}
 			>
-				Ante Horvat
+				{name}
 			</Avatar>
 
 			<div>

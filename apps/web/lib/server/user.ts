@@ -10,7 +10,7 @@ export async function getSession(): Promise<
 > {
 	return await serverFetch({
 		url: 'user/session',
-		init: { cache: 'force-cache' },
+		init: { cache: 'no-cache' },
 	});
 }
 

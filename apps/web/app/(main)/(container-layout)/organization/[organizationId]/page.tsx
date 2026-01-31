@@ -57,7 +57,7 @@ export default async function OrganizationPage({
 	console.log();
 	return (
 		<>
-			<div className="border-input-border relative -mx-4 -my-6 rounded-xl px-5 py-4 md:m-0 md:border">
+			<div className="border-input-border relative -mx-4 -my-6 rounded-xl px-5 py-4 shadow-xl md:m-0 md:border">
 				<div className="flex justify-between">
 					<Tag colorScheme="gray">
 						{organizationDetailsById.organization.organizationInfo.type}

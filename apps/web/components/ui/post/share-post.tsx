@@ -19,7 +19,7 @@ export const SharePost: React.FC<{
 			className="px-0"
 			onPress={() => {
 				navigator.clipboard
-					.writeText(link)
+					.writeText(`${process.env.NEXT_PUBLIC_WEB_URL}${link}`)
 					.then(() => {
 						toast({
 							title: 'Link copied',

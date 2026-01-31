@@ -83,8 +83,7 @@ export const AdditionalInformationForm = withReactQueryProvider(() => {
 						content: message,
 						variant: 'success',
 					});
-					router.refresh();
-					router.push('/home');
+					window.location.href = '/home';
 				},
 				onError(err) {
 					setError('root', {
@@ -104,8 +103,7 @@ export const AdditionalInformationForm = withReactQueryProvider(() => {
 						content: message,
 						variant: 'success',
 					});
-					router.refresh();
-					router.push('/home');
+					window.location.href = '/home';
 				},
 				onError(err) {
 					setError('root', {
