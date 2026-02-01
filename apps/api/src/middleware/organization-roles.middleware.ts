@@ -6,7 +6,7 @@ import { retrieveOrganizationMember } from "@/models/organization-managment.mode
 
 // Database
 import { Organization, OrganizationMember } from "@repo/database";
-import { cacheKey, redisGetOrSetJson } from "@/lib/cache-middleware";
+import { cacheKey, redisGetOrSetJson } from "@/lib/cache-json";
 
 export function organizationRolesMiddleware({
   aquiredRoles,

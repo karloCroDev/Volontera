@@ -3,7 +3,7 @@ import { NextFunction, Request, Response } from "express";
 
 // Lib
 import { isOrganizationOwnerOnProPlan, isUserOnProPlan } from "@/lib/payment";
-import { cacheKey, redisGetOrSetJson } from "@/lib/cache-middleware";
+import { cacheKey, redisGetOrSetJson } from "@/lib/cache-json";
 import { Organization } from "@repo/database";
 
 export async function proPlanOrganizationMiddleware(

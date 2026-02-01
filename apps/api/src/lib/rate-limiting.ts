@@ -1,14 +1,27 @@
 // External packages
 import { initalizeRedisClient } from "@/config/redis";
+import { cacheKey } from "@/lib/cache-json";
 import { User } from "@repo/database";
 
-export async function rateLimit(userId: User["id"], expiration?: number) {
+export type RateLimitArgs = {
+  userId: User["id"];
+  additionalTags: string[];
+  expiration?: number;
+  limit?: number;
+};
+
+export async function rateLimit({
+  userId,
+  additionalTags = [],
+  expiration = 5,
+  limit = 5,
+}: RateLimitArgs) {
   const client = await initalizeRedisClient();
 
   if (!client) return false;
-  const key = `rate:${userId}`;
+  const key = cacheKey(["rate-limit", ...additionalTags, userId]);
   const count = await client.incr(key);
-  if (count === 1) await client.expire(key, expiration ?? 60); // Istekne broj poslanih requestova za n broj sekundi
-  if (count > 20) return false; // Ako je limit veći od 20, blokiramo sve buduce zahtjeve u tom periodu
-  return true;
+  if (count === 1) await client.expire(key, expiration * 60);
+
+  return count <= limit;
 }

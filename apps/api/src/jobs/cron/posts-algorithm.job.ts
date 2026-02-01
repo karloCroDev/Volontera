@@ -8,7 +8,7 @@ import { retrieveCronPosts, updatePostRankingScore } from "@/models/home.model";
 import { calculatePostRankingScore } from "@/lib/algorithm-formula";
 
 // TODO: Check if this works every 10 minutes
-export const postAlgorithmJob = cron.schedule("0 */45 * * * *", async () => {
+cron.schedule("0 */45 * * * *", async () => {
   const cronPosts = await retrieveCronPosts();
 
   await Promise.all(

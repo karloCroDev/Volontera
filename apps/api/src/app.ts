@@ -37,7 +37,7 @@ import { organizationManagmentRoutes } from "@/routes/organization-managment.rou
 import { organizationGroupChatRoute } from "@/routes/organization-group-chat.route";
 import { organizationTasksRoutes } from "@/routes/organization-tasks.route";
 import { homeRoute } from "@/routes/home.route";
-import { postAlgorithmJob } from "@/jobs/cron/posts-algorithm.job";
+import { rateLimitMiddleware } from "@/middleware/rate-limit-middleware";
 
 // Security middleware
 app.use(helmet());
@@ -61,64 +61,137 @@ app.use(
   onboardingRoutes,
 );
 app.use("/user", userRoutes);
-app.use("/settings", authMiddleware, hasRoleMiddleware, settingsRoutes);
-app.use("/help", authMiddleware, hasRoleMiddleware, helpRoutes);
+app.use(
+  "/settings",
+  authMiddleware,
+  hasRoleMiddleware,
+  rateLimitMiddleware({
+    additionalTags: ["settings"],
+    limit: 10,
+  }),
+  settingsRoutes,
+);
+app.use(
+  "/help",
+  authMiddleware,
+  hasRoleMiddleware,
+  rateLimitMiddleware({
+    additionalTags: ["help"],
+    limit: 10,
+  }),
+  helpRoutes,
+);
 app.use(
   "/notifications",
   authMiddleware,
   hasRoleMiddleware,
+  rateLimitMiddleware({
+    additionalTags: ["notifications"],
+    limit: 20,
+  }),
   notificationRoutes,
 );
 app.use(
   "/direct-messages",
   authMiddleware,
   hasRoleMiddleware,
+  rateLimitMiddleware({
+    additionalTags: ["direct-messages"],
+    limit: 50,
+  }),
   directMessagesRoutes,
 );
 app.use("/image", imageRoutes);
-app.use("/organization", authMiddleware, hasRoleMiddleware, organizationRoutes);
+app.use(
+  "/organization",
+  authMiddleware,
+  hasRoleMiddleware,
+  rateLimitMiddleware({
+    additionalTags: ["organization"],
+    limit: 35,
+  }),
+  organizationRoutes,
+);
 app.use(
   "/organization-managment",
   authMiddleware,
   hasRoleMiddleware,
+  rateLimitMiddleware({
+    additionalTags: ["organization-managment"],
+    limit: 35,
+    expiration: 1,
+  }),
   organizationManagmentRoutes,
 );
 app.use(
   "/organization-group-chat",
   authMiddleware,
   hasRoleMiddleware,
+  rateLimitMiddleware({
+    additionalTags: ["organization-group-chat"],
+    limit: 50,
+  }),
   organizationGroupChatRoute,
 );
 app.use(
   "/organization-tasks",
   authMiddleware,
   hasRoleMiddleware,
+  rateLimitMiddleware({
+    additionalTags: ["organization-tasks"],
+    limit: 75,
+  }),
   organizationTasksRoutes,
 );
-app.use("/search", authMiddleware, hasRoleMiddleware, searchRoutes);
-app.use("/post", authMiddleware, hasRoleMiddleware, postRoutes);
-app.use("/comment", authMiddleware, hasRoleMiddleware, commentRoutes);
-app.use("/home", authMiddleware, hasRoleMiddleware, homeRoute);
+app.use(
+  "/search",
+  authMiddleware,
+  hasRoleMiddleware,
+  rateLimitMiddleware({
+    additionalTags: ["search"],
+    limit: 50,
+  }),
+  searchRoutes,
+);
+app.use(
+  "/post",
+  authMiddleware,
+  hasRoleMiddleware,
+  rateLimitMiddleware({
+    additionalTags: ["post"],
+    limit: 25,
+  }),
+  postRoutes,
+);
+app.use(
+  "/comment",
+  authMiddleware,
+  hasRoleMiddleware,
+  rateLimitMiddleware({
+    additionalTags: ["comment"],
+    limit: 25,
+  }),
+  commentRoutes,
+);
+app.use(
+  "/home",
+  authMiddleware,
+  hasRoleMiddleware,
+  rateLimitMiddleware({
+    additionalTags: ["comment"],
+    limit: 20,
+  }),
+  homeRoute,
+);
 
 // Test
-app.get("/protected-user", authMiddleware, userMiddleware, (req, res) => {
-  res.json({ message: "Awesome you accessed the proteced route" });
-});
-
-// Cron job
-postAlgorithmJob.start();
-
-app.post("/test", async (req, res) => {
-  // Redis: works fine!
-  const client = await initalizeRedisClient();
-  console.log("Redis Client in Test Route:", client);
-  res.status(200).json({ message: "Redis client initialized" });
-});
-
 app.get(
-  "/protected-organization",
+  "/test",
   authMiddleware,
-  organizationMiddleware,
+  rateLimitMiddleware({
+    additionalTags: ["protected-user"],
+    limit: 5,
+  }),
   (req, res) => {
     res.json({ message: "Awesome you accessed the proteced route" });
   },
