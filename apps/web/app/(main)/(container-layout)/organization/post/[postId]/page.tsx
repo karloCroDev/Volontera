@@ -1,6 +1,7 @@
 // External packages
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
+import { dehydrate, QueryClient } from '@tanstack/react-query';
 
 // Modules
 import { CommentTextArea } from '@/modules/main/organization/post/comment-text-area';
@@ -51,6 +52,17 @@ async function PostContent({ postId }: { postId: string }) {
 
 	if (!postWithComments.success) notFound();
 
+	const queryClient = new QueryClient();
+	await queryClient.prefetchQuery({
+		queryKey: ['comments', postId],
+		queryFn: async () => ({
+			message: postWithComments.message,
+			comments: postWithComments.post.postComments,
+			success: postWithComments.success,
+		}),
+	});
+	const dehydratedState = dehydrate(queryClient);
+
 	return (
 		<>
 			<Post post={postWithComments.post} />
@@ -61,13 +73,7 @@ async function PostContent({ postId }: { postId: string }) {
 				</h4>
 				<hr className="bg-input-border my-2 h-px w-full border-0" />
 				<div className="max-h-96 overflow-y-scroll">
-					<CommentsMapping
-						comments={{
-							message: postWithComments.message,
-							comments: postWithComments.post.postComments,
-							success: postWithComments.success,
-						}}
-					/>
+					<CommentsMapping dehydratedState={dehydratedState} />
 				</div>
 				<CommentTextArea />
 			</div>

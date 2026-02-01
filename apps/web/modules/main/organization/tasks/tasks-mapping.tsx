@@ -42,9 +42,8 @@ type Task =
 	RetrieveAllOrganizationBoardsWithTasksResponse['boardsWithTasks'][0]['organizationTasks'][0];
 
 export const TasksMapping: React.FC<{
-	tasks: RetrieveAllOrganizationBoardsWithTasksResponse['boardsWithTasks'][0]['organizationTasks'];
 	boardId: string;
-}> = ({ tasks, boardId }) => {
+}> = ({ boardId }) => {
 	const params = useParams<{ organizationId: string }>();
 	const searchParams = useSearchParams();
 	const filter = searchParams.get('filter') as
@@ -66,15 +65,7 @@ export const TasksMapping: React.FC<{
 			organizationTaskBoardId: boardId,
 			...(filter ? { filter } : {}),
 		},
-		{
-			initialData: {
-				tasks,
-				success: true,
-				message: 'Prefetched data',
-			},
-			initialDataUpdatedAt: 0,
-			refetchOnMount: 'always',
-		}
+		{}
 	);
 
 	const queryClient = useQueryClient();

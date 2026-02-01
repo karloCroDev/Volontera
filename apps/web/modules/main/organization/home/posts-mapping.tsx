@@ -15,9 +15,10 @@ import { RetrieveOrganizationPostsQueryArgs } from '@repo/schemas/post';
 import { useRetrieveOrganizationPosts } from '@/hooks/data/post';
 import { useRetrieveOrganizationMember } from '@/hooks/data/organization-managment';
 
-export const PostsMapping: React.FC<{
-	posts: RetrieveOrganizationPostsResponse;
-}> = ({ posts }) => {
+// Lib
+import { withReactQueryProvider } from '@/lib/utils/react-query';
+
+export const PostsMapping = withReactQueryProvider(() => {
 	const params = useParams<{ organizationId: string }>();
 	const searchParams = useSearchParams();
 	const rawFilter = searchParams.get('filter');
@@ -31,9 +32,7 @@ export const PostsMapping: React.FC<{
 		[rawFilter]
 	);
 
-	const { data } = useRetrieveOrganizationPosts(params.organizationId, filter, {
-		initialData: posts,
-	});
+	const { data } = useRetrieveOrganizationPosts(params.organizationId, filter);
 
 	const { data: member } = useRetrieveOrganizationMember({
 		organizationId: params.organizationId,
@@ -56,4 +55,4 @@ export const PostsMapping: React.FC<{
 			No posts have been created yet.
 		</p>
 	);
-};
+});

@@ -37,7 +37,7 @@ import { organizationManagmentRoutes } from "@/routes/organization-managment.rou
 import { organizationGroupChatRoute } from "@/routes/organization-group-chat.route";
 import { organizationTasksRoutes } from "@/routes/organization-tasks.route";
 import { homeRoute } from "@/routes/home.route";
-import { rateLimitMiddleware } from "@/middleware/rate-limit-middleware";
+import { rateLimitMiddleware } from "@/middleware/rate-limit.middleware";
 
 // Security middleware
 app.use(helmet());

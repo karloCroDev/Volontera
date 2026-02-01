@@ -1,6 +1,10 @@
-// External packages
+// Config
 import { initalizeRedisClient } from "@/config/redis";
+
+// Lib
 import { cacheKey } from "@/lib/cache-json";
+
+// Database
 import { User } from "@repo/database";
 
 export type RateLimitArgs = {

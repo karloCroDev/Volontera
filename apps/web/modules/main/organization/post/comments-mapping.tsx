@@ -11,16 +11,12 @@ import { Comment } from '@/modules/main/organization/post/comment';
 import { useRetrievePostComments } from '@/hooks/data/comment';
 import { useSession } from '@/hooks/data/user';
 
-// Types
-import { PostCommentsResponse } from '@repo/types/comment';
+// Lib
+import { withReactQueryProvider } from '@/lib/utils/react-query';
 
-export const CommentsMapping: React.FC<{
-	comments: PostCommentsResponse;
-}> = ({ comments }) => {
+export const CommentsMapping = withReactQueryProvider(() => {
 	const params = useParams<{ postId: string }>();
-	const { data, isLoading } = useRetrievePostComments(params.postId, {
-		initialData: comments,
-	});
+	const { data, isLoading } = useRetrievePostComments(params.postId);
 
 	const { data: user } = useSession();
 
@@ -50,7 +46,7 @@ export const CommentsMapping: React.FC<{
 			No comments yet. Be the first to comment!
 		</p>
 	);
-};
+});
 
 export const CommentOrReplySkeleton = () => (
 	<div className="ml-8 flex items-center gap-4">

@@ -9,6 +9,8 @@ import { Suspense } from 'react';
 import { BoardsMapping } from '@/modules/main/organization/tasks/boards-mapping';
 import { SortTasksSelect } from '@/modules/main/organization/tasks/sort-tasks-select';
 import { retrieveOrganizationMember } from '@/lib/server/organization-managment';
+import { dehydrate, QueryClient } from '@tanstack/react-query';
+import { getQueryClient } from '@/lib/server/query-client';
 
 export default async function BoardPage({
 	params,
@@ -69,5 +71,29 @@ async function BoardsWithTasks({
 	);
 	if (!boardWithTasks.success) notFound();
 
-	return <BoardsMapping prefetchedData={boardWithTasks} />;
+	const queryClient = new QueryClient();
+	await queryClient.prefetchQuery({
+		queryKey: [organizationId, 'organization-boards'],
+		queryFn: async () => ({
+			boards: boardWithTasks.boardsWithTasks,
+			success: boardWithTasks.success,
+			message: boardWithTasks.message,
+		}),
+	});
+
+	await Promise.all(
+		boardWithTasks.boardsWithTasks.map((board) =>
+			queryClient.prefetchQuery({
+				queryKey: [board.id, 'organization-tasks', filter ?? null],
+				queryFn: async () => ({
+					tasks: board.organizationTasks,
+					success: true,
+					message: 'Prefetched data',
+				}),
+			})
+		)
+	);
+
+	const dehydratedState = dehydrate(queryClient);
+	return <BoardsMapping dehydratedState={dehydratedState} />;
 }

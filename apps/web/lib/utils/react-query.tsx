@@ -1,26 +1,47 @@
+/* eslint-disable @typescript-eslint/no-empty-object-type */
+
+'use client';
+
 // External packages
 import * as React from 'react';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import {
+	DehydratedState,
+	HydrationBoundary,
+	QueryClientProvider,
+} from '@tanstack/react-query';
+import { getQueryClient } from '@/lib/server/query-client';
 
-const queryClient = new QueryClient();
-
-export const ReactQueryProvider: React.FC<{ children?: React.ReactNode }> = ({
-	children,
-}) => {
+export const ReactQueryProvider: React.FC<{
+	children?: React.ReactNode;
+	dehydratedState?: DehydratedState;
+}> = ({ children, dehydratedState }) => {
+	const queryClient = React.useMemo(() => getQueryClient(), []);
 	return (
-		<QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+		<QueryClientProvider client={queryClient}>
+			{dehydratedState ? (
+				<HydrationBoundary state={dehydratedState}>
+					{children}
+				</HydrationBoundary>
+			) : (
+				children
+			)}
+		</QueryClientProvider>
 	);
 };
 
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export const withReactQueryProvider = <T extends {}>(
 	Component: React.FC<T>
 ) => {
-	const WrappedComponent = (props: T) => (
-		<ReactQueryProvider>
-			<Component {...props} />
-		</ReactQueryProvider>
-	);
+	const WrappedComponent: React.FC<
+		T & { dehydratedState?: DehydratedState }
+	> = (props) => {
+		const { dehydratedState, ...rest } = props;
+		return (
+			<ReactQueryProvider dehydratedState={dehydratedState}>
+				<Component {...(rest as T)} />
+			</ReactQueryProvider>
+		);
+	};
 
 	// Debugging
 	WrappedComponent.displayName = `withReactQueryProvider(${Component.displayName || Component.name || 'Component'})`;

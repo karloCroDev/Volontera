@@ -2,6 +2,7 @@
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
 import Image from 'next/image';
+import { dehydrate, QueryClient } from '@tanstack/react-query';
 
 // Components
 import { Avatar } from '@/components/ui/avatar';
@@ -338,5 +339,12 @@ async function Posts({
 	const posts = await retrieveOrganizationPosts(organizationId, filter);
 
 	if (!posts.success) return <p>There was an error with loading posts</p>;
-	return <PostsMapping posts={posts} />;
+
+	const queryClient = new QueryClient();
+	await queryClient.prefetchQuery({
+		queryKey: ['posts', organizationId, filter ?? 'recommended'],
+		queryFn: async () => posts,
+	});
+	const dehydratedState = dehydrate(queryClient);
+	return <PostsMapping dehydratedState={dehydratedState} />;
 }

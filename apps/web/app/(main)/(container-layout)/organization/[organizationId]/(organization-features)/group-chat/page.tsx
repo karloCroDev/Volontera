@@ -1,5 +1,6 @@
 // External packages
 import { notFound } from 'next/navigation';
+import { dehydrate, QueryClient } from '@tanstack/react-query';
 
 // Lib
 import { retreiveAllrganizationGroupChatMessages } from '@/lib/server/organization-group-chat';
@@ -18,10 +19,17 @@ export default async function GroupChatPage({
 		await retreiveAllrganizationGroupChatMessages(organizationId);
 
 	if (!groupChat.success) notFound();
+
+	const queryClient = new QueryClient();
+	await queryClient.prefetchQuery({
+		queryKey: ['organization-group-chat', organizationId],
+		queryFn: async () => groupChat,
+	});
+	const dehydratedState = dehydrate(queryClient);
 	return (
 		<SocketRoomContext>
 			<div className="relative min-h-[600px] flex-1 gap-4 px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
-				<GroupChatMapping groupChat={groupChat} />
+				<GroupChatMapping dehydratedState={dehydratedState} />
 				<AddMessageForm groupChatId={groupChat.organizationGroupChat.id} />
 			</div>
 		</SocketRoomContext>
