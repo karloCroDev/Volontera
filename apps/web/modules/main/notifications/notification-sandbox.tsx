@@ -117,7 +117,9 @@ export const NotificationSandbox: React.FC<{
 									<Avatar
 										size="sm"
 										imageProps={{
-											src: notification?.user.image || '',
+											src: notification.user.image
+												? `${process.env.NEXT_PUBLIC_AWS_CLOUDFRONT_URL}/${notification.user.image}`
+												: undefined,
 										}}
 										isVerified={notification.user.subscriptionTier === 'PRO'}
 									>

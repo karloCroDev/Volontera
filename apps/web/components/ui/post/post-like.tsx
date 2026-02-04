@@ -204,7 +204,7 @@ export const PostLike: React.FC<{
 	});
 
 	return (
-		<div className="ml-auto flex items-center gap-4">
+		<div className="ml-auto flex items-center gap-4" suppressHydrationWarning>
 			<Button
 				size="xs"
 				variant="blank"
@@ -224,7 +224,10 @@ export const PostLike: React.FC<{
 					)}
 				/>
 			</Button>
-			<p className="text-sm font-semibold italic underline underline-offset-4">
+			<p
+				className="text-sm font-semibold italic underline underline-offset-4"
+				suppressHydrationWarning
+			>
 				{optimisticCount}
 			</p>
 		</div>

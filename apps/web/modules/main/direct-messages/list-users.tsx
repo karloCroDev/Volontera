@@ -25,16 +25,6 @@ export const ListUsers: React.FC<{
 
 	const { onlineUsers } = useSocketContext();
 
-	const { data: images } = useGetImageFromKeys({
-		imageUrls: listOfAllDirectMessages.conversations
-			.map((conversation) =>
-				typeof conversation.participant.image === 'string'
-					? conversation.participant.image
-					: ''
-			)
-			.filter(Boolean),
-	});
-
 	return (
 		<aside
 			className={twJoin(
@@ -52,9 +42,9 @@ export const ListUsers: React.FC<{
 					listOfAllDirectMessages.conversations.map((conversation) => (
 						<UsersSidebar
 							imageUrl={
-								conversation.participant.image && images
-									? images.urls[conversation.participant.image]
-									: ''
+								conversation.participant.image
+									? `${process.env.NEXT_PUBLIC_AWS_CLOUDFRONT_URL}/${conversation.participant.image}`
+									: undefined
 							}
 							isOnline={onlineUsers.includes(conversation.participant.id)}
 							username={`${conversation.participant.firstName} ${conversation.participant.lastName}`}

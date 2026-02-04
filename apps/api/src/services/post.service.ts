@@ -64,8 +64,8 @@ export async function createPostService({
     images: uploadImages.length,
     orgFollowers:
       retrieveOrganization?.organization._count.organizationFollowers || 0,
-    isAuthorPremium: isAuthorPro,
-    isOrgPremium: isOrganizationOwnerPro,
+    isAuthorPro: isAuthorPro,
+    isOrgPro: isOrganizationOwnerPro,
   });
 
   await createPost({

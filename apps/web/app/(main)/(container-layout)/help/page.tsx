@@ -1,6 +1,7 @@
 // External packages
 import { Suspense } from 'react';
 import { redirect } from 'next/navigation';
+import { dehydrate, QueryClient } from '@tanstack/react-query';
 
 // Components
 import { Heading } from '@/components/ui/heading';
@@ -45,7 +46,12 @@ async function MessagesServer() {
 	if (!helpConversation.success)
 		return <div>Failed to load help conversation.</div>;
 
-	if (!helpConversation.success) return <div>Failed to load</div>;
+	const queryClient = new QueryClient();
+	await queryClient.prefetchQuery({
+		queryKey: ['help'],
+		queryFn: async () => helpConversation,
+	});
 
-	return <MessagesMapping user={user} initialData={helpConversation} />;
+	const dehydratedState = dehydrate(queryClient);
+	return <MessagesMapping user={user} dehydratedState={dehydratedState} />;
 }

@@ -10,7 +10,6 @@ import { Avatar } from '@/components/ui/avatar';
 import { Message } from '@/components/ui/message/message';
 
 // Hooks
-import { useGetImageFromKeys } from '@/hooks/data/image';
 import {
 	useDeleteOrganizationGroupChatMessage,
 	useRetrieveAllOrganizationGroupChatMessages,
@@ -25,32 +24,30 @@ import { useSocketContext } from '@/modules/main/direct-messages/socket-context'
 import { useSession } from '@/hooks/data/user';
 import { MessageImages } from '@/components/ui/message/message-images';
 
-export const GroupChatMapping: React.FC<{
-	groupChat: RetrieveAllOrganizationGroupChatMessagesResponse;
-}> = ({ groupChat }) => {
+// Lib
+import { withReactQueryProvider } from '@/lib/utils/react-query';
+
+type OrgChatMessage =
+	RetrieveAllOrganizationGroupChatMessagesResponse['organizationGroupChat']['messages'][number];
+
+type OrgMessageDeletedPayload = {
+	messageId: string;
+	organizationId: string;
+};
+export const GroupChatMapping = withReactQueryProvider(() => {
 	const params = useParams<{ organizationId: string }>();
 	const organizationId = params.organizationId;
 	const { data } = useRetrieveAllOrganizationGroupChatMessages(
 		{
 			organizationId,
 		},
-		{
-			initialData: groupChat,
-		}
+		{}
 	);
-
-	const { data: images } = useGetImageFromKeys({
-		imageUrls: data.organizationGroupChat.messages
-			.map((message) => message.author.image)
-			.filter((url) => url !== null),
-	});
 
 	const { socketGlobal } = useSocketContext();
 	React.useEffect(() => {
 		if (!socketGlobal) return;
 
-		type OrgChatMessage =
-			RetrieveAllOrganizationGroupChatMessagesResponse['organizationGroupChat']['messages'][number];
 		const handleNewMessage = (newChat: OrgChatMessage | OrgChatMessage[]) => {
 			setMessages((prev) => {
 				const prevMessages = prev ?? [];
@@ -60,10 +57,6 @@ export const GroupChatMapping: React.FC<{
 			});
 		};
 
-		type OrgMessageDeletedPayload = {
-			messageId: string;
-			organizationId: string;
-		};
 		const handleMessageDeleted = (payload: OrgMessageDeletedPayload) => {
 			if (payload.organizationId !== organizationId) return;
 			setMessages((prev) =>
@@ -122,7 +115,7 @@ export const GroupChatMapping: React.FC<{
 							<Avatar
 								imageProps={{
 									src: message.author.image
-										? images?.urls[message.author.image]
+										? `${process.env.NEXT_PUBLIC_AWS_CLOUDFRONT_URL}/${message.author.image}`
 										: undefined,
 								}}
 								isVerified={message.author.subscriptionTier === 'PRO'}
@@ -159,4 +152,4 @@ export const GroupChatMapping: React.FC<{
 			)}
 		</div>
 	);
-};
+});

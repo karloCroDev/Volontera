@@ -12,7 +12,7 @@ export function formatDate(dateString: string) {
 
 	const day = date.getDate();
 	const month = date.getMonth() + 1;
-	const year = date.getFullYear().toString().slice(-2);
+	const year = date.getFullYear().toString();
 
-	return `${day}.${month}.${year}.`;
+	return `${day}. ${month}. ${year}.`;
 }

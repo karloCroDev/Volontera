@@ -36,11 +36,11 @@ export async function createOrganizationService({
   userId: User["id"];
 }) {
   const organizationAvatarUploadUrl = await createUploadUrl(
-    data.organization_avatar_image
+    data.organization_avatar_image,
   );
 
   const organizationCoverUploadUrl = await createUploadUrl(
-    data.organization_cover_image
+    data.organization_cover_image,
   );
 
   const organization = await createOrganization({
@@ -91,18 +91,7 @@ export async function getOrganizationDetailsByIdService({
     success: true,
     message: "Organization details retrieved successfully",
     data: {
-      organization: {
-        ...organization,
-        avatarImage: await getImagePresignedUrls(organization.avatarImage),
-        organizationInfo: {
-          ...organization.organizationInfo,
-          coverImage: organization.organizationInfo
-            ? await getImagePresignedUrls(
-                organization.organizationInfo.coverImage
-              )
-            : null,
-        },
-      },
+      organization,
       membersHierarchy,
       isFollowing: !!isFollowing,
     },
@@ -125,7 +114,7 @@ export async function listOrganizationsUserService(userId: User["id"]) {
 }
 
 export async function listOrganizationsOrganizatorService(
-  organizatorId: User["id"] // Ovo je isto korisnik koji ima isti id
+  organizatorId: User["id"], // Ovo je isto korisnik koji ima isti id
 ) {
   const { ownedOrganizations, followingOrganizations, attendingOrganizations } =
     await listOrganizationsOrganizatorGrouped(organizatorId);

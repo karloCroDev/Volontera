@@ -40,7 +40,7 @@ export async function getImagePresignedUrls(image: string) {
       Key: image,
     });
 
-    return getSignedUrl(s3, command, { expiresIn: 3600 });
+    return await getSignedUrl(s3, command, { expiresIn: 3600 });
   } catch (error) {
     throw new Error(error instanceof Error ? error.message : "Unknown error");
   }

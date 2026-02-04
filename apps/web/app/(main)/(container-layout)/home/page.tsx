@@ -1,13 +1,10 @@
 // External packages
-import { InfiniteData } from '@tanstack/react-query';
+import { dehydrate, InfiniteData, QueryClient } from '@tanstack/react-query';
 import { Suspense } from 'react';
 
 // Components
 import { Heading } from '@/components/ui/heading';
 import { PostSkeleton } from '@/components/ui/post/post-skeleton';
-
-// Components
-import { RetrieveHomePostsResponse } from '@repo/types/home';
 
 // Types
 import { retrieveHomePosts } from '@/lib/server/home';
@@ -46,21 +43,42 @@ export default async function HomePage({
 }
 
 async function Posts({ filter }: { filter?: 'following' }) {
-	const initialPage = await retrieveHomePosts({
-		filter,
-		limit: 6,
-		offset: 0,
+	const queryClient = new QueryClient();
+	const limit = 6;
+	const queryKey = ['home', 'posts', filter ?? null, limit] as const;
+	type HomePostsPage = Awaited<ReturnType<typeof retrieveHomePosts>>;
+
+	await queryClient.prefetchInfiniteQuery({
+		queryKey,
+		initialPageParam: 0,
+		queryFn: async ({ pageParam }) => {
+			const offset = (pageParam ?? 0) as number;
+			return await retrieveHomePosts({
+				filter,
+				limit,
+				offset,
+			});
+		},
+		getNextPageParam: (lastPage: HomePostsPage, allPages: HomePostsPage[]) => {
+			const loadedCount = allPages.reduce(
+				(acc, page) =>
+					acc + ((page as { posts?: unknown[] }).posts?.length ?? 0),
+				0
+			);
+			const lastPostsLength =
+				(lastPage as { posts?: unknown[] }).posts?.length ?? 0;
+			if (lastPostsLength < limit) return undefined;
+			return loadedCount;
+		},
 	});
 
-	const initialData:
-		| InfiniteData<RetrieveHomePostsResponse, number>
-		| undefined =
-		initialPage && initialPage.success
-			? { pages: [initialPage], pageParams: [0] }
-			: undefined;
+	const dehydratedState = dehydrate(queryClient);
+	const prefetched =
+		queryClient.getQueryData<InfiniteData<HomePostsPage, number>>(queryKey);
+	const firstPage = prefetched?.pages?.[0];
 
-	return initialPage && initialPage.success ? (
-		<HomePostsMapping initialData={initialData} />
+	return firstPage?.success ? (
+		<HomePostsMapping dehydratedState={dehydratedState} />
 	) : (
 		<p className="text-muted-foreground text-center xl:col-span-2">
 			Failed to load posts

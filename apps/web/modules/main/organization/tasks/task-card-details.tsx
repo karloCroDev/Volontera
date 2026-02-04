@@ -184,7 +184,9 @@ export const TaskCardDetails: React.FC<{
 											<Avatar
 												isVerified={member.user.subscriptionTier === 'PRO'}
 												imageProps={{
-													src: member.user.image || '',
+													src: member.user.image
+														? `${process.env.NEXT_PUBLIC_AWS_CLOUDFRONT_URL}/${member.user.image}`
+														: undefined,
 													alt: `${member.user.firstName} ${member.user.lastName}`,
 												}}
 												size="xs"
@@ -236,7 +238,6 @@ export const TaskCardDetails: React.FC<{
 									}
 								);
 							}}
-							name={data?.taskInfo?.organizationTask.title || 'work'}
 						/>
 						<Button
 							size="sm"
@@ -278,8 +279,9 @@ export const TaskCardDetails: React.FC<{
 								<Avatar
 									isVerified={member.user.subscriptionTier === 'PRO'}
 									imageProps={{
-										src: member.user.image || '',
-										alt: `${member.user.firstName} ${member.user.lastName}`,
+										src: member.user.image
+											? `${process.env.NEXT_PUBLIC_AWS_CLOUDFRONT_URL}/${member.user.image}`
+											: undefined,
 									}}
 									size="xs"
 								>

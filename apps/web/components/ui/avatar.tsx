@@ -28,7 +28,7 @@ export const Avatar: React.FC<
 		<div
 			{...rest}
 			className={twMerge(
-				'relative overflow-visible rounded-full',
+				'relative flex-shrink-0 overflow-visible rounded-full',
 				size === 'xs' && 'size-6 text-xs',
 				size === 'sm' && 'size-8',
 				size === 'md' && 'size-10',
@@ -68,26 +68,38 @@ export const Avatar: React.FC<
 						.split(' ')
 						.map((l) => l[0])}
 				</RadixAvatar.Fallback>
-
-				{isInput && (
-					<div
-						className={twJoin(
-							'absolute bottom-2 right-0 z-20 flex gap-4',
-							!deleteButton ? 'right-2' : 'right-0'
-						)}
-					>
-						<div className="bg-primary text-background rounded-full p-3">
-							<Pen className="size-4" />
-						</div>
-
-						{deleteButton}
-					</div>
-				)}
 			</div>
+			{isInput && (
+				<div
+					className={twJoin(
+						'absolute bottom-2 right-0 z-20 flex gap-4',
+						!deleteButton ? 'right-2' : 'right-0'
+					)}
+				>
+					<div className="bg-primary text-background rounded-full p-3">
+						<Pen className="size-4" />
+					</div>
+
+					{deleteButton}
+				</div>
+			)}
 
 			{isVerified && (
-				<div className="bg-pending absolute -right-2 -top-1 rounded-full p-1">
-					<Star className="size-3.5 text-white" />
+				<div
+					className={twJoin(
+						'bg-pending absolute rounded-full p-1',
+						size === 'xl' || size === '2xl' || size === '4xl' || size === 'full'
+							? 'right-2 top-0'
+							: '-right-1 -top-1'
+					)}
+				>
+					<Star
+						className={twJoin(
+							'size-3.5 text-white',
+							(size === 'xs' || size === 'sm') && 'size-2!',
+							size === 'md' ? 'size-3' : 'size-5'
+						)}
+					/>
 				</div>
 			)}
 		</div>

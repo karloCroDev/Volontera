@@ -59,6 +59,16 @@ export async function loginService(data: LoginArgs) {
     verificationTokenExpiresAt: expireDate ?? null,
   });
 
+  await resend.emails.send({
+    from: process.env.RESEND_FROM!,
+    to: user.email,
+    subject: "Recent login notification",
+    react: createElement(RecentLogin, {
+      firstName: user.firstName,
+      lastTimeLoggedIn: new Date(),
+    }),
+  });
+
   return toastResponseOutput({
     status: 200,
     title: "Success",
@@ -201,16 +211,6 @@ export async function verifyOtpService({
   }
 
   await clearOtpVerification(user.id);
-
-  await resend.emails.send({
-    from: process.env.RESEND_FROM!,
-    to: email,
-    subject: "Recent login notification",
-    react: createElement(RecentLogin, {
-      firstName: user.firstName,
-      lastTimeLoggedIn: new Date(),
-    }),
-  });
 
   return formOutput({
     status: 200,

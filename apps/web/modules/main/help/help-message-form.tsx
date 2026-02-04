@@ -90,8 +90,11 @@ export const HelpMessageForm: React.FC<{
 	}, [isPending, setMutating]);
 
 	const onSubmit = (data: HelpConversationSchemaArgs) => {
-		mutate(data);
-		reset();
+		mutate(data, {
+			onSuccess: () => {
+				reset();
+			},
+		});
 	};
 	return (
 		<Form

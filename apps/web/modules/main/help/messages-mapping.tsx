@@ -17,62 +17,62 @@ import { convertToFullname } from '@/lib/utils/converter';
 
 // Types
 import { UserResponse } from '@repo/types/user';
-import { HelpConversationSuccess } from '@repo/types/help';
+
+// Modules
 import { HelpMessageForm } from '@/modules/main/help/help-message-form';
 
-export const MessagesMapping: React.FC<{
-	initialData: HelpConversationSuccess;
-	user: UserResponse;
-}> = withReactQueryProvider(({ initialData, user }) => {
-	const { data: helpConversation } = useGetHelpConversation({
-		initialData,
-	});
+export const MessagesMapping = withReactQueryProvider(
+	({ user }: { user: UserResponse }) => {
+		const { data: helpConversation } = useGetHelpConversation({
+			// Prefetched via React Query hydration on the server
+		});
 
-	const [mutating, setMutating] = React.useState(false);
+		const [mutating, setMutating] = React.useState(false);
 
-	return (
-		<>
-			<div className="no-scrollbar relative flex min-h-0 flex-1 flex-col gap-4 overflow-y-scroll pb-40">
-				{helpConversation.messages.length > 0 ? (
-					helpConversation.messages.map((message) => {
-						return (
-							<Message
-								key={message.id}
-								variant={
-									message.senderType === 'USER' ? 'primary' : 'secondary'
-								}
-								date={new Date(message.createdAt)}
-								avatar={
-									<Avatar
-										imageProps={{
-											src:
-												message.senderType === 'USER'
-													? (user.image ?? undefined)
-													: '',
-										}}
-										isVerified={user.subscriptionTier === 'PRO'}
-									>
-										{message.senderType === 'USER'
-											? convertToFullname({
-													firstname: user.firstName,
-													lastname: user.lastName,
-												})
-											: 'A I'}
-									</Avatar>
-								}
-							>
-								<Markdown>{message.content}</Markdown>
-							</Message>
-						);
-					})
-				) : (
-					<p className="text-muted-foreground mt-10 text-center">
-						{initialData.title}
-					</p>
-				)}
-				{mutating && <MessageSkeleton variant="secondary" />}
-			</div>
-			<HelpMessageForm setMutating={setMutating} />
-		</>
-	);
-});
+		return (
+			<>
+				<div className="no-scrollbar relative flex min-h-0 flex-1 flex-col gap-4 overflow-y-scroll pb-40">
+					{helpConversation.messages.length > 0 ? (
+						helpConversation.messages.map((message) => {
+							return (
+								<Message
+									key={message.id}
+									variant={
+										message.senderType === 'USER' ? 'primary' : 'secondary'
+									}
+									date={new Date(message.createdAt)}
+									avatar={
+										<Avatar
+											imageProps={{
+												src:
+													message.senderType === 'USER'
+														? (user.image ?? undefined)
+														: '',
+											}}
+											isVerified={user.subscriptionTier === 'PRO'}
+										>
+											{message.senderType === 'USER'
+												? convertToFullname({
+														firstname: user.firstName,
+														lastname: user.lastName,
+													})
+												: 'A I'}
+										</Avatar>
+									}
+								>
+									<Markdown>{message.content}</Markdown>
+								</Message>
+							);
+						})
+					) : (
+						<p className="text-muted-foreground mt-10 text-center">
+							{helpConversation.title}
+						</p>
+					)}
+					{mutating && <MessageSkeleton variant="primary" />}
+				</div>
+				<HelpMessageForm setMutating={setMutating} />
+			</>
+		);
+	}
+);

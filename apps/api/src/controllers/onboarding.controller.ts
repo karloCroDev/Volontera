@@ -45,6 +45,7 @@ export async function additionalInformation(req: Request, res: Response) {
       userId: userId,
     });
 
+    console.log(result.body.user);
     if (result.body.user) {
       generateTokenAndSetCookie({
         res,
@@ -52,9 +53,6 @@ export async function additionalInformation(req: Request, res: Response) {
         role: result.body.user.role,
         onboardingFinished: true,
       });
-
-      // Prevent sending user data in response (for security reasons) --> telling ts to ignore the formatted strucutre of object with user
-      delete (result.body as any).user;
     }
 
     return res.status(result.status).json(result.body);
@@ -66,6 +64,7 @@ export async function additionalInformation(req: Request, res: Response) {
 export async function skipAdditionalInformation(req: Request, res: Response) {
   try {
     const result = await skipAdditionalInformationService(req.user.userId);
+    console.log(result.body.user);
 
     if (result.body.user) {
       generateTokenAndSetCookie({
@@ -74,8 +73,6 @@ export async function skipAdditionalInformation(req: Request, res: Response) {
         role: result.body.user.role,
         onboardingFinished: true,
       });
-      // Prevent sending user data in response
-      delete (result.body as any).user;
     }
     return res.status(result.status).json(result.body);
   } catch (err) {

@@ -36,7 +36,7 @@ export async function stripeCheckout(req: Request, res: Response) {
     const { userId } = req.user;
     const result = await checkoutService({
       userId,
-      data: req.body,
+      data: req.query as any,
     });
     return res.status(result.status).json(result.body);
   } catch (err) {

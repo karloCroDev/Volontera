@@ -33,11 +33,6 @@ export async function additionalInformationService({
 }) {
   const imagePayload: Partial<User> = {};
 
-  if (data.image?.deleteImage) {
-    await deleteImage(data.image.deleteImage);
-    imagePayload.image = null;
-  }
-
   let presignedURL = "";
   if (data.image) {
     const imageURL = await createUploadUrl(data.image);

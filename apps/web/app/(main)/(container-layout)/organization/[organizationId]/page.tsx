@@ -2,6 +2,7 @@
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
 import Image from 'next/image';
+import { dehydrate, QueryClient } from '@tanstack/react-query';
 
 // Components
 import { Avatar } from '@/components/ui/avatar';
@@ -27,6 +28,7 @@ import { convertToFullname } from '@/lib/utils/converter';
 import { FollowOrganizationButton } from '@/modules/main/organization/common/follow-organization-button';
 import { LeaveOrganizationDialog } from '@/modules/main/organization/common/leave-organization-dialog';
 import { PostsSelect } from '@/modules/main/organization/home/posts-select';
+import { getSession } from '@/lib/server/user';
 
 export default async function OrganizationPage({
 	params,
@@ -45,21 +47,17 @@ export default async function OrganizationPage({
 		resolvedSearchParams?.filter === 'oldest'
 			? resolvedSearchParams.filter
 			: undefined;
-	const [organizationDetailsById, member] = await Promise.all([
+	const [session, organizationDetailsById, member] = await Promise.all([
+		getSession(),
 		getOrganizationDetailsById(organizationId),
 		retrieveOrganizationMember(organizationId),
 	]);
 
 	if (!organizationDetailsById.success) notFound();
 
-	// const images = getImageFromKey({
-	// 	imageUrls:
-	// })
-
-	console.log();
 	return (
 		<>
-			<div className="border-input-border relative -mx-4 -my-6 rounded-xl px-5 py-4 md:m-0 md:border">
+			<div className="border-input-border relative -mx-4 -my-6 rounded-xl px-5 py-4 shadow-xl md:m-0 md:border">
 				<div className="flex justify-between">
 					<Tag colorScheme="gray">
 						{organizationDetailsById.organization.organizationInfo.type}
@@ -72,7 +70,7 @@ export default async function OrganizationPage({
 						<div className="flex w-fit flex-col items-center">
 							<Avatar
 								imageProps={{
-									src: organizationDetailsById.organization.avatarImage,
+									src: `${process.env.NEXT_PUBLIC_AWS_CLOUDFRONT_URL}/${organizationDetailsById.organization.avatarImage}`,
 								}}
 								colorScheme="gray"
 								size="2xl"
@@ -96,13 +94,16 @@ export default async function OrganizationPage({
 										organizationName={organizationDetailsById.organization.name}
 									/>
 								) : (
-									<LinkAsButton
-										colorScheme="orange"
-										size="md"
-										href={`/organization/${organizationId}/join-organization`}
-									>
-										Join
-									</LinkAsButton>
+									session.success &&
+									session.role !== 'ORGANIZATION' && (
+										<LinkAsButton
+											colorScheme="orange"
+											size="md"
+											href={`/organization/${organizationId}/join-organization`}
+										>
+											Join
+										</LinkAsButton>
+									)
 								)}
 							</div>
 						)}
@@ -198,7 +199,7 @@ export default async function OrganizationPage({
 							>
 								<Avatar
 									imageProps={{
-										src: '',
+										src: `${process.env.NEXT_PUBLIC_AWS_CLOUDFRONT_URL}/${organizationDetailsById.organization.owner.image}`,
 									}}
 									size="xs"
 								>
@@ -230,7 +231,9 @@ export default async function OrganizationPage({
 										>
 											<Avatar
 												imageProps={{
-													src: '',
+													src: admin.user.image
+														? `${process.env.NEXT_PUBLIC_AWS_CLOUDFRONT_URL}/${admin.user.image}`
+														: undefined,
 												}}
 												size="xs"
 											>
@@ -260,7 +263,9 @@ export default async function OrganizationPage({
 										>
 											<Avatar
 												imageProps={{
-													src: '',
+													src: member.user.image
+														? `${process.env.NEXT_PUBLIC_AWS_CLOUDFRONT_URL}/${member.user.image}`
+														: undefined,
 												}}
 												size="xs"
 											>
@@ -293,9 +298,7 @@ export default async function OrganizationPage({
 
 				<div className="absolute left-0 top-0 -z-[1] h-64 w-full overflow-hidden md:rounded-t-xl">
 					<Image
-						src={
-							organizationDetailsById.organization.organizationInfo.coverImage
-						}
+						src={`${process.env.NEXT_PUBLIC_AWS_CLOUDFRONT_URL}/${organizationDetailsById.organization.organizationInfo.coverImage}`}
 						alt="Cover image url"
 						fill
 						className="object-cover"
@@ -308,7 +311,7 @@ export default async function OrganizationPage({
 				(member.organizationMember.role === 'ADMIN' ||
 					member.organizationMember.role === 'OWNER') && <CreatePostDialog />}
 
-			<div className="mt-6 flex justify-between">
+			<div className="mt-12 flex justify-between md:mt-6">
 				<h2 className="text-xl lg:text-2xl">Posts</h2>
 				<PostsSelect />
 			</div>
@@ -335,5 +338,12 @@ async function Posts({
 	const posts = await retrieveOrganizationPosts(organizationId, filter);
 
 	if (!posts.success) return <p>There was an error with loading posts</p>;
-	return <PostsMapping posts={posts} />;
+
+	const queryClient = new QueryClient();
+	await queryClient.prefetchQuery({
+		queryKey: ['posts', organizationId, filter ?? 'recommended'],
+		queryFn: async () => posts,
+	});
+	const dehydratedState = dehydrate(queryClient);
+	return <PostsMapping dehydratedState={dehydratedState} />;
 }

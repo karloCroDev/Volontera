@@ -25,7 +25,6 @@ import { RetirveAllRequestsToJoinOrganizationResponse } from '@repo/types/organi
 import { AcceptOrDeclineUsersRequestToJoinOrganizationArgs } from '@repo/schemas/organization-managment';
 import { toast } from '@/lib/utils/toast';
 import { IRevalidateTag } from '@/lib/server/revalidation';
-import { useGetImageFromKeys } from '@/hooks/data/image';
 
 export const RequestsForm: React.FC<{
 	requests: RetirveAllRequestsToJoinOrganizationResponse;
@@ -37,11 +36,6 @@ export const RequestsForm: React.FC<{
 	const params = useParams<{ organizationId: string }>();
 
 	const { mutate } = useAcceptOrDeclineUsersRequestToJoinOrganization();
-	const { data: images } = useGetImageFromKeys({
-		imageUrls: requests.requests
-			.map((request) => request.requester.image)
-			.filter((image) => image !== null),
-	});
 
 	const onSubmit = (
 		status: AcceptOrDeclineUsersRequestToJoinOrganizationArgs['status']
@@ -147,7 +141,7 @@ export const RequestsForm: React.FC<{
 										size="sm"
 										imageProps={{
 											src: request.requester.image
-												? images?.urls[request.requester.image]
+												? `${process.env.NEXT_PUBLIC_AWS_CLOUDFRONT_URL}/${request.requester.image}`
 												: undefined,
 										}}
 										isVerified={request.requester.subscriptionTier === 'PRO'}

@@ -16,9 +16,6 @@ import { Textarea } from '@/components/ui/textarea';
 import { DatePicker } from '@/components/ui/date-picker';
 import { Error } from '@/components/ui/error';
 
-// Schemas
-import { SettingsArgs } from '@repo/schemas/settings';
-
 // Hooks
 import { useSession } from '@/hooks/data/user';
 import {
@@ -29,11 +26,7 @@ import {
 // Lib
 import { withReactQueryProvider } from '@/lib/utils/react-query';
 import { toast } from '@/lib/utils/toast';
-import {
-	convertCalendarDate,
-	convertToFullname,
-	convertToPascalCase,
-} from '@/lib/utils/converter';
+import { convertCalendarDate, convertToFullname } from '@/lib/utils/converter';
 
 // Schemas
 import {
@@ -65,24 +58,38 @@ export const AdditionalInformationForm = withReactQueryProvider(() => {
 
 	const { data: user } = useSession();
 	const { mutate, isPending } = useAdditionalInformation();
-	const { mutate: skipAdditionalInformation } = useSkipAdditionalInformation();
+	const { mutate: skipAdditionalInformation, isPending: isSkipping } =
+		useSkipAdditionalInformation();
 
-	console.log(isDirty);
-	const onSubmit = async (data: SettingsArgs) => {
-		const hasUserInput = data.DOB || data.bio || data.image;
+	const pfpImage = React.useMemo(
+		() =>
+			(currentImage && URL.createObjectURL(currentImage)) ||
+			user?.image ||
+			undefined,
+		[currentImage, user]
+	);
+	const onSubmit = async (data: AdditionalFormArgs) => {
+		const hasUserInput = Boolean(
+			(data.DOB && data.DOB !== '') ||
+				(data.bio && data.bio.trim() !== '') ||
+				data.image
+		);
 
 		if (!hasUserInput) {
 			return skipAdditionalInformation(undefined, {
 				onSuccess({ title, message }) {
-					router.push('/home');
 					toast({
 						title,
 						content: message,
 						variant: 'success',
 					});
+					window.location.href = '/home';
 				},
 				onError(err) {
-					setError('root', err);
+					setError('root', {
+						type: 'server',
+						message: err.message,
+					});
 				},
 			});
 		}
@@ -91,20 +98,22 @@ export const AdditionalInformationForm = withReactQueryProvider(() => {
 			{ data, file: currentImage },
 			{
 				onSuccess({ message }) {
-					router.push('/home');
 					toast({
 						title: 'Welcome to Volontera!',
 						content: message,
 						variant: 'success',
 					});
+					window.location.href = '/home';
 				},
 				onError(err) {
-					setError('root', err);
+					setError('root', {
+						type: 'server',
+						message: err.message,
+					});
 				},
 			}
 		);
 	};
-
 	return (
 		<Form
 			className="mt-20 flex flex-col items-center gap-6 lg:gap-8"
@@ -119,10 +128,7 @@ export const AdditionalInformationForm = withReactQueryProvider(() => {
 							<AriaLabel htmlFor="image">
 								<Avatar
 									imageProps={{
-										src:
-											(currentImage && URL.createObjectURL(currentImage)) ||
-											user?.image ||
-											'',
+										src: pfpImage,
 										alt: 'Avatar',
 									}}
 									size="full"
@@ -135,7 +141,7 @@ export const AdditionalInformationForm = withReactQueryProvider(() => {
 												colorScheme="yellow"
 												onPress={() => {
 													setCurrentImage(undefined);
-													onChange();
+													onChange(undefined);
 												}}
 											>
 												<Trash className="size-4" />
@@ -229,8 +235,8 @@ export const AdditionalInformationForm = withReactQueryProvider(() => {
 				iconRight={!isDirty && <ArrowRight />}
 				colorScheme={isDirty ? 'orange' : 'bland'}
 				type="submit"
-				isLoading={isPending}
-				isDisabled={isPending}
+				isLoading={isPending || isSkipping}
+				isDisabled={isPending || isSkipping}
 			>
 				{!isDirty ? 'Skip' : 'Save'}
 			</Button>

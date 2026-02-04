@@ -170,7 +170,9 @@ export const AddTaskAiDialog: React.FC<{
 												<Tag className="flex items-center gap-4">
 													<Avatar
 														imageProps={{
-															src: member.user.image || '',
+															src: member.user.image
+																? `${process.env.NEXT_PUBLIC_AWS_CLOUDFRONT_URL}/${member.user.image}`
+																: undefined,
 														}}
 														isVerified={member.user.subscriptionTier === 'PRO'}
 														size="xs"

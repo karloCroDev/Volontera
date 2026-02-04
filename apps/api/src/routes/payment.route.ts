@@ -22,18 +22,22 @@ export const paymentRoutes = Router();
 paymentRoutes.post(
   "/webhook",
   bodyParser.raw({ type: "application/json" }),
-  stripePayment
+  stripePayment,
 );
+
+// JSON parsing for all other payment endpoints (must be after webhook)
+paymentRoutes.use(express.json());
 
 paymentRoutes.post(
   "/checkout",
   authMiddleware,
   hasRoleMiddleware,
   validate({
+    type: "query",
     responseOutput: "toast",
     schema: createCheckoutSessionSchema,
   }),
-  stripeCheckout
+  stripeCheckout,
 );
 
 paymentRoutes.get("/billing", authMiddleware, hasRoleMiddleware, billing);

@@ -1,4 +1,5 @@
 // External packages
+import * as React from 'react';
 import { twMerge } from 'tailwind-merge';
 
 // Components
@@ -31,7 +32,8 @@ export const PaymentPlanCard: React.FC<
 			className={twMerge(
 				'flex h-[500px] min-w-96 flex-1 flex-col rounded-lg border px-5 py-7',
 				variant === 'primary' && 'border-input-border bg-muted',
-				variant === 'secondary' && 'bg-accent border-accent-foreground'
+				variant === 'secondary' && 'bg-accent border-accent-foreground',
+				className
 			)}
 		>
 			<div className="flex justify-between">

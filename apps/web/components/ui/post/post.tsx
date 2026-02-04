@@ -26,26 +26,21 @@ import { formatTime } from '@/lib/utils/time-adjustments';
 
 // Hooks
 import { useSession } from '@/hooks/data/user';
+import { useIsMobile } from '@/hooks/utils/useIsMobile';
 
 export const Post: React.FC<{
 	post: RetrieveOrganizationPostsResponse['posts'][0];
 	isInsideOrganization?: boolean;
-	images?: Record<string, string>;
 	hasAnAdminAccess?: boolean;
-}> = ({
-	images,
-	post,
-	isInsideOrganization = false,
-	hasAnAdminAccess = false,
-}) => {
+}> = ({ post, isInsideOrganization = false, hasAnAdminAccess = false }) => {
 	const { data: user } = useSession();
 	const hasUserLiked = post.postLikes.some((like) => like.userId === user?.id);
 
 	const splittedContent = post.content.split('.');
+
 	const singlePostImage = post.postImages[0];
-	const singlePostImageSrc = singlePostImage
-		? images?.[singlePostImage.imageUrl]
-		: undefined;
+
+	const isMobile = useIsMobile();
 	return (
 		<div className="border-input-border bg-muted flex flex-col rounded-xl border px-8 py-6 shadow-xl">
 			<div className="mb-8 flex gap-4">
@@ -56,7 +51,7 @@ export const Post: React.FC<{
 					<Avatar
 						colorScheme="gray"
 						imageProps={{
-							src: images?.[post.organization.avatarImage],
+							src: `${process.env.NEXT_PUBLIC_AWS_CLOUDFRONT_URL}/${post.organization.avatarImage}`,
 						}}
 						isVerified={post.organization.owner.subscriptionTier === 'PRO'}
 					>
@@ -135,16 +130,13 @@ export const Post: React.FC<{
 				{post.postImages.length > 1 ? (
 					<Carousel
 						slides={post.postImages.map(({ imageUrl, id }) => {
-							const src = images?.[imageUrl];
-							if (!src) return null;
-
 							return (
 								<div
 									className="rouded-md border-input-border relative aspect-[4/3] max-h-[600px] w-full rounded border"
 									key={id}
 								>
 									<Image
-										src={src}
+										src={`${process.env.NEXT_PUBLIC_AWS_CLOUDFRONT_URL}/${imageUrl}`}
 										alt="Post image"
 										fill
 										className="object-contain"
@@ -156,9 +148,9 @@ export const Post: React.FC<{
 				) : (
 					post.postImages.length === 1 && (
 						<div className="rouded-md border-input-border relative mt-4 aspect-[4/3] max-h-[600px] w-full rounded border">
-							{singlePostImageSrc ? (
+							{singlePostImage ? (
 								<Image
-									src={singlePostImageSrc}
+									src={`${process.env.NEXT_PUBLIC_AWS_CLOUDFRONT_URL}/${singlePostImage.imageUrl}`}
 									alt="Post image"
 									fill
 									className="object-contain"
@@ -172,11 +164,13 @@ export const Post: React.FC<{
 			</div>
 
 			<div className="mt-auto flex items-center gap-8">
-				<div className="flex items-center gap-2">
+				<div className="flex items-center gap-0 lg:gap-2">
 					By:
 					<Avatar
 						imageProps={{
-							src: post.author.image ? images?.[post.author.image] : undefined,
+							src: post.author.image
+								? `${process.env.NEXT_PUBLIC_AWS_CLOUDFRONT_URL}/${post.author.image}`
+								: undefined,
 						}}
 						isVerified={post.author.subscriptionTier === 'PRO'}
 						size="xs"
@@ -191,13 +185,15 @@ export const Post: React.FC<{
 						href={`/profile/${post.authorId}`}
 						className="text-muted-foreground text-sm underline-offset-4 hover:underline"
 					>
-						{convertToFullname({
-							firstname: post.author.firstName,
-							lastname: post.author.lastName,
-						})}
+						{isMobile
+							? post.author.firstName
+							: convertToFullname({
+									firstname: post.author.firstName,
+									lastname: post.author.lastName,
+								})}
 					</Link>
-					<div className="bg-muted-foreground h-5.5 hidden w-px md:block" />
-					<p className="text-muted-foreground hidden text-sm md:block">
+					<div className="bg-muted-foreground h-5.5 hidden w-px lg:block" />
+					<p className="text-muted-foreground hidden text-sm lg:block">
 						{formatTime(new Date(post.createdAt))}
 					</p>
 				</div>

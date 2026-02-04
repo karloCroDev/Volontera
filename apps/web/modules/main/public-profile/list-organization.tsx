@@ -12,12 +12,8 @@ import { LinkAsButton } from '@/components/ui/link-as-button';
 
 // Modules
 import { InformationContainer } from '@/modules/main/public-profile/information-container';
-import {
-	useRetrieveAllOrganizationsForUser,
-	useRetrieveAllPostsForUser,
-} from '@/hooks/data/user';
+import { useRetrieveAllOrganizationsForUser } from '@/hooks/data/user';
 import { useParams } from 'next/navigation';
-import { useGetImageFromKeys } from '@/hooks/data/image';
 
 export const ListOrganizations = () => {
 	const [open, setOpen] = React.useState(false);
@@ -31,11 +27,6 @@ export const ListOrganizations = () => {
 			enabled: open,
 		}
 	);
-
-	const { data: image } = useGetImageFromKeys({
-		imageUrls: data?.organizations.map((org) => org.avatarImage) || [],
-	});
-	console.log('List organizations:', data);
 
 	return (
 		<InformationContainer>
@@ -72,7 +63,7 @@ export const ListOrganizations = () => {
 									>
 										<Avatar
 											imageProps={{
-												src: image?.urls[organization.avatarImage],
+												src: `${process.env.NEXT_PUBLIC_IMAGE_BASE_URL}/${organization.avatarImage}`,
 											}}
 											isVerified={organization.owner.subscriptionTier === 'PRO'}
 											colorScheme="gray"

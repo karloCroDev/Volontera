@@ -22,8 +22,7 @@ import { useSession } from '@/hooks/data/user';
 
 export const Reply: React.FC<{
 	reply: PostCommentRepliesResponse['replies'][0];
-	pfpImages?: Record<string, string>;
-}> = withReactQueryProvider(({ reply, pfpImages }) => {
+}> = withReactQueryProvider(({ reply }) => {
 	const { mutate } = useDeleteReply({
 		commentId: reply.commentId,
 		replyId: reply.id,
@@ -36,7 +35,9 @@ export const Reply: React.FC<{
 			<div className="flex flex-1 items-center gap-4">
 				<Avatar
 					imageProps={{
-						src: pfpImages ? pfpImages[reply.author.image || ''] : undefined,
+						src: reply.author.image
+							? `${process.env.NEXT_PUBLIC_AWS_CLOUDFRONT_URL}/${reply.author.image}`
+							: undefined,
 					}}
 					isVerified={reply.author.subscriptionTier === 'PRO'}
 					colorScheme="gray"

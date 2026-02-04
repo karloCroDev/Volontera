@@ -35,7 +35,21 @@ export async function retrieveAllPostsForUser(userId: User["id"]) {
       authorId: userId,
     },
     include: {
-      organization: true,
+      organization: {
+        include: {
+          _count: {
+            select: {
+              organizationFollowers: true,
+              organizationMembers: true,
+            },
+          },
+          owner: {
+            omit: {
+              password: true,
+            },
+          },
+        },
+      },
       postImages: true,
       postLikes: {
         where: {

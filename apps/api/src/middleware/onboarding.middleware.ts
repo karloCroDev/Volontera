@@ -4,7 +4,7 @@ import { Request, Response, NextFunction } from "express";
 export function onboardingProcessMiddleware(
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) {
   const { onboardingFinished } = req.user;
 
