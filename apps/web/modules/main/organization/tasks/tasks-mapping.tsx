@@ -54,6 +54,7 @@ export const TasksMapping: React.FC<{
 	const { data: member } = useRetrieveOrganizationMember({
 		organizationId: params.organizationId,
 	});
+
 	const canMoveTasks =
 		member?.organizationMember.role === 'ADMIN' ||
 		member?.organizationMember.role === 'OWNER';

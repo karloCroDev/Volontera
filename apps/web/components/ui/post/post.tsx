@@ -26,6 +26,7 @@ import { formatTime } from '@/lib/utils/time-adjustments';
 
 // Hooks
 import { useSession } from '@/hooks/data/user';
+import { useIsMobile } from '@/hooks/utils/useIsMobile';
 
 export const Post: React.FC<{
 	post: RetrieveOrganizationPostsResponse['posts'][0];
@@ -39,6 +40,7 @@ export const Post: React.FC<{
 
 	const singlePostImage = post.postImages[0];
 
+	const isMobile = useIsMobile();
 	return (
 		<div className="border-input-border bg-muted flex flex-col rounded-xl border px-8 py-6 shadow-xl">
 			<div className="mb-8 flex gap-4">
@@ -162,7 +164,7 @@ export const Post: React.FC<{
 			</div>
 
 			<div className="mt-auto flex items-center gap-8">
-				<div className="flex items-center gap-2">
+				<div className="flex items-center gap-0 lg:gap-2">
 					By:
 					<Avatar
 						imageProps={{
@@ -183,13 +185,15 @@ export const Post: React.FC<{
 						href={`/profile/${post.authorId}`}
 						className="text-muted-foreground text-sm underline-offset-4 hover:underline"
 					>
-						{convertToFullname({
-							firstname: post.author.firstName,
-							lastname: post.author.lastName,
-						})}
+						{isMobile
+							? post.author.firstName
+							: convertToFullname({
+									firstname: post.author.firstName,
+									lastname: post.author.lastName,
+								})}
 					</Link>
-					<div className="bg-muted-foreground h-5.5 hidden w-px md:block" />
-					<p className="text-muted-foreground hidden text-sm md:block">
+					<div className="bg-muted-foreground h-5.5 hidden w-px lg:block" />
+					<p className="text-muted-foreground hidden text-sm lg:block">
 						{formatTime(new Date(post.createdAt))}
 					</p>
 				</div>

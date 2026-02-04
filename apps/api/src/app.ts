@@ -159,7 +159,7 @@ app.use(
   hasRoleMiddleware,
   rateLimitMiddleware({
     additionalTags: ["post"],
-    limit: 25,
+    limit: 100,
   }),
   postRoutes,
 );

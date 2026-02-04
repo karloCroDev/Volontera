@@ -28,7 +28,7 @@ export const Avatar: React.FC<
 		<div
 			{...rest}
 			className={twMerge(
-				'relative overflow-visible rounded-full',
+				'relative flex-shrink-0 overflow-visible rounded-full',
 				size === 'xs' && 'size-6 text-xs',
 				size === 'sm' && 'size-8',
 				size === 'md' && 'size-10',

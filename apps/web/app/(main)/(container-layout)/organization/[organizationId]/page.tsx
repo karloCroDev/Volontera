@@ -55,7 +55,6 @@ export default async function OrganizationPage({
 
 	if (!organizationDetailsById.success) notFound();
 
-	console.log();
 	return (
 		<>
 			<div className="border-input-border relative -mx-4 -my-6 rounded-xl px-5 py-4 shadow-xl md:m-0 md:border">
@@ -312,7 +311,7 @@ export default async function OrganizationPage({
 				(member.organizationMember.role === 'ADMIN' ||
 					member.organizationMember.role === 'OWNER') && <CreatePostDialog />}
 
-			<div className="mt-6 flex justify-between">
+			<div className="mt-12 flex justify-between md:mt-6">
 				<h2 className="text-xl lg:text-2xl">Posts</h2>
 				<PostsSelect />
 			</div>

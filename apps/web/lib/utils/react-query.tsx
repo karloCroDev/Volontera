@@ -7,15 +7,15 @@ import * as React from 'react';
 import {
 	DehydratedState,
 	HydrationBoundary,
+	QueryClient,
 	QueryClientProvider,
 } from '@tanstack/react-query';
-import { getQueryClient } from '@/lib/server/query-client';
 
+const queryClient = new QueryClient();
 export const ReactQueryProvider: React.FC<{
 	children?: React.ReactNode;
 	dehydratedState?: DehydratedState;
 }> = ({ children, dehydratedState }) => {
-	const queryClient = React.useMemo(() => getQueryClient(), []);
 	return (
 		<QueryClientProvider client={queryClient}>
 			{dehydratedState ? (

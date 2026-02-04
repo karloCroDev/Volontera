@@ -10,7 +10,6 @@ import { BoardsMapping } from '@/modules/main/organization/tasks/boards-mapping'
 import { SortTasksSelect } from '@/modules/main/organization/tasks/sort-tasks-select';
 import { retrieveOrganizationMember } from '@/lib/server/organization-managment';
 import { dehydrate, QueryClient } from '@tanstack/react-query';
-import { getQueryClient } from '@/lib/server/query-client';
 
 export default async function BoardPage({
 	params,
