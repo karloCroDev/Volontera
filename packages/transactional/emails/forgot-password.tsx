@@ -28,7 +28,7 @@ export const ForgotPassword: React.FC<{
 							<Row>
 								<Column>
 									<Heading className="text-2xl font-semibold italic underline underline-offset-4">
-										New notifications
+										Reset password
 									</Heading>
 								</Column>
 								<Column>

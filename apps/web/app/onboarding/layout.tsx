@@ -23,7 +23,7 @@ export default async function OnboardingLayout({
 	if (user.success && user.onboardingFinished) redirect('/home');
 
 	return (
-		<Layout className="h-screen place-content-center">
+		<Layout className="h-screen place-content-center px-4">
 			<LayoutColumn
 				start={1}
 				end={{ base: 13, lg: 6 }}

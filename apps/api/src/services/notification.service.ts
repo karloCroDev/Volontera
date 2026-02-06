@@ -43,8 +43,8 @@ export async function getUserNotificationsService(userId: User["id"]) {
 export async function hasUnreadNotificationsService(userId: User["id"]) {
   const unreadCount = await hasUnreadNotifications({ userId });
 
-  // Na svaku treću nepročitanu notifikaciju pošalji email korisniku kao podsjetnik
-  if (unreadCount > 0 && unreadCount % 3 === 0) {
+  // Na svaku šestu nepročitanu notifikaciju pošalji email korisniku kao podsjetnik
+  if (unreadCount > 0 && unreadCount % 6 === 0) {
     const user = await findUserById(userId);
 
     if (user) {

@@ -16,6 +16,7 @@ import {
 import { generateTokenAndSetCookie } from "@/lib/set-token-cookie";
 import { oAuthGoogleHandle } from "@/config/oAuth-google";
 import {
+  forgotPasswordSchema,
   loginSchema,
   registerSchema,
   resetPasswordSchema,
@@ -35,7 +36,7 @@ authRoutes.post(
     schema: registerSchema,
     responseOutput: "form",
   }),
-  registerController
+  registerController,
 );
 authRoutes.post(
   "/login",
@@ -43,15 +44,15 @@ authRoutes.post(
     schema: loginSchema,
     responseOutput: "form",
   }),
-  loginController
+  loginController,
 );
 authRoutes.post(
   "/forgot-password",
   validate({
-    schema: loginSchema,
+    schema: forgotPasswordSchema,
     responseOutput: "form",
   }),
-  forgetPasswordController
+  forgetPasswordController,
 );
 authRoutes.post(
   "/reset-password",
@@ -59,7 +60,7 @@ authRoutes.post(
     schema: resetPasswordSchema,
     responseOutput: "form",
   }),
-  resetPasswordController
+  resetPasswordController,
 );
 authRoutes.post(
   "/verify-token",
@@ -67,7 +68,7 @@ authRoutes.post(
     schema: verifyEmailSchema,
     responseOutput: "form",
   }),
-  verifyTokenController
+  verifyTokenController,
 );
 authRoutes.post(
   "/reset-verify-token",
@@ -75,7 +76,7 @@ authRoutes.post(
     schema: verifyEmailSchema,
     responseOutput: "form",
   }),
-  resetVerifyTokenController
+  resetVerifyTokenController,
 );
 
 // Google OAuth sign in method
@@ -84,7 +85,7 @@ authRoutes.get(
   oAuthGoogleHandle.authenticate("google", {
     scope: ["profile", "email"],
     session: false,
-  })
+  }),
 );
 
 authRoutes.get(
@@ -103,5 +104,5 @@ authRoutes.get(
     });
 
     res.redirect(`${process.env.WEB_URL}/home`);
-  }
+  },
 );
