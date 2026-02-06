@@ -1,3 +1,5 @@
+# Ignorirajte docker setup nije dobro implementiran, treba ga napraiviti po turborepu
+
 services:
   db:
     image: postgres:15-alpine

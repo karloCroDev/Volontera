@@ -1,7 +1,7 @@
 // Pirncip svih ovih algoritama je da se postovima dodijeli neki score (bodovna vrijednost)
 // Na osnovu tog rezultata se onda postovi rangiraju i prikazuju korisnicima tj. bit će sortirani po tom score-u
 
-type RankingPostInputArgs = {
+export function calculatePostRankingScore(input: {
   likes: number;
   comments: number;
   images: number;
@@ -9,9 +9,7 @@ type RankingPostInputArgs = {
   isAuthorPro: boolean;
   isOrgPro: boolean;
   createdAt: Date;
-};
-
-export function calculatePostRankingScore(input: RankingPostInputArgs): number {
+}): number {
   // Formula je bazirana na ovom principu tj. ideji. Upravljamo s faktorima koji već imaju neke predefinirane težine.  :
   const rankingWeights = {
     likes: 1.0,
@@ -59,5 +57,3 @@ export function calculatePostRankingScore(input: RankingPostInputArgs): number {
     Math.sqrt(ageHours / rankingWeights.decayHalfLife)
   );
 }
-
-export function searchFormula() {}
