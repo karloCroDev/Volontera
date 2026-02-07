@@ -59,13 +59,7 @@ export async function searchAllUsersWithQueryService({
   const users = await searchAllUsers({
     query: data.query,
     userId,
-    // limit: data.limit,
-    // offset: data.offset,
   });
-
-  // TODO: Cache results with redis
-  // TODO: When I implement the real search, make small algrithm
-  // TODO: Pagniate this?
 
   return toastResponseOutput({
     status: 200,

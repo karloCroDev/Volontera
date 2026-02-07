@@ -2,6 +2,11 @@
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
 import Image from 'next/image';
+
+import {
+	hasWantedOrganizationRole,
+	isOrganizationAccount,
+} from '@repo/permissons/index';
 import { dehydrate, QueryClient } from '@tanstack/react-query';
 
 // Components
@@ -82,36 +87,41 @@ export default async function OrganizationPage({
 								{organizationDetailsById.organization.name}
 							</Avatar>
 						</div>
-						{((member.success && member.organizationMember.role !== 'OWNER') ||
-							!member.success) && (
-							<div className="flex gap-4">
-								<FollowOrganizationButton
-									hasUserFollowed={organizationDetailsById.isFollowing}
-								/>
-
-								{member.success ? (
-									<LeaveOrganizationDialog
-										organizationName={organizationDetailsById.organization.name}
+						{member.success &&
+							hasWantedOrganizationRole({
+								userRole: member.organizationMember.role,
+								requiredRoles: ['MEMBER', 'ADMIN'],
+								ownerHasAllAccess: false,
+							}) && (
+								<div className="flex gap-4">
+									<FollowOrganizationButton
+										hasUserFollowed={organizationDetailsById.isFollowing}
 									/>
-								) : (
-									session.success &&
-									session.role !== 'ORGANIZATION' && (
-										<LinkAsButton
-											colorScheme="orange"
-											size="md"
-											href={`/organization/${organizationId}/join-organization`}
-										>
-											Join
-										</LinkAsButton>
-									)
-								)}
-							</div>
-						)}
+
+									{member.success ? (
+										<LeaveOrganizationDialog
+											organizationName={
+												organizationDetailsById.organization.name
+											}
+										/>
+									) : (
+										session.success &&
+										!isOrganizationAccount(session.role) && (
+											<LinkAsButton
+												colorScheme="orange"
+												size="md"
+												href={`/organization/${organizationId}/join-organization`}
+											>
+												Join
+											</LinkAsButton>
+										)
+									)}
+								</div>
+							)}
 					</div>
 					<h1 className="mt-4 text-xl font-medium md:text-2xl lg:text-3xl">
 						{organizationDetailsById.organization.name}
 					</h1>
-					{/* TODO: Get the number, and just check if user is inside the organization or not */}
 					<div className="text-muted-foreground mt-1.5 flex items-center gap-4">
 						<p>
 							<strong>
@@ -129,7 +139,7 @@ export default async function OrganizationPage({
 									organizationDetailsById.organization._count
 										.organizationFollowers
 								}
-							</strong>{' '}
+							</strong>
 							followers
 						</p>
 					</div>
@@ -287,7 +297,7 @@ export default async function OrganizationPage({
 									<Tag colorScheme="gray">
 										+
 										{organizationDetailsById.organization._count
-											.organizationMembers - 3}{' '}
+											.organizationMembers - 3}
 										more
 									</Tag>
 								)}
@@ -308,8 +318,10 @@ export default async function OrganizationPage({
 
 			{member.success && <OrganizationRoutingHeader member={member} />}
 			{member.success &&
-				(member.organizationMember.role === 'ADMIN' ||
-					member.organizationMember.role === 'OWNER') && <CreatePostDialog />}
+				hasWantedOrganizationRole({
+					requiredRoles: ['OWNER', 'ADMIN'],
+					userRole: member.organizationMember.role,
+				}) && <CreatePostDialog />}
 
 			<div className="mt-12 flex justify-between md:mt-6">
 				<h2 className="text-xl lg:text-2xl">Posts</h2>

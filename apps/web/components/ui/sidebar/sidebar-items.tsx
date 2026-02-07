@@ -22,6 +22,10 @@ import { Dot } from '@/components/ui/dot';
 // Hooks
 import { useSession } from '@/hooks/data/user';
 import { useListOrganizations } from '@/hooks/data/organization';
+import {
+	isOrganizationAccount,
+	isRegularUserAccount,
+} from '@repo/permissons/index';
 import { useIsMobile } from '@/hooks/utils/useIsMobile';
 
 // Types
@@ -113,7 +117,7 @@ export const Organizations = () => {
 							)}
 						</ul>
 
-						{user && user.role === 'ORGANIZATION' && (
+						{user && isOrganizationAccount(user.role) && (
 							<>
 								<Indicators>Managing</Indicators>
 								<ul className="ml-4">
@@ -139,7 +143,7 @@ export const Organizations = () => {
 								</ul>
 							</>
 						)}
-						{user && user.role === 'USER' && (
+						{user && isRegularUserAccount(user.role) && (
 							<>
 								<Indicators>Attending</Indicators>
 								<ul className="ml-4">
@@ -188,7 +192,7 @@ export const Organizations = () => {
 							)}
 						</ul>
 
-						{user && user.role === 'ORGANIZATION' && (
+						{user && isOrganizationAccount(user.role) && (
 							<LinkAsButton
 								className="my-4 w-full justify-start"
 								href="/organization/create-organization"

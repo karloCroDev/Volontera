@@ -66,7 +66,6 @@ organizationTasksRoutes.post(
   createTaskBoardController,
 );
 
-// TODO: More consistent naming
 organizationTasksRoutes.patch(
   "/boards/update-title",
   validate({

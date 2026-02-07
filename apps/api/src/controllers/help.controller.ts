@@ -16,7 +16,7 @@ export async function addQuestionController(req: Request, res: Response) {
     const result = await addQuestionService({
       data: req.body,
       userId: req.user.userId,
-      role: req.user.role!, // TODO: I know that role exists because of hasRoleMiddleware, try to fix this
+      role: req.user.role!,
     });
 
     return res.status(result.status).json(result.body);
@@ -38,7 +38,7 @@ export async function getHelpMessagesController(req: Request, res: Response) {
 
 export async function deleteHelpMessagesController(
   req: Request,
-  res: Response
+  res: Response,
 ) {
   try {
     const result = await deleteConversationService(req.user.userId);

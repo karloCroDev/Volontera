@@ -18,6 +18,7 @@ import { PaymentPlanCard } from '@/modules/main/select-plan/payment-plan-card';
 // Lib
 import { withReactQueryProvider } from '@/lib/utils/react-query';
 import { toast } from '@/lib/utils/toast';
+import { isOrganizationAccount } from '@repo/permissons/index';
 
 const stripePriceIds = {
 	yearlyPriceId: 'price_1SuG9uKRaMWWrCqzp0Uh0EuQ',
@@ -64,7 +65,7 @@ export const Plans: React.FC<{
 			duration="(All time)"
 			variant="primary"
 			reasons={
-				user.role === 'ORGANIZATION' ? (
+				isOrganizationAccount(user.role) ? (
 					<>
 						<li>Create organizations</li>
 						<li>Basic organization management features</li>
@@ -100,7 +101,7 @@ export const Plans: React.FC<{
 			duration="Monthly"
 			variant="primary"
 			reasons={
-				user.role === 'ORGANIZATION' ? (
+				isOrganizationAccount(user.role) ? (
 					<>
 						<li>All in Beginner&apos;s Kit +</li>
 						<li>Advanced analytics for organization managment</li>
@@ -151,7 +152,7 @@ export const Plans: React.FC<{
 			duration="Yearly"
 			variant="secondary"
 			reasons={
-				user.role === 'ORGANIZATION' ? (
+				isOrganizationAccount(user.role) ? (
 					<>
 						<li>All in Beginner&apos;s Kit +</li>
 						<li>Advanced analytics for organization managment</li>

@@ -34,6 +34,8 @@ import {
 	ListOrganizationsOrganizatorResponse,
 } from '@repo/types/organization';
 import { DataWithFiles } from '@repo/types/upload';
+import { UserRole } from '@repo/database';
+import { isOrganizationAccount } from '@repo/permissons/index';
 
 export const useCreateOrganization = (
 	options?: UseMutationOptions<
@@ -59,7 +61,7 @@ export const useCreateOrganization = (
 };
 
 export function useListOrganizations(
-	role?: string,
+	role?: UserRole,
 
 	options?: Omit<
 		UseQueryOptions<ListOrganizationsOrganizatorResponse>,
@@ -68,10 +70,9 @@ export function useListOrganizations(
 ) {
 	return useQuery<ListOrganizationsOrganizatorResponse>({
 		queryKey: ['organization', role],
-		queryFn:
-			role === 'ORGANIZATION'
-				? listOrganizationsOrganizator
-				: listOrganizationsUser,
+		queryFn: isOrganizationAccount(role)
+			? listOrganizationsOrganizator
+			: listOrganizationsUser,
 		enabled: !!role,
 		refetchOnWindowFocus: false,
 		...options,

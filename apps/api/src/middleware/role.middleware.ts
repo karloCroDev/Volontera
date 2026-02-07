@@ -4,7 +4,7 @@ import { Request, Response, NextFunction } from "express";
 export function userMiddleware(
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) {
   const { role, onboardingFinished } = req.user;
 
@@ -18,11 +18,10 @@ export function userMiddleware(
 export function organizationMiddleware(
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) {
   const { role, onboardingFinished } = req.user;
 
-  console.log(role, onboardingFinished);
   if (role !== "ORGANIZATION" || !onboardingFinished) {
     return res.status(400).json({ message: "Forbidden: Organizations only" });
   }
@@ -33,7 +32,7 @@ export function organizationMiddleware(
 export async function hasRoleMiddleware(
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) {
   const { role } = req.user;
 

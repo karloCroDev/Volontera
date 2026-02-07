@@ -5,15 +5,22 @@ import { Request, Response, NextFunction } from "express";
 import { retrieveOrganizationMember } from "@/models/organization-managment.model";
 
 // Database
-import { Organization, OrganizationMember } from "@repo/database";
+import { OrganizationMemberRole } from "@repo/database";
+
+// Lib
 import { cacheKey, redisGetOrSetJson } from "@/lib/cache-json";
+
+// Permissions
+import { hasWantedOrganizationRole } from "@repo/permissons/index";
 
 export function organizationRolesMiddleware({
   aquiredRoles,
   type = "body",
+  ownerHasAllAccess = true,
 }: {
-  aquiredRoles?: OrganizationMember["role"][];
+  aquiredRoles?: OrganizationMemberRole[];
   type?: "body" | "query" | "params";
+  ownerHasAllAccess?: boolean;
 }) {
   return async (req: Request, res: Response, next: NextFunction) => {
     const { userId } = req.user;
@@ -22,7 +29,7 @@ export function organizationRolesMiddleware({
     const key = cacheKey(["org", "member-role", organizationId, userId]);
 
     const cachedMember = await redisGetOrSetJson<{
-      role: OrganizationMember["role"];
+      role: OrganizationMemberRole;
     } | null>({
       key,
       ttlSeconds: 60,
@@ -43,18 +50,16 @@ export function organizationRolesMiddleware({
       });
     }
 
-    // Owner uvijek ima pristup svemu unutar organizacije (osim ako je eksplicitno zabranjeno)
-    if (cachedMember.role === "OWNER") return next();
+    const allowed = hasWantedOrganizationRole({
+      userRole: cachedMember.role,
+      requiredRoles:
+        aquiredRoles && aquiredRoles.length > 0
+          ? aquiredRoles
+          : [OrganizationMemberRole.OWNER],
+      ownerHasAllAccess,
+    });
 
-    // Ako nisu specificirane role onda ne moze nijedan korisnik osim organizacije pristupiti
-    if (!aquiredRoles) {
-      return res.status(400).json({
-        message: "Bad Request: No roles specified for access",
-        success: false,
-      });
-    }
-
-    if (!aquiredRoles.includes(cachedMember.role)) {
+    if (!allowed) {
       return res.status(400).json({
         message: "Forbidden: Insufficient organization role",
         success: false,

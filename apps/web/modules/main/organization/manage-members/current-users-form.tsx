@@ -14,6 +14,7 @@ import { DemoteOrPromoteOrganizationMemberArgs } from '@repo/schemas/organizatio
 import { useParams } from 'next/navigation';
 import { toast } from '@/lib/utils/toast';
 import { IRevalidateTag } from '@/lib/server/revalidation';
+import { hasWantedOrganizationRole } from '@repo/permissons/index';
 
 export const CurrentUsersForm: React.FC<{
 	users: RetrieveAllMembersInOrganizationResponse;
@@ -93,7 +94,11 @@ export const CurrentUsersForm: React.FC<{
 						</p>
 
 						<div className="ml-auto flex gap-3">
-							{memeber.role === 'MEMBER' ? (
+							{hasWantedOrganizationRole({
+								userRole: memeber.role,
+								requiredRoles: ['MEMBER'],
+								ownerHasAllAccess: false,
+							}) ? (
 								<Button
 									isFullyRounded
 									colorScheme="success"

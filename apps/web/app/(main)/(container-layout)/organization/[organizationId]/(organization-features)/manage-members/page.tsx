@@ -21,6 +21,7 @@ import {
 } from '@/lib/server/organization-managment';
 import { RetrieveDataAboutOrganizationResponse } from '@repo/types/organization-managment';
 import { DeleteOrganizationDialog } from '@/modules/main/organization/manage-members/delete-organization-dialog';
+import { hasWantedOrganizationRole } from '@repo/permissons/index';
 
 export default async function ManagePage({
 	params,
@@ -39,8 +40,11 @@ export default async function ManagePage({
 	]);
 
 	if (
-		!member.success ||
-		member.organizationMember.role !== 'OWNER' ||
+		!hasWantedOrganizationRole({
+			userRole: member.success ? member.organizationMember.role : undefined,
+			requiredRoles: ['OWNER'],
+			ownerHasAllAccess: false,
+		}) ||
 		!requests.success ||
 		!users.success
 	) {

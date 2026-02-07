@@ -58,7 +58,6 @@ export const WelcomeEmail: React.FC<{
 						</Section>
 
 						<Section className="text-center">
-							{/* TODO: Karlo add app name! */}
 							<Button
 								href={`${process.env.NEXT_PUBLIC_URL}/home`}
 								className="mx-auto w-[calc(100%-32px)] cursor-pointer rounded bg-[#91400d] text-center leading-10 text-white"

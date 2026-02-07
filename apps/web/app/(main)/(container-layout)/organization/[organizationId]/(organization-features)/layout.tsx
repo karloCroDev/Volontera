@@ -6,6 +6,7 @@ import { UserLock } from 'lucide-react';
 import { Avatar } from '@/components/ui/avatar';
 import { OrganizationRoutingHeader } from '@/modules/main/organization/common/organization-routing-header';
 import { LinkAsButton } from '@/components/ui/link-as-button';
+import { hasWantedOrganizationRole } from '@repo/permissons/index';
 
 // Lib
 import { getOrganizationDetailsById } from '@/lib/server/organization';
@@ -59,8 +60,11 @@ export default async function OrganizationFeaturesLayout({
 					</p>
 				</div>
 
-				{((member.success && member.organizationMember.role !== 'OWNER') ||
-					!member.success) && (
+				{!hasWantedOrganizationRole({
+					userRole: member.success ? member.organizationMember.role : undefined,
+					requiredRoles: ['OWNER'],
+					ownerHasAllAccess: false,
+				}) && (
 					<div className="flex gap-4 md:ml-auto">
 						<FollowOrganizationButton
 							// Dobivam samo korisnika u ovom arrayu

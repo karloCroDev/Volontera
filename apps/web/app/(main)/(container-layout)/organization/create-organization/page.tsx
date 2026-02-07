@@ -8,13 +8,14 @@ import { getSession } from '@/lib/server/user';
 import { CreateOrganizationForm } from '@/modules/main/organization/create-organizations/create-organization-form';
 
 import { redirect } from 'next/navigation';
+import { isOrganizationAccount } from '@repo/permissons/index';
 
 export default async function CreateOrganizationPage() {
 	const user = await getSession();
 
 	if (!user.success) redirect('/user/login');
 
-	if (user.role !== 'ORGANIZATION') redirect('/home');
+	if (!isOrganizationAccount(user.role)) redirect('/home');
 
 	console.log(user);
 	return (

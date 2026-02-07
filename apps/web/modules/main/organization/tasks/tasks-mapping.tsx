@@ -16,6 +16,7 @@ import { useQueryClient } from '@tanstack/react-query';
 
 // Types
 import { RetrieveAllOrganizationBoardsWithTasksResponse } from '@repo/types/organization-tasks';
+import { hasWantedOrganizationRole } from '@repo/permissons/index';
 
 // Components
 import { Dialog } from '@/components/ui/dialog';
@@ -55,9 +56,11 @@ export const TasksMapping: React.FC<{
 		organizationId: params.organizationId,
 	});
 
-	const canMoveTasks =
-		member?.organizationMember.role === 'ADMIN' ||
-		member?.organizationMember.role === 'OWNER';
+	const canMoveTasks = hasWantedOrganizationRole({
+		userRole: member?.success ? member.organizationMember.role : undefined,
+		requiredRoles: ['ADMIN'],
+		ownerHasAllAccess: true,
+	});
 
 	const { mutate: mutateMoveTask } = useMoveTask();
 	const { data } = useRetrieveAllBoardTasksArgs(

@@ -10,6 +10,7 @@ import { Post } from '@/components/ui/post/post';
 // Types
 import { RetrieveOrganizationPostsResponse } from '@repo/types/post';
 import { RetrieveOrganizationPostsQueryArgs } from '@repo/schemas/post';
+import { hasWantedOrganizationRole } from '@repo/permissons/index';
 
 // Hooks
 import { useRetrieveOrganizationPosts } from '@/hooks/data/post';
@@ -44,10 +45,13 @@ export const PostsMapping = withReactQueryProvider(() => {
 				post={post}
 				isInsideOrganization
 				// TODO: Only organization admins can delete posts handle this!
-				hasAnAdminAccess={
-					member?.organizationMember.role === 'OWNER' ||
-					member?.organizationMember.role === 'ADMIN'
-				}
+				hasAnAdminAccess={hasWantedOrganizationRole({
+					userRole: member?.success
+						? member.organizationMember.role
+						: undefined,
+					requiredRoles: ['ADMIN'],
+					ownerHasAllAccess: true,
+				})}
 			/>
 		))
 	) : (

@@ -3,11 +3,11 @@
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
-  "dependencies": {
-    "@casl/ability": "^6.7.3",
-    "@repo/database": "*"
+  "description": "Shared permission helpers between backend and frontend",
+  "exports": {
+    "./*": "./src/*.ts"
   },
-  "devDependencies": {
+  "dependencies": {
     "@repo/database": "*"
   }
 }

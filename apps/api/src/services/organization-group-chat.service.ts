@@ -14,6 +14,9 @@ import {
 // Database
 import { User } from "@repo/database";
 
+// Permissions
+import { hasWantedOrganizationRole } from "@repo/permissons/index";
+
 // Schema types
 import {
   CreateOrganizationGroupChatMessageArgs,
@@ -53,7 +56,7 @@ export async function createOrganizationGroupChatMessageService({
     senderId: userId,
   });
 
-  const user = await retrieveOrganizationMember({
+  const member = await retrieveOrganizationMember({
     organizationId: data.organizationId,
     userId,
   });
@@ -64,7 +67,13 @@ export async function createOrganizationGroupChatMessageService({
   );
 
   // Ako je admin ili korisnik onda se svima pošalje notifikacija
-  if (user?.role === "ADMIN" || user?.role === "OWNER") {
+  if (
+    hasWantedOrganizationRole({
+      userRole: member?.role,
+      requiredRoles: ["ADMIN"],
+      ownerHasAllAccess: true,
+    })
+  ) {
     const members = await retrieveAllMembersInOrganization({
       organizationId: data.organizationId,
       userId,

@@ -36,6 +36,7 @@ import { getLocalTimeZone, parseDate, today } from '@internationalized/date';
 import { Error } from '@/components/ui/error';
 import { TaskCardQuestions } from '@/modules/main/organization/tasks/task-card-questions';
 import { useRetrieveOrganizationMember } from '@/hooks/data/organization-managment';
+import { hasWantedOrganizationRole } from '@repo/permissons/index';
 
 export const TaskCardDetails: React.FC<{
 	taskId: string;
@@ -111,8 +112,11 @@ export const TaskCardDetails: React.FC<{
 	});
 	return (
 		<div className="no-scrollbar flex max-h-[600px] w-full flex-col justify-between gap-4 overflow-y-scroll lg:aspect-video lg:max-h-[800px] lg:flex-row">
-			{member?.organizationMember.role === 'ADMIN' ||
-			member?.organizationMember.role === 'OWNER' ? (
+			{hasWantedOrganizationRole({
+				userRole: member?.success ? member.organizationMember.role : undefined,
+				requiredRoles: ['ADMIN'],
+				ownerHasAllAccess: true,
+			}) ? (
 				<Form
 					className="no-scrollbar flex flex-1 flex-col lg:overflow-y-scroll"
 					onSubmit={handleSubmit(onSubmit)}

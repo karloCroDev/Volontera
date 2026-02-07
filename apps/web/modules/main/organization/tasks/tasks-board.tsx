@@ -7,6 +7,7 @@ import { withReactQueryProvider } from '@/lib/utils/react-query';
 import { AddTaskAiDialog } from '@/modules/main/organization/tasks/add-task-ai-dialog';
 import { useParams } from 'next/navigation';
 import { useRetrieveOrganizationMember } from '@/hooks/data/organization-managment';
+import { hasWantedOrganizationRole } from '@repo/permissons/index';
 
 export const TasksBoard: React.FC<{
 	boardId: string;
@@ -27,8 +28,13 @@ export const TasksBoard: React.FC<{
 			{tasks}
 
 			<div className="flex gap-4">
-				{(member?.organizationMember.role === 'ADMIN' ||
-					member?.organizationMember.role === 'OWNER') && (
+				{hasWantedOrganizationRole({
+					userRole: member?.success
+						? member.organizationMember.role
+						: undefined,
+					requiredRoles: ['ADMIN'],
+					ownerHasAllAccess: true,
+				}) && (
 					<>
 						<AddTaskDialog organizationTasksBoardId={boardId} />
 						<AddTaskAiDialog organizationTasksBoardId={boardId} />
