@@ -1,5 +1,7 @@
 // Database
 import { Post, prisma, User } from "@repo/database";
+
+// Schemas
 import { RetrieveAlgoPostsSchemaArgs } from "@repo/schemas/home";
 
 export async function retrieveAlgoPosts({

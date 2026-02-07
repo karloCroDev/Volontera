@@ -16,6 +16,7 @@ import {
 // Middleware
 import { organizationMiddleware } from "@/middleware/role.middleware";
 import { validate } from "@/middleware/validate.middleware";
+import { organizationRolesMiddleware } from "@/middleware/organization-roles.middleware";
 
 // Scheams
 import {
@@ -28,7 +29,6 @@ import {
   retrieveOrganizationPostsQuerySchema,
 } from "@repo/schemas/post";
 import { retrievePostCommentsSchema } from "@repo/schemas/comment";
-import { organizationRolesMiddleware } from "@/middleware/organization-roles.middleware";
 
 export const postRoutes = Router();
 

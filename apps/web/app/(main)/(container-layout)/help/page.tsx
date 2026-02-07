@@ -11,7 +11,7 @@ import { MessageSkeleton } from '@/components/ui/message/message';
 import { getHelpConversation } from '@/lib/server/help';
 import { getSession } from '@/lib/server/user';
 
-// Types
+// Modules
 import { MessagesMapping } from '@/modules/main/help/messages-mapping';
 
 export default async function HelpPage() {

@@ -1,13 +1,10 @@
 // Lib
 import { createUploadUrl, getImagePresignedUrls } from "@/lib/aws-s3-functions";
-import {
-  serverFetchOutput,
-  toastResponseOutput,
-} from "@/lib/utils/service-output";
-import { PresignImagesSchemaArgs } from "@repo/schemas/image";
+import { toastResponseOutput } from "@/lib/utils/service-output";
 
 // Schemas
 import { ImageKeysSchemaArgs } from "@repo/schemas/image";
+import { PresignImagesSchemaArgs } from "@repo/schemas/image";
 
 export async function getImageFromKeyService({
   imageUrls,
@@ -18,8 +15,8 @@ export async function getImageFromKeyService({
 
   await Promise.all(
     uniqueKeys.map(
-      async (key) => (urls[key] = await getImagePresignedUrls(key))
-    )
+      async (key) => (urls[key] = await getImagePresignedUrls(key)),
+    ),
   );
 
   return toastResponseOutput({
@@ -39,8 +36,8 @@ export async function presignDirectMessageImagesService({
         contentType: image.contentType,
         filename: image.filename,
         size: image.size,
-      })
-    )
+      }),
+    ),
   );
 
   return toastResponseOutput({

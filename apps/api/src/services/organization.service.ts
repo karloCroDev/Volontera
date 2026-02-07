@@ -20,7 +20,7 @@ import {
 // Database
 import { User } from "@repo/database";
 
-// Schema types
+// Schemas
 import {
   CreateOrganizationArgs,
   ToggleFollowOrganizationArgs,

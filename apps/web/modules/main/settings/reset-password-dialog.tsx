@@ -12,10 +12,14 @@ import { Button } from '@/components/ui/button';
 import { Dialog } from '@/components/ui/dialog';
 import { getTextFieldBasicStyles, Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+
+// Schemas
 import {
 	resetPasswordSettingsSchema,
 	ResetPasswordSettingsArgs,
 } from '@repo/schemas/settings';
+
+// Hooks
 import { useResetPasswordInApp } from '@/hooks/data/settings';
 
 // Lib

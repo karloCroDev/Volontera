@@ -1,8 +1,8 @@
 'use client';
 
 // External packages
-import { useParams } from 'next/navigation';
 import * as React from 'react';
+import { useParams } from 'next/navigation';
 
 // Modules
 import { useSocketContext } from '@/modules/main/direct-messages/socket-context';

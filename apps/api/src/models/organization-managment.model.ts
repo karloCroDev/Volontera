@@ -165,10 +165,6 @@ export async function leaveOrganization({
     });
     await tx.organizationMember.delete({
       where: {
-        // Owner je automatski vlasnik, pa mu onemogućavamo da ode iz organizacije
-        role: {
-          not: "OWNER",
-        },
         organizationId_userId: {
           organizationId,
           userId,

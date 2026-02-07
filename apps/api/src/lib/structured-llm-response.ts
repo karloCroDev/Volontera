@@ -18,6 +18,7 @@ const aiOneTaskSchema = z.object({
 
 const aiTasksSchema = z.array(aiOneTaskSchema).min(1).max(3);
 
+// Strogo definirana zod schema kako bi dobili strukturirani odgovor od LLM-a koji se može direktno parsirati i koristiti u aplikaciji
 export async function createTasksLlmWithBoard({
   boardTitle,
   description,

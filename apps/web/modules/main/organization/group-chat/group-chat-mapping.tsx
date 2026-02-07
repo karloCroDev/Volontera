@@ -8,6 +8,7 @@ import { useParams } from 'next/navigation';
 // Components
 import { Avatar } from '@/components/ui/avatar';
 import { Message } from '@/components/ui/message/message';
+import { MessageImages } from '@/components/ui/message/message-images';
 
 // Hooks
 import {
@@ -20,9 +21,12 @@ import { convertToFullname } from '@/lib/utils/converter';
 
 // Types
 import { RetrieveAllOrganizationGroupChatMessagesResponse } from '@repo/types/organization-group-chat';
-import { useSocketContext } from '@/modules/main/direct-messages/socket-context';
+
+// Hooks
 import { useSession } from '@/hooks/data/user';
-import { MessageImages } from '@/components/ui/message/message-images';
+
+// Modules
+import { useSocketContext } from '@/modules/main/direct-messages/socket-context';
 
 // Lib
 import { withReactQueryProvider } from '@/lib/utils/react-query';
@@ -30,10 +34,6 @@ import { withReactQueryProvider } from '@/lib/utils/react-query';
 type OrgChatMessage =
 	RetrieveAllOrganizationGroupChatMessagesResponse['organizationGroupChat']['messages'][number];
 
-type OrgMessageDeletedPayload = {
-	messageId: string;
-	organizationId: string;
-};
 export const GroupChatMapping = withReactQueryProvider(() => {
 	const params = useParams<{ organizationId: string }>();
 	const organizationId = params.organizationId;
@@ -57,7 +57,10 @@ export const GroupChatMapping = withReactQueryProvider(() => {
 			});
 		};
 
-		const handleMessageDeleted = (payload: OrgMessageDeletedPayload) => {
+		const handleMessageDeleted = (payload: {
+			messageId: string;
+			organizationId: string;
+		}) => {
 			if (payload.organizationId !== organizationId) return;
 			setMessages((prev) =>
 				prev?.filter((msg) => msg.id !== payload.messageId)

@@ -12,7 +12,7 @@ import {
   updateSubscription,
 } from "@/models/payment.model";
 
-// Schema types
+// Schemas
 import { CreateCheckoutSessionArgs } from "@repo/schemas/payment";
 import { toastResponseOutput } from "@/lib/utils/service-output";
 import { createNotification } from "@/models/notification.model";

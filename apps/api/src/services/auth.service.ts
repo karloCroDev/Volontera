@@ -4,7 +4,7 @@ import crypto from "crypto";
 import { createElement } from "react";
 
 // Lib
-import { resend } from "@/config/resend";
+import { resend } from "@/lib/config/resend";
 
 // Shared utils
 import {
@@ -29,7 +29,7 @@ import {
 } from "@/models/auth.model";
 
 // Lib
-import { verifyUser } from "@/lib/verify-user";
+import { verifyUser } from "@/lib/utils/verify-user";
 
 // Transactional emails
 import { ForgotPassword } from "@repo/transactional/forgot-password";

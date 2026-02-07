@@ -24,7 +24,7 @@ import {
 import { findUserById } from "@/models/user.model";
 
 // Config
-import { resend } from "@/config/resend";
+import { resend } from "@/lib/config/resend";
 
 // Transactional emails
 import { DeletedAccount } from "@repo/transactional/deleted-account";

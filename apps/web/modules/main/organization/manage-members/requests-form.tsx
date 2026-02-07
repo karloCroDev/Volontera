@@ -18,13 +18,15 @@ import { Accordion } from '@/components/ui/accordion';
 import { useAcceptOrDeclineUsersRequestToJoinOrganization } from '@/hooks/data/organization-managment';
 
 // Lib
+import { toast } from '@/lib/utils/toast';
+import { IRevalidateTag } from '@/lib/server/revalidation';
 import { convertToFullname } from '@/lib/utils/converter';
 
 // Types
 import { RetirveAllRequestsToJoinOrganizationResponse } from '@repo/types/organization-managment';
+
+// Schemas
 import { AcceptOrDeclineUsersRequestToJoinOrganizationArgs } from '@repo/schemas/organization-managment';
-import { toast } from '@/lib/utils/toast';
-import { IRevalidateTag } from '@/lib/server/revalidation';
 
 export const RequestsForm: React.FC<{
 	requests: RetirveAllRequestsToJoinOrganizationResponse;

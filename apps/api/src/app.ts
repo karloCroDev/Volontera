@@ -6,28 +6,22 @@ import helmet from "helmet";
 
 // Middleware
 import { authMiddleware } from "@/middleware/auth.middleware";
-import {
-  hasRoleMiddleware,
-  organizationMiddleware,
-} from "@/middleware/role.middleware";
+import { hasRoleMiddleware } from "@/middleware/role.middleware";
 import { onboardingProcessMiddleware } from "@/middleware/onboarding.middleware";
-import { userMiddleware } from "@/middleware/role.middleware";
 
 // Lib
 import { app } from "@/ws/socket";
-import { oAuthGoogleHandle } from "@/config/oAuth-google";
+import { oAuthGoogleHandle } from "@/lib/config/oAuth-google";
 
 // Routes
 import { authRoutes } from "@/routes/auth.route";
 import { directMessagesRoutes } from "@/routes/direct-messages.route";
 import { userRoutes } from "@/routes/user.route";
-// import { paymentRoutes } from "@/routes/payment-routes";
 import { onboardingRoutes } from "@/routes/onboarding.route";
 import { settingsRoutes } from "@/routes/settings.route";
 import { helpRoutes } from "@/routes/help.route";
 import { paymentRoutes } from "@/routes/payment.route";
 import { notificationRoutes } from "@/routes/notification.route";
-import { initalizeRedisClient } from "@/config/redis";
 import { imageRoutes } from "@/routes/image.route";
 import { organizationRoutes } from "@/routes/organization.route";
 import { searchRoutes } from "@/routes/search.route";

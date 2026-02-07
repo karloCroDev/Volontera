@@ -4,10 +4,12 @@
 import * as React from 'react';
 import Link from 'next/link';
 import { usePathname, useSearchParams } from 'next/navigation';
-import { Avatar } from '@/components/ui/avatar';
 import { twJoin } from 'tailwind-merge';
-import { Dot } from '@/components/ui/dot';
 import Markdown from 'react-markdown';
+
+// Components
+import { Avatar } from '@/components/ui/avatar';
+import { Dot } from '@/components/ui/dot';
 
 export const UsersSidebar: React.FC<{
 	id: string;

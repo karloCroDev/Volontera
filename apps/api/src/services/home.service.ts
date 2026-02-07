@@ -1,9 +1,13 @@
+// Database
+import { User } from "@repo/database";
+
 // Lib
 import { serverFetchOutput } from "@/lib/utils/service-output";
 
 // Models
 import { retrieveAlgoPosts } from "@/models/home.model";
-import { User } from "@repo/database";
+
+// Schemas
 import { RetrieveAlgoPostsSchemaArgs } from "@repo/schemas/home";
 
 export async function retrieveRecentAlgoPostsService({

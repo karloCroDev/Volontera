@@ -1,12 +1,22 @@
 'use client';
 
+// External packages
+import { useParams } from 'next/navigation';
+
 // Modules
 import { AddTaskDialog } from '@/modules/main/organization/tasks/add-task-dialog';
 import { EditBoardDialog } from '@/modules/main/organization/tasks/edit-board-dialog';
+
+// Lib
 import { withReactQueryProvider } from '@/lib/utils/react-query';
+
+// Modules
 import { AddTaskAiDialog } from '@/modules/main/organization/tasks/add-task-ai-dialog';
-import { useParams } from 'next/navigation';
+
+// Hooks
 import { useRetrieveOrganizationMember } from '@/hooks/data/organization-managment';
+
+// Permissions
 import { hasWantedOrganizationRole } from '@repo/permissons/index';
 
 export const TasksBoard: React.FC<{
@@ -44,15 +54,3 @@ export const TasksBoard: React.FC<{
 		</div>
 	);
 });
-
-// <TaskModal
-// 	cardProps={{
-// 		title: 'Save the earth',
-// 		description: 'Save the earth from xxxxxx',
-// 		indefiniteDate: `${new Date().toLocaleString('default', { month: 'long' }).slice(0, 3)} ${new Date().getDate()}`,
-// 		isUserIncluded: true,
-// 		otherUsersCount: 3,
-// 		state: 'success',
-// 	}}
-// 	specificDate={new Date().toLocaleDateString().replaceAll('/', '. ')}
-// />;

@@ -22,7 +22,7 @@ import {
 } from "@repo/schemas/notification";
 
 // Config
-import { resend } from "@/config/resend";
+import { resend } from "@/lib/config/resend";
 
 // Transactionl emails
 import { Notification } from "@repo/transactional/notification";

@@ -7,9 +7,10 @@ import { useParams, useSearchParams } from 'next/navigation';
 // Components
 import { Post } from '@/components/ui/post/post';
 
-// Types
-import { RetrieveOrganizationPostsResponse } from '@repo/types/post';
+// Schemas
 import { RetrieveOrganizationPostsQueryArgs } from '@repo/schemas/post';
+
+// Permissions
 import { hasWantedOrganizationRole } from '@repo/permissons/index';
 
 // Hooks

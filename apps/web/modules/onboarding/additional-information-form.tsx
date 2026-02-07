@@ -6,7 +6,6 @@ import { Form, Input, Label as AriaLabel } from 'react-aria-components';
 import { ArrowRight, Trash } from 'lucide-react';
 import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useRouter } from 'next/navigation';
 
 // Components
 import { Avatar } from '@/components/ui/avatar';
@@ -49,8 +48,6 @@ export const AdditionalInformationForm = withReactQueryProvider(() => {
 			image: undefined,
 		},
 	});
-
-	const router = useRouter();
 
 	const [currentImage, setCurrentImage] = React.useState<File | undefined>(
 		undefined

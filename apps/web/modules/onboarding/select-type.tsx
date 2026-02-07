@@ -3,12 +3,12 @@
 // External packages
 import * as React from 'react';
 import { Radio, RadioGroup } from 'react-aria-components';
-import { Error } from '@/components/ui/error';
+import { useRouter } from 'next/navigation';
 
 // Components
+import { Error } from '@/components/ui/error';
 import { RadioButtonVisual } from '@/components/ui/radio';
 import { Button } from '@/components/ui/button';
-import { useRouter } from 'next/navigation';
 
 // Hooks
 import { useAppType } from '@/hooks/data/onboarding';
@@ -16,6 +16,8 @@ import { useAppType } from '@/hooks/data/onboarding';
 // Lib
 import { toast } from '@/lib/utils/toast';
 import { withReactQueryProvider } from '@/lib/utils/react-query';
+
+// Schemas
 import { AppTypeSchemaArgs } from '@repo/schemas/onboarding';
 
 export const SelectType = withReactQueryProvider(() => {

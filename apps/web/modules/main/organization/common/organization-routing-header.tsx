@@ -11,6 +11,8 @@ import { LinkAsButton } from '@/components/ui/link-as-button';
 
 // Types
 import { RetrieveOrganizationMemberResponse } from '@repo/types/organization-managment';
+
+// Permissions
 import { hasWantedOrganizationRole } from '@repo/permissons/index';
 
 export const OrganizationRoutingHeader: React.FC<{

@@ -3,10 +3,14 @@
 // External packages
 import * as React from 'react';
 
+import { useParams } from 'next/navigation';
 // Components
 import { Button } from '@/components/ui/button';
+
+// Hooks
 import { useToggleFollowOrganization } from '@/hooks/data/organization';
-import { useParams } from 'next/navigation';
+
+// Lib
 import { IRevalidateTag } from '@/lib/server/revalidation';
 import { toast } from '@/lib/utils/toast';
 

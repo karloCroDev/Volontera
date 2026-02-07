@@ -13,17 +13,14 @@ import { useCheckout } from '@/hooks/data/payments';
 
 // Components
 import { Button } from '@/components/ui/button';
+
+// Modules
 import { PaymentPlanCard } from '@/modules/main/select-plan/payment-plan-card';
 
 // Lib
 import { withReactQueryProvider } from '@/lib/utils/react-query';
 import { toast } from '@/lib/utils/toast';
 import { isOrganizationAccount } from '@repo/permissons/index';
-
-const stripePriceIds = {
-	yearlyPriceId: 'price_1SuG9uKRaMWWrCqzp0Uh0EuQ',
-	monthlyPriceId: 'price_1SuG9QKRaMWWrCqzJnJC1PEp',
-};
 
 export const Plans: React.FC<{
 	user: UserResponse;
@@ -122,7 +119,7 @@ export const Plans: React.FC<{
 					className="mt-auto w-full"
 					size="md"
 					variant={
-						user.pricingId === stripePriceIds.monthlyPriceId
+						user.pricingId === process.env.NEXT_PUBLIC_STRIPE_MONTHLY_PRICE_ID
 							? 'outline'
 							: 'primary'
 					}
@@ -130,15 +127,15 @@ export const Plans: React.FC<{
 						user.pricingId
 							? (window.location.href = billingLink)
 							: generateLink({
-									priceId: stripePriceIds.monthlyPriceId,
+									priceId: process.env.NEXT_PUBLIC_STRIPE_MONTHLY_PRICE_ID!,
 								})
 					}
 					isLoading={
 						isCheckoutPending &&
-						pendingPriceId === stripePriceIds.monthlyPriceId
+						pendingPriceId === process.env.NEXT_PUBLIC_STRIPE_MONTHLY_PRICE_ID
 					}
 				>
-					{user.pricingId === stripePriceIds.monthlyPriceId
+					{user.pricingId === process.env.NEXT_PUBLIC_STRIPE_MONTHLY_PRICE_ID
 						? 'Current plan'
 						: 'Select plan'}
 				</Button>
@@ -174,7 +171,7 @@ export const Plans: React.FC<{
 					size="md"
 					colorScheme="yellow"
 					variant={
-						user.pricingId === stripePriceIds.yearlyPriceId
+						user.pricingId === process.env.NEXT_PUBLIC_STRIPE_YEARLY_PRICE_ID
 							? 'outline'
 							: 'primary'
 					}
@@ -182,14 +179,15 @@ export const Plans: React.FC<{
 						user.pricingId
 							? (window.location.href = billingLink)
 							: generateLink({
-									priceId: stripePriceIds.yearlyPriceId,
+									priceId: process.env.NEXT_PUBLIC_STRIPE_YEARLY_PRICE_ID!,
 								})
 					}
 					isLoading={
-						isCheckoutPending && pendingPriceId === stripePriceIds.yearlyPriceId
+						isCheckoutPending &&
+						pendingPriceId === process.env.NEXT_PUBLIC_STRIPE_YEARLY_PRICE_ID
 					}
 				>
-					{user.pricingId === stripePriceIds.yearlyPriceId
+					{user.pricingId === process.env.NEXT_PUBLIC_STRIPE_YEARLY_PRICE_ID
 						? 'Current plan'
 						: 'Select plan'}
 				</Button>

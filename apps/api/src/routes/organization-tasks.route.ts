@@ -1,7 +1,6 @@
 // External packages
 import express from "express";
 import { Router } from "express";
-import { z } from "zod";
 
 // Controllers
 import {

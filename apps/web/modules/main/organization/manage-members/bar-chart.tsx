@@ -1,7 +1,7 @@
 'use client';
 
-import { useTheme } from 'next-themes';
 // External packages
+import { useTheme } from 'next-themes';
 import * as React from 'react';
 import {
 	Bar,

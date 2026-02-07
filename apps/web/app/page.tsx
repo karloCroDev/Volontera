@@ -1,4 +1,4 @@
-export default function HomePage() {
-	return <div>Welcome to the Home Page!</div>;
+export default function LandingPage() {
+	return <div>Welcome to the landing Page!</div>;
 }
-// TODO: Ako bude vremena dodaj home page
+// TODO: Ako bude vremena dodaj landing page

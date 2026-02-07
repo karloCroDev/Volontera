@@ -8,7 +8,7 @@ import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { v4 as uuid } from "uuid";
 
 // Config
-import { s3 } from "@/config/aws";
+import { s3 } from "@/lib/config/aws";
 
 export async function createUploadUrl({
   contentType,

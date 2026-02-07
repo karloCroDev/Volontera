@@ -16,6 +16,8 @@ import { useQueryClient } from '@tanstack/react-query';
 
 // Types
 import { RetrieveAllOrganizationBoardsWithTasksResponse } from '@repo/types/organization-tasks';
+
+// Permissions
 import { hasWantedOrganizationRole } from '@repo/permissons/index';
 
 // Components

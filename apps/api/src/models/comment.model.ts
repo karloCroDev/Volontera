@@ -79,7 +79,7 @@ export async function deleteComment({
   });
 }
 
-// Liking the comments
+// Lajkanje komentara
 export async function checkIfUserLikedComment({
   commentId,
   userId,

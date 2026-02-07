@@ -1,5 +1,5 @@
 // Models
-import { calculatePostRankingScore } from "@/lib/algorithm-formula";
+import { calculatePostRankingScore } from "@/lib/utils/algorithm-formula";
 import { createUploadUrl } from "@/lib/aws-s3-functions";
 import { isOrganizationOwnerOnProPlan, isUserOnProPlan } from "@/lib/payment";
 import {

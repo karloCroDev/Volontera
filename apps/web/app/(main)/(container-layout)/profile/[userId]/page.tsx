@@ -9,11 +9,11 @@ import { LinkAsButton } from '@/components/ui/link-as-button';
 // Modules
 import { InformationContainer } from '@/modules/main/public-profile/information-container';
 import { ListPosts } from '@/modules/main/public-profile/list-posts';
+import { ListOrganizations } from '@/modules/main/public-profile/list-organization';
 
 // Lib
 import { getUserData, getSession } from '@/lib/server/user';
 import { convertToFullname, convertToPascalCase } from '@/lib/utils/converter';
-import { ListOrganizations } from '@/modules/main/public-profile/list-organization';
 import { formatDate } from '@/lib/utils/time-adjustments';
 
 export default async function PublicProfilePage({

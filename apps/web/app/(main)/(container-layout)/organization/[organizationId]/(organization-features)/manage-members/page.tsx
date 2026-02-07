@@ -7,6 +7,7 @@ import { CurrentUsersForm } from '@/modules/main/organization/manage-members/cur
 import { RequestsForm } from '@/modules/main/organization/manage-members/requests-form';
 import { PieChart } from '@/modules/main/organization/manage-members/pie-chart';
 import { BarChart } from '@/modules/main/organization/manage-members/bar-chart';
+import { DeleteOrganizationDialog } from '@/modules/main/organization/manage-members/delete-organization-dialog';
 
 // Components
 import { Paywall } from '@/components/ui/paywall';
@@ -19,8 +20,11 @@ import {
 	retrieveAllUsersInOrganization,
 	retrieveDataAboutOrganization,
 } from '@/lib/server/organization-managment';
+
+// Types
 import { RetrieveDataAboutOrganizationResponse } from '@repo/types/organization-managment';
-import { DeleteOrganizationDialog } from '@/modules/main/organization/manage-members/delete-organization-dialog';
+
+// Permissions
 import { hasWantedOrganizationRole } from '@repo/permissons/index';
 
 export default async function ManagePage({

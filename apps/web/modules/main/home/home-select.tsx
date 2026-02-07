@@ -5,6 +5,8 @@ import * as React from 'react';
 
 // Components
 import { SelectContainer, SelectItem } from '@/components/ui/select';
+
+// Hooks
 import { useSetParams } from '@/hooks/utils/useSetParams';
 
 export const HomeSelect = () => {

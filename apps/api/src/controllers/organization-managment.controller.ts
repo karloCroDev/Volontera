@@ -13,7 +13,7 @@ import {
   retrieveOrganizationMemberService,
 } from "@/services/organization-managment.service";
 
-// Schema types
+// Schemas
 import {
   DeleteOrganizationArgs,
   LeaveOrganizationArgs,

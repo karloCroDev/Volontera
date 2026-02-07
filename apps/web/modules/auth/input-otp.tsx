@@ -6,6 +6,7 @@ import { OTPInput, SlotProps } from 'input-otp';
 import { twJoin } from 'tailwind-merge';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
+import { ArrowRight } from 'lucide-react';
 
 // Components
 import { Error } from '@/components/ui/error';
@@ -13,8 +14,9 @@ import { Button } from '@/components/ui/button';
 
 // Hooks
 import { useResetEmail, useVerifyEmail } from '@/hooks/data/auth';
+
+// Lib
 import { withReactQueryProvider } from '@/lib/utils/react-query';
-import { ArrowRight } from 'lucide-react';
 
 export const InputOTP = withReactQueryProvider(() => {
 	const searchParams = useSearchParams();

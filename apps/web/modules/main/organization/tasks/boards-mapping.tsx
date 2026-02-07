@@ -7,9 +7,6 @@ import { useParams } from 'next/navigation';
 import { TasksBoard } from '@/modules/main/organization/tasks/tasks-board';
 import { TasksMapping } from '@/modules/main/organization/tasks/tasks-mapping';
 
-// Types
-import { RetrieveAllOrganizationBoardsWithTasksResponse } from '@repo/types/organization-tasks';
-
 // Hooks
 import { useRetrieveAllOrganizationBoards } from '@/hooks/data/organization-tasks';
 

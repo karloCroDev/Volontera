@@ -1,9 +1,5 @@
 // Lib
-import { getImagePresignedUrls } from "@/lib/aws-s3-functions";
-import {
-  serverFetchOutput,
-  toastResponseOutput,
-} from "@/lib/utils/service-output";
+import { serverFetchOutput } from "@/lib/utils/service-output";
 
 // Models
 import {
@@ -11,6 +7,8 @@ import {
   retrieveAllOrganizationsForUser,
   retrieveAllPostsForUser,
 } from "@/models/user.model";
+
+// Schemas
 import { UserSchemaArgs } from "@repo/schemas/user";
 
 export async function getUserByIdService({ userId }: UserSchemaArgs) {

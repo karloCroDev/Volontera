@@ -22,17 +22,15 @@ import { Indicators } from '@/components/ui/indicators';
 import { OrganizationRoutingHeader } from '@/modules/main/organization/common/organization-routing-header';
 import { CreatePostDialog } from '@/modules/main/organization/home/create-post-dialog';
 import { PostsMapping } from '@/modules/main/organization/home/posts-mapping';
+import { PostsSelect } from '@/modules/main/organization/home/posts-select';
+import { FollowOrganizationButton } from '@/modules/main/organization/common/follow-organization-button';
+import { LeaveOrganizationDialog } from '@/modules/main/organization/common/leave-organization-dialog';
 
 // Lib
 import { getOrganizationDetailsById } from '@/lib/server/organization';
 import { retrieveOrganizationPosts } from '@/lib/server/post';
 import { retrieveOrganizationMember } from '@/lib/server/organization-managment';
 import { convertToFullname } from '@/lib/utils/converter';
-
-// Modules
-import { FollowOrganizationButton } from '@/modules/main/organization/common/follow-organization-button';
-import { LeaveOrganizationDialog } from '@/modules/main/organization/common/leave-organization-dialog';
-import { PostsSelect } from '@/modules/main/organization/home/posts-select';
 import { getSession } from '@/lib/server/user';
 
 export default async function OrganizationPage({

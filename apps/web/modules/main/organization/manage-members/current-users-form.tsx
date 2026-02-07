@@ -3,17 +3,27 @@
 // External pakcages
 import * as React from 'react';
 import Link from 'next/link';
+import { useParams } from 'next/navigation';
 
 // Components
 import { Button } from '@/components/ui/button';
 import { Avatar } from '@/components/ui/avatar';
+
+// Types
 import { RetrieveAllMembersInOrganizationResponse } from '@repo/types/organization-managment';
+
+// Lib
 import { convertToFullname, convertToPascalCase } from '@/lib/utils/converter';
-import { useDemoteOrPromoteOrganizationMember } from '@/hooks/data/organization-managment';
-import { DemoteOrPromoteOrganizationMemberArgs } from '@repo/schemas/organization-managment';
-import { useParams } from 'next/navigation';
 import { toast } from '@/lib/utils/toast';
 import { IRevalidateTag } from '@/lib/server/revalidation';
+
+// Hooks
+import { useDemoteOrPromoteOrganizationMember } from '@/hooks/data/organization-managment';
+
+// Schemas
+import { DemoteOrPromoteOrganizationMemberArgs } from '@repo/schemas/organization-managment';
+
+// Permissions
 import { hasWantedOrganizationRole } from '@repo/permissons/index';
 
 export const CurrentUsersForm: React.FC<{

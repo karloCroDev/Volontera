@@ -11,6 +11,8 @@ import { hasWantedOrganizationRole } from '@repo/permissons/index';
 // Lib
 import { getOrganizationDetailsById } from '@/lib/server/organization';
 import { retrieveOrganizationMember } from '@/lib/server/organization-managment';
+
+// Modules
 import { FollowOrganizationButton } from '@/modules/main/organization/common/follow-organization-button';
 import { LeaveOrganizationDialog } from '@/modules/main/organization/common/leave-organization-dialog';
 

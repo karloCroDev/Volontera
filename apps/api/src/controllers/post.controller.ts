@@ -12,7 +12,7 @@ import {
   updatePostService,
 } from "@/services/post.service";
 
-// Schema types
+// Schemas
 import {
   RetrieveOrganizationPostsArgs,
   retrieveOrganizationPostsQuerySchema,
@@ -20,6 +20,8 @@ import {
   RetrievePostArgs,
 } from "@repo/schemas/post";
 import { RetrievePostCommentsArgs } from "@repo/schemas/comment";
+
+// Utils
 import { handleServerErrorResponse } from "@/lib/utils/error-response";
 
 export async function createPostController(req: Request, res: Response) {

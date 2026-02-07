@@ -7,7 +7,11 @@ import {
   retrieveAllOrganizationsForUserService,
   retrieveAllPostsForUserService,
 } from "@/services/user.service";
+
+// Lib
 import { handleServerErrorResponse } from "@/lib/utils/error-response";
+
+// Schemas
 import { UserSchemaArgs } from "@repo/schemas/user";
 
 export async function userSessionController(req: Request, res: Response) {

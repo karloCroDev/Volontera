@@ -4,6 +4,7 @@
 import * as React from 'react';
 import { ChevronRight } from 'lucide-react';
 import { Button } from 'react-aria-components';
+import { useParams } from 'next/navigation';
 
 // Components
 import { Collapsible } from '@/components/ui/collapsible';
@@ -12,8 +13,9 @@ import { LinkAsButton } from '@/components/ui/link-as-button';
 
 // Modules
 import { InformationContainer } from '@/modules/main/public-profile/information-container';
+
+// Hooks
 import { useRetrieveAllOrganizationsForUser } from '@/hooks/data/user';
-import { useParams } from 'next/navigation';
 
 export const ListOrganizations = () => {
 	const [open, setOpen] = React.useState(false);

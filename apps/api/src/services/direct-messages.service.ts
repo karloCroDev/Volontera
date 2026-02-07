@@ -6,12 +6,14 @@ import {
   searchAllUsers,
   startConversationOSendDirectMessage,
 } from "@/models/direct-messages.model";
+
+// Lib
 import { createUploadUrl } from "@/lib/aws-s3-functions";
 
 // Database
 import { User } from "@repo/database";
 
-// Schema types
+// Schemas
 import {
   SearchArgs,
   ConversationArgs,

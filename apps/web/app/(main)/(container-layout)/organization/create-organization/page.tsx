@@ -1,3 +1,6 @@
+/// External packages
+import { redirect } from 'next/navigation';
+
 // Components
 import { Heading } from '@/components/ui/heading';
 
@@ -7,7 +10,7 @@ import { getSession } from '@/lib/server/user';
 // Modules
 import { CreateOrganizationForm } from '@/modules/main/organization/create-organizations/create-organization-form';
 
-import { redirect } from 'next/navigation';
+// Permissions
 import { isOrganizationAccount } from '@repo/permissons/index';
 
 export default async function CreateOrganizationPage() {

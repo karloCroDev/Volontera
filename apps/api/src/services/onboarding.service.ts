@@ -5,7 +5,7 @@ import { createElement } from "react";
 import { User } from "@repo/database";
 
 // Models
-import { resend } from "@/config/resend";
+import { resend } from "@/lib/config/resend";
 import { findUserById } from "@/models/user.model";
 import { createUploadUrl, deleteImage } from "@/lib/aws-s3-functions";
 import {
