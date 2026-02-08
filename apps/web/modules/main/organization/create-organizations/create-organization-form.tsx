@@ -3,7 +3,7 @@
 // External packages
 import { Minus, Plus } from 'lucide-react';
 import * as React from 'react';
-import { Form, Radio, RadioGroup } from 'react-aria-components';
+import { Form } from 'react-aria-components';
 import { Controller, useFieldArray, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
@@ -12,8 +12,6 @@ import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { RadioIconVisual } from '@/components/ui/radio';
-import { Layout, LayoutColumn } from '@/components/ui/layout-grid';
 
 // Modules
 import { InsertPhoto } from '@/modules/main/organization/create-organizations/insert-photo';
@@ -32,7 +30,6 @@ import { Error } from '@/components/ui/error';
 import { Textarea } from '@/components/ui/textarea';
 
 export const CreateOrganizationForm = () => {
-	const [assignTasks, setAssignTasks] = React.useState(false);
 	const [avatarFile, setAvatarFile] = React.useState<File | undefined>();
 	const [coverFile, setCoverFile] = React.useState<File | undefined>();
 

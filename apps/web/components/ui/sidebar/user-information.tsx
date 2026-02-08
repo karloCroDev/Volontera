@@ -43,8 +43,6 @@ export const UserInformation: React.FC<{
 
 	const { mutate, isPending } = useLogout();
 	const { theme, setTheme } = useTheme();
-
-	console.log(`${process.env.NEXT_PUBLIC_AWS_CLOUDFRONT_URL}/${user.image}`);
 	return (
 		<>
 			<div className="mb-3 mt-auto">

@@ -111,7 +111,6 @@ organizationManagmentRoutes.post(
   demoteOrPromoteOrganizationMemberController,
 );
 
-// Ovo je za sve korisnike, također iako i owner proba izaći iz organizacije (iako nije prikazan na UI, već se zove endpoint), neće moći zbog provjere u samom modelu. (TODO: probaj to handleati u middleware, ovo je sada privremena solucija)
 organizationManagmentRoutes.delete(
   "/leave/:organizationId",
   validate({
@@ -122,6 +121,7 @@ organizationManagmentRoutes.delete(
   organizationRolesMiddleware({
     type: "params",
     aquiredRoles: ["MEMBER", "ADMIN"],
+    ownerHasAllAccess: false,
   }),
   leaveOrganizationController,
 );

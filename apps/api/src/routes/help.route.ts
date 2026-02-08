@@ -8,7 +8,11 @@ import {
   deleteHelpMessagesController,
   getHelpMessagesController,
 } from "@/controllers/help.controller";
+
+// Middleware
 import { validate } from "@/middleware/validate.middleware";
+
+// Schemas
 import { helpConversationSchema } from "@repo/schemas/help";
 
 export const helpRoutes = Router();
@@ -24,6 +28,6 @@ helpRoutes
       responseOutput: "form",
       type: "body",
     }),
-    addQuestionController
+    addQuestionController,
   )
   .delete(deleteHelpMessagesController);

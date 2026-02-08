@@ -3,7 +3,6 @@ import express from "express";
 import { Router } from "express";
 
 // Controllers
-
 import {
   logoutController,
   getUserByIdController,
@@ -11,9 +10,13 @@ import {
   retrieveAllOrganizationsForUserController,
   retrieveAllPostsForUserController,
 } from "@/controllers/user.controller";
+
+// Middleware
 import { validate } from "@/middleware/validate.middleware";
-import { userSchema, UserSchemaArgs } from "@repo/schemas/user";
 import { authMiddleware } from "@/middleware/auth.middleware";
+
+// Schemas
+import { userSchema } from "@repo/schemas/user";
 
 export const userRoutes = Router();
 

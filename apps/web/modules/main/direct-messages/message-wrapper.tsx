@@ -4,7 +4,7 @@
 import * as React from 'react';
 import { useSearchParams } from 'next/navigation';
 
-// Ako budem ikako fetchao poruke na serveru, onda ovo nije loša stvar
+// Wrapper za prikaz poruka, ako nije odabran user da se prikaze poruka da se odabere user ili da se zapocne nova konverzacija
 export const MessageWrapper: React.FC<{
 	children: React.ReactNode;
 }> = ({ children }) => {

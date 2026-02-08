@@ -180,6 +180,7 @@ model DirectMessagesImages {
   updatedAt    DateTime       @updatedAt
 }
 
+// Organization models
 model Organization {
   id          String @id @default(cuid())
   avatarImage String
@@ -304,7 +305,6 @@ model AdditionalLinks {
 }
 
 // Post
-
 model Post {
   id           String         @id @default(cuid())
   title        String
@@ -397,6 +397,7 @@ model PostCommentsReplyLikes {
   @@unique([replyId, userId])
 }
 
+// Organization feeatures
 model OrganizationGroupChat {
   id             String                         @id @default(cuid())
   organization   Organization                   @relation(fields: [organizationId], references: [id], onDelete: Cascade)
@@ -425,7 +426,7 @@ model OrganizationGroupChatMessageImage {
   id        String                       @id @default(cuid())
   message   OrganizationGroupChatMessage @relation(fields: [messageId], references: [id], onDelete: Cascade)
   messageId String
-  imageUrl  String // URL of the image stored in s3
+  imageUrl  String // ket of the image stored in s3
   createdAt DateTime                     @default(now())
   updatedAt DateTime                     @updatedAt
 }

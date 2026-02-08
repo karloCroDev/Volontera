@@ -1,6 +1,10 @@
 // External packages
 import { Request, Response } from "express";
+
+// Schemas
 import type { VerifyEmailArgs } from "@repo/schemas/auth";
+
+// Services
 import {
   resetPasswordService,
   forgotPasswordService,
@@ -45,7 +49,7 @@ export async function resetVerifyTokenController(req: Request, res: Response) {
 export async function verifyTokenController(req: Request, res: Response) {
   try {
     const result: VerifyOtpServiceResult = await verifyOtpService(
-      req.body as VerifyEmailArgs
+      req.body as VerifyEmailArgs,
     );
 
     if ("user" in result.body) {

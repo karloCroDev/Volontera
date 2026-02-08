@@ -19,7 +19,7 @@ import { SettingsArgs } from '@repo/schemas/settings';
 import { withReactQueryProvider } from '@/lib/utils/react-query';
 import { convertCalendarDate } from '@/lib/utils/converter';
 
-// Hpoks
+// Hooks
 import { useSession } from '@/hooks/data/user';
 
 // Modules

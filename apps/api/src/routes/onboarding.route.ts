@@ -4,6 +4,7 @@ import { Router } from "express";
 
 // Middleware
 import { hasRoleMiddleware } from "@/middleware/role.middleware";
+import { validate } from "@/middleware/validate.middleware";
 
 // Controllers
 import {
@@ -17,7 +18,6 @@ import {
   additionalInformationSchema,
   appTypeSchema,
 } from "@repo/schemas/onboarding";
-import { validate } from "@/middleware/validate.middleware";
 
 export const onboardingRoutes = Router();
 
@@ -29,7 +29,7 @@ onboardingRoutes.post(
     schema: appTypeSchema,
     responseOutput: "toast",
   }),
-  appType
+  appType,
 );
 onboardingRoutes.post(
   "/additional-information",
@@ -38,10 +38,10 @@ onboardingRoutes.post(
     schema: additionalInformationSchema,
     responseOutput: "form",
   }),
-  additionalInformation
+  additionalInformation,
 );
 onboardingRoutes.post(
   "/skip-additional-information",
   hasRoleMiddleware,
-  skipAdditionalInformation
+  skipAdditionalInformation,
 );

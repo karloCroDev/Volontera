@@ -10,15 +10,19 @@ import {
   sendRequestToJoinOrganizationService,
   toggleFollowOrganizationService,
 } from "@/services/organization.service";
+
+// Schemas
 import {
   GetOrganizationDetailsByIdArgs,
   ToggleFollowOrganizationArgs,
 } from "@repo/schemas/organization";
+
+// Lib
 import { handleServerErrorResponse } from "@/lib/utils/error-response";
 
 export async function createOrganizationController(
   req: Request,
-  res: Response
+  res: Response,
 ) {
   try {
     const result = await createOrganizationService({
@@ -34,7 +38,7 @@ export async function createOrganizationController(
 
 export async function getOrganizationDetailsByIdController(
   req: Request,
-  res: Response
+  res: Response,
 ) {
   try {
     const result = await getOrganizationDetailsByIdService({
@@ -49,7 +53,7 @@ export async function getOrganizationDetailsByIdController(
 
 export async function listOrganizationsOrganizatorController(
   req: Request,
-  res: Response
+  res: Response,
 ) {
   try {
     const result = await listOrganizationsOrganizatorService(req.user.userId);
@@ -61,7 +65,7 @@ export async function listOrganizationsOrganizatorController(
 
 export async function listOrganizationsUserController(
   req: Request,
-  res: Response
+  res: Response,
 ) {
   try {
     const result = await listOrganizationsUserService(req.user.userId);
@@ -73,7 +77,7 @@ export async function listOrganizationsUserController(
 
 export async function sendRequestToJoinOrganizationController(
   req: Request,
-  res: Response
+  res: Response,
 ) {
   try {
     const result = await sendRequestToJoinOrganizationService({
@@ -89,7 +93,7 @@ export async function sendRequestToJoinOrganizationController(
 
 export async function toggleFollowOrganizationController(
   req: Request,
-  res: Response
+  res: Response,
 ) {
   try {
     const result = await toggleFollowOrganizationService({

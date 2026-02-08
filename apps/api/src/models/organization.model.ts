@@ -214,8 +214,6 @@ export async function sendRequestToJoinOrganization({
   });
 }
 
-// All
-// TODO: Handle this with redis or something simmilar and make alogirthm for that
 export async function searchOrganizationsByName(query: string) {
   return prisma.organization.findMany({
     where: {

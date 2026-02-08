@@ -4,7 +4,7 @@ import { Request, Response } from "express";
 // Services
 import { searchUsersService } from "@/services/search.service";
 
-// Schema types
+// Schemas
 import { SearchUserArgs } from "@repo/schemas/search";
 
 // Lib

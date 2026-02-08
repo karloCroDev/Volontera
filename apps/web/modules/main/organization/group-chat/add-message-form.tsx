@@ -26,8 +26,6 @@ export const AddMessageForm: React.FC<{
 }> = ({ groupChatId }) => {
 	const [value, setValue] = React.useState('');
 	const [images, setImages] = React.useState<ImageItemArgs>([]);
-
-	console.log(images);
 	const { mutate, isPending } = useCreateOrganizationGroupChatMessage();
 
 	const paras = useParams<{ organizationId: string }>();

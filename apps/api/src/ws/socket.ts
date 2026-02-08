@@ -20,8 +20,6 @@ export const getReceiverSocketId = (receiverId: string) => {
 };
 
 io.on("connection", (socket) => {
-  console.log("a user connected", socket.id);
-
   const userId = socket.handshake.query.userId as string;
 
   if (userId) userSocketObj[userId] = socket.id;
@@ -49,7 +47,6 @@ io.on("connection", (socket) => {
 
   // Handelam samo kada se korisnik disconnecta, jer npr.
   socket.on("disconnect", () => {
-    console.log("user disconnected", socket.id);
     delete userSocketObj[userId];
 
     // Once the user leaves then send the data once again

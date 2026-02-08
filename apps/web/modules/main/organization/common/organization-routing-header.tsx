@@ -12,6 +12,9 @@ import { LinkAsButton } from '@/components/ui/link-as-button';
 // Types
 import { RetrieveOrganizationMemberResponse } from '@repo/types/organization-managment';
 
+// Permissions
+import { hasWantedOrganizationRole } from '@repo/permissons/index';
+
 export const OrganizationRoutingHeader: React.FC<{
 	member: RetrieveOrganizationMemberResponse; // Handleam na serveru validaciju je li zapravo korisnik unutar organizacije (kako bi passao ovdje ispravne podatke). Zbog toga ovdje samo onda handleam adminovu (vlasnikovu rutu)
 }> = ({ member }) => {
@@ -65,7 +68,11 @@ export const OrganizationRoutingHeader: React.FC<{
 				</LinkAsButton>
 				{/* Group admin */}
 
-				{member.organizationMember.role === 'OWNER' && (
+				{hasWantedOrganizationRole({
+					userRole: member.organizationMember.role,
+					requiredRoles: ['OWNER'],
+					ownerHasAllAccess: false,
+				}) && (
 					<>
 						<LinkAsButton
 							variant="ghost"

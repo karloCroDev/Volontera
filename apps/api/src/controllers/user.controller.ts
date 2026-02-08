@@ -7,7 +7,11 @@ import {
   retrieveAllOrganizationsForUserService,
   retrieveAllPostsForUserService,
 } from "@/services/user.service";
+
+// Lib
 import { handleServerErrorResponse } from "@/lib/utils/error-response";
+
+// Schemas
 import { UserSchemaArgs } from "@repo/schemas/user";
 
 export async function userSessionController(req: Request, res: Response) {
@@ -34,7 +38,6 @@ export async function logoutController(req: Request, res: Response) {
 
 export async function getUserByIdController(req: Request, res: Response) {
   try {
-    // TODO: For this write a zod schema later
     const result = await getUserByIdService(req.params as UserSchemaArgs);
 
     return res.status(result.status).json(result.body);
@@ -45,12 +48,11 @@ export async function getUserByIdController(req: Request, res: Response) {
 
 export async function retrieveAllOrganizationsForUserController(
   req: Request,
-  res: Response
+  res: Response,
 ) {
   try {
-    // TODO: For this write a zod schema later
     const result = await retrieveAllOrganizationsForUserService(
-      req.params as UserSchemaArgs
+      req.params as UserSchemaArgs,
     );
 
     return res.status(result.status).json(result.body);
@@ -61,12 +63,11 @@ export async function retrieveAllOrganizationsForUserController(
 
 export async function retrieveAllPostsForUserController(
   req: Request,
-  res: Response
+  res: Response,
 ) {
   try {
-    // TODO: For this write a zod schema later
     const result = await retrieveAllPostsForUserService(
-      req.params as UserSchemaArgs
+      req.params as UserSchemaArgs,
     );
 
     return res.status(result.status).json(result.body);

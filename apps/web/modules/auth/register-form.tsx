@@ -57,7 +57,7 @@ export const RegisterForm = withReactQueryProvider(() => {
 
 			onError(err) {
 				setError('root', err);
-				console.log(err);
+				console.error(err);
 			},
 		});
 	};

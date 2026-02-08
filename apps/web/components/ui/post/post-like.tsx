@@ -34,8 +34,6 @@ export const PostLike: React.FC<{
 	const [optimisticCount, setOptimisticCount] = React.useState(count);
 	const [optimisticHasUserLiked, setOptimisticHasUserLiked] =
 		React.useState(hasUserLiked);
-
-	console.log('PostLike - hasUserLiked:', optimisticHasUserLiked);
 	const toggleInPost = React.useCallback(
 		<
 			T extends {

@@ -14,7 +14,7 @@ import {
 
 // Lib
 import { generateTokenAndSetCookie } from "@/lib/set-token-cookie";
-import { oAuthGoogleHandle } from "@/config/oAuth-google";
+import { oAuthGoogleHandle } from "@/lib/config/oAuth-google";
 import {
   forgotPasswordSchema,
   loginSchema,

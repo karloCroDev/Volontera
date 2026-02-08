@@ -17,7 +17,6 @@ import {
 	useGetDirectMessagesConversationById,
 } from '@/hooks/data/direct-messages';
 import { useSession } from '@/hooks/data/user';
-import { useGetImageFromKeys } from '@/hooks/data/image';
 
 // Lib
 import { withReactQueryProvider } from '@/lib/utils/react-query';
@@ -36,7 +35,6 @@ export const ConversationMapping = withReactQueryProvider(() => {
 	const searchParams = useSearchParams();
 	const recieverId = searchParams.get('userId');
 
-	console.log(recieverId);
 	const { data: conversation, isLoading } =
 		useGetDirectMessagesConversationById(
 			{
@@ -45,15 +43,11 @@ export const ConversationMapping = withReactQueryProvider(() => {
 			{ enabled: !!recieverId }
 		);
 
-	console.log(conversation);
-
 	// Samo stavljam nove poruke kada se razgovor učita
 	const [messages, setMessages] = React.useState(conversation?.directMessages);
 	React.useEffect(() => {
 		setMessages(conversation?.directMessages);
 	}, [conversation]);
-
-	console.log('Messages', messages);
 	// Slušam nove poruke preko socketa
 	const { socketGlobal } = useSocketContext();
 	React.useEffect(() => {
@@ -79,18 +73,6 @@ export const ConversationMapping = withReactQueryProvider(() => {
 			socketGlobal.off('direct-messages:message-deleted', handleMessageDeleted);
 		};
 	}, [recieverId, socketGlobal]);
-
-	const { data: userImages } = useGetImageFromKeys(
-		{
-			imageUrls:
-				messages
-					?.map((message) => message.author.image || '')
-					.filter(Boolean) || [],
-		},
-		{
-			enabled: messages && !!messages.length,
-		}
-	);
 
 	// Dobivam trenutno ulogiranog korisnika za prikaz varijanti poruka
 	const { data: user } = useSession();
@@ -130,7 +112,7 @@ export const ConversationMapping = withReactQueryProvider(() => {
 									<Avatar
 										imageProps={{
 											src: message.author.image
-												? userImages?.urls[message.author.image]
+												? `${process.env.NEXT_PUBLIC_AWS_CLOUDFRONT_URL}/${message.author.image}`
 												: '',
 										}}
 									>

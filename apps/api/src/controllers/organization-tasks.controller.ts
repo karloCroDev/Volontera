@@ -21,7 +21,7 @@ import {
   createLlmTaskService,
 } from "@/services/organization-tasks.service";
 
-// Schema types
+// Schemas
 import {
   CreateTaskBoardArgs,
   CreateTaskQuestionArgs,

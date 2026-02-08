@@ -10,7 +10,7 @@ import {
   startConversationOrStartAndSendDirectMessageService,
 } from "@/services/direct-messages.service";
 
-// Schema types
+// Schemas
 import {
   ConversationArgs,
   DeleteDirectMessageArgs,
@@ -22,7 +22,7 @@ import { handleServerErrorResponse } from "@/lib/utils/error-response";
 
 export async function searchAllUsersWithQueryController(
   req: Request,
-  res: Response
+  res: Response,
 ) {
   try {
     const result = await searchAllUsersWithQueryService({
@@ -37,7 +37,7 @@ export async function searchAllUsersWithQueryController(
 
 export async function getDirectMessagesConversationByIdServiceController(
   req: Request,
-  res: Response
+  res: Response,
 ) {
   try {
     const result = await getDirectMessagesConversationByIdService({
@@ -52,11 +52,11 @@ export async function getDirectMessagesConversationByIdServiceController(
 
 export async function listAllDirectMessagesConversationsController(
   req: Request,
-  res: Response
+  res: Response,
 ) {
   try {
     const result = await listAllDirectMessagesConversationsService(
-      req.user.userId
+      req.user.userId,
     );
     return res.status(result.status).json(result.body);
   } catch (err) {
@@ -66,7 +66,7 @@ export async function listAllDirectMessagesConversationsController(
 
 export async function deleteDirectMessageByIdController(
   req: Request,
-  res: Response
+  res: Response,
 ) {
   try {
     const result = await deleteDirectMessageByIdService({
@@ -81,7 +81,7 @@ export async function deleteDirectMessageByIdController(
 
 export async function startConversationOrStartAndSendDirectMessageController(
   req: Request,
-  res: Response
+  res: Response,
 ) {
   try {
     const result = await startConversationOrStartAndSendDirectMessageService({

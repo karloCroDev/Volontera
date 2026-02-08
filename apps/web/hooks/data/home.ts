@@ -38,7 +38,6 @@ export const useInfiniteHomePosts = (
 		initialPageParam: 0,
 		queryFn: ({ pageParam }) => {
 			const offset = pageParam ?? 0;
-			console.log('Fetching posts with filter:', data.filter);
 			return retrieveRecentAlgoHomePosts({
 				limit: data.limit,
 				offset,

@@ -79,7 +79,7 @@ export async function deleteComment({
   });
 }
 
-// Liking the comments
+// Lajkanje komentara
 export async function checkIfUserLikedComment({
   commentId,
   userId,
@@ -152,13 +152,6 @@ export async function retrieveCommentReplies({
           userId,
         },
       },
-
-      // _count: {
-      //   select: {
-      //     postCommentsReplyLikes: true,
-      //   },
-      // },
-      // TODO: See if I am going to handle likes for replies
     },
     orderBy: {
       createdAt: "asc",

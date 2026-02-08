@@ -1,15 +1,20 @@
+// External packages
+import { notFound } from 'next/navigation';
+import { Suspense } from 'react';
+import { dehydrate, QueryClient } from '@tanstack/react-query';
+
 // Modules
 import { AddBoardDialog } from '@/modules/main/organization/tasks/add-board-dialog';
 import { TasksBoardSkeleton } from '@/modules/main/organization/tasks/task-skeleton';
+import { BoardsMapping } from '@/modules/main/organization/tasks/boards-mapping';
+import { SortTasksSelect } from '@/modules/main/organization/tasks/sort-tasks-select';
 
 // Lib
 import { retrieveAllOrganizationBoardsWithTasks } from '@/lib/server/organization-tasks';
-import { notFound } from 'next/navigation';
-import { Suspense } from 'react';
-import { BoardsMapping } from '@/modules/main/organization/tasks/boards-mapping';
-import { SortTasksSelect } from '@/modules/main/organization/tasks/sort-tasks-select';
 import { retrieveOrganizationMember } from '@/lib/server/organization-managment';
-import { dehydrate, QueryClient } from '@tanstack/react-query';
+
+// Permissions
+import { hasWantedOrganizationRole } from '@repo/permissons/index';
 
 export default async function BoardPage({
 	params,
@@ -37,8 +42,11 @@ export default async function BoardPage({
 				</div>
 				<div className="flex justify-between gap-4 lg:justify-start">
 					<SortTasksSelect />
-					{(member.organizationMember.role === 'ADMIN' ||
-						member.organizationMember.role === 'OWNER') && <AddBoardDialog />}
+					{hasWantedOrganizationRole({
+						userRole: member.organizationMember.role,
+						requiredRoles: ['ADMIN'],
+						ownerHasAllAccess: true,
+					}) && <AddBoardDialog />}
 				</div>
 			</div>
 			<div className="flex min-h-0 flex-1 gap-4 overflow-scroll">

@@ -1,5 +1,5 @@
 // Config
-import { initalizeRedisClient } from "@/config/redis";
+import { initalizeRedisClient } from "@/lib/config/redis";
 
 // Lib
 import { cacheKey } from "@/lib/cache-json";

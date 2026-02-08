@@ -5,10 +5,10 @@ import cron from "node-cron";
 import { retrieveCronPosts, updatePostRankingScore } from "@/models/home.model";
 
 // Lib
-import { calculatePostRankingScore } from "@/lib/algorithm-formula";
+import { calculatePostRankingScore } from "@/lib/utils/algorithm-formula";
 
-// TODO: Check if this works every 10 minutes
-cron.schedule("0 */45 * * * *", async () => {
+// Svakih 6 sati se pokreće cron job koji prolazi kroz sve postove i ažurira njihov ranking score na osnovu različitih faktora poput broja lajkova, komentara, vremena kreiranja, broja slika, broja pratilaca organizacije, te da li je autor ili organizacija PRO korisnik. Ovo pomaže u održavanju relevantnosti i vidljivosti postova na platformi.
+cron.schedule("0 0 */6 * * *", async () => {
   const cronPosts = await retrieveCronPosts();
 
   await Promise.all(

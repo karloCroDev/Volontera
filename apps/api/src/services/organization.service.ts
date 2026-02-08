@@ -1,5 +1,5 @@
-// Schemas
-import { createUploadUrl, getImagePresignedUrls } from "@/lib/aws-s3-functions";
+// Lib
+import { createUploadUrl } from "@/lib/aws-s3-functions";
 import {
   serverFetchOutput,
   toastResponseOutput,
@@ -20,7 +20,7 @@ import {
 // Database
 import { User } from "@repo/database";
 
-// Schema types
+// Schemas
 import {
   CreateOrganizationArgs,
   ToggleFollowOrganizationArgs,

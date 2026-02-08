@@ -1,7 +1,7 @@
 'use client';
 
-import { useTheme } from 'next-themes';
 // External packages
+import { useTheme } from 'next-themes';
 import * as React from 'react';
 import {
 	Bar,
@@ -27,8 +27,6 @@ export const BarChart = <T extends Record<string, unknown>>({
 	yKey,
 }: BarChartProps<T>) => {
 	const { theme } = useTheme();
-
-	console.log('Rendering BarChart with data:', data);
 	return (
 		<ResponsiveContainer>
 			<RechartsBarChart data={data}>

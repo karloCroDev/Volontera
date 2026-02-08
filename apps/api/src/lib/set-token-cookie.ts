@@ -23,7 +23,7 @@ export function generateTokenAndSetCookie({
     process.env.JWT_SECRET as string,
     {
       expiresIn: "7d",
-    }
+    },
   );
 
   res.cookie("token", token, {
@@ -33,8 +33,6 @@ export function generateTokenAndSetCookie({
     path: "/",
     maxAge: 7 * 24 * 60 * 60 * 1000,
   });
-
-  console.log("Successfully created token");
 
   return token;
 }

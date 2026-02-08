@@ -1,11 +1,6 @@
 // Models
-import { calculatePostRankingScore } from "@/lib/algorithm-formula";
+import { calculatePostRankingScore } from "@/lib/utils/algorithm-formula";
 import { createUploadUrl } from "@/lib/aws-s3-functions";
-import { isOrganizationOwnerOnProPlan, isUserOnProPlan } from "@/lib/payment";
-import {
-  serverFetchOutput,
-  toastResponseOutput,
-} from "@/lib/utils/service-output";
 import { getOrganizationDetailsById } from "@/models/organization.model";
 import {
   checkIfUserLiked,
@@ -19,10 +14,19 @@ import {
   updatePost,
 } from "@/models/post.model";
 
+// Services
+
+// Lib
+import { isOrganizationOwnerOnProPlan, isUserOnProPlan } from "@/lib/payment";
+import {
+  serverFetchOutput,
+  toastResponseOutput,
+} from "@/lib/utils/service-output";
+
 // Database
 import { User } from "@repo/database";
 
-// Schema types
+// Schemas
 import { RetrievePostCommentsArgs } from "@repo/schemas/comment";
 import {
   CreatePostArgs,
@@ -41,7 +45,6 @@ export async function createPostService({
   data: CreatePostArgs;
   userId: User["id"];
 }) {
-  // TODO: If I am reusing this then make a function
   const uploadImages = await Promise.all(
     data.images.map((image) => createUploadUrl(image)),
   );

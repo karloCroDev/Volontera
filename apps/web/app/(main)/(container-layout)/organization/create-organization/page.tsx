@@ -1,3 +1,6 @@
+/// External packages
+import { redirect } from 'next/navigation';
+
 // Components
 import { Heading } from '@/components/ui/heading';
 
@@ -7,16 +10,15 @@ import { getSession } from '@/lib/server/user';
 // Modules
 import { CreateOrganizationForm } from '@/modules/main/organization/create-organizations/create-organization-form';
 
-import { redirect } from 'next/navigation';
+// Permissions
+import { isOrganizationAccount } from '@repo/permissons/index';
 
 export default async function CreateOrganizationPage() {
 	const user = await getSession();
 
 	if (!user.success) redirect('/user/login');
 
-	if (user.role !== 'ORGANIZATION') redirect('/home');
-
-	console.log(user);
+	if (!isOrganizationAccount(user.role)) redirect('/home');
 	return (
 		<>
 			<Heading subtitle="Please enter the information about your organization inside these fields">

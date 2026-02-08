@@ -1,5 +1,6 @@
 // External packages
 import * as React from 'react';
+import { useRouter } from 'next/navigation';
 
 // Components
 import { Button } from '@/components/ui/button';
@@ -7,8 +8,9 @@ import { Dialog } from '@/components/ui/dialog';
 
 // Hooks
 import { useDeleteAccount } from '@/hooks/data/settings';
+
+// Lib
 import { toast } from '@/lib/utils/toast';
-import { useRouter } from 'next/navigation';
 
 export const DeleteAccountDialog = () => {
 	const { mutate, isPending } = useDeleteAccount();

@@ -1,5 +1,7 @@
 // Database
 import { Organization, Post, prisma, User } from "@repo/database";
+
+// Schemas
 import { RetrieveOrganizationPostsQueryArgs } from "@repo/schemas/post";
 
 // Organization admins only

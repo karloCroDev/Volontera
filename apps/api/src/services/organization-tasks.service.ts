@@ -46,6 +46,8 @@ import {
 
 // Database
 import { OrganizationTask, User } from "@repo/database";
+
+// Lib
 import {
   createLlmTask,
   createTasksLlmWithBoard,
@@ -53,6 +55,8 @@ import {
 import { violenceRegex } from "@/lib/utils/regex";
 import { safetyCheckLlmReponse } from "@/lib/llm-response";
 import { isUserOnProPlan } from "@/lib/payment";
+
+// Models
 import { createNotifications } from "@/models/notification.model";
 
 // Ovo je model samo za notifikacije korisnicima koji su dodijeljeni na task (nakon update ili kreacije)

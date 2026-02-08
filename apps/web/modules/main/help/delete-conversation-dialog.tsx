@@ -2,6 +2,7 @@
 
 // External packages
 import * as React from 'react';
+import { Trash2 } from 'lucide-react';
 
 // Components
 import { Button } from '@/components/ui/button';
@@ -12,7 +13,6 @@ import { useDeleteHelpConversation } from '@/hooks/data/help';
 
 // Lib
 import { toast } from '@/lib/utils/toast';
-import { Trash2 } from 'lucide-react';
 
 export const DeleteConversationDialog = () => {
 	const [open, setOpen] = React.useState(false);

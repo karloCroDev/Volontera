@@ -14,13 +14,23 @@ import {
 // Database
 import { User } from "@repo/database";
 
-// Schema types
+// Permissions
+import { hasWantedOrganizationRole } from "@repo/permissons/index";
+
+// Schemas
 import {
   CreateOrganizationGroupChatMessageArgs,
   RetrieveAllOrganizationGroupChatMessagesArgs,
   DeleteOrganizationGroupChatMessageArgs,
 } from "@repo/schemas/organization-group-chat";
+
+// Websockets
 import { io } from "@/ws/socket";
+
+// Services
+import { resolveImageKeysToUrls } from "@/services/image.service";
+
+// Models
 import { createNotifications } from "@/models/notification.model";
 import {
   retrieveAllMembersInOrganization,
@@ -33,10 +43,37 @@ export async function retrieveAllOrganizationGroupChatMessagesService({
   const organizationGroupChat =
     await retrieveAllOrganizationGroupChatMessages(organizationId);
 
+  const imageKeys =
+    organizationGroupChat?.messages
+      .flatMap((m) =>
+        m.organizationGroupChatMessageImages.map((img) => img.imageUrl),
+      )
+      .filter(Boolean) || [];
+
+  const urlsByKey = await resolveImageKeysToUrls(imageKeys);
+
+  const enrichedOrganizationGroupChat =
+    organizationGroupChat === null
+      ? null
+      : {
+          ...organizationGroupChat,
+          messages: organizationGroupChat.messages.map((message) => ({
+            ...message,
+            organizationGroupChatMessageImages:
+              message.organizationGroupChatMessageImages.flatMap((img) => {
+                const presignedUrl = img.imageUrl
+                  ? urlsByKey[img.imageUrl]
+                  : null;
+                if (!presignedUrl) return;
+                return [{ ...img, imageUrl: presignedUrl }];
+              }),
+          })),
+        };
+
   return serverFetchOutput({
     status: 200,
     message: "Successfully retrieved all organization group chat messages",
-    data: { organizationGroupChat },
+    data: { organizationGroupChat: enrichedOrganizationGroupChat },
     success: true,
   });
 }
@@ -53,18 +90,40 @@ export async function createOrganizationGroupChatMessageService({
     senderId: userId,
   });
 
-  const user = await retrieveOrganizationMember({
+  const attachmentKeys = message.organizationGroupChatMessageImages
+    .map((img) => img.imageUrl)
+    .filter(Boolean);
+
+  const urlsByKey = await resolveImageKeysToUrls(attachmentKeys);
+
+  const enrichedMessage = {
+    ...message,
+    organizationGroupChatMessageImages:
+      message.organizationGroupChatMessageImages.flatMap((img) => {
+        const presignedUrl = img.imageUrl ? urlsByKey[img.imageUrl] : null;
+        if (!presignedUrl) return [];
+        return [{ ...img, imageUrl: presignedUrl }];
+      }),
+  };
+
+  const member = await retrieveOrganizationMember({
     organizationId: data.organizationId,
     userId,
   });
 
   io.to(`organization:${data.organizationId}`).emit(
     "organization-group-chat:new-message",
-    message,
+    enrichedMessage,
   );
 
   // Ako je admin ili korisnik onda se svima pošalje notifikacija
-  if (user?.role === "ADMIN" || user?.role === "OWNER") {
+  if (
+    hasWantedOrganizationRole({
+      userRole: member?.role,
+      requiredRoles: ["ADMIN"],
+      ownerHasAllAccess: true,
+    })
+  ) {
     const members = await retrieveAllMembersInOrganization({
       organizationId: data.organizationId,
       userId,

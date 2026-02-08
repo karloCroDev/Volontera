@@ -12,7 +12,7 @@ import {
   updateSubscription,
 } from "@/models/payment.model";
 
-// Schema types
+// Schemas
 import { CreateCheckoutSessionArgs } from "@repo/schemas/payment";
 import { toastResponseOutput } from "@/lib/utils/service-output";
 import { createNotification } from "@/models/notification.model";
@@ -47,7 +47,6 @@ export async function webhookService({
         { expand: ["line_items"] },
       );
 
-      console.log("Completed");
       const customerId = session.customer as string;
 
       const priceId = session.line_items?.data[0]?.price?.id ?? null;
@@ -96,7 +95,6 @@ export async function webhookService({
           pricingId: null,
         });
 
-        console.log(subscription.metadata);
         if (subscription.metadata?.userId) {
           // TODO: If this doesn't work then I need to handle with the customerId
           await createNotification({
@@ -156,7 +154,7 @@ export async function webhookService({
       break;
     }
     default:
-      console.log(`Unhandled event type: ${event.type}`);
+      console.warn(`Unhandled event type: ${event.type}`);
   }
 
   return toastResponseOutput({

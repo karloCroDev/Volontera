@@ -12,7 +12,7 @@ import {
   updatePostService,
 } from "@/services/post.service";
 
-// Schema types
+// Schemas
 import {
   RetrieveOrganizationPostsArgs,
   retrieveOrganizationPostsQuerySchema,
@@ -20,6 +20,8 @@ import {
   RetrievePostArgs,
 } from "@repo/schemas/post";
 import { RetrievePostCommentsArgs } from "@repo/schemas/comment";
+
+// Utils
 import { handleServerErrorResponse } from "@/lib/utils/error-response";
 
 export async function createPostController(req: Request, res: Response) {
@@ -37,7 +39,6 @@ export async function createPostController(req: Request, res: Response) {
 
 export async function deletePostController(req: Request, res: Response) {
   try {
-    console.log(req.body);
     const result = await deletePostService(req.body);
 
     return res.status(result.status).json(result.body);

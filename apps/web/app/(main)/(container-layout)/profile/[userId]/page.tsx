@@ -9,11 +9,11 @@ import { LinkAsButton } from '@/components/ui/link-as-button';
 // Modules
 import { InformationContainer } from '@/modules/main/public-profile/information-container';
 import { ListPosts } from '@/modules/main/public-profile/list-posts';
+import { ListOrganizations } from '@/modules/main/public-profile/list-organization';
 
 // Lib
 import { getUserData, getSession } from '@/lib/server/user';
 import { convertToFullname, convertToPascalCase } from '@/lib/utils/converter';
-import { ListOrganizations } from '@/modules/main/public-profile/list-organization';
 import { formatDate } from '@/lib/utils/time-adjustments';
 
 export default async function PublicProfilePage({
@@ -29,8 +29,6 @@ export default async function PublicProfilePage({
 	]);
 
 	if (!user || !user.success || !session || !session.success) notFound();
-
-	console.log(`${process.env.NEXT_PUBLIC_AWS_CLOUDFRONT_URL}/${user.image}`);
 	return (
 		<div className="my-8 flex flex-col items-center lg:my-12 2xl:mb-16 2xl:mt-12">
 			<Avatar

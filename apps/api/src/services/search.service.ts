@@ -1,6 +1,8 @@
 // Models
-import { toastResponseOutput } from "@/lib/utils/service-output";
 import { searchUsers } from "@/models/search.model";
+
+// Lib
+import { toastResponseOutput } from "@/lib/utils/service-output";
 
 // Database
 import { User } from "@repo/database";

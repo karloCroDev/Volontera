@@ -2,15 +2,17 @@
 
 // External packages
 import * as React from 'react';
+import { useSearchParams } from 'next/navigation';
 
 // Components
 import { Post } from '@/components/ui/post/post';
 import { PostSkeleton } from '@/components/ui/post/post-skeleton';
 
+// Lib
+import { withReactQueryProvider } from '@/lib/utils/react-query';
+
 // Hooks
 import { useInfiniteHomePosts } from '@/hooks/data/home';
-import { withReactQueryProvider } from '@/lib/utils/react-query';
-import { useSearchParams } from 'next/navigation';
 
 export const HomePostsMapping = withReactQueryProvider(() => {
 	const seachParams = useSearchParams();

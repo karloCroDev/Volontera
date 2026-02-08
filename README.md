@@ -1,135 +1,93 @@
-# Turborepo starter
+# Volontera – tehnička dokumentacija
 
-This Turborepo starter is maintained by the Turborepo core team.
+Volontera je organizirana kao **monorepo (Turborepo)** kako bi se dijelili tipovi, validacija i zajednička logika između frontenda i backenda.
 
-## Using this example
+## 1) Struktura projekta
 
-Run the following command:
+### Apps
 
-```sh
-npx create-turbo@latest
-```
+- `apps/web` – **frontend** (Next.js, App Router): stranice, komponente, feature moduli i integracija s API-jem.
+- `apps/api` – **backend** (Express + Socket.IO): rute, poslovna logika, pristup bazi i integracije (e-mail, upload, plaćanja, AI).
 
-## What's inside?
+U `apps/api/src` glavni folderi:
 
-This Turborepo includes the following packages/apps:
+- `routes/`, `controllers/`, `services/`, `models/`, `middleware/`, `ws/`, `lib/`, `jobs/`
 
-### Apps and Packages
+U `apps/web` glavni folderi:
 
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
+- `app/`, `modules/`, `components/`, `hooks/`, `lib/`, `styles/`
 
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
+### Packages (zajednički moduli)
 
-### Utilities
+- `packages/database` – Prisma (schema/migrations/generate) + shared DB client/tipovi
+- `packages/schemas` – Zod sheme + tipovi
+- `packages/permissons` – Permission logika
+- `packages/types` – zajednički TypeScript tipovi (API response strukture)
+- `packages/transactional` – e-mail predlošci (React Email)
+- `packages/eslint-config`, `packages/typescript-config` – konfiguracije alata
 
-This Turborepo has some additional tools already setup for you:
+## 2) Ključne značajke (sažetak)
 
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
+- Registracija + OTP verifikacija e-mailom
+- Onboarding: odabir tipa računa (USER/ORGANIZATION) + dodatne informacije
+- Home feed: infinite scroll objave + like/dislike + komentari + reply
+- Direct Messages: real-time privatni chat
+- Organizacije: kreiranje, zahtjevi za pridruživanje (motivacijsko pismo), upravljanje članovima i rolama
+- Objave unutar organizacije: CRUD (admin/organizator), razvrstavanje (popularno/najnovije/najstarije)
+- Group chat unutar organizacije (real-time)
+- Zadatci (Kanban): boardovi i taskovi, assign članova; AI dostupno Pro korisnicima
+- Postavke profila + brisanje računa
+- Pomoć: AI chatbot
+- Javni profil + notifikacije
+- Mobilna responzivnost
 
-### Build
+## 3) `.env` predlošci
 
-To build all apps and packages, run the following command:
+Predlošci su u (stavite svoje .env varijable):
 
-```
-cd my-turborepo
+- `apps/api/.env.template`
+- `apps/web/.env.template`
+- `packages/database/.env.template`
 
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo build
+## 4) Instalacija
 
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo build
-yarn dlx turbo build
-pnpm exec turbo build
-```
+Preduvjeti:
 
-You can build a specific package by using a [filter](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters):
+- Node.js (pogledati točnu verziju u .nvmrc fileu)
+- Yarn 1.x
+- PostgreSQL i Redis
 
-```
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo build --filter=docs
+Instalacija dependenicja (iz root direktorija):
 
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo build --filter=docs
-yarn exec turbo build --filter=docs
-pnpm exec turbo build --filter=docs
-```
+- `yarn`
 
-### Develop
+## 5) Pokretanje
 
-To develop all apps and packages, run the following command:
+### Development (samo web + api)
 
-```
-cd my-turborepo
+- `yarn dev:apps`
 
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo dev
+### Build način (samo web + api)
 
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo dev
-yarn exec turbo dev
-pnpm exec turbo dev
-```
+Ove naredbe pokreći **iz root direktorija** (ne iz `apps/*`) kako bi se koristio turbo filter i izbjeglo ručno pokretanje buildova po aplikacijama.
 
-You can develop a specific package by using a [filter](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters):
+- `yarn build:apps`
 
-```
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo dev --filter=web
+### Nakon toga
 
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo dev --filter=web
-yarn exec turbo dev --filter=web
-pnpm exec turbo dev --filter=web
-```
+Backend (API):
 
-### Remote Caching
+- `cd apps/api`
+- `yarn start`
 
-> [!TIP]
-> Vercel Remote Cache is free for all plans. Get started today at [vercel.com](https://vercel.com/signup?/signup?utm_source=remote-cache-sdk&utm_campaign=free_remote_cache).
+Frontend (Web):
 
-Turborepo can use a technique known as [Remote Caching](https://turborepo.com/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
+- `cd apps/web`
+- `yarn start`
 
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup?utm_source=turborepo-examples), then enter the following commands:
+## 6) Baza (Prisma)
 
-```
-cd my-turborepo
+Najčešće komande:
 
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo login
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo login
-yarn exec turbo login
-pnpm exec turbo login
-```
-
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
-
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
-
-```
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo link
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo link
-yarn exec turbo link
-pnpm exec turbo link
-```
-
-## Useful Links
-
-Learn more about the power of Turborepo:
-
-- [Tasks](https://turborepo.com/docs/crafting-your-repository/running-tasks)
-- [Caching](https://turborepo.com/docs/crafting-your-repository/caching)
-- [Remote Caching](https://turborepo.com/docs/core-concepts/remote-caching)
-- [Filtering](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters)
-- [Configuration Options](https://turborepo.com/docs/reference/configuration)
-- [CLI Usage](https://turborepo.com/docs/reference/command-line-reference)
+- `yarn workspace @repo/database db:generate`
+- `yarn workspace @repo/database db:seed`

@@ -26,8 +26,6 @@ export const MessageForm = withReactQueryProvider(() => {
 
 	const [value, setValue] = React.useState('');
 	const [images, setImages] = React.useState<ImageItemArgs>([]);
-
-	console.log(images);
 	const { mutate, isPending } =
 		useStartConversationOrStartAndSendDirectMessage();
 

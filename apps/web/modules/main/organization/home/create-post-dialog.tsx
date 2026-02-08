@@ -12,6 +12,8 @@ import { Button } from '@/components/ui/button';
 import { Dialog } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { TextEditor } from '@/components/ui/text-editor/text-editor';
+import { Error } from '@/components/ui/error';
 
 // Modules
 import {
@@ -28,8 +30,6 @@ import { useCreatePost } from '@/hooks/data/post';
 
 // Schemas
 import { createPostSchema, CreatePostArgs } from '@repo/schemas/post';
-import { TextEditor } from '@/components/ui/text-editor/text-editor';
-import { Error } from '@/components/ui/error';
 
 // Lib
 import { convertToFullname } from '@/lib/utils/converter';

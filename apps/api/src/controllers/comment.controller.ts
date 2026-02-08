@@ -13,7 +13,7 @@ import {
   toggleLikeReplyService,
 } from "@/services/comment.service";
 
-// Schema types
+// Schemas
 import {
   DeleteCommentArgs,
   DeleteReplyArgs,
@@ -22,6 +22,8 @@ import {
   RetrieveCommentRepliesArgs,
   RetrievePostCommentsArgs,
 } from "@repo/schemas/comment";
+
+// Lib
 import { handleServerErrorResponse } from "@/lib/utils/error-response";
 
 export async function retrievePostCommentsController(

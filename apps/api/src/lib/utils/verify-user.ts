@@ -3,14 +3,14 @@ import bcrypt from "bcrypt";
 import { createElement } from "react";
 
 // Config
-import { resend } from "@/config/resend";
+import { resend } from "@/lib/config/resend";
 
 // Transactional emails
 import { VerificationCode } from "@repo/transactional/verification-code";
 
 export async function verifyUser(email: string) {
   const verificationToken = Math.floor(
-    100000 + Math.random() * 900000
+    100000 + Math.random() * 900000,
   ).toString();
 
   await resend.emails.send({

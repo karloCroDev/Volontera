@@ -8,7 +8,7 @@ import {
   retrieveAllOrganizationGroupChatMessagesService,
 } from "@/services/organization-group-chat.service";
 
-// Schema types
+// Schemas
 import {
   RetrieveAllOrganizationGroupChatMessagesArgs,
   DeleteOrganizationGroupChatMessageArgs,
@@ -19,11 +19,11 @@ import { handleServerErrorResponse } from "@/lib/utils/error-response";
 
 export async function retrieveAllOrganizationGroupChatMessagesController(
   req: Request,
-  res: Response
+  res: Response,
 ) {
   try {
     const result = await retrieveAllOrganizationGroupChatMessagesService(
-      req.params as RetrieveAllOrganizationGroupChatMessagesArgs
+      req.params as RetrieveAllOrganizationGroupChatMessagesArgs,
     );
 
     return res.status(result.status).json(result.body);
@@ -34,7 +34,7 @@ export async function retrieveAllOrganizationGroupChatMessagesController(
 
 export async function createOrganizationGroupChatMessageController(
   req: Request,
-  res: Response
+  res: Response,
 ) {
   try {
     const result = await createOrganizationGroupChatMessageService({
@@ -49,7 +49,7 @@ export async function createOrganizationGroupChatMessageController(
 }
 export async function deleteOrganizationGroupChatMessageController(
   req: Request,
-  res: Response
+  res: Response,
 ) {
   try {
     const result = await deleteOrganizationGroupChatMessageService({

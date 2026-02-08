@@ -4,12 +4,8 @@ import { z } from "zod";
 // Schemas
 import { uploadImageSchema } from "./image";
 
-// Search field
 export const searchSchema = z.object({
   query: z.string().min(1).max(100),
-  // TODO: See if I am going to implement offset and limit for pagination or cursor based pagination
-  // offset: z.number().default(0),
-  // limit: z.number().default(20),
 });
 
 export type SearchArgs = z.infer<typeof searchSchema>;

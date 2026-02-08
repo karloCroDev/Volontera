@@ -12,6 +12,7 @@ import { FilledInput } from '@/components/ui/filled-input';
 import { PasswordDialog } from '@/modules/main/settings/reset-password-dialog';
 import { Label } from '@/components/ui/label';
 import { Avatar } from '@/components/ui/avatar';
+import { Input } from '@/components/ui/input';
 
 // Hooks
 import { useSession } from '@/hooks/data/user';
@@ -21,7 +22,6 @@ import { SettingsArgs } from '@repo/schemas/settings';
 
 // Lib
 import { withReactQueryProvider } from '@/lib/utils/react-query';
-import { Input } from '@/components/ui/input';
 import { convertToFullname } from '@/lib/utils/converter';
 
 export const ProfileForm: React.FC<{
@@ -105,7 +105,7 @@ export const ProfileForm: React.FC<{
 										imageProps={{
 											src:
 												(currentImage && URL.createObjectURL(currentImage)) ||
-												user?.image ||
+												`${process.env.NEXT_PUBLIC_AWS_CLOUDFRONT_URL}/${user?.image}` ||
 												'',
 											alt: 'Avatar',
 										}}
@@ -153,7 +153,7 @@ export const ProfileForm: React.FC<{
 											filename: file.name,
 											contentType: file.type,
 											size: file.size,
-											deleteImage: user?.image || '',
+											deleteImage: user?.image,
 										});
 										setCurrentImage(file);
 									}}

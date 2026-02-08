@@ -47,39 +47,28 @@ export async function getDirectMessagesConversationById({
       directMessages: {
         include: {
           directMessagesImages: true,
-          author: true,
+          author: {
+            omit: {
+              password: true,
+            },
+          },
         },
       },
     },
   });
 }
 
-// TODO: Write some small algorithm to search all users by their username (first or last name) or email
 export async function searchAllUsers({
   query,
   userId,
-  // limit,
-  // offset,
 }: {
   query: string;
   userId: User["id"];
-  // limit: number;
-  // offset: number;
 }) {
   return prisma.user.findMany({
     omit: {
       password: true,
     },
-    // include: {
-    //   directMessagesConversations: {
-    //     select: {
-    //       conversationId: true,
-    //     },
-    //   },
-    // },
-
-    // skip: offset,
-    // take: limit,
     where: {
       // Ne vraćam samog sebe tj. treutačnog korisnika koji koristi aplikaciju
       NOT: {
@@ -202,7 +191,11 @@ export async function startConversationOSendDirectMessage({
       // Trebam vratiti slike i autora da ih mogu prikazati odmah nakon slanja poruke (websocket)
       include: {
         directMessagesImages: true,
-        author: true,
+        author: {
+          omit: {
+            password: true,
+          },
+        },
       },
     });
 

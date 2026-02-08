@@ -78,12 +78,21 @@ export const FormWrapper = withReactQueryProvider(() => {
 					methods.reset();
 				},
 				onError(err) {
-					methods.setError('root', err);
+					const message =
+						err instanceof Error
+							? err.message
+							: typeof err === 'object' && err && 'message' in err
+								? String((err as { message?: unknown }).message ?? '')
+								: 'Request failed';
+
+					methods.setError('root', {
+						type: 'server',
+						message: message || 'Request failed',
+					});
 				},
 			}
 		);
 	};
-
 	return (
 		<FormProvider {...methods}>
 			<Form

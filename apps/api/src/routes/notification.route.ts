@@ -10,10 +10,14 @@ import {
   hasUnreadNotifications,
   markAllNotificationsAsRead,
 } from "@/controllers/notifications.controller";
+
+// Schemas
 import {
   notificationIdsSchema,
   createNotificationSchema,
 } from "@repo/schemas/notification";
+
+// Middleware
 import { validate } from "@/middleware/validate.middleware";
 
 export const notificationRoutes = Router();
@@ -28,14 +32,14 @@ notificationRoutes
       schema: createNotificationSchema,
       responseOutput: "toast",
     }),
-    createNotification
+    createNotification,
   )
   .delete(
     validate({
       schema: notificationIdsSchema,
       responseOutput: "toast",
     }),
-    deleteNotifications
+    deleteNotifications,
   );
 
 notificationRoutes.route("/unread").get(hasUnreadNotifications);

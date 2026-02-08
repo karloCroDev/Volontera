@@ -4,7 +4,11 @@ import { Router } from "express";
 
 // Controllers
 import { searchUsersController } from "@/controllers/search.controller";
+
+// Middleware
 import { validate } from "@/middleware/validate.middleware";
+
+// Schemas
 import { searchUserSchema } from "@repo/schemas/search";
 
 export const searchRoutes = Router();
@@ -18,5 +22,5 @@ searchRoutes.get(
     responseOutput: "form",
     type: "params",
   }),
-  searchUsersController
+  searchUsersController,
 );

@@ -1,7 +1,6 @@
 // External packages
 import express from "express";
 import { Router } from "express";
-import { z } from "zod";
 
 // Controllers
 import {
@@ -66,7 +65,6 @@ organizationTasksRoutes.post(
   createTaskBoardController,
 );
 
-// TODO: More consistent naming
 organizationTasksRoutes.patch(
   "/boards/update-title",
   validate({

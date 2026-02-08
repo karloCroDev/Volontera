@@ -6,12 +6,14 @@ import {
   searchAllUsers,
   startConversationOSendDirectMessage,
 } from "@/models/direct-messages.model";
+
+// Lib
 import { createUploadUrl } from "@/lib/aws-s3-functions";
 
 // Database
 import { User } from "@repo/database";
 
-// Schema types
+// Schemas
 import {
   SearchArgs,
   ConversationArgs,
@@ -27,6 +29,7 @@ import {
   toastResponseOutput,
 } from "@/lib/utils/service-output";
 import { createNotification } from "@/models/notification.model";
+import { resolveImageKeysToUrls } from "@/services/image.service";
 
 export async function presignDirectMessageImagesService({
   images: dataImages,
@@ -59,13 +62,7 @@ export async function searchAllUsersWithQueryService({
   const users = await searchAllUsers({
     query: data.query,
     userId,
-    // limit: data.limit,
-    // offset: data.offset,
   });
-
-  // TODO: Cache results with redis
-  // TODO: When I implement the real search, make small algrithm
-  // TODO: Pagniate this?
 
   return toastResponseOutput({
     status: 200,
@@ -107,11 +104,28 @@ export async function getDirectMessagesConversationByIdService({
     senderId: userId,
   });
 
+  const directMessages = conversation?.directMessages || [];
+
+  const imageKeys = directMessages
+    .flatMap((m) => m.directMessagesImages.map((img) => img.imageUrl))
+    .filter(Boolean);
+
+  const urlsByKey = await resolveImageKeysToUrls(imageKeys);
+
+  const enrichedMessages = directMessages.map((message) => ({
+    ...message,
+    directMessagesImages: message.directMessagesImages.flatMap((img) => {
+      const presignedUrl = img.imageUrl ? urlsByKey[img.imageUrl] : null;
+      if (!presignedUrl) return [];
+      return [{ ...img, imageUrl: presignedUrl }];
+    }),
+  }));
+
   return toastResponseOutput({
     status: 200,
     message: "Conversation retrieved successfully",
     title: "Conversation retrieved successfully",
-    data: { directMessages: conversation?.directMessages || [] },
+    data: { directMessages: enrichedMessages },
   });
 }
 
@@ -158,15 +172,33 @@ export async function startConversationOrStartAndSendDirectMessageService({
     imageKeys: data.imageKeys,
   });
 
+  const newMessageKeys = message.directMessagesImages
+    .map((img) => img.imageUrl)
+    .filter(Boolean);
+
+  const newMessageUrlsByKey = await resolveImageKeysToUrls(newMessageKeys);
+
+  const enrichedMessage = {
+    ...message,
+    directMessagesImages: message.directMessagesImages.flatMap((img) => {
+      const presignedUrl = img.imageUrl
+        ? newMessageUrlsByKey[img.imageUrl]
+        : null;
+      if (!presignedUrl) return [];
+      return [{ ...img, imageUrl: presignedUrl }];
+    }),
+  };
+
   const senderSocketId = getReceiverSocketId(userId);
 
   const receiverSocketId = getReceiverSocketId(data.particpantId);
 
   // Prikazivanje poruke korisniku
-  if (receiverSocketId) io.to(receiverSocketId).emit("new-chat", message);
+  if (receiverSocketId)
+    io.to(receiverSocketId).emit("new-chat", enrichedMessage);
 
   // Prikazivanje poruke sebi
-  if (senderSocketId) io.to(senderSocketId).emit("new-chat", message);
+  if (senderSocketId) io.to(senderSocketId).emit("new-chat", enrichedMessage);
 
   await createNotification({
     content: `New direct message from ${message.author.firstName} ${message.author.lastName}: ${data.content.substring(0, 20)}`,

@@ -13,9 +13,6 @@ import { UsersSidebar } from '@/modules/main/direct-messages/users-sidebar';
 import { ListConversationsResponse } from '@repo/types/direct-messages';
 import { useSocketContext } from '@/modules/main/direct-messages/socket-context';
 
-// Hooks
-import { useGetImageFromKeys } from '@/hooks/data/image';
-
 export const ListUsers: React.FC<{
 	listOfAllDirectMessages: ListConversationsResponse;
 }> = ({ listOfAllDirectMessages }) => {
