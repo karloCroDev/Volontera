@@ -93,3 +93,7 @@ Najčešće komande:
 
 - `yarn workspace @repo/database db:generate`
 - `yarn workspace @repo/database db:seed`
+
+## 7) Napomena (experimental)
+
+- `Docker trenutno nije u potpunosti ispravno integriran, pa nemojte pokretati aplikaciju preko Dockera.`
