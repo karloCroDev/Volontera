@@ -132,9 +132,12 @@ export const GroupChatMapping = withReactQueryProvider(() => {
 						images={
 							message.organizationGroupChatMessageImages[0]?.imageUrl && (
 								<MessageImages
-									imageUrls={message.organizationGroupChatMessageImages.map(
-										(img) => img.imageUrl
-									)}
+									imageUrls={message.organizationGroupChatMessageImages
+										.map(
+											(img) =>
+												`${process.env.NEXT_PUBLIC_AWS_CLOUDFRONT_URL}/${img.imageUrl}`
+										)
+										.filter(Boolean)}
 								/>
 							)
 						}

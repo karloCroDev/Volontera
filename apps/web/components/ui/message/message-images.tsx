@@ -7,52 +7,37 @@ import Image from 'next/image';
 // Components
 import { Carousel } from '@/components/ui/carousel';
 
-// Hooks
-import { useGetImageFromKeys } from '@/hooks/data/image';
-
 export const MessageImages: React.FC<{
 	imageUrls: string[];
 }> = ({ imageUrls }) => {
-	const { data: images, isPending } = useGetImageFromKeys({
-		imageUrls,
-	});
+	if (!imageUrls || imageUrls.length === 0) return null;
 
 	return (
 		<div className="border-input-border relative size-80 overflow-hidden rounded-lg border-2">
-			{isPending && (
-				<div className="bg-muted-foreground text-muted-foreground h-full w-full animate-pulse" />
+			{imageUrls.length > 1 ? (
+				<Carousel
+					slides={imageUrls.map((src, id) => (
+						<div
+							key={id}
+							className="relative flex size-80 overflow-hidden rounded-md"
+						>
+							<Image
+								src={src}
+								alt="Message Image"
+								fill
+								className="object-cover"
+							/>
+						</div>
+					))}
+				/>
+			) : (
+				<Image
+					src={imageUrls[0]!}
+					alt="Message Image"
+					fill
+					className="object-cover"
+				/>
 			)}
-
-			{!isPending &&
-				(imageUrls.length > 1 ? (
-					<Carousel
-						slides={imageUrls.map((imageUrl, id) => {
-							const src = images?.urls?.[imageUrl];
-							if (!src) return null;
-
-							return (
-								<div
-									key={id}
-									className="relative flex size-80 overflow-hidden rounded-md"
-								>
-									<Image
-										src={src}
-										alt="Message Image"
-										fill
-										className="object-cover"
-									/>
-								</div>
-							);
-						})}
-					/>
-				) : imageUrls.length === 1 ? (
-					<Image
-						src={images?.urls[imageUrls[0]!] || ''}
-						alt="Message Image"
-						fill
-						className="object-cover"
-					/>
-				) : null)}
 		</div>
 	);
 };

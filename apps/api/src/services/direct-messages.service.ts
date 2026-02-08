@@ -29,6 +29,7 @@ import {
   toastResponseOutput,
 } from "@/lib/utils/service-output";
 import { createNotification } from "@/models/notification.model";
+import { resolveImageKeysToUrls } from "@/services/image.service";
 
 export async function presignDirectMessageImagesService({
   images: dataImages,
@@ -103,11 +104,38 @@ export async function getDirectMessagesConversationByIdService({
     senderId: userId,
   });
 
+  const directMessages = conversation?.directMessages || [];
+
+  const imageKeys = [
+    ...directMessages.map((m) => m.author.image).filter(Boolean),
+    ...directMessages
+      .flatMap((m) => m.directMessagesImages.map((img) => img.imageUrl))
+      .filter(Boolean),
+  ];
+
+  const urlsByKey = await resolveImageKeysToUrls(imageKeys);
+
+  const enrichedMessages = directMessages.map((message) => {
+    return {
+      ...message,
+      author: {
+        ...message,
+        imagePresignedUrl: message.author.image
+          ? urlsByKey[message.author.image] || null
+          : null,
+      },
+      directMessagesImages: message.directMessagesImages.map((img) => ({
+        ...img,
+        presignedUrl: img.imageUrl ? urlsByKey[img.imageUrl] || null : null,
+      })),
+    };
+  });
+
   return toastResponseOutput({
     status: 200,
     message: "Conversation retrieved successfully",
     title: "Conversation retrieved successfully",
-    data: { directMessages: conversation?.directMessages || [] },
+    data: { directMessages: enrichedMessages },
   });
 }
 
@@ -154,15 +182,39 @@ export async function startConversationOrStartAndSendDirectMessageService({
     imageKeys: data.imageKeys,
   });
 
+  const newMessageKeys = [
+    message.author.image,
+    ...message.directMessagesImages.map((img) => img.imageUrl),
+  ].filter(Boolean);
+
+  const newMessageUrlsByKey = await resolveImageKeysToUrls(newMessageKeys);
+
+  const enrichedMessage = {
+    ...message,
+    author: {
+      ...message.author,
+      imagePresignedUrl: message.author.image
+        ? newMessageUrlsByKey[message.author.image] || null
+        : null,
+    },
+    directMessagesImages: message.directMessagesImages.map((img) => ({
+      ...img,
+      presignedUrl: img.imageUrl
+        ? newMessageUrlsByKey[img.imageUrl] || null
+        : null,
+    })),
+  };
+
   const senderSocketId = getReceiverSocketId(userId);
 
   const receiverSocketId = getReceiverSocketId(data.particpantId);
 
   // Prikazivanje poruke korisniku
-  if (receiverSocketId) io.to(receiverSocketId).emit("new-chat", message);
+  if (receiverSocketId)
+    io.to(receiverSocketId).emit("new-chat", enrichedMessage);
 
   // Prikazivanje poruke sebi
-  if (senderSocketId) io.to(senderSocketId).emit("new-chat", message);
+  if (senderSocketId) io.to(senderSocketId).emit("new-chat", enrichedMessage);
 
   await createNotification({
     content: `New direct message from ${message.author.firstName} ${message.author.lastName}: ${data.content.substring(0, 20)}`,

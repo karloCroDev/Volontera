@@ -14,6 +14,8 @@ import {
 import { authMiddleware } from "@/middleware/auth.middleware";
 import { hasRoleMiddleware } from "@/middleware/role.middleware";
 import { validate } from "@/middleware/validate.middleware";
+
+// Schemas
 import { createCheckoutSessionSchema } from "@repo/schemas/payment";
 
 export const paymentRoutes = Router();

@@ -17,7 +17,6 @@ import {
 	useGetDirectMessagesConversationById,
 } from '@/hooks/data/direct-messages';
 import { useSession } from '@/hooks/data/user';
-import { useGetImageFromKeys } from '@/hooks/data/image';
 
 // Lib
 import { withReactQueryProvider } from '@/lib/utils/react-query';
@@ -80,18 +79,6 @@ export const ConversationMapping = withReactQueryProvider(() => {
 		};
 	}, [recieverId, socketGlobal]);
 
-	const { data: userImages } = useGetImageFromKeys(
-		{
-			imageUrls:
-				messages
-					?.map((message) => message.author.image || '')
-					.filter(Boolean) || [],
-		},
-		{
-			enabled: messages && !!messages.length,
-		}
-	);
-
 	// Dobivam trenutno ulogiranog korisnika za prikaz varijanti poruka
 	const { data: user } = useSession();
 
@@ -129,9 +116,7 @@ export const ConversationMapping = withReactQueryProvider(() => {
 								<Link href={`/profile/${message.author.id}`}>
 									<Avatar
 										imageProps={{
-											src: message.author.image
-												? userImages?.urls[message.author.image]
-												: '',
+											src: message.author.imagePresignedUrl || '',
 										}}
 									>
 										{convertToFullname({
@@ -142,11 +127,16 @@ export const ConversationMapping = withReactQueryProvider(() => {
 								</Link>
 							}
 							images={
-								message.directMessagesImages[0]?.imageUrl && (
+								message.directMessagesImages[0]?.presignedUrl && (
 									<MessageImages
-										imageUrls={message.directMessagesImages
-											.map((img) => img.imageUrl)
-											.filter(Boolean)}
+										imageUrls={
+											message.directMessagesImages
+												.map(
+													(img) =>
+														`${process.env.NEXT_PUBLIC_AWS_CLOUDFRONT_URL}/${img.presignedUrl}`
+												)
+												.filter(Boolean) as string[]
+										}
 									/>
 								)
 							}

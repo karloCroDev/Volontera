@@ -17,13 +17,17 @@ import { User } from "@repo/database";
 // Permissions
 import { hasWantedOrganizationRole } from "@repo/permissons/index";
 
-// Schema types
+// Schemas
 import {
   CreateOrganizationGroupChatMessageArgs,
   RetrieveAllOrganizationGroupChatMessagesArgs,
   DeleteOrganizationGroupChatMessageArgs,
 } from "@repo/schemas/organization-group-chat";
+
+// Websockets
 import { io } from "@/ws/socket";
+
+// Models
 import { createNotifications } from "@/models/notification.model";
 import {
   retrieveAllMembersInOrganization,

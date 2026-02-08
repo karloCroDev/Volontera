@@ -24,7 +24,11 @@ export type StartConversationOrStartAndSendDirectMessageResonse =
 
 export type GetDirectMessagesConversationByIdResponse = SuccessfulResponse & {
   directMessages: (DirectMessages & {
-    author: Omit<User, "password">;
-    directMessagesImages: DirectMessagesImages[];
+    author: Omit<User, "password"> & {
+      imagePresignedUrl?: string | null;
+    };
+    directMessagesImages: (DirectMessagesImages & {
+      presignedUrl?: string | null;
+    })[];
   })[];
 };

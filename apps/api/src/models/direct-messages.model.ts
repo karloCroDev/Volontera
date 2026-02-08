@@ -47,7 +47,11 @@ export async function getDirectMessagesConversationById({
       directMessages: {
         include: {
           directMessagesImages: true,
-          author: true,
+          author: {
+            omit: {
+              password: true,
+            },
+          },
         },
       },
     },
@@ -187,7 +191,11 @@ export async function startConversationOSendDirectMessage({
       // Trebam vratiti slike i autora da ih mogu prikazati odmah nakon slanja poruke (websocket)
       include: {
         directMessagesImages: true,
-        author: true,
+        author: {
+          omit: {
+            password: true,
+          },
+        },
       },
     });
 

@@ -13,7 +13,7 @@ import {
   retrieveHelpMessages,
 } from "@/models/help-model";
 
-// Schema types
+// Schemas
 import { HelpConversationSchemaArgs } from "@repo/schemas/help";
 
 export async function addQuestionService({

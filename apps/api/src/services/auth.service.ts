@@ -6,7 +6,7 @@ import { createElement } from "react";
 // Lib
 import { resend } from "@/lib/config/resend";
 
-// Shared utils
+// Schemas
 import {
   ForgotPasswordArgs,
   LoginArgs,

@@ -25,7 +25,6 @@ import { UpdatePostArgs, updatePostSchema } from '@repo/schemas/post';
 
 // Hooks
 import { useRetrievePostData, useUpadatePost } from '@/hooks/data/post';
-import { useGetImageFromKeys } from '@/hooks/data/image';
 
 // Lib
 import { toast } from '@/lib/utils/toast';
@@ -36,10 +35,6 @@ export const EditPostDialog: React.FC<{
 }> = ({ postId, organizationId }) => {
 	const [images, setImages] = React.useState<ImageItemArgs>([]);
 	const { data } = useRetrievePostData(postId);
-
-	const { data: image } = useGetImageFromKeys({
-		imageUrls: data?.post.postImages.map((image) => image.imageUrl) || [],
-	});
 
 	const {
 		control,
@@ -78,10 +73,10 @@ export const EditPostDialog: React.FC<{
 	}, [images, setValue]);
 
 	React.useEffect(() => {
-		if (data && image) {
+		if (data?.post) {
 			setImages(
 				data.post.postImages.flatMap((img) => {
-					const resolvedUrl = image.urls[img.imageUrl];
+					const resolvedUrl = img.presignedUrl;
 					if (!resolvedUrl) return [];
 					return [
 						{
@@ -101,13 +96,12 @@ export const EditPostDialog: React.FC<{
 				images: data.post.postImages.map((img) => img.imageUrl),
 			});
 		}
-	}, [data, image, postId, reset]);
+	}, [data, postId, reset]);
 
 	const { mutate, isPending } = useUpadatePost();
 
 	const router = useRouter();
 	const onSubmit = (data: UpdatePostArgs) => {
-		console.log(data);
 		mutate(
 			{
 				data: {
@@ -144,7 +138,6 @@ export const EditPostDialog: React.FC<{
 		);
 	};
 
-	console.log(errors);
 	return (
 		<Dialog
 			title="Edit post"

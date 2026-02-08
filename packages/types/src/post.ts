@@ -12,7 +12,7 @@ type SharedPostValues = Post & {
       organizationMembers: number;
     };
   };
-  postImages: PostImages[];
+  postImages: (PostImages & { presignedUrl?: string | null })[];
   author: User;
   postLikes: PostLikes[];
   _count: {
@@ -34,6 +34,6 @@ export type RetrievePostWithComments = ServerHandleResponse<true> & {
 
 export type RetrievePostData = ServerHandleResponse<true> & {
   post: Post & {
-    postImages: PostImages[];
+    postImages: (PostImages & { presignedUrl?: string | null })[];
   };
 };
