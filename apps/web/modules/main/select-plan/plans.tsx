@@ -54,6 +54,8 @@ export const Plans: React.FC<{
 		);
 	};
 
+	console.log(user.pricingId);
+
 	const slides = [
 		<PaymentPlanCard
 			key={1}

@@ -1,6 +1,7 @@
 // External packages
 import axios, { CreateAxiosDefaults } from 'axios';
 
+// Centralizirana funkcija kako bismo efikasnije passali podatke kao credential i slicno
 export const API = ({
 	withCredentials,
 	headers,

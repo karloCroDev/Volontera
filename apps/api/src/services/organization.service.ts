@@ -10,6 +10,7 @@ import {
   checkIfUserFollowsOrganization,
   createOrganization,
   followOrganization,
+  getOrganizationOwnerId,
   getOrganizationDetailsById,
   listOrganizationsOrganizatorGrouped,
   listOrganizationsUser,
@@ -157,6 +158,26 @@ export async function toggleFollowOrganizationService({
   data: ToggleFollowOrganizationArgs;
   userId: User["id"];
 }) {
+  const organization = await getOrganizationOwnerId({
+    organizationId: data.organizationId,
+  });
+
+  if (!organization) {
+    return toastResponseOutput({
+      status: 404,
+      title: "Organization Not Found",
+      message: "Organization was not found",
+    });
+  }
+
+  if (organization.ownerId === userId) {
+    return toastResponseOutput({
+      status: 403,
+      title: "Action Not Allowed",
+      message: "Organization owner cannot follow their own organization",
+    });
+  }
+
   const isFollowing = await checkIfUserFollowsOrganization({
     organizationId: data.organizationId,
     userId,

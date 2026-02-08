@@ -30,14 +30,13 @@ import { toastResponseOutput } from "@/lib/utils/service-output";
 
 export async function getUserNotificationsService(userId: User["id"]) {
   const notifications = await retrieveUserNotifications(userId);
-  return {
+
+  return toastResponseOutput({
     status: 200,
-    body: {
-      message: "User notifications retrieved successfully",
-      success: true,
-      notifications,
-    },
-  };
+    title: "User notifications retrieved",
+    message: "User notifications retrieved successfully",
+    data: { notifications },
+  });
 }
 
 export async function hasUnreadNotificationsService(userId: User["id"]) {
@@ -61,36 +60,30 @@ export async function hasUnreadNotificationsService(userId: User["id"]) {
   }
 
   if (unreadCount > 0) {
-    return {
+    return toastResponseOutput({
       status: 200,
-      body: {
-        title: "Unread notifications status retrieved",
-        message: "Unread notifications status retrieved successfully",
-        hasUnread: !!unreadCount,
-      },
-    };
-  }
-
-  return {
-    status: 200,
-    body: {
       title: "Unread notifications status retrieved",
       message: "Unread notifications status retrieved successfully",
-      hasUnread: !!unreadCount,
-    },
-  };
+      data: { hasUnread: !!unreadCount },
+    });
+  }
+
+  return toastResponseOutput({
+    status: 200,
+    title: "Unread notifications status retrieved",
+    message: "Unread notifications status retrieved successfully",
+    data: { hasUnread: !!unreadCount },
+  });
 }
 
 export async function markNotificationAsReadService(userId: User["id"]) {
   await markNotificationAsRead(userId);
 
-  return {
+  return toastResponseOutput({
     status: 200,
-    body: {
-      title: "Notifications marked as read",
-      message: "All notifications have been marked as read",
-    },
-  };
+    title: "Notifications marked as read",
+    message: "All notifications have been marked as read",
+  });
 }
 
 export async function createNotificationService({
@@ -105,13 +98,11 @@ export async function createNotificationService({
     content: data.content,
   });
 
-  return {
+  return toastResponseOutput({
     status: 200,
-    body: {
-      title: "Notification created",
-      message: "Notification created successfully",
-    },
-  };
+    title: "Notification created",
+    message: "Notification created successfully",
+  });
 }
 
 export async function deleteNotificationsService({

@@ -6,11 +6,11 @@ import { UserLock } from 'lucide-react';
 import { Avatar } from '@/components/ui/avatar';
 import { OrganizationRoutingHeader } from '@/modules/main/organization/common/organization-routing-header';
 import { LinkAsButton } from '@/components/ui/link-as-button';
-import { hasWantedOrganizationRole } from '@repo/permissons/index';
 
 // Lib
 import { getOrganizationDetailsById } from '@/lib/server/organization';
 import { retrieveOrganizationMember } from '@/lib/server/organization-managment';
+import { getSession } from '@/lib/server/user';
 
 // Modules
 import { FollowOrganizationButton } from '@/modules/main/organization/common/follow-organization-button';
@@ -25,12 +25,18 @@ export default async function OrganizationFeaturesLayout({
 }) {
 	const { organizationId } = await params;
 
-	const [organizationDetailsById, member] = await Promise.all([
+	const [session, organizationDetailsById, member] = await Promise.all([
+		await getSession(),
 		await getOrganizationDetailsById(organizationId),
 		await retrieveOrganizationMember(organizationId),
 	]);
 
 	if (!organizationDetailsById.success) notFound();
+
+	const isOwner =
+		session.success &&
+		session.id === organizationDetailsById.organization.owner.id;
+	const canShowFollowButton = session.success && !isOwner;
 
 	return (
 		<>
@@ -62,16 +68,14 @@ export default async function OrganizationFeaturesLayout({
 					</p>
 				</div>
 
-				{!hasWantedOrganizationRole({
-					userRole: member.success ? member.organizationMember.role : undefined,
-					requiredRoles: ['OWNER'],
-					ownerHasAllAccess: false,
-				}) && (
+				{!isOwner && (
 					<div className="flex gap-4 md:ml-auto">
-						<FollowOrganizationButton
-							// Dobivam samo korisnika u ovom arrayu
-							hasUserFollowed={organizationDetailsById.isFollowing}
-						/>
+						{canShowFollowButton && (
+							<FollowOrganizationButton
+								// Dobivam samo korisnika u ovom arrayu
+								hasUserFollowed={organizationDetailsById.isFollowing}
+							/>
+						)}
 
 						{member.success ? (
 							<LeaveOrganizationDialog

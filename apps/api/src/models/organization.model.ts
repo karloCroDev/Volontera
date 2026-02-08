@@ -329,6 +329,21 @@ export async function getOrganizationDetailsById({
   };
 }
 
+export async function getOrganizationOwnerId({
+  organizationId,
+}: {
+  organizationId: Organization["id"];
+}) {
+  return prisma.organization.findUnique({
+    where: {
+      id: organizationId,
+    },
+    select: {
+      ownerId: true,
+    },
+  });
+}
+
 export async function followOrganization({
   organizationId,
   userId,

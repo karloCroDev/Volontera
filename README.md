@@ -56,8 +56,9 @@ Preduvjeti:
 - Node.js (pogledati točnu verziju u .nvmrc fileu)
 - Yarn 1.x
 - PostgreSQL i Redis
+- Stripe CLI
 
-Instalacija dependenicja (iz root direktorija):
+Instalacija **svih** dependenicja (pokrenuti iz root direktorija):
 
 - `yarn`
 
@@ -77,8 +78,9 @@ Ovu naredbu pokreći **iz root direktorija** (ne iz `apps/*`) kako bi se koristi
 
 Backend (API):
 
-- `cd apps/api`
-- `yarn start`
+- `cd apps/api` (napraviti dva ovakva terminala)
+- Terminal 1: `yarn start`
+- Terminal 2: `stripe listen --forward-to http://localhost:API_PORT/payment/webhook`
 
 Frontend (Web):
 

@@ -50,6 +50,7 @@ export default async function OrganizationPage({
 		resolvedSearchParams?.filter === 'oldest'
 			? resolvedSearchParams.filter
 			: undefined;
+
 	const [session, organizationDetailsById, member] = await Promise.all([
 		getSession(),
 		getOrganizationDetailsById(organizationId),
@@ -57,6 +58,15 @@ export default async function OrganizationPage({
 	]);
 
 	if (!organizationDetailsById.success) notFound();
+
+	const isOwner =
+		session.success &&
+		session.id === organizationDetailsById.organization.owner.id;
+	const canShowFollowButton = session.success && !isOwner;
+	const canShowJoinButton =
+		session.success && !member.success && !isOrganizationAccount(session.role);
+	const canShowActions =
+		!isOwner && (canShowFollowButton || member.success || canShowJoinButton);
 
 	return (
 		<>
@@ -85,37 +95,32 @@ export default async function OrganizationPage({
 								{organizationDetailsById.organization.name}
 							</Avatar>
 						</div>
-						{member.success &&
-							hasWantedOrganizationRole({
-								userRole: member.organizationMember.role,
-								requiredRoles: ['MEMBER', 'ADMIN'],
-								ownerHasAllAccess: false,
-							}) && (
-								<div className="flex gap-4">
+
+						{canShowActions && (
+							<div className="flex gap-4">
+								{canShowFollowButton && (
 									<FollowOrganizationButton
 										hasUserFollowed={organizationDetailsById.isFollowing}
 									/>
+								)}
 
-									{member.success ? (
-										<LeaveOrganizationDialog
-											organizationName={
-												organizationDetailsById.organization.name
-											}
-										/>
-									) : (
-										session.success &&
-										!isOrganizationAccount(session.role) && (
-											<LinkAsButton
-												colorScheme="orange"
-												size="md"
-												href={`/organization/${organizationId}/join-organization`}
-											>
-												Join
-											</LinkAsButton>
-										)
-									)}
-								</div>
-							)}
+								{member.success ? (
+									<LeaveOrganizationDialog
+										organizationName={organizationDetailsById.organization.name}
+									/>
+								) : (
+									canShowJoinButton && (
+										<LinkAsButton
+											colorScheme="orange"
+											size="md"
+											href={`/organization/${organizationId}/join-organization`}
+										>
+											Join
+										</LinkAsButton>
+									)
+								)}
+							</div>
+						)}
 					</div>
 					<h1 className="mt-4 text-xl font-medium md:text-2xl lg:text-3xl">
 						{organizationDetailsById.organization.name}

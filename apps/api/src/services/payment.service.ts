@@ -206,6 +206,7 @@ export async function billingService({ userId }: { userId: User["id"] }) {
   const session = await stripe.billingPortal.sessions.create({
     customer: customerId,
     return_url: `${process.env.WEB_URL}/select-plan`,
+    configuration: process.env.STRIPE_BILLING_PORTAL_CONFIGURATION_ID,
   });
   return {
     status: 200,
