@@ -45,7 +45,6 @@ export async function additionalInformation(req: Request, res: Response) {
       userId: userId,
     });
 
-    console.log(result.body.user);
     if (result.body.user) {
       generateTokenAndSetCookie({
         res,
@@ -64,7 +63,6 @@ export async function additionalInformation(req: Request, res: Response) {
 export async function skipAdditionalInformation(req: Request, res: Response) {
   try {
     const result = await skipAdditionalInformationService(req.user.userId);
-    console.log(result.body.user);
 
     if (result.body.user) {
       generateTokenAndSetCookie({

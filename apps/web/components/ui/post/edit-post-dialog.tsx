@@ -76,7 +76,8 @@ export const EditPostDialog: React.FC<{
 		if (data?.post) {
 			setImages(
 				data.post.postImages.flatMap((img) => {
-					const resolvedUrl = img.presignedUrl;
+					const resolvedUrl = `${process.env.NEXT_PUBLIC_AWS_CLOUDFRONT_URL}/${img.imageUrl}`;
+
 					if (!resolvedUrl) return [];
 					return [
 						{

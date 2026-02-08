@@ -43,7 +43,9 @@ export const UsersInfoHeader = withReactQueryProvider(() => {
 				<Link href={`/profile/${user.id}`}>
 					<Avatar
 						imageProps={{
-							src: user?.image || undefined,
+							src:
+								`${process.env.NEXT_PUBLIC_AWS_CLOUDFRONT_URL}/${user?.image}` ||
+								undefined,
 						}}
 						size="xl"
 					>

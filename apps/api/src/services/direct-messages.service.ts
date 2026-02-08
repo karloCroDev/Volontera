@@ -106,30 +106,20 @@ export async function getDirectMessagesConversationByIdService({
 
   const directMessages = conversation?.directMessages || [];
 
-  const imageKeys = [
-    ...directMessages.map((m) => m.author.image).filter(Boolean),
-    ...directMessages
-      .flatMap((m) => m.directMessagesImages.map((img) => img.imageUrl))
-      .filter(Boolean),
-  ];
+  const imageKeys = directMessages
+    .flatMap((m) => m.directMessagesImages.map((img) => img.imageUrl))
+    .filter(Boolean);
 
   const urlsByKey = await resolveImageKeysToUrls(imageKeys);
 
-  const enrichedMessages = directMessages.map((message) => {
-    return {
-      ...message,
-      author: {
-        ...message,
-        imagePresignedUrl: message.author.image
-          ? urlsByKey[message.author.image] || null
-          : null,
-      },
-      directMessagesImages: message.directMessagesImages.map((img) => ({
-        ...img,
-        presignedUrl: img.imageUrl ? urlsByKey[img.imageUrl] || null : null,
-      })),
-    };
-  });
+  const enrichedMessages = directMessages.map((message) => ({
+    ...message,
+    directMessagesImages: message.directMessagesImages.flatMap((img) => {
+      const presignedUrl = img.imageUrl ? urlsByKey[img.imageUrl] : null;
+      if (!presignedUrl) return [];
+      return [{ ...img, imageUrl: presignedUrl }];
+    }),
+  }));
 
   return toastResponseOutput({
     status: 200,
@@ -182,27 +172,21 @@ export async function startConversationOrStartAndSendDirectMessageService({
     imageKeys: data.imageKeys,
   });
 
-  const newMessageKeys = [
-    message.author.image,
-    ...message.directMessagesImages.map((img) => img.imageUrl),
-  ].filter(Boolean);
+  const newMessageKeys = message.directMessagesImages
+    .map((img) => img.imageUrl)
+    .filter(Boolean);
 
   const newMessageUrlsByKey = await resolveImageKeysToUrls(newMessageKeys);
 
   const enrichedMessage = {
     ...message,
-    author: {
-      ...message.author,
-      imagePresignedUrl: message.author.image
-        ? newMessageUrlsByKey[message.author.image] || null
-        : null,
-    },
-    directMessagesImages: message.directMessagesImages.map((img) => ({
-      ...img,
-      presignedUrl: img.imageUrl
-        ? newMessageUrlsByKey[img.imageUrl] || null
-        : null,
-    })),
+    directMessagesImages: message.directMessagesImages.flatMap((img) => {
+      const presignedUrl = img.imageUrl
+        ? newMessageUrlsByKey[img.imageUrl]
+        : null;
+      if (!presignedUrl) return [];
+      return [{ ...img, imageUrl: presignedUrl }];
+    }),
   };
 
   const senderSocketId = getReceiverSocketId(userId);

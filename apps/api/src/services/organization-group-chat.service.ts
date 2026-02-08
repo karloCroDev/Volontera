@@ -27,6 +27,9 @@ import {
 // Websockets
 import { io } from "@/ws/socket";
 
+// Services
+import { resolveImageKeysToUrls } from "@/services/image.service";
+
 // Models
 import { createNotifications } from "@/models/notification.model";
 import {
@@ -40,10 +43,37 @@ export async function retrieveAllOrganizationGroupChatMessagesService({
   const organizationGroupChat =
     await retrieveAllOrganizationGroupChatMessages(organizationId);
 
+  const imageKeys =
+    organizationGroupChat?.messages
+      .flatMap((m) =>
+        m.organizationGroupChatMessageImages.map((img) => img.imageUrl),
+      )
+      .filter(Boolean) || [];
+
+  const urlsByKey = await resolveImageKeysToUrls(imageKeys);
+
+  const enrichedOrganizationGroupChat =
+    organizationGroupChat === null
+      ? null
+      : {
+          ...organizationGroupChat,
+          messages: organizationGroupChat.messages.map((message) => ({
+            ...message,
+            organizationGroupChatMessageImages:
+              message.organizationGroupChatMessageImages.flatMap((img) => {
+                const presignedUrl = img.imageUrl
+                  ? urlsByKey[img.imageUrl]
+                  : null;
+                if (!presignedUrl) return;
+                return [{ ...img, imageUrl: presignedUrl }];
+              }),
+          })),
+        };
+
   return serverFetchOutput({
     status: 200,
     message: "Successfully retrieved all organization group chat messages",
-    data: { organizationGroupChat },
+    data: { organizationGroupChat: enrichedOrganizationGroupChat },
     success: true,
   });
 }
@@ -60,6 +90,22 @@ export async function createOrganizationGroupChatMessageService({
     senderId: userId,
   });
 
+  const attachmentKeys = message.organizationGroupChatMessageImages
+    .map((img) => img.imageUrl)
+    .filter(Boolean);
+
+  const urlsByKey = await resolveImageKeysToUrls(attachmentKeys);
+
+  const enrichedMessage = {
+    ...message,
+    organizationGroupChatMessageImages:
+      message.organizationGroupChatMessageImages.flatMap((img) => {
+        const presignedUrl = img.imageUrl ? urlsByKey[img.imageUrl] : null;
+        if (!presignedUrl) return [];
+        return [{ ...img, imageUrl: presignedUrl }];
+      }),
+  };
+
   const member = await retrieveOrganizationMember({
     organizationId: data.organizationId,
     userId,
@@ -67,7 +113,7 @@ export async function createOrganizationGroupChatMessageService({
 
   io.to(`organization:${data.organizationId}`).emit(
     "organization-group-chat:new-message",
-    message,
+    enrichedMessage,
   );
 
   // Ako je admin ili korisnik onda se svima pošalje notifikacija

@@ -10,7 +10,7 @@ export const settingsSchema = z
       filename: z.string(),
       contentType: z.string(),
       size: z.number(),
-      deleteImage: z.url().or(z.literal("")).optional(),
+      deleteImage: z.string().or(z.literal("")).optional(),
     }),
     DOB: z.string().or(z.literal("")),
     bio: z.string().min(2).or(z.literal("")),
@@ -20,7 +20,7 @@ export const settingsSchema = z
   .partial()
   .refine(
     (obj) => Object.values(obj).some((v) => v !== undefined && v !== ""),
-    { message: "At least one field must be provided", path: ["root"] }
+    { message: "At least one field must be provided", path: ["root"] },
   );
 
 export type SettingsArgs = z.infer<typeof settingsSchema>;

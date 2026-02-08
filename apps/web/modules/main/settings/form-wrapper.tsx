@@ -83,7 +83,8 @@ export const FormWrapper = withReactQueryProvider(() => {
 			}
 		);
 	};
-
+	console.log(methods.watch());
+	console.log(methods.formState.errors);
 	return (
 		<FormProvider {...methods}>
 			<Form

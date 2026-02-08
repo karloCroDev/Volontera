@@ -39,7 +39,6 @@ export async function createPostController(req: Request, res: Response) {
 
 export async function deletePostController(req: Request, res: Response) {
   try {
-    console.log(req.body);
     const result = await deletePostService(req.body);
 
     return res.status(result.status).json(result.body);

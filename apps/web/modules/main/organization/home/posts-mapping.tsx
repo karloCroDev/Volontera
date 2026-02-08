@@ -39,6 +39,15 @@ export const PostsMapping = withReactQueryProvider(() => {
 	const { data: member } = useRetrieveOrganizationMember({
 		organizationId: params.organizationId,
 	});
+
+	console.log(
+		'Images',
+		data.posts.map((post) =>
+			post.postImages.map(
+				(img) => `${process.env.NEXT_PUBLIC_AWS_CLOUDFRONT_URL}/${img.imageUrl}`
+			)
+		)
+	);
 	return data.posts.length > 0 ? (
 		data.posts.map((post) => (
 			<Post

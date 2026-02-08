@@ -35,7 +35,6 @@ export const ConversationMapping = withReactQueryProvider(() => {
 	const searchParams = useSearchParams();
 	const recieverId = searchParams.get('userId');
 
-	console.log(recieverId);
 	const { data: conversation, isLoading } =
 		useGetDirectMessagesConversationById(
 			{
@@ -43,8 +42,6 @@ export const ConversationMapping = withReactQueryProvider(() => {
 			},
 			{ enabled: !!recieverId }
 		);
-
-	console.log(conversation);
 
 	// Samo stavljam nove poruke kada se razgovor učita
 	const [messages, setMessages] = React.useState(conversation?.directMessages);
@@ -116,7 +113,9 @@ export const ConversationMapping = withReactQueryProvider(() => {
 								<Link href={`/profile/${message.author.id}`}>
 									<Avatar
 										imageProps={{
-											src: message.author.imagePresignedUrl || '',
+											src: message.author.image
+												? `${process.env.NEXT_PUBLIC_AWS_CLOUDFRONT_URL}/${message.author.image}`
+												: '',
 										}}
 									>
 										{convertToFullname({
@@ -127,16 +126,11 @@ export const ConversationMapping = withReactQueryProvider(() => {
 								</Link>
 							}
 							images={
-								message.directMessagesImages[0]?.presignedUrl && (
+								message.directMessagesImages[0]?.imageUrl && (
 									<MessageImages
-										imageUrls={
-											message.directMessagesImages
-												.map(
-													(img) =>
-														`${process.env.NEXT_PUBLIC_AWS_CLOUDFRONT_URL}/${img.presignedUrl}`
-												)
-												.filter(Boolean) as string[]
-										}
+										imageUrls={message.directMessagesImages
+											.map((img) => img.imageUrl)
+											.filter(Boolean)}
 									/>
 								)
 							}
