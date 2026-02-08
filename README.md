@@ -1,4 +1,4 @@
-# Volontera – tehnička dokumentacija
+# Volontera – tehnička dokumentacija (sažetak) + kako pokrenuti projekt
 
 Volontera je organizirana kao **monorepo (Turborepo)** kako bi se dijelili tipovi, validacija i zajednička logika između frontenda i backenda.
 
@@ -69,7 +69,7 @@ Instalacija dependenicja (iz root direktorija):
 
 ### Build način (samo web + api)
 
-Ove naredbe pokreći **iz root direktorija** (ne iz `apps/*`) kako bi se koristio turbo filter i izbjeglo ručno pokretanje buildova po aplikacijama.
+Ovu naredbu pokreći **iz root direktorija** (ne iz `apps/*`) kako bi se koristio turbo filter i izbjeglo ručno pokretanje buildova po aplikacijama.
 
 - `yarn build:apps`
 
