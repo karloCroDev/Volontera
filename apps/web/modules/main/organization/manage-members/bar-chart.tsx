@@ -27,8 +27,6 @@ export const BarChart = <T extends Record<string, unknown>>({
 	yKey,
 }: BarChartProps<T>) => {
 	const { theme } = useTheme();
-
-	console.log('Rendering BarChart with data:', data);
 	return (
 		<ResponsiveContainer>
 			<RechartsBarChart data={data}>

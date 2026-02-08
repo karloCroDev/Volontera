@@ -95,7 +95,7 @@ export default function PlaygroundPage() {
 	// 		<div className="animate-in fade-in">Hello </div>
 	// 		<Button
 	// 			onPress={() => {
-	// 				console.log('Hello world');
+	// 				// (intentionally left blank)
 	// 				toast({
 	// 					title: 'Hello world',
 	// 					content: 'What ',

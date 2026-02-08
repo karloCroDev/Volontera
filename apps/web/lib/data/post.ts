@@ -82,10 +82,7 @@ export async function updatePost({
 }: DataWithFiles<UpdatePostArgs>) {
 	try {
 		const res = await API().patch('/post', data);
-
-		console.log(files);
 		if (files && files.length > 0 && res.data?.presignedUrls) {
-			console.log('Uploading files...');
 			await Promise.all(
 				data.images.map((image, index) => {
 					if (typeof image !== 'string') {

@@ -48,8 +48,6 @@ export const ConversationMapping = withReactQueryProvider(() => {
 	React.useEffect(() => {
 		setMessages(conversation?.directMessages);
 	}, [conversation]);
-
-	console.log('Messages', messages);
 	// Slušam nove poruke preko socketa
 	const { socketGlobal } = useSocketContext();
 	React.useEffect(() => {

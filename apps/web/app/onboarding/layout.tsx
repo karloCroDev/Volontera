@@ -17,8 +17,6 @@ export default async function OnboardingLayout({
 	children: React.ReactNode;
 }) {
 	const user = await getSession();
-
-	console.log(user);
 	if (!user.success) redirect('/auth/login');
 	if (user.success && user.onboardingFinished) redirect('/home');
 

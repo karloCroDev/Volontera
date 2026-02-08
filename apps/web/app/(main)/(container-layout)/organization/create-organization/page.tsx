@@ -19,8 +19,6 @@ export default async function CreateOrganizationPage() {
 	if (!user.success) redirect('/user/login');
 
 	if (!isOrganizationAccount(user.role)) redirect('/home');
-
-	console.log(user);
 	return (
 		<>
 			<Heading subtitle="Please enter the information about your organization inside these fields">

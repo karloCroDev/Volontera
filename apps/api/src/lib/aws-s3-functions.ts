@@ -47,8 +47,14 @@ export async function getImagePresignedUrls(image: string) {
 }
 
 export function getKeyFromUrl(url: string): string {
-  const urlObj = new URL(url);
-  return decodeURIComponent(urlObj.pathname.substring(1));
+  // Some callers store/pass the raw object key (e.g. `uuid_filename.png`) while
+  // others may pass a full URL. Support both.
+  try {
+    const urlObj = new URL(url);
+    return decodeURIComponent(urlObj.pathname.replace(/^\/+/, ""));
+  } catch {
+    return decodeURIComponent(url.replace(/^\/+/, ""));
+  }
 }
 
 export async function deleteImage(key: string) {

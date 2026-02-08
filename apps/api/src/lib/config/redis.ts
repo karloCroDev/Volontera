@@ -8,7 +8,7 @@ export async function initalizeRedisClient() {
     const redisUrl = process.env.REDIS_URL || "redis://localhost:6379";
     client = createClient({ url: redisUrl });
     client.on("error", (err) => console.error("Redis Client Error: ", err));
-    client.on("connect", () => console.log("Redis client connected"));
+    client.on("connect", () => console.info("Redis client connected"));
     await client.connect();
   }
   return client;

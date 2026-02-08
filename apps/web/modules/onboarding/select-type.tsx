@@ -25,8 +25,6 @@ export const SelectType = withReactQueryProvider(() => {
 	const [error, setError] = React.useState('');
 	const router = useRouter();
 	const { mutate, isPending } = useAppType();
-
-	console.log(type);
 	return (
 		<div className="flex flex-col items-end justify-center">
 			<RadioGroup

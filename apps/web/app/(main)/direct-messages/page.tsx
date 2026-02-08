@@ -13,7 +13,6 @@ export default async function DirectMessagesPage({
 }: {
 	searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
-	console.log('Search param server', await searchParams);
 	const listOfAllDirectMessages = await getListOfAllDirectMessages();
 
 	return (
