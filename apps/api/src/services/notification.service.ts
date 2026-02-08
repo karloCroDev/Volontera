@@ -1,6 +1,3 @@
-// External packages
-import { createElement } from "react";
-
 // Database
 import { User } from "@repo/database";
 
@@ -13,7 +10,6 @@ import {
   hasUnreadNotifications,
   markNotificationAsRead,
 } from "@/models/notification.model";
-import { findUserById } from "@/models/user.model";
 
 // Schemas
 import {
@@ -21,11 +17,6 @@ import {
   NotificationIdsArgs,
 } from "@repo/schemas/notification";
 
-// Config
-import { resend } from "@/lib/config/resend";
-
-// Transactionl emails
-import { Notification } from "@repo/transactional/notification";
 import { toastResponseOutput } from "@/lib/utils/service-output";
 
 export async function getUserNotificationsService(userId: User["id"]) {
@@ -41,23 +32,6 @@ export async function getUserNotificationsService(userId: User["id"]) {
 
 export async function hasUnreadNotificationsService(userId: User["id"]) {
   const unreadCount = await hasUnreadNotifications({ userId });
-
-  // Na svaku šestu nepročitanu notifikaciju pošalji email korisniku kao podsjetnik
-  if (unreadCount > 0 && unreadCount % 6 === 0) {
-    const user = await findUserById(userId);
-
-    if (user) {
-      await resend.emails.send({
-        from: process.env.RESEND_FROM!,
-        to: user.email,
-        subject: "You have new notifications",
-        react: createElement(Notification, {
-          firstName: user.firstName,
-          notificationsCount: unreadCount,
-        }),
-      });
-    }
-  }
 
   if (unreadCount > 0) {
     return toastResponseOutput({
