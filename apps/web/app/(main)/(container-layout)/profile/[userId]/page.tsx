@@ -69,7 +69,7 @@ export default async function PublicProfilePage({
 					</LinkAsButton>
 				)}
 			</div>
-			<InformationContainer title="General information">
+			<InformationContainer title="General information" className="bg-muted">
 				<hr className="bg-input-border my-2 h-px w-full border-0" />
 				<h6 className="text-md mt-8 lg:text-lg">About</h6>
 				<p className="text-muted-foreground mt-4">

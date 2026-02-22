@@ -19,6 +19,9 @@ import { useRetrieveOrganizationMember } from '@/hooks/data/organization-managme
 // Permissions
 import { hasWantedOrganizationRole } from '@repo/permissons/index';
 
+// Components
+import { Container } from '@/components/ui/container';
+
 export const TasksBoard: React.FC<{
 	boardId: string;
 	title: string;
@@ -29,7 +32,7 @@ export const TasksBoard: React.FC<{
 		organizationId: params.organizationId,
 	});
 	return (
-		<div className="border-input-border bg-muted flex min-h-[600px] w-full min-w-96 flex-col gap-5 rounded-xl border p-4 shadow-xl sm:w-2/3 lg:w-1/2 2xl:w-2/5">
+		<Container className="flex min-h-[600px] w-full min-w-96 flex-col gap-5 rounded-xl p-4 shadow-xl sm:w-2/3 lg:w-1/2 2xl:w-2/5">
 			<div className="flex items-center justify-between">
 				<h4 className="text-lg underline underline-offset-4">{title}</h4>
 				<EditBoardDialog boardId={boardId} title={title} />
@@ -51,6 +54,6 @@ export const TasksBoard: React.FC<{
 					</>
 				)}
 			</div>
-		</div>
+		</Container>
 	);
 });

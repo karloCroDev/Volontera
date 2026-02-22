@@ -5,6 +5,7 @@ import { twJoin, twMerge } from 'tailwind-merge';
 // Lib
 import { formatTime } from '@/lib/utils/time-adjustments';
 import { DeleteMessageButton } from '@/components/ui/message/delete-message-button';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export const Message: React.FC<
 	React.ComponentPropsWithoutRef<'div'> & {
@@ -78,16 +79,16 @@ export const MessageSkeleton: React.FC<
 		<div
 			{...rest}
 			className={twMerge(
-				'flex w-full animate-pulse gap-4 md:gap-8',
+				'flex w-full gap-4 md:gap-8',
 				variant === 'secondary' && 'ml-auto flex-row-reverse',
 				className
 			)}
 		>
-			<div className="bg-muted-foreground size-10 rounded-full md:size-12" />
+			<Skeleton className="bg-muted-foreground size-10 rounded-full md:size-12" />
 
 			<div className="md:max-w-3/5 mt-6 w-4/5">
 				{/* Message Bubble Placeholder */}
-				<div
+				<Skeleton
 					className={twMerge(
 						'items-end border px-5 py-3 text-sm md:text-base',
 						'bg-muted border-input-border rounded-lg border',
@@ -95,14 +96,14 @@ export const MessageSkeleton: React.FC<
 						variant === 'secondary' && 'rounded-tr-none'
 					)}
 				>
-					<div className="bg-muted-foreground h-3 w-full rounded" />
-					<div className="bg-muted-foreground mt-2 h-3 w-11/12 rounded" />
-					<div className="bg-muted-foreground mt-2 h-3 w-2/3 rounded" />
-				</div>
+					<Skeleton className="bg-muted-foreground h-3 w-full animate-none" />
+					<Skeleton className="bg-muted-foreground mt-2 h-3 w-11/12 animate-none" />
+					<Skeleton className="bg-muted-foreground mt-2 h-3 w-2/3 animate-none" />
+				</Skeleton>
 
 				<div className="mt-2 flex items-center justify-between">
-					<div className="bg-muted-foreground h-3 w-16 rounded" />
-					<div className="bg-muted-foreground size-4 rounded-full" />
+					<Skeleton className="bg-muted-foreground h-3 w-16" />
+					<Skeleton className="bg-muted-foreground size-4 rounded-full" />
 				</div>
 			</div>
 		</div>

@@ -1,5 +1,5 @@
 // External packages
-import { Check, Github, Linkedin, Mail } from 'lucide-react';
+import { Github, Linkedin, Mail } from 'lucide-react';
 
 // Components
 import { Layout, LayoutColumn } from '@/components/ui/layout-grid';

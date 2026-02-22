@@ -12,6 +12,7 @@ import { DeleteOrganizationDialog } from '@/modules/main/organization/manage-mem
 // Components
 import { Paywall } from '@/components/ui/paywall';
 import { LinkAsButton } from '@/components/ui/link-as-button';
+import { Container } from '@/components/ui/container';
 
 // Lib
 import {
@@ -153,11 +154,11 @@ const ChartContainer: React.FC<{
 	// eslint-disable-next-line react/prop-types
 	{ children, title, subtitle }
 ) => (
-	<div className="bg-muted border-input-border flex aspect-[4/3] max-h-80 flex-1 flex-col overflow-hidden rounded-md border p-4 shadow-md">
+	<Container className="flex aspect-[4/3] max-h-80 flex-1 flex-col overflow-hidden rounded-md p-4 shadow-md">
 		<h4 className="text-md">{title}</h4>
 		<p className="text-muted-foreground mb-4 text-sm">{subtitle}</p>
 		{children}
-	</div>
+	</Container>
 );
 
 const TaskKPI: React.FC<{
@@ -167,7 +168,7 @@ const TaskKPI: React.FC<{
 	// eslint-disable-next-line react/prop-types
 	{ title, count }
 ) => (
-	<div className="bg-muted border-input-border min-w-80 rounded-md border p-4 shadow">
+	<Container className="min-w-80 rounded-md p-4 shadow">
 		<div className="flex justify-between">
 			<p>
 				{title} <span className="text-muted-foreground ml-2">(task)</span>
@@ -176,5 +177,5 @@ const TaskKPI: React.FC<{
 		</div>
 
 		<p className="text-lg">{count}</p>
-	</div>
+	</Container>
 );

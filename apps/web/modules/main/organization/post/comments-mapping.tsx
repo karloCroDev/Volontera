@@ -13,6 +13,7 @@ import { useSession } from '@/hooks/data/user';
 
 // Lib
 import { withReactQueryProvider } from '@/lib/utils/react-query';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export const CommentsMapping = withReactQueryProvider(() => {
 	const params = useParams<{ postId: string }>();
@@ -50,17 +51,17 @@ export const CommentsMapping = withReactQueryProvider(() => {
 
 export const CommentOrReplySkeleton = () => (
 	<div className="ml-8 flex items-center gap-4">
-		<div className="bg-muted-foreground min-h-16 w-px animate-pulse" />
+		<Skeleton className="bg-muted-foreground min-h-16 w-px rounded-none" />
 
 		<div className="flex flex-1 items-center gap-4">
-			<div className="bg-muted-foreground h-10 w-10 animate-pulse rounded-full" />
+			<Skeleton className="bg-muted-foreground h-10 w-10 rounded-full" />
 
 			<div className="flex flex-1 flex-col gap-2">
-				<div className="bg-muted-foreground h-4 w-full max-w-md animate-pulse rounded" />
-				<div className="bg-muted-foreground h-4 w-3/4 animate-pulse rounded" />
+				<Skeleton className="bg-muted-foreground h-4 w-full max-w-md" />
+				<Skeleton className="bg-muted-foreground h-4 w-3/4" />
 			</div>
 
-			<div className="bg-muted ml-auto h-4 w-4 animate-pulse rounded" />
+			<Skeleton className="bg-muted ml-auto h-4 w-4" />
 		</div>
 	</div>
 );

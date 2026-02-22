@@ -13,6 +13,7 @@ import { PasswordDialog } from '@/modules/main/settings/reset-password-dialog';
 import { Label } from '@/components/ui/label';
 import { Avatar } from '@/components/ui/avatar';
 import { Input } from '@/components/ui/input';
+import { Container } from '@/components/ui/container';
 
 // Hooks
 import { useSession } from '@/hooks/data/user';
@@ -35,7 +36,7 @@ export const ProfileForm: React.FC<{
 	} = useFormContext<SettingsArgs>();
 
 	return (
-		<div className="border-input-border bg-muted flex flex-col justify-between gap-8 rounded-md border p-6 shadow-xl lg:p-8 xl:flex-row 2xl:p-10">
+		<Container className="flex flex-col justify-between gap-8 rounded-md p-6 shadow-xl lg:p-8 xl:flex-row 2xl:p-10">
 			<div>
 				<h4 className="text-lg font-semibold">Profile</h4>
 				<p className="text-muted-foreground mt-2">Set your account details</p>
@@ -164,6 +165,6 @@ export const ProfileForm: React.FC<{
 					/>
 				</div>
 			</div>
-		</div>
+		</Container>
 	);
 });

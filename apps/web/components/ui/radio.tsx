@@ -1,6 +1,9 @@
 // External packages
 import { twMerge } from 'tailwind-merge';
 
+// Components
+import { Container } from '@/components/ui/container';
+
 export const RadioIconVisual: React.FC<
 	React.ComponentPropsWithoutRef<'div'>
 > = ({
@@ -25,10 +28,10 @@ export const RadioButtonVisual: React.FC<
 	}
 > = ({ titleLabel, children, className, ...rest }) => {
 	return (
-		<div
+		<Container
 			{...rest}
 			className={twMerge(
-				'border-input-border hover:!border-popover group-data-[selected]:border-popover bg bg-muted flex h-24 cursor-pointer items-center rounded-2xl border px-6 transition-colors lg:h-28',
+				'hover:!border-popover group-data-[selected]:border-popover bg flex h-24 cursor-pointer items-center rounded-2xl px-6 shadow-none transition-colors lg:h-28',
 				className
 			)}
 		>
@@ -39,6 +42,6 @@ export const RadioButtonVisual: React.FC<
 				</p>
 			</div>
 			<RadioIconVisual className="ml-auto" />
-		</div>
+		</Container>
 	);
 };

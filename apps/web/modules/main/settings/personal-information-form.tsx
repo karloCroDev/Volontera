@@ -11,6 +11,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { DatePicker } from '@/components/ui/date-picker';
 import { FilledInput } from '@/components/ui/filled-input';
+import { Container } from '@/components/ui/container';
 
 // Schemas
 import { SettingsArgs } from '@repo/schemas/settings';
@@ -36,7 +37,7 @@ export const PersonalInformationForm = withReactQueryProvider(() => {
 	const { data: user } = useSession();
 
 	return (
-		<div className="border-input-border bg-muted mt-10 flex flex-col justify-between gap-8 rounded-md border p-6 shadow-xl lg:p-8 xl:flex-row 2xl:p-10">
+		<Container className="mt-10 flex flex-col justify-between gap-8 rounded-md p-6 shadow-xl lg:p-8 xl:flex-row 2xl:p-10">
 			<div className="flex justify-between xl:flex-col">
 				<div>
 					<h4 className="text-lg font-semibold">Personal information</h4>
@@ -159,6 +160,6 @@ export const PersonalInformationForm = withReactQueryProvider(() => {
 					</div>
 				</div>
 			</div>
-		</div>
+		</Container>
 	);
 });

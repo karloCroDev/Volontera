@@ -16,6 +16,8 @@ import { SharePost } from '@/components/ui/post/share-post';
 import { EditPostDialog } from '@/components/ui/post/edit-post-dialog';
 import { DeletePostDialog } from '@/components/ui/post/delete-post-dialog';
 import { Carousel } from '@/components/ui/carousel';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Container } from '@/components/ui/container';
 
 // Types
 import { RetrieveOrganizationPostsResponse } from '@repo/types/post';
@@ -42,7 +44,7 @@ export const Post: React.FC<{
 
 	const isMobile = useIsMobile();
 	return (
-		<div className="border-input-border bg-muted flex flex-col rounded-xl border px-8 py-6 shadow-xl">
+		<Container className="flex flex-col rounded-xl px-8 py-6 shadow-xl">
 			<div className="mb-8 flex gap-4">
 				<Link
 					href={`/organization/${post.organizationId}`}
@@ -156,7 +158,7 @@ export const Post: React.FC<{
 									className="object-contain"
 								/>
 							) : (
-								<div className="bg-muted-foreground/20 size-full animate-pulse" />
+								<Skeleton className="bg-muted-foreground/20 size-full" />
 							)}
 						</div>
 					)
@@ -217,6 +219,6 @@ export const Post: React.FC<{
 				</LinkAsButton>
 				<SharePost link={`/organization/post/${post.id}`} />
 			</div>
-		</div>
+		</Container>
 	);
 };

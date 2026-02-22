@@ -10,6 +10,7 @@ import Markdown from 'react-markdown';
 // Components
 import { Avatar } from '@/components/ui/avatar';
 import { Dot } from '@/components/ui/dot';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export const UsersSidebar: React.FC<{
 	id: string;
@@ -81,10 +82,10 @@ export const UsersSidebar: React.FC<{
 
 export const UsersSidebarSkeleton = () => (
 	<div className="flex items-center gap-3 rounded-md p-2">
-		<div className="bg-muted-foreground/40 h-10 w-10 flex-shrink-0 animate-pulse rounded-full" />
+		<Skeleton className="bg-muted-foreground/40 h-10 w-10 flex-shrink-0 rounded-full" />
 		<div className="flex-1">
-			<div className="bg-muted-foreground/40 mb-2 h-3 w-1/3 animate-pulse rounded" />
-			<div className="bg-muted-foreground/40 h-3 w-1/2 animate-pulse rounded" />
+			<Skeleton className="bg-muted-foreground/40 mb-2 h-3 w-1/3" />
+			<Skeleton className="bg-muted-foreground/40 h-3 w-1/2" />
 		</div>
 	</div>
 );
