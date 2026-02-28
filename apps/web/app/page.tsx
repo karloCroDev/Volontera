@@ -6,43 +6,53 @@ import { Layout, LayoutColumn } from '@/components/ui/layout-grid';
 import { LinkAsButton } from '@/components/ui/link-as-button';
 import { Volontera } from '@/components/ui/volonotera';
 import { Logo } from '@/components/icons';
+import { PricingPlans } from '@/modules/main/select-plan/pricing-plans';
+import { getSession } from '@/lib/server/user';
+import { getBillingLink } from '@/lib/server/payment';
 
-export default function LandingPage() {
+export default async function LandingPage() {
+	const user = await getSession();
+	const billingLink = user.success
+		? await getBillingLink()
+		: ({ success: false as const, message: '' } as const);
+
 	return (
 		<>
 			{/* Header */}
 			<header className="bg-background border-b-input-border h-22 fixed top-0 z-50 w-full border-b">
-				<Layout className="mx-auto flex items-center justify-between py-4">
-					<Volontera />
+				<Layout>
+					<LayoutColumn className="flex items-center justify-between py-4">
+						<Volontera />
 
-					<nav className="hidden items-center gap-8 md:flex">
-						<LinkAsButton variant="blank" href="/#yess">
-							Features
-						</LinkAsButton>
-						<LinkAsButton variant="blank" href="/#yess">
-							Pricing
-						</LinkAsButton>
-						<LinkAsButton variant="blank" href="/#yess">
-							FAQ
-						</LinkAsButton>
-						<LinkAsButton variant="blank" href="/#yess">
-							Contact
-						</LinkAsButton>
-					</nav>
+						<nav className="hidden items-center gap-8 md:flex">
+							<LinkAsButton variant="blank" href="/#yess">
+								Features
+							</LinkAsButton>
+							<LinkAsButton variant="blank" href="/#yess">
+								Pricing
+							</LinkAsButton>
+							<LinkAsButton variant="blank" href="/#yess">
+								FAQ
+							</LinkAsButton>
+							<LinkAsButton variant="blank" href="/#yess">
+								Contact
+							</LinkAsButton>
+						</nav>
 
-					<div className="flex gap-4">
-						<LinkAsButton
-							href="/auth/login"
-							variant="outline"
-							size="sm"
-							colorScheme="yellow"
-						>
-							Sign In
-						</LinkAsButton>
-						<LinkAsButton href="/auth/register" isFullyRounded size="sm">
-							Sign Up
-						</LinkAsButton>
-					</div>
+						<div className="flex gap-4">
+							<LinkAsButton
+								href="/auth/login"
+								variant="outline"
+								size="sm"
+								colorScheme="yellow"
+							>
+								Sign In
+							</LinkAsButton>
+							<LinkAsButton href="/auth/register" isFullyRounded size="sm">
+								Sign Up
+							</LinkAsButton>
+						</div>
+					</LayoutColumn>
 				</Layout>
 			</header>
 
@@ -149,10 +159,12 @@ export default function LandingPage() {
 							<h2 className="mb-4 text-center text-4xl font-bold">
 								Subscription plans
 							</h2>
-							<p className="text-muted-foreground mx-auto mb-16 max-w-2xl text-center">
+							<p className="text-muted-foreground mb-16 text-center">
 								Unlock the full potential of Volontera with our flexible
 								subscription plans designed to fit your needs.
 							</p>
+
+							<PricingPlans user={user} billingLink={billingLink} />
 						</div>
 					</section>
 
@@ -187,83 +199,85 @@ export default function LandingPage() {
 						difference!
 					</p>
 					<LinkAsButton href="/auth/register" className="mx-auto" size="md">
-						Let&apos; go
+						Let&apos;s go
 					</LinkAsButton>
 				</div>
 			</section>
 
 			<footer className="bg-muted px-6 py-16">
-				<Layout className="mx-auto flex flex-col">
-					<div className="mb-12 grid gap-12 md:grid-cols-4">
-						<div>
-							<div className="mb-4 flex items-center gap-2">
-								<Volontera />
+				<Layout>
+					<LayoutColumn className="flex flex-col">
+						<div className="mb-12 grid gap-12 md:grid-cols-4">
+							<div>
+								<div className="mb-4 flex items-center gap-2">
+									<Volontera />
+								</div>
+								<p className="text-sm">Building tools that help you succeed.</p>
 							</div>
-							<p className="text-sm">Building tools that help you succeed.</p>
-						</div>
 
-						<div>
-							<h4 className="mb-4 font-semibold text-white">Product</h4>
-							<ul className="space-y-2 text-sm">
-								<li>
-									<a href="#" className="transition hover:text-white">
-										Features
-									</a>
-								</li>
-								<li>
-									<a href="#" className="transition hover:text-white">
-										Pricing
-									</a>
-								</li>
-								<li>
-									<a href="#" className="transition hover:text-white">
-										Security
-									</a>
-								</li>
-							</ul>
-						</div>
+							<div>
+								<h4 className="mb-4 font-semibold text-white">Product</h4>
+								<ul className="space-y-2 text-sm">
+									<li>
+										<a href="#" className="transition hover:text-white">
+											Features
+										</a>
+									</li>
+									<li>
+										<a href="#" className="transition hover:text-white">
+											Pricing
+										</a>
+									</li>
+									<li>
+										<a href="#" className="transition hover:text-white">
+											Security
+										</a>
+									</li>
+								</ul>
+							</div>
 
-						<div>
-							<h4 className="mb-4 font-semibold text-white">Company</h4>
-							<ul className="space-y-2 text-sm">
-								<li>
-									<a href="#" className="transition hover:text-white">
-										About
-									</a>
-								</li>
-								<li>
-									<a href="#" className="transition hover:text-white">
-										Blog
-									</a>
-								</li>
-								<li>
-									<a href="#" className="transition hover:text-white">
-										Social
-									</a>
-								</li>
-							</ul>
-						</div>
+							<div>
+								<h4 className="mb-4 font-semibold text-white">Company</h4>
+								<ul className="space-y-2 text-sm">
+									<li>
+										<a href="#" className="transition hover:text-white">
+											About
+										</a>
+									</li>
+									<li>
+										<a href="#" className="transition hover:text-white">
+											Blog
+										</a>
+									</li>
+									<li>
+										<a href="#" className="transition hover:text-white">
+											Social
+										</a>
+									</li>
+								</ul>
+							</div>
 
-						<div>
-							<h4 className="mb-4 font-semibold text-white">Connect</h4>
-							<div className="flex gap-4">
-								<a href="#" className="transition hover:text-white">
-									<Mail size={20} />
-								</a>
-								<a href="#" className="transition hover:text-white">
-									<Linkedin size={20} />
-								</a>
-								<a href="#" className="transition hover:text-white">
-									<Github size={20} />
-								</a>
+							<div>
+								<h4 className="mb-4 font-semibold text-white">Connect</h4>
+								<div className="flex gap-4">
+									<a href="#" className="transition hover:text-white">
+										<Mail size={20} />
+									</a>
+									<a href="#" className="transition hover:text-white">
+										<Linkedin size={20} />
+									</a>
+									<a href="#" className="transition hover:text-white">
+										<Github size={20} />
+									</a>
+								</div>
 							</div>
 						</div>
-					</div>
 
-					<div className="border-t-input-border flex flex-col items-center justify-between border-t pt-8 text-sm md:flex-row">
-						<p>&copy; 2026 Volontera Inc. All rights reserved.</p>
-						<p>Learn more</p>
-					</div>
+						<div className="border-t-input-border flex flex-col items-center justify-between border-t pt-8 text-sm md:flex-row">
+							<p>&copy; 2026 Volontera Inc. All rights reserved.</p>
+							<p>Learn more</p>
+						</div>
+					</LayoutColumn>
 				</Layout>
 			</footer>
 		</>

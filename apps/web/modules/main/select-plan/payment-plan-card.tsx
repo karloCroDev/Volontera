@@ -13,7 +13,7 @@ export const PaymentPlanCard: React.FC<
 		duration: string;
 		tag?: string;
 		reasons: React.ReactNode;
-		link: React.ReactNode;
+		link?: React.ReactNode;
 		variant?: 'primary' | 'secondary';
 	}
 > = ({
