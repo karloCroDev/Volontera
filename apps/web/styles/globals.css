@@ -3,6 +3,10 @@
 @plugin "tailwindcss-animate";
 @plugin '@tailwindcss/typography';
 
+html {
+	scroll-behavior: smooth;
+}
+
 :root {
 	--primary: hsl(38, 92%, 50%);
 	--primary-foreground: hsl(0, 0%, 0%);
