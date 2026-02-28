@@ -1,5 +1,16 @@
 // External packages
-import { Github, Linkedin, Mail } from 'lucide-react';
+import {
+	ArrowRight,
+	Bell,
+	ClipboardList,
+	CreditCard,
+	Github,
+	Linkedin,
+	Mail,
+	Sparkles,
+	UserCog,
+	UsersRound,
+} from 'lucide-react';
 
 // Components
 import { Layout, LayoutColumn } from '@/components/ui/layout-grid';
@@ -9,6 +20,9 @@ import { Logo } from '@/components/icons';
 import { PricingPlans } from '@/modules/main/select-plan/pricing-plans';
 import { getSession } from '@/lib/server/user';
 import { getBillingLink } from '@/lib/server/payment';
+import Image from 'next/image';
+import { convertToFullname, convertToPascalCase } from '@/lib/utils/converter';
+import { Avatar } from '@/components/ui/avatar';
 
 export default async function LandingPage() {
 	const user = await getSession();
@@ -39,19 +53,57 @@ export default async function LandingPage() {
 							</LinkAsButton>
 						</nav>
 
-						<div className="flex gap-4">
+						{user.success ? (
 							<LinkAsButton
-								href="/auth/login"
-								variant="outline"
+								href="/home"
+								variant="ghost"
 								size="sm"
-								colorScheme="yellow"
+								iconRight={<ArrowRight />}
+								isFullyRounded
+								iconLeft={
+									<Avatar
+										imageProps={{
+											src: `${process.env.NEXT_PUBLIC_AWS_CLOUDFRONT_URL}/${user.image}`,
+										}}
+										size="sm"
+									>
+										{convertToFullname({
+											firstname: user.firstName,
+											lastname: user.lastName,
+										})}
+									</Avatar>
+								}
 							>
-								Sign In
+								<div className="flex flex-col items-start">
+									<p>
+										{convertToFullname({
+											firstname: user.firstName,
+											lastname: user.lastName,
+										})}
+									</p>
+									<p className="text-muted-foreground text-xs">
+										{user.role === 'ORGANIZATION'
+											? 'Organization'
+											: 'Volunteer'}{' '}
+										| {convertToPascalCase(user.subscriptionTier)}
+									</p>
+								</div>
 							</LinkAsButton>
-							<LinkAsButton href="/auth/register" isFullyRounded size="sm">
-								Sign Up
-							</LinkAsButton>
-						</div>
+						) : (
+							<div className="flex gap-4">
+								<LinkAsButton
+									href="/auth/login"
+									variant="outline"
+									size="sm"
+									colorScheme="yellow"
+								>
+									Sign In
+								</LinkAsButton>
+								<LinkAsButton href="/auth/register" isFullyRounded size="sm">
+									Sign Up
+								</LinkAsButton>
+							</div>
+						)}
 					</LayoutColumn>
 				</Layout>
 			</header>
@@ -88,8 +140,12 @@ export default async function LandingPage() {
 						</div>
 
 						{/* Add image */}
-						<div className="mx-auto mt-16 flex h-96 max-w-4xl items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-100">
-							<span className="text-gray-500">Product Demo / Screenshot</span>
+						<div className="border-input-border relative mx-auto mt-12 aspect-video w-full max-w-6xl overflow-hidden rounded-lg border">
+							<Image
+								src="/images/volontera-home.jpeg"
+								alt="Volontera Home Page"
+								fill
+							/>
 						</div>
 					</section>
 
@@ -111,38 +167,46 @@ export default async function LandingPage() {
 											'Dedicated Experience for Volunteers & Organizations',
 										description:
 											'Two tailored interfaces — one for volunteers to discover and engage, and one for organizations to manage, lead, and grow.',
+										icon: UsersRound,
 									},
 									{
 										title: 'Centralized Member & Role Management',
 										description:
 											'Organize volunteers, assign roles, and control permissions from a single structured system.',
+										icon: UserCog,
 									},
 									{
 										title: 'Built-in Task & Project Management',
 										description:
 											'Create, assign, and monitor tasks without relying on external tools.',
+										icon: ClipboardList,
 									},
 									{
 										title: 'Real-Time Communication & Notifications',
 										description:
 											'Instant updates keep teams aligned and informed at every stage of a project.',
+										icon: Bell,
 									},
 									{
 										title: 'Smart Application & Onboarding System',
 										description:
 											'Simplify volunteer recruitment with structured applications, approvals, and onboarding flows.',
+										icon: Sparkles,
 									},
 									{
 										title: 'Secure Payments & Subscription Management',
 										description:
 											'Integrated billing system for organizations with seamless plan upgrades and subscription control.',
+										icon: CreditCard,
 									},
 								].map((feature, index) => (
 									<div
 										key={index}
-										className="rounded-lg border border-gray-200 p-8 transition hover:shadow-lg"
+										className="border-input-border bg-muted rounded-lg border p-8 transition hover:shadow-lg"
 									>
-										<div className="mb-4 h-12 w-12 rounded-lg bg-blue-100"></div>
+										<div className="bg-background-foreground mb-4 flex h-12 w-12 items-center justify-center rounded-lg">
+											<feature.icon className="h-6 w-6 text-black" />
+										</div>
 										<h3 className="mb-2 text-xl font-bold">{feature.title}</h3>
 										<p className="text-muted-foreground">
 											{feature.description}
@@ -157,7 +221,11 @@ export default async function LandingPage() {
 					<section id="pricing" className="px-6 py-20">
 						<div className="mx-auto">
 							<h2 className="mb-4 text-center text-4xl font-bold">
-								Subscription plans
+								Subscription plans{' '}
+								{user.success &&
+									(user.role === 'ORGANIZATION'
+										? 'for organizations'
+										: 'for users')}
 							</h2>
 							<p className="text-muted-foreground mb-16 text-center">
 								Unlock the full potential of Volontera with our flexible
@@ -194,9 +262,8 @@ export default async function LandingPage() {
 				<div className="mx-auto max-w-3xl text-center">
 					<h2 className="mb-6 text-4xl font-bold">Ready to get started?</h2>
 					<p className="text-accent-foreground mb-8 text-xl italic">
-						Join thousands of users who are already using our platform to
-						achieve their volunteering goals. Sign up today and start making a
-						difference!
+						&quot; Your all in one place where volunteers unite and make their
+						ideas into actions! &quot;
 					</p>
 					<LinkAsButton href="/auth/register" className="mx-auto" size="md">
 						Let&apos;s go
@@ -212,7 +279,9 @@ export default async function LandingPage() {
 								<div className="mb-4 flex items-center gap-2">
 									<Volontera />
 								</div>
-								<p className="text-sm">Building tools that help you succeed.</p>
+								<p className="text-sm">
+									Your all in one place for volunteering
+								</p>
 							</div>
 
 							<div>
