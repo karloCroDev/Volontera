@@ -3,49 +3,44 @@
 // External packages
 import * as React from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { twJoin } from 'tailwind-merge';
 
 // Components
 import { Button } from '@/components/ui/button';
+import { Container } from '@/components/ui/container';
 
 // Modules
 import { useCalendarContext } from '@/modules/main/organization/calendar/calendar-provider';
 
-export type DateTrackerProps = {
-	className?: string;
-};
-
-export const DateTracker: React.FC<DateTrackerProps> = ({ className }) => {
+export const DateTracker = () => {
 	const { monthLabel, nextMonth, prevMonth } = useCalendarContext();
 
 	return (
-		<header
-			className={twJoin(
-				'border-input-border flex items-center justify-between gap-4 border-b p-4',
-				className
-			)}
-		>
+		<Container className="border-input-border flex items-baseline justify-between gap-4 rounded-full border p-3">
 			<Button
 				variant="outline"
 				colorScheme="bland"
 				isFullyRounded
+				className="p-2"
 				onPress={prevMonth}
+				size="xs"
 			>
 				<ChevronLeft className="size-4" />
 			</Button>
 
-			<p className="text-md font-semibold lg:text-lg" suppressHydrationWarning>
+			<p className="lg:text-md font-semibold" suppressHydrationWarning>
 				{monthLabel}
 			</p>
 
 			<Button
 				variant="outline"
-				colorScheme="bland"
 				isFullyRounded
+				colorScheme="bland"
+				className="p-2"
 				onPress={nextMonth}
+				size="xs"
 			>
 				<ChevronRight className="size-4" />
 			</Button>
-		</header>
+		</Container>
 	);
 };
