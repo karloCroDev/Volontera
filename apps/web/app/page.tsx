@@ -1,13 +1,9 @@
 // External packages
 import {
-	ArrowRight,
 	Bell,
 	ClipboardList,
 	CreditCard,
 	ChevronDown,
-	Github,
-	Linkedin,
-	Mail,
 	Sparkles,
 	UserCog,
 	UsersRound,
@@ -17,19 +13,19 @@ import Image from 'next/image';
 // Components
 import { Layout, LayoutColumn } from '@/components/ui/layout-grid';
 import { LinkAsButton } from '@/components/ui/link-as-button';
-import { Volontera } from '@/components/ui/volonotera';
 import { Logo } from '@/components/icons';
-import { Avatar } from '@/components/ui/avatar';
 import { Accordion } from '@/components/ui/accordion';
 import { Container } from '@/components/ui/container';
 
 // Modules
 import { PricingPlans } from '@/modules/main/select-plan/pricing-plans';
+import { CTA } from '@/modules/landing-page/cta';
+import { Header } from '@/modules/landing-page/header';
 
 // Lib
 import { getSession } from '@/lib/server/user';
 import { getBillingLink } from '@/lib/server/payment';
-import { convertToFullname, convertToPascalCase } from '@/lib/utils/converter';
+import { Footer } from '@/modules/landing-page/footer';
 
 export default async function LandingPage() {
 	const user = await getSession();
@@ -39,82 +35,7 @@ export default async function LandingPage() {
 
 	return (
 		<>
-			{/* Header */}
-			<header className="bg-background border-b-input-border h-22 fixed top-0 z-50 w-full border-b">
-				<Layout>
-					<LayoutColumn className="flex items-center justify-between py-4">
-						<Volontera />
-
-						<nav className="hidden items-center gap-8 md:flex">
-							<LinkAsButton variant="blank" href="/#features">
-								Features
-							</LinkAsButton>
-							<LinkAsButton variant="blank" href="/#pricing">
-								Pricing
-							</LinkAsButton>
-							<LinkAsButton variant="blank" href="/#FAQ">
-								FAQ
-							</LinkAsButton>
-							<LinkAsButton variant="blank" href="/#contact">
-								Contact
-							</LinkAsButton>
-						</nav>
-
-						{user.success ? (
-							<LinkAsButton
-								href="/home"
-								variant="ghost"
-								size="sm"
-								iconRight={<ArrowRight />}
-								isFullyRounded
-								iconLeft={
-									<Avatar
-										imageProps={{
-											src: `${process.env.NEXT_PUBLIC_AWS_CLOUDFRONT_URL}/${user.image}`,
-										}}
-										size="sm"
-									>
-										{convertToFullname({
-											firstname: user.firstName,
-											lastname: user.lastName,
-										})}
-									</Avatar>
-								}
-							>
-								<div className="flex flex-col items-start">
-									<p>
-										{convertToFullname({
-											firstname: user.firstName,
-											lastname: user.lastName,
-										})}
-									</p>
-									<p className="text-muted-foreground text-xs">
-										{user.role === 'ORGANIZATION'
-											? 'Organization'
-											: 'Volunteer'}{' '}
-										| {convertToPascalCase(user.subscriptionTier)}
-									</p>
-								</div>
-							</LinkAsButton>
-						) : (
-							<div className="flex gap-4">
-								<LinkAsButton
-									href="/auth/login"
-									variant="outline"
-									size="sm"
-									colorScheme="yellow"
-								>
-									Sign In
-								</LinkAsButton>
-								<LinkAsButton href="/auth/register" isFullyRounded size="sm">
-									Sign Up
-								</LinkAsButton>
-							</div>
-						)}
-					</LayoutColumn>
-				</Layout>
-			</header>
-
+			<Header user={user} />
 			<Layout className="scroll-smooth">
 				<LayoutColumn>
 					{/* Hero Section */}
@@ -366,103 +287,8 @@ export default async function LandingPage() {
 					{/* Footer */}
 				</LayoutColumn>
 			</Layout>
-
-			{/* CTA Section */}
-			<section
-				id="contact"
-				className="border-y-input-border border-y px-6 py-20"
-			>
-				<div className="mx-auto max-w-3xl text-center">
-					<h2 className="mb-6 text-4xl font-bold">Ready to get started?</h2>
-					<p className="text-accent-foreground mb-8 text-xl italic">
-						&quot; Your all in one place where volunteers unite and make their
-						ideas into actions! &quot;
-					</p>
-					<LinkAsButton href="/auth/register" className="mx-auto" size="md">
-						Let&apos;s go
-					</LinkAsButton>
-				</div>
-			</section>
-
-			{/* Handle links once I got all of them */}
-			<footer className="bg-muted px-6 py-16" id="contact">
-				<Layout>
-					<LayoutColumn className="flex flex-col">
-						<div className="mb-12 grid gap-12 md:grid-cols-4">
-							<div>
-								<div className="mb-4 flex items-center gap-2">
-									<Volontera />
-								</div>
-								<p className="text-sm">
-									Your all in one place for volunteering
-								</p>
-							</div>
-
-							<div>
-								<h4 className="mb-4 font-semibold text-white">Product</h4>
-								<ul className="space-y-2 text-sm">
-									<li>
-										<a href="#" className="transition hover:text-white">
-											Features
-										</a>
-									</li>
-									<li>
-										<a href="#" className="transition hover:text-white">
-											Pricing
-										</a>
-									</li>
-									<li>
-										<a href="#" className="transition hover:text-white">
-											Security
-										</a>
-									</li>
-								</ul>
-							</div>
-
-							<div>
-								<h4 className="mb-4 font-semibold text-white">Company</h4>
-								<ul className="space-y-2 text-sm">
-									<li>
-										<a href="#" className="transition hover:text-white">
-											About
-										</a>
-									</li>
-									<li>
-										<a href="#" className="transition hover:text-white">
-											Blog
-										</a>
-									</li>
-									<li>
-										<a href="#" className="transition hover:text-white">
-											Social
-										</a>
-									</li>
-								</ul>
-							</div>
-
-							<div>
-								<h4 className="mb-4 font-semibold text-white">Connect</h4>
-								<div className="flex gap-4">
-									<a href="#" className="transition hover:text-white">
-										<Mail size={20} />
-									</a>
-									<a href="#" className="transition hover:text-white">
-										<Linkedin size={20} />
-									</a>
-									<a href="#" className="transition hover:text-white">
-										<Github size={20} />
-									</a>
-								</div>
-							</div>
-						</div>
-
-						<div className="border-t-input-border flex flex-col items-center justify-between border-t pt-8 text-sm md:flex-row">
-							<p>&copy; 2026 Volontera Inc. All rights reserved.</p>
-							<p>Learn more</p>
-						</div>
-					</LayoutColumn>
-				</Layout>
-			</footer>
+			<CTA />
+			<Footer />
 		</>
 	);
 }
