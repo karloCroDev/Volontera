@@ -66,6 +66,20 @@ export const OrganizationRoutingHeader: React.FC<{
 				>
 					Tasks
 				</LinkAsButton>
+
+				<LinkAsButton
+					variant="ghost"
+					href={`/organization/${params.organizationId}/calendar`}
+					className={pathname.includes('/calendar') ? 'font-bold' : undefined}
+					size="sm"
+					iconRight={
+						pathname.includes('/calendar') && (
+							<Dot size="md" className="absolute right-0 top-0" />
+						)
+					}
+				>
+					Calendar
+				</LinkAsButton>
 				{/* Group admin */}
 
 				{hasWantedOrganizationRole({
