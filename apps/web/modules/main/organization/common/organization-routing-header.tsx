@@ -80,6 +80,22 @@ export const OrganizationRoutingHeader: React.FC<{
 				>
 					Calendar
 				</LinkAsButton>
+				<LinkAsButton
+					variant="ghost"
+					href={`/organization/${params.organizationId}/video-meeting`}
+					className={
+						pathname.includes('/video-meeting') ? 'font-bold' : undefined
+					}
+					size="sm"
+					iconRight={
+						pathname.includes('/video-meeting') && (
+							<Dot size="md" className="absolute right-0 top-0" />
+						)
+					}
+				>
+					Video meeting
+				</LinkAsButton>
+
 				{/* Group admin */}
 
 				{hasWantedOrganizationRole({
