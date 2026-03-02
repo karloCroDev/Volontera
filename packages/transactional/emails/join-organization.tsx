@@ -1,0 +1,156 @@
+// External packages
+import {
+	Body,
+	Button,
+	Column,
+	Container,
+	Head,
+	Heading,
+	Hr,
+	Html,
+	Img,
+	Link,
+	Preview,
+	Row,
+	Section,
+	Tailwind,
+	Text,
+} from '@react-email/components';
+
+interface JoinOrganizationProps {
+	username?: string;
+	userImage?: string;
+	invitedByUsername?: string;
+	invitedByEmail?: string;
+	organizationName?: string;
+	organizationImage?: string;
+}
+
+const baseUrl = process.env.NEXT_PUBLIC_URL
+	? `https://${process.env.NEXT_PUBLIC_URL}`
+	: '';
+
+export const JoinOrganization = ({
+	username,
+	userImage,
+	invitedByUsername,
+	invitedByEmail,
+	organizationName,
+	organizationImage,
+}: JoinOrganizationProps) => {
+	const previewText = `Join ${invitedByUsername} on Volontera`;
+
+	return (
+		<Html>
+			<Tailwind>
+				<Head />
+				<Body className="mx-auto my-auto bg-white font-sans lg:px-6">
+					<Container className="my-10 rounded-lg border-2 border-solid border-[#f59f0a] p-4">
+						<Preview>{previewText}</Preview>
+						<Section>
+							<Row>
+								<Column>
+									<Heading className="text-2xl font-semibold italic underline underline-offset-4">
+										Join {organizationName}
+									</Heading>
+								</Column>
+								<Column>
+									<Row>
+										<Column align="right">
+											<Text>Volontera</Text>
+										</Column>
+										<Column align="right">
+											{/* Stavi sliku 
+                      <div className="rounded-full bg-black size-10" /> */}
+										</Column>
+									</Row>
+								</Column>
+							</Row>
+						</Section>
+						<Hr className="!border-[#91400d]" />
+
+						<Container className="mx-auto my-[40px] max-w-[465px] rounded">
+							<Section className="mt-[32px]">
+								<Img
+									src={`${baseUrl}/static/vercel-logo.png`}
+									width="40"
+									height="37"
+									alt="Vercel Logo"
+									className="mx-auto my-0"
+								/>
+							</Section>
+							<Heading className="mx-0 p-0 text-center font-normal text-black">
+								Join organization <strong>{organizationName}</strong> on{' '}
+								<strong>Volontera</strong>
+							</Heading>
+							<Text className="text-[14px] leading-[24px] text-black">
+								Hello {username},
+							</Text>
+							<Text className="text-[14px] leading-[24px] text-black">
+								<strong>{invitedByUsername}</strong> (
+								<Link
+									href={`mailto:${invitedByEmail}`}
+									className="text-blue-600 no-underline"
+								>
+									{invitedByEmail}
+								</Link>
+								) has invited you to the <strong>{organizationName}</strong>{' '}
+								organization on <strong>Volontera</strong>.
+							</Text>
+							<Section>
+								<Row>
+									<Column align="right">
+										<Img
+											className="rounded-full"
+											src={userImage}
+											width="64"
+											height="64"
+											alt={`${username}'s profile picture`}
+										/>
+									</Column>
+									<Column align="center">
+										<Img
+											// src={`${baseUrl}/static/vercel-arrow.png`}
+											// TODO: Add Volontera image
+											width="12"
+											height="9"
+											alt="Arrow indicating invitation"
+										/>
+									</Column>
+									<Column align="left">
+										<Img
+											className="rounded-full"
+											src={organizationImage}
+											width="64"
+											height="64"
+											alt={`${organizationName} organization logo`}
+										/>
+									</Column>
+								</Row>
+							</Section>
+							<Section className="mb-[32px] mt-[32px] text-center">
+								<Button
+									href={`${process.env.NEXT_PUBLIC_URL}/invatation-link`}
+									className="mx-auto w-[calc(100%-32px)] cursor-pointer rounded bg-[#91400d] text-center leading-10 text-white"
+								>
+									Join the organization
+								</Button>
+							</Section>
+						</Container>
+					</Container>
+				</Body>
+			</Tailwind>
+		</Html>
+	);
+};
+
+JoinOrganization.PreviewProps = {
+	username: 'Ana',
+	userImage: `${baseUrl}/static/vercel-user.png`,
+	invitedByUsername: 'Karlo',
+	invitedByEmail: 'karlo@example.com',
+	organizationName: 'Save Marjan',
+	organizationImage: `${baseUrl}/static/vercel-organization.png`,
+} satisfies JoinOrganizationProps;
+
+export default JoinOrganization;
