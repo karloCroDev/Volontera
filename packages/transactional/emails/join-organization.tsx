@@ -17,6 +17,12 @@ import {
 	Text,
 } from '@react-email/components';
 
+const getInitial = (name?: string) => {
+	const trimmed = name?.trim();
+	if (!trimmed) return '?';
+	return trimmed[0]?.toUpperCase() ?? '?';
+};
+
 interface JoinOrganizationProps {
 	username?: string;
 	userImage?: string;
@@ -26,10 +32,6 @@ interface JoinOrganizationProps {
 	organizationImage?: string;
 }
 
-const baseUrl = process.env.NEXT_PUBLIC_URL
-	? `https://${process.env.NEXT_PUBLIC_URL}`
-	: '';
-
 export const JoinOrganization = ({
 	username,
 	userImage,
@@ -38,7 +40,12 @@ export const JoinOrganization = ({
 	organizationName,
 	organizationImage,
 }: JoinOrganizationProps) => {
-	const previewText = `Join ${invitedByUsername} on Volontera`;
+	const previewText = `Join ${invitedByUsername ?? 'a teammate'} on Volontera`;
+
+	const hasUserImage = Boolean(userImage?.trim());
+	const hasOrganizationImage = Boolean(organizationImage?.trim());
+	const userInitial = getInitial(username);
+	const organizationInitial = getInitial(organizationName);
 
 	return (
 		<Html>
@@ -72,10 +79,10 @@ export const JoinOrganization = ({
 						<Container className="mx-auto my-[40px] max-w-[465px] rounded">
 							<Section className="mt-[32px]">
 								<Img
-									src={`${baseUrl}/static/vercel-logo.png`}
+									// src={`${baseUrl}/static/volontera-logo.png`}
 									width="40"
 									height="37"
-									alt="Vercel Logo"
+									alt="Volontera Logo"
 									className="mx-auto my-0"
 								/>
 							</Section>
@@ -100,17 +107,23 @@ export const JoinOrganization = ({
 							<Section>
 								<Row>
 									<Column align="right">
-										<Img
-											className="rounded-full"
-											src={userImage}
-											width="64"
-											height="64"
-											alt={`${username}'s profile picture`}
-										/>
+										{hasUserImage ? (
+											<Img
+												className="rounded-full"
+												src={userImage}
+												width="64"
+												height="64"
+												alt={`${username ?? 'User'} profile picture`}
+											/>
+										) : (
+											<div className="inline-block h-[64px] w-[64px] rounded-full bg-[#91400d] text-center text-[28px] leading-[64px] text-white">
+												{userInitial}
+											</div>
+										)}
 									</Column>
 									<Column align="center">
 										<Img
-											// src={`${baseUrl}/static/vercel-arrow.png`}
+											// src={`${baseUrl}/static/volontera-arrow.png`}
 											// TODO: Add Volontera image
 											width="12"
 											height="9"
@@ -118,13 +131,19 @@ export const JoinOrganization = ({
 										/>
 									</Column>
 									<Column align="left">
-										<Img
-											className="rounded-full"
-											src={organizationImage}
-											width="64"
-											height="64"
-											alt={`${organizationName} organization logo`}
-										/>
+										{hasOrganizationImage ? (
+											<Img
+												className="rounded-full"
+												src={organizationImage}
+												width="64"
+												height="64"
+												alt={`${organizationName ?? 'Organization'} logo`}
+											/>
+										) : (
+											<div className="inline-block h-[64px] w-[64px] rounded-full bg-[#f59f0a] text-center text-[28px] leading-[64px] text-black">
+												{organizationInitial}
+											</div>
+										)}
 									</Column>
 								</Row>
 							</Section>
@@ -146,11 +165,11 @@ export const JoinOrganization = ({
 
 JoinOrganization.PreviewProps = {
 	username: 'Ana',
-	userImage: `${baseUrl}/static/vercel-user.png`,
+	userImage: '',
 	invitedByUsername: 'Karlo',
 	invitedByEmail: 'karlo@example.com',
 	organizationName: 'Save Marjan',
-	organizationImage: `${baseUrl}/static/vercel-organization.png`,
+	organizationImage: '',
 } satisfies JoinOrganizationProps;
 
 export default JoinOrganization;
