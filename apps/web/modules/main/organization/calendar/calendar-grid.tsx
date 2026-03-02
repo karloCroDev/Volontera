@@ -4,7 +4,6 @@
 import * as React from 'react';
 import {
 	Calendar,
-	CalendarCell,
 	CalendarGrid as AriaCalendarGrid,
 	CalendarGridBody,
 	CalendarGridHeader,
@@ -40,7 +39,7 @@ export const CalendarGrid = () => {
 			className="w-full"
 			firstDayOfWeek="mon"
 		>
-			<div className="border-input-border bg-muted w-full min-w-[800px] overflow-hidden rounded-lg border">
+			<div className="border-input-border bg-muted w-full min-w-[850px] overflow-hidden rounded-lg border">
 				<AriaCalendarGrid
 					weekdayStyle="long"
 					className="w-full table-fixed border-separate border-spacing-0"

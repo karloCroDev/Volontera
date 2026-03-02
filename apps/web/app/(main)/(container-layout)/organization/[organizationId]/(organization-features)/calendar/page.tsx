@@ -19,7 +19,7 @@ export default async function CalendarPage() {
 				</div>
 			</div>
 
-			<div className="flex flex-1">
+			<div className="flex flex-1 overflow-x-scroll">
 				<CalendarGrid />
 			</div>
 		</CalendarProvider>
