@@ -5,8 +5,8 @@ import { ChartArea } from 'lucide-react';
 // Modules
 import { CurrentUsersForm } from '@/modules/main/organization/manage-members/current-users-form';
 import { RequestsForm } from '@/modules/main/organization/manage-members/requests-form';
-import { PieChart } from '@/modules/main/organization/manage-members/pie-chart';
-import { BarChart } from '@/modules/main/organization/manage-members/bar-chart';
+import { PieChart } from '@/components/ui/charts/pie-chart';
+import { BarChart } from '@/components/ui/charts/bar-chart';
 import { DeleteOrganizationDialog } from '@/modules/main/organization/manage-members/delete-organization-dialog';
 
 // Components

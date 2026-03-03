@@ -1,8 +1,8 @@
 'use client';
 
 // External packages
-import { useTheme } from 'next-themes';
 import * as React from 'react';
+import { useTheme } from 'next-themes';
 import {
 	Bar,
 	XAxis,
@@ -27,27 +27,29 @@ export const BarChart = <T extends Record<string, unknown>>({
 	yKey,
 }: BarChartProps<T>) => {
 	const { theme } = useTheme();
+
+	const isDark = theme === 'dark';
 	return (
 		<ResponsiveContainer>
 			<RechartsBarChart data={data}>
 				<XAxis
 					dataKey={String(xKey)}
-					tick={{ fill: theme === 'dark' ? '#D1D5DB' : '#6B7280' }}
+					tick={{ fill: isDark ? '#D1D5DB' : '#6B7280' }}
 					axisLine={{
-						stroke: theme === 'dark' ? '#4B5563' : '#D1D5DB',
+						stroke: isDark ? '#4B5563' : '#D1D5DB',
 					}}
 					tickLine={{
-						stroke: theme === 'dark' ? '#4B5563' : '#D1D5DB',
+						stroke: isDark ? '#4B5563' : '#D1D5DB',
 					}}
 					tickMargin={10}
 				/>
 				<YAxis
-					tick={{ fill: theme === 'dark' ? '#D1D5DB' : '#6B7280' }}
+					tick={{ fill: isDark ? '#D1D5DB' : '#6B7280' }}
 					axisLine={{
-						stroke: theme === 'dark' ? '#4B5563' : '#D1D5DB',
+						stroke: isDark ? '#4B5563' : '#D1D5DB',
 					}}
 					tickLine={{
-						stroke: theme === 'dark' ? '#4B5563' : '#D1D5DB',
+						stroke: isDark ? '#4B5563' : '#D1D5DB',
 					}}
 				/>
 				<Tooltip
@@ -58,14 +60,13 @@ export const BarChart = <T extends Record<string, unknown>>({
 								: 'rgba(243, 244, 246, 0.5)',
 					}}
 					contentStyle={{
-						backgroundColor: theme === 'dark' ? '#262626' : '#e5e5e5',
-						border: `1px solid ${theme === 'dark' ? '#404040' : '#404040'}`,
+						backgroundColor: isDark ? '#262626' : '#e5e5e5',
+						border: `1px solid ${isDark ? '#404040' : '#404040'}`,
 						borderRadius: '0.5rem',
-						color: theme === 'dark' ? '#e5e5e5' : '#262626',
-						boxShadow:
-							theme === 'dark'
-								? '0 4px 6px -1px rgba(0, 0, 0, 0.3)'
-								: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+						color: isDark ? '#e5e5e5' : '#262626',
+						boxShadow: isDark
+							? '0 4px 6px -1px rgba(0, 0, 0, 0.3)'
+							: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
 					}}
 				/>
 

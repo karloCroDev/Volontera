@@ -23,6 +23,7 @@ export const PieChart: React.FC<{
 }> = ({ data, dataKey }) => {
 	const { theme } = useTheme();
 
+	const isDark = theme === 'dark';
 	return (
 		<ResponsiveContainer aspect={16 / 9} maxHeight={200}>
 			<RechartsPieChart>
@@ -41,22 +42,21 @@ export const PieChart: React.FC<{
 				</Pie>
 				<Tooltip
 					contentStyle={{
-						backgroundColor: theme === 'dark' ? '#262626' : '#f9fafb',
-						border: `1px solid ${theme === 'dark' ? '#404040' : '#e5e7eb'}`,
+						backgroundColor: isDark ? '#262626' : '#f9fafb',
+						border: `1px solid ${isDark ? '#404040' : '#e5e7eb'}`,
 						borderRadius: '0.5rem',
-						color: theme === 'dark' ? '#F9FAFB' : '#111827',
-						boxShadow:
-							theme === 'dark'
-								? '0 4px 6px -1px rgba(0, 0, 0, 0.3)'
-								: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+						color: isDark ? '#F9FAFB' : '#111827',
+						boxShadow: isDark
+							? '0 4px 6px -1px rgba(0, 0, 0, 0.3)'
+							: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
 					}}
 					labelStyle={{
-						color: theme === 'dark' ? '#F9FAFB' : '#111827',
+						color: isDark ? '#F9FAFB' : '#111827',
 						fontWeight: '500',
 						marginBottom: '4px',
 					}}
 					itemStyle={{
-						color: theme === 'dark' ? '#F9FAFB' : '#111827',
+						color: isDark ? '#F9FAFB' : '#111827',
 					}}
 				/>
 			</RechartsPieChart>

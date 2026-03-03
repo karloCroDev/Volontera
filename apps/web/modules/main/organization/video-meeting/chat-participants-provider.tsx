@@ -3,30 +3,30 @@
 // External packages
 import * as React from 'react';
 
-const ChatContext = React.createContext<{
+const ChatParticipantsContext = React.createContext<{
 	isChatOpen: boolean;
 	setIsChatOpen: React.Dispatch<React.SetStateAction<boolean>>;
 } | null>(null);
 
-export const ChatProvider: React.FC<React.PropsWithChildren> = ({
+export const ChatParticipantsProvider: React.FC<React.PropsWithChildren> = ({
 	children,
 }) => {
 	const [isChatOpen, setIsChatOpen] = React.useState(false);
 
 	return (
-		<ChatContext.Provider
+		<ChatParticipantsContext.Provider
 			value={{
 				isChatOpen,
 				setIsChatOpen,
 			}}
 		>
 			{children}
-		</ChatContext.Provider>
+		</ChatParticipantsContext.Provider>
 	);
 };
 
 export function useChat() {
-	const ctx = React.useContext(ChatContext);
+	const ctx = React.useContext(ChatParticipantsContext);
 	if (!ctx) {
 		throw new Error('useChat must be used within ChatProvider');
 	}
