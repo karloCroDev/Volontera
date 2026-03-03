@@ -125,7 +125,7 @@ export const Search = () => {
 	);
 };
 
-const SearchOutput: React.FC<{
+export const SearchOutput: React.FC<{
 	type: 'user' | 'organization';
 	mainLink: string;
 	chatLink?: string;
@@ -173,7 +173,7 @@ const SearchOutput: React.FC<{
 	);
 };
 
-const SearchOutputSkeleton = () => (
+export const SearchOutputSkeleton = () => (
 	<div className="border-input-border flex items-center gap-4 rounded-lg border px-5 py-3">
 		<Skeleton className="bg-muted-foreground h-12 w-12 rounded-full" />
 

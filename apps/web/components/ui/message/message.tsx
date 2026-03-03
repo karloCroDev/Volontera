@@ -47,9 +47,9 @@ export const Message: React.FC<
 						className={twJoin(
 							'w-full items-end rounded-lg border px-5 py-3 text-sm shadow-lg md:text-base',
 							variant === 'primary' &&
-								'bg-accent text-accent-foreground border-accent-foreground rounded-tl-none',
+								'bg-accent text-accent-foreground border-accent-foreground rounded-tr-none',
 							variant === 'secondary' &&
-								'border-input-border text-background-foreground bg-muted rounded-tr-none'
+								'border-input-border text-background-foreground bg-muted rounded-tl-none'
 						)}
 					>
 						<div className="prose prose-custom !max-w-full">{children}</div>
