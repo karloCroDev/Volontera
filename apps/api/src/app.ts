@@ -6,7 +6,10 @@ import helmet from "helmet";
 
 // Middleware
 import { authMiddleware } from "@/middleware/auth.middleware";
-import { hasRoleMiddleware } from "@/middleware/role.middleware";
+import {
+  hasRoleMiddleware,
+  superAdminMiddleware,
+} from "@/middleware/role.middleware";
 import { onboardingProcessMiddleware } from "@/middleware/onboarding.middleware";
 
 // Lib
@@ -32,6 +35,7 @@ import { organizationGroupChatRoute } from "@/routes/organization-group-chat.rou
 import { organizationTasksRoutes } from "@/routes/organization-tasks.route";
 import { homeRoute } from "@/routes/home.route";
 import { rateLimitMiddleware } from "@/middleware/rate-limit.middleware";
+import { dashboardRoutes } from "@/routes/dashboard.route";
 
 // Security middleware
 app.use(helmet());
@@ -177,6 +181,8 @@ app.use(
   }),
   homeRoute,
 );
+
+app.use("/dashboard", authMiddleware, superAdminMiddleware, dashboardRoutes);
 
 // Test
 app.get(

@@ -28,6 +28,19 @@ export function organizationMiddleware(
 
   next();
 }
+export async function superAdminMiddleware(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  const { role } = req.user;
+
+  if (role !== "ADMIN") {
+    return res.status(400).json({ message: "Forbidden: Super Admins only" });
+  }
+
+  next();
+}
 
 export async function hasRoleMiddleware(
   req: Request,
