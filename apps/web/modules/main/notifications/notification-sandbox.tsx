@@ -1,6 +1,6 @@
 'use client';
 
-// External pakcages
+// External packages
 import * as React from 'react';
 import { Checkbox, Form } from 'react-aria-components';
 import { ChevronDown } from 'lucide-react';
