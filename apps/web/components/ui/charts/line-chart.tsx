@@ -16,23 +16,21 @@ import { ValueType } from 'recharts/types/component/DefaultTooltipContent';
 
 export const LineChart: React.FC<{
 	data: unknown[] | undefined;
-	xAxisDataKey: string;
-	yAxisDataKey?: string;
+	xKey: string;
+	yKey?: string;
 	lineColor?: string;
 	yAxisTickFormatter?: (value: ValueType | undefined) => string;
-	hideTooltip?: boolean;
 }> = ({
 	data,
-	xAxisDataKey,
-	yAxisDataKey,
+	xKey,
+	yKey,
 	lineColor = 'var(--primary)',
 	yAxisTickFormatter,
-	hideTooltip = false,
 }) => {
 	const { theme } = useTheme();
 	const isDark = theme === 'dark';
 
-	if (!yAxisDataKey) {
+	if (!yKey) {
 		return null;
 	}
 
@@ -45,7 +43,7 @@ export const LineChart: React.FC<{
 					stroke={theme === 'dark' ? '#374151' : '#E5E7EB'}
 				/>
 				<XAxis
-					dataKey={xAxisDataKey}
+					dataKey={xKey}
 					tick={{ fill: isDark ? '#D1D5DB' : '#6B7280' }}
 					axisLine={{ stroke: isDark ? '#4B5563' : '#D1D5DB' }}
 					tickLine={{ stroke: isDark ? '#4B5563' : '#D1D5DB' }}
@@ -58,38 +56,36 @@ export const LineChart: React.FC<{
 					axisLine={{ stroke: isDark ? '#4B5563' : '#D1D5DB' }}
 					tickLine={{ stroke: isDark ? '#4B5563' : '#D1D5DB' }}
 				/>
-				{!hideTooltip && (
-					<Tooltip
-						cursor={{
-							stroke: isDark ? '#4B5563' : '#E5E7EB',
-							strokeWidth: 1,
-							fill: isDark
-								? 'rgba(55, 65, 81, 0.2)'
-								: 'rgba(243, 244, 246, 0.5)',
-						}}
-						formatter={yAxisTickFormatter ? yAxisTickFormatter : undefined}
-						contentStyle={{
-							backgroundColor: isDark ? '#262626' : '#f9fafb',
-							border: `1px solid ${isDark ? '#404040' : '#e5e7eb'}`,
-							borderRadius: '0.5rem',
-							color: isDark ? '#F9FAFB' : '#111827',
-							boxShadow: isDark
-								? '0 4px 6px -1px rgba(0, 0, 0, 0.3)'
-								: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
-						}}
-						labelStyle={{
-							color: isDark ? '#F9FAFB' : '#111827',
-							fontWeight: '500',
-							marginBottom: '4px',
-						}}
-						itemStyle={{
-							color: isDark ? '#F9FAFB' : '#111827',
-						}}
-					/>
-				)}
+
+				<Tooltip
+					cursor={{
+						stroke: isDark ? '#4B5563' : '#E5E7EB',
+						strokeWidth: 1,
+						fill: isDark ? 'rgba(55, 65, 81, 0.2)' : 'rgba(243, 244, 246, 0.5)',
+					}}
+					formatter={yAxisTickFormatter ? yAxisTickFormatter : undefined}
+					contentStyle={{
+						backgroundColor: isDark ? '#262626' : '#f9fafb',
+						border: `1px solid ${isDark ? '#404040' : '#e5e7eb'}`,
+						borderRadius: '0.5rem',
+						color: isDark ? '#F9FAFB' : '#111827',
+						boxShadow: isDark
+							? '0 4px 6px -1px rgba(0, 0, 0, 0.3)'
+							: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+					}}
+					labelStyle={{
+						color: isDark ? '#F9FAFB' : '#111827',
+						fontWeight: '500',
+						marginBottom: '4px',
+					}}
+					itemStyle={{
+						color: isDark ? '#F9FAFB' : '#111827',
+					}}
+				/>
+
 				<Line
 					type="monotone"
-					dataKey={yAxisDataKey}
+					dataKey={yKey}
 					stroke={lineColor}
 					activeDot={{
 						r: 5,

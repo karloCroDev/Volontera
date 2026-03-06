@@ -23,10 +23,8 @@ export const TotalUsersKPI = () => {
 					<div className="ml-auto aspect-video w-full max-w-64">
 						<LineChart
 							data={[{ name: 'Total users', value: 155 }]}
-							xAxisDataKey="name"
-							yAxisDataKey="value"
-							lineColor="#a1a1aa"
-							hideTooltip
+							xKey="name"
+							yKey="value"
 						/>
 					</div>
 				</div>

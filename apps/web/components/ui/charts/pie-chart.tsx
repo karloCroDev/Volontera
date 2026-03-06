@@ -25,7 +25,7 @@ export const PieChart: React.FC<{
 
 	const isDark = theme === 'dark';
 	return (
-		<ResponsiveContainer aspect={16 / 9} maxHeight={200}>
+		<ResponsiveContainer aspect={16 / 9}>
 			<RechartsPieChart>
 				<Pie
 					data={data}

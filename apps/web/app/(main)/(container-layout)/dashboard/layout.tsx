@@ -1,5 +1,9 @@
 // Components
 import { Heading } from '@/components/ui/heading';
+import {
+	BarChartExample,
+	PieChartExample,
+} from '@/modules/main/dashboard/charts';
 import { TotalUsersKPI } from '@/modules/main/dashboard/KPI';
 
 // Modules
@@ -26,7 +30,10 @@ export default async function DashboardLayoutPage({
 				))}
 			</div>
 
-			<div className="mb-6"></div>
+			<div className="mb-6 flex flex-col gap-4 lg:flex-row">
+				<PieChartExample />
+				<BarChartExample />
+			</div>
 			{/* <DashboardRoutingHeader /> TODO: Ako stignem napraviti reporte onda ovo dodaj sigurno! */}
 
 			{children}
