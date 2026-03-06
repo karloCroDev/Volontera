@@ -4,13 +4,30 @@
 import * as React from 'react';
 import * as RadixSelect from '@radix-ui/react-select';
 import { ChevronDown } from 'lucide-react';
-import { twMerge } from 'tailwind-merge';
+import { twJoin, twMerge } from 'tailwind-merge';
 
 export const SelectContainer: React.FC<
-	React.ComponentPropsWithoutRef<'div'> & RadixSelect.SelectProps
-> = ({ children, ...rest }) => (
+	React.ComponentPropsWithoutRef<'div'> &
+		RadixSelect.SelectProps & {
+			size?: 'sm' | 'md';
+			isProportionalWidth?: boolean;
+		}
+> = ({
+	children,
+	className,
+	size = 'md',
+	isProportionalWidth = false,
+	...rest
+}) => (
 	<RadixSelect.Root {...rest}>
-		<RadixSelect.Trigger className="bg-muted border-input-border flex w-40 cursor-pointer items-center justify-between rounded-md border p-3 outline-none lg:w-56">
+		<RadixSelect.Trigger
+			className={twMerge(
+				'bg-muted border-input-border flex cursor-pointer items-center justify-between rounded-md border outline-none',
+				size === 'md' && 'w-40 p-3 lg:w-56',
+				size === 'sm' && 'w-36 p-2 lg:w-44',
+				className
+			)}
+		>
 			<RadixSelect.Value placeholder="Select an option" />
 			<RadixSelect.Icon>
 				<ChevronDown className="size-4" />
@@ -23,7 +40,12 @@ export const SelectContainer: React.FC<
 				position="popper"
 				align="start"
 			>
-				<RadixSelect.Viewport className="flex w-56 flex-col">
+				<RadixSelect.Viewport
+					className={twJoin(
+						'flex w-56 flex-col',
+						isProportionalWidth && 'w-[var(--radix-select-trigger-width)]'
+					)}
+				>
 					{children}
 				</RadixSelect.Viewport>
 			</RadixSelect.Content>
