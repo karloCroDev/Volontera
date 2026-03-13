@@ -23,6 +23,7 @@ import { Avatar } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { LinkAsButton } from '@/components/ui/link-as-button';
 import { useSidebarContext } from '@/components/ui/sidebar/sidebar-provider';
+import { Container } from '@/components/ui/container';
 
 // Hooks
 import { useLogout } from '@/hooks/data/user';
@@ -114,7 +115,7 @@ export const UserInformation: React.FC<{
 					placement={!desktopOpen ? 'right bottom' : 'top'}
 				>
 					<Dialog>
-						<div className="bg-muted border-input-border flex flex-col gap-3 rounded-lg border px-4 py-3">
+						<Container className="flex flex-col gap-3 rounded-lg px-4 py-3 shadow-none">
 							<div className="flex items-center gap-4">
 								<Avatar
 									imageProps={{
@@ -200,7 +201,7 @@ export const UserInformation: React.FC<{
 							>
 								Log out
 							</Button>
-						</div>
+						</Container>
 					</Dialog>
 				</Popover>
 			</DialogTrigger>

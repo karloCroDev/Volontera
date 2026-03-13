@@ -16,7 +16,7 @@ export const InformationContainer: React.FC<
 		<div
 			{...rest}
 			className={twMerge(
-				'border-input-border mt-6 w-full rounded-lg border p-4 lg:mt-8 lg:p-6',
+				'border-input-border mt-6 w-full rounded-lg border p-4 shadow-lg lg:mt-8 lg:p-6',
 				className
 			)}
 		>

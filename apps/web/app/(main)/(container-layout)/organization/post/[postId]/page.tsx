@@ -9,6 +9,7 @@ import { CommentTextArea } from '@/modules/main/organization/post/comment-text-a
 // Components
 import { Post } from '@/components/ui/post/post';
 import { PostSkeleton } from '@/components/ui/post/post-skeleton';
+import { Container } from '@/components/ui/container';
 
 // Lib
 import { retrievePostWithComments } from '@/lib/server/post';
@@ -34,11 +35,11 @@ export default async function PostWithCommentsPage({
 					<PostSkeleton />
 					<hr className="bg-muted my-6 h-px w-full border-0" />
 
-					<div className="border-input-border bg-muted max-h- relative w-full rounded-xl border px-5 py-6">
+					<Container className="max-h- relative w-full rounded-xl px-5 py-6 shadow-none">
 						{[...Array(3)].map((_, indx) => (
 							<CommentOrReplySkeleton key={indx} />
 						))}
-					</div>
+					</Container>
 				</>
 			}
 		>
@@ -67,7 +68,7 @@ async function PostContent({ postId }: { postId: string }) {
 		<>
 			<Post post={postWithComments.post} />
 			<hr className="bg-muted my-6 h-px w-full border-0" />
-			<div className="border-input-border bg-muted max-h- relative w-full rounded-xl border px-5 py-6 shadow-xl">
+			<Container className="max-h- relative w-full rounded-xl px-5 py-6 shadow-xl">
 				<h4 className="text-lg font-semibold underline underline-offset-4 lg:text-xl">
 					Comments
 				</h4>
@@ -76,7 +77,7 @@ async function PostContent({ postId }: { postId: string }) {
 					<CommentsMapping dehydratedState={dehydratedState} />
 				</div>
 				<CommentTextArea />
-			</div>
+			</Container>
 		</>
 	);
 }

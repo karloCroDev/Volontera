@@ -27,6 +27,7 @@ export const Plans: React.FC<{
 	billingLink: string;
 }> = withReactQueryProvider(({ user, billingLink }) => {
 	const { mutate, isPending: isCheckoutPending } = useCheckout();
+	const hasBillingLink = Boolean(billingLink);
 
 	const [pendingPriceId, setPendingPriceId] = React.useState<string | null>(
 		null
@@ -54,8 +55,6 @@ export const Plans: React.FC<{
 		);
 	};
 
-	console.log(user.pricingId);
-
 	const slides = [
 		<PaymentPlanCard
 			key={1}
@@ -81,14 +80,25 @@ export const Plans: React.FC<{
 				)
 			}
 			link={
-				<AnchorAsButton
-					className="mt-auto w-full"
-					size="md"
-					variant={!user.pricingId ? 'outline' : 'primary'}
-					href={billingLink}
-				>
-					{!user.pricingId ? 'Current plan' : 'Select plan'}
-				</AnchorAsButton>
+				hasBillingLink ? (
+					<AnchorAsButton
+						className="mt-auto w-full"
+						size="md"
+						variant={!user.pricingId ? 'outline' : 'primary'}
+						href={billingLink}
+					>
+						{!user.pricingId ? 'Current plan' : 'Select plan'}
+					</AnchorAsButton>
+				) : (
+					<Button
+						className="mt-auto w-full"
+						size="md"
+						variant="outline"
+						disabled
+					>
+						Billing unavailable
+					</Button>
+				)
 			}
 		/>,
 
@@ -125,13 +135,23 @@ export const Plans: React.FC<{
 							? 'outline'
 							: 'primary'
 					}
-					onClick={() =>
-						user.pricingId
-							? (window.location.href = billingLink)
-							: generateLink({
-									priceId: process.env.NEXT_PUBLIC_STRIPE_MONTHLY_PRICE_ID!,
-								})
-					}
+					onClick={() => {
+						if (user.pricingId) {
+							if (!hasBillingLink) {
+								toast({
+									title: 'Billing unavailable',
+									content: 'Please try again later.',
+									variant: 'error',
+								});
+								return;
+							}
+							window.location.href = billingLink;
+							return;
+						}
+						generateLink({
+							priceId: process.env.NEXT_PUBLIC_STRIPE_MONTHLY_PRICE_ID!,
+						});
+					}}
 					isLoading={
 						isCheckoutPending &&
 						pendingPriceId === process.env.NEXT_PUBLIC_STRIPE_MONTHLY_PRICE_ID
@@ -177,13 +197,23 @@ export const Plans: React.FC<{
 							? 'outline'
 							: 'primary'
 					}
-					onClick={() =>
-						user.pricingId
-							? (window.location.href = billingLink)
-							: generateLink({
-									priceId: process.env.NEXT_PUBLIC_STRIPE_YEARLY_PRICE_ID!,
-								})
-					}
+					onClick={() => {
+						if (user.pricingId) {
+							if (!hasBillingLink) {
+								toast({
+									title: 'Billing unavailable',
+									content: 'Please try again later.',
+									variant: 'error',
+								});
+								return;
+							}
+							window.location.href = billingLink;
+							return;
+						}
+						generateLink({
+							priceId: process.env.NEXT_PUBLIC_STRIPE_YEARLY_PRICE_ID!,
+						});
+					}}
 					isLoading={
 						isCheckoutPending &&
 						pendingPriceId === process.env.NEXT_PUBLIC_STRIPE_YEARLY_PRICE_ID

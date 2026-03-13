@@ -6,6 +6,7 @@ import { UserLock } from 'lucide-react';
 import { Avatar } from '@/components/ui/avatar';
 import { OrganizationRoutingHeader } from '@/modules/main/organization/common/organization-routing-header';
 import { LinkAsButton } from '@/components/ui/link-as-button';
+import { Container } from '@/components/ui/container';
 
 // Lib
 import { getOrganizationDetailsById } from '@/lib/server/organization';
@@ -40,7 +41,7 @@ export default async function OrganizationFeaturesLayout({
 
 	return (
 		<>
-			<div className="border-input-border bg-muted relative flex flex-shrink-0 flex-col items-center gap-6 rounded-xl border p-4 shadow-lg md:h-32 md:flex-row md:px-6">
+			<Container className="relative flex flex-shrink-0 flex-col items-center gap-6 rounded-xl p-4 shadow-lg md:h-32 md:flex-row md:px-6">
 				<Avatar
 					imageProps={{
 						src: `${process.env.NEXT_PUBLIC_AWS_CLOUDFRONT_URL}/${organizationDetailsById.organization.avatarImage}`,
@@ -92,7 +93,7 @@ export default async function OrganizationFeaturesLayout({
 						)}
 					</div>
 				)}
-			</div>
+			</Container>
 
 			{!member.success || !member.organizationMember.role ? (
 				<>

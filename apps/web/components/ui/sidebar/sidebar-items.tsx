@@ -18,6 +18,7 @@ import { Avatar } from '@/components/ui/avatar';
 import { useSidebarContext } from '@/components/ui/sidebar/sidebar-provider';
 import { Indicators } from '@/components/ui/indicators';
 import { Dot } from '@/components/ui/dot';
+import { Skeleton } from '@/components/ui/skeleton';
 
 // Hooks
 import { useSession } from '@/hooks/data/user';
@@ -112,7 +113,7 @@ export const Organizations = () => {
 						<ul className="ml-4 mt-4">
 							{isLoading && (
 								<li className="ml-8 mt-4 text-xs sm:text-sm lg:text-base">
-									<div className="bg-muted-foreground h-6 animate-pulse"></div>
+									<Skeleton className="bg-muted-foreground h-6" />
 								</li>
 							)}
 						</ul>

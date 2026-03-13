@@ -10,6 +10,8 @@ import { useParams } from 'next/navigation';
 import { Collapsible } from '@/components/ui/collapsible';
 import { Avatar } from '@/components/ui/avatar';
 import { LinkAsButton } from '@/components/ui/link-as-button';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Container } from '@/components/ui/container';
 
 // Modules
 import { InformationContainer } from '@/modules/main/public-profile/information-container';
@@ -59,8 +61,8 @@ export const ListOrganizations = () => {
 
 							{data && data.organizations.length > 0 ? (
 								data?.organizations.map((organization, index) => (
-									<div
-										className="border-input-border bg-muted mt-4 flex items-center gap-4 rounded-md border px-4 py-3"
+									<Container
+										className="mt-4 flex items-center gap-4 rounded-md px-4 py-3 shadow-none"
 										key={index}
 									>
 										<Avatar
@@ -82,7 +84,7 @@ export const ListOrganizations = () => {
 										>
 											Explore
 										</LinkAsButton>
-									</div>
+									</Container>
 								))
 							) : (
 								<p className="text-muted-foreground">
@@ -98,9 +100,9 @@ export const ListOrganizations = () => {
 };
 
 const ListOrganizationSkeleton = () => (
-	<div className="border-input-border bg-muted mt-4 flex items-center gap-4 rounded-md border px-4 py-3">
-		<div className="bg-muted-foreground/20 h-10 w-10 animate-pulse rounded-full" />
-		<div className="bg-muted-foreground/20 h-4 w-48 animate-pulse rounded" />
-		<div className="bg-muted-foreground/20 ml-auto h-8 w-20 animate-pulse rounded" />
-	</div>
+	<Container className="mt-4 flex items-center gap-4 rounded-md px-4 py-3 shadow-none">
+		<Skeleton className="bg-muted-foreground/20 h-10 w-10 rounded-full" />
+		<Skeleton className="bg-muted-foreground/20 h-4 w-48" />
+		<Skeleton className="bg-muted-foreground/20 ml-auto h-8 w-20" />
+	</Container>
 );

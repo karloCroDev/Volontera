@@ -13,6 +13,7 @@ import { Dialog } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Avatar } from '@/components/ui/avatar';
+import { Skeleton } from '@/components/ui/skeleton';
 
 // Hooks
 import { useSearch } from '@/hooks/data/search';
@@ -173,17 +174,17 @@ const SearchOutput: React.FC<{
 };
 
 const SearchOutputSkeleton = () => (
-	<div className="border-input-border flex animate-pulse items-center gap-4 rounded-lg border px-5 py-3">
-		<div className="bg-muted-foreground h-12 w-12 rounded-full" />
+	<div className="border-input-border flex items-center gap-4 rounded-lg border px-5 py-3">
+		<Skeleton className="bg-muted-foreground h-12 w-12 rounded-full" />
 
 		<div className="flex flex-col gap-1">
-			<div className="bg-muted-foreground h-4 w-32 rounded" />
-			<div className="bg-muted-foreground/40 h-3 w-40 rounded text-xs" />
+			<Skeleton className="bg-muted-foreground h-4 w-32" />
+			<Skeleton className="bg-muted-foreground/40 h-3 w-40 text-xs" />
 		</div>
 
 		<div className="ml-auto flex gap-4">
-			<div className="border-muted-foreground size-8 rounded-lg border" />
-			<div className="bg-muted-foreground size-8 rounded-lg" />
+			<Skeleton className="border-muted-foreground size-8 rounded-lg border bg-transparent" />
+			<Skeleton className="bg-muted-foreground size-8 rounded-lg" />
 		</div>
 	</div>
 );

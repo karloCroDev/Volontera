@@ -4,6 +4,7 @@ import { twMerge } from 'tailwind-merge';
 
 // Components
 import { Tag } from '@/components/ui/tag';
+import { Container } from '@/components/ui/container';
 
 export const PaymentPlanCard: React.FC<
 	React.ComponentPropsWithoutRef<'div'> & {
@@ -12,7 +13,7 @@ export const PaymentPlanCard: React.FC<
 		duration: string;
 		tag?: string;
 		reasons: React.ReactNode;
-		link: React.ReactNode;
+		link?: React.ReactNode;
 		variant?: 'primary' | 'secondary';
 	}
 > = ({
@@ -27,11 +28,10 @@ export const PaymentPlanCard: React.FC<
 	...rest
 }) => {
 	return (
-		<div
+		<Container
 			{...rest}
 			className={twMerge(
-				'flex h-[500px] min-w-96 flex-1 flex-col rounded-lg border px-5 py-7',
-				variant === 'primary' && 'border-input-border bg-muted',
+				'flex h-[500px] min-w-96 flex-1 flex-col rounded-lg px-5 py-7 shadow-none',
 				variant === 'secondary' && 'bg-accent border-accent-foreground',
 				className
 			)}
@@ -76,6 +76,6 @@ export const PaymentPlanCard: React.FC<
 
 			{/* TODO: Get the url from the stripe */}
 			{link}
-		</div>
+		</Container>
 	);
 };
