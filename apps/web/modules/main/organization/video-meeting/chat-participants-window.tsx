@@ -10,9 +10,9 @@ import { Button } from '@/components/ui/button';
 import { Message } from '@/components/ui/message/message';
 
 // Lib
-import { useChat } from '@/modules/main/organization/video-meeting/chat-provider';
+import { useChat } from '@/modules/main/organization/video-meeting/chat-participants-provider';
 
-export const ChatWindow = () => {
+export const ChatParticipantsWindow = () => {
 	const { isChatOpen } = useChat();
 	const [view, setView] = React.useState<'messages' | 'participants'>(
 		'messages'

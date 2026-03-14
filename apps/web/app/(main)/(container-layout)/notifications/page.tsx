@@ -11,6 +11,7 @@ import { NotificationSandbox } from '@/modules/main/notifications/notification-s
 export default async function Notifications() {
 	const notifications = await getUsersNotifications();
 
+	console.log('Notifications: ', notifications);
 	await getMarkAllNotificationsAsRead(); // Svaki put kad se otvori notifikacijski page, sve notifikacije se oznace kao procitane (nece biti odmah prikazane kao procitane na UI-u samo updateam)
 
 	return (

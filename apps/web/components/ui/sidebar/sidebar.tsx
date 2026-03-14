@@ -2,6 +2,7 @@
 
 // External packages
 import {
+	ChartSpline,
 	ChevronLast,
 	HelpCircle,
 	Home,
@@ -27,9 +28,11 @@ import {
 	Organizations,
 	SidebarItem,
 } from '@/components/ui/sidebar/sidebar-items';
-import { UserResponse } from '@repo/types/user';
 import { Volontera } from '@/components/ui/volonotera';
 import { Icon } from '@/components/ui/icon';
+
+// Types
+import { UserResponse } from '@repo/types/user';
 
 export const Sidebar: React.FC<{
 	user: UserResponse;
@@ -149,6 +152,25 @@ export const Sidebar: React.FC<{
 								isSelected={pathname.includes('/help')}
 							>
 								<HelpCircle className="size-8" />
+							</SidebarItem>
+						)}
+					</Link>
+					<Link href="/dashboard">
+						{desktopOpen ? (
+							<SidebarItem
+								iconLeft={<ChartSpline className="size-5" />}
+								isSelected={pathname.includes('/dashboard')}
+							>
+								Dashboard
+							</SidebarItem>
+						) : (
+							<SidebarItem
+								size="lg"
+								isFullyRounded
+								className="p-4"
+								isSelected={pathname.includes('/dashboard')}
+							>
+								<ChartSpline className="size-8" />
 							</SidebarItem>
 						)}
 					</Link>

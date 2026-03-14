@@ -8,7 +8,7 @@ import { MessageCircle, Mic, PhoneOff, RefreshCcw, Video } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 // Lib
-import { useChat } from '@/modules/main/organization/video-meeting/chat-provider';
+import { useChat } from '@/modules/main/organization/video-meeting/chat-participants-provider';
 
 export const VideoOptions = () => {
 	const { setIsChatOpen, isChatOpen } = useChat();

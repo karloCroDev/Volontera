@@ -3,13 +3,13 @@ import { Volume2 } from 'lucide-react';
 
 // Components
 import { Button } from '@/components/ui/button';
-import { ChatWindow } from '@/modules/main/organization/video-meeting/chat-window';
-import { ChatProvider } from '@/modules/main/organization/video-meeting/chat-provider';
+import { ChatParticipantsWindow } from '@/modules/main/organization/video-meeting/chat-participants-window';
+import { ChatParticipantsProvider } from '@/modules/main/organization/video-meeting/chat-participants-provider';
 import { VideoOptions } from '@/modules/main/organization/video-meeting/video-options';
 
 export default async function VideoMeetingPage() {
 	return (
-		<ChatProvider>
+		<ChatParticipantsProvider>
 			<div className="flex h-full flex-col gap-4">
 				<div className="border-input-border relative flex-1 rounded-lg border shadow-lg">
 					<div className="absolute bottom-4 left-4">
@@ -19,12 +19,12 @@ export default async function VideoMeetingPage() {
 						</Button>
 					</div>
 
-					<ChatWindow />
+					<ChatParticipantsWindow />
 				</div>
 
 				<div className="flex h-20 gap-4 overflow-x-scroll">
 					<div className="flex flex-1 gap-4">
-						<div className="border-input-border relative size-20 rounded border shadow-lg"></div>
+						<div className="border-input-border relative size-20 rounded border shadow-lg" />
 					</div>
 
 					<hr className="bg-input-border h-full w-px border-0" />
@@ -32,6 +32,6 @@ export default async function VideoMeetingPage() {
 					<VideoOptions />
 				</div>
 			</div>
-		</ChatProvider>
+		</ChatParticipantsProvider>
 	);
 }

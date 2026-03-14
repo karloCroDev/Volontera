@@ -17,14 +17,17 @@ import {
   NotificationIdsArgs,
 } from "@repo/schemas/notification";
 
-import { toastResponseOutput } from "@/lib/utils/service-output";
+import {
+  serverFetchOutput,
+  toastResponseOutput,
+} from "@/lib/utils/service-output";
 
 export async function getUserNotificationsService(userId: User["id"]) {
   const notifications = await retrieveUserNotifications(userId);
 
-  return toastResponseOutput({
+  return serverFetchOutput({
     status: 200,
-    title: "User notifications retrieved",
+    success: true,
     message: "User notifications retrieved successfully",
     data: { notifications },
   });

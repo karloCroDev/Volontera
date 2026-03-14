@@ -1,6 +1,6 @@
 'use client';
 
-// External pakcages
+// External packages
 import * as React from 'react';
 import { Checkbox, Form } from 'react-aria-components';
 import { ChevronDown } from 'lucide-react';
@@ -78,15 +78,18 @@ export const NotificationSandbox: React.FC<{
 				>
 					Select all
 				</CheckboxWithLabel>
-				<Button
-					colorScheme="destructive"
-					size="sm"
-					isFullyRounded
-					isLoading={isPending}
-					type="submit"
-				>
-					Delete
-				</Button>
+
+				{ids.length > 0 && (
+					<Button
+						colorScheme="destructive"
+						size="sm"
+						isFullyRounded
+						isLoading={isPending}
+						type="submit"
+					>
+						Delete
+					</Button>
+				)}
 			</div>
 			{notifications.length > 0 ? (
 				<Accordion

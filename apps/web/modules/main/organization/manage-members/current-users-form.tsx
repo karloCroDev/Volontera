@@ -104,6 +104,20 @@ export const CurrentUsersForm: React.FC<{
 						</p>
 
 						<div className="ml-auto flex gap-3">
+							<Button
+								isFullyRounded
+								colorScheme="destructive"
+								size="xs"
+								// onPress={() =>
+								// 	onSubmit({
+								// 		role: 'ADMIN',
+								// 		userId: memeber.user.id,
+								// 	})
+								// }
+							>
+								Ban member
+							</Button>
+
 							{hasWantedOrganizationRole({
 								userRole: memeber.role,
 								requiredRoles: ['MEMBER'],

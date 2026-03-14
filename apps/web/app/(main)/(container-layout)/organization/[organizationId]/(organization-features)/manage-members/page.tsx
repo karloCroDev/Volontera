@@ -5,8 +5,8 @@ import { ChartArea } from 'lucide-react';
 // Modules
 import { CurrentUsersForm } from '@/modules/main/organization/manage-members/current-users-form';
 import { RequestsForm } from '@/modules/main/organization/manage-members/requests-form';
-import { PieChart } from '@/modules/main/organization/manage-members/pie-chart';
-import { BarChart } from '@/modules/main/organization/manage-members/bar-chart';
+import { PieChart } from '@/components/ui/charts/pie-chart';
+import { BarChart } from '@/components/ui/charts/bar-chart';
 import { DeleteOrganizationDialog } from '@/modules/main/organization/manage-members/delete-organization-dialog';
 
 // Components
@@ -129,7 +129,7 @@ const Dashboard = ({
 				title="Tasks ratio"
 				subtitle="Total tasks ration between priorities inside the organization"
 			>
-				<div className="mt-auto aspect-square">
+				<div className="mx-auto mt-auto w-3/4 flex-1 text-sm">
 					<PieChart data={pieTasks} dataKey="count" />
 				</div>
 			</ChartContainer>

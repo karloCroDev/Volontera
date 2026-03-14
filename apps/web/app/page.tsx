@@ -130,7 +130,7 @@ export default async function LandingPage() {
 								].map((feature, index) => (
 									<Container
 										key={index}
-										className="rounded-lg border p-8 transition hover:shadow-lg"
+										className="rounded-lg border p-8 transition-all hover:scale-105 hover:shadow-lg"
 									>
 										<div className="bg-background-foreground mb-4 flex h-12 w-12 items-center justify-center rounded-lg">
 											<feature.icon className="text-background h-6 w-6" />
