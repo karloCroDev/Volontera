@@ -3,7 +3,7 @@ import { Heading } from '@/components/ui/heading';
 import {
 	BarChartExample,
 	PieChartExample,
-} from '@/modules/main/dashboard/charts';
+} from '@/modules/main/dashboard/graph-card-template';
 import { TotalUsersKPI } from '@/modules/main/dashboard/KPI';
 
 // Modules
@@ -14,29 +14,5 @@ export default async function DashboardLayoutPage({
 }: {
 	children: React.ReactNode;
 }) {
-	return (
-		<>
-			<div className="flex items-center justify-between">
-				<Heading subtitle="All activities inside the organization by users">
-					Dashboard
-				</Heading>
-
-				<PeriodSelect />
-			</div>
-
-			<div className="mb-4 flex flex-col gap-4 lg:flex-row">
-				{[...Array(3)].map((_, i) => (
-					<TotalUsersKPI key={i} />
-				))}
-			</div>
-
-			<div className="mb-6 flex flex-col gap-4 lg:flex-row">
-				<PieChartExample />
-				<BarChartExample />
-			</div>
-			{/* <DashboardRoutingHeader /> TODO: Ako stignem napraviti reporte onda ovo dodaj sigurno! */}
-
-			{children}
-		</>
-	);
+	return <>{children}</>;
 }

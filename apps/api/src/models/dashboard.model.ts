@@ -1,12 +1,10 @@
+// Database
 import { prisma } from "@repo/database";
 
-export type DashboardDurationDays = 30 | 60 | 90;
+// Lib
+import { getSinceDate } from "@/lib/utils/dashboard-kpi";
 
-function getSinceDate(durationDays: DashboardDurationDays) {
-  const since = new Date();
-  since.setDate(since.getDate() - durationDays);
-  return since;
-}
+export type DashboardDurationDays = 30 | 60 | 90;
 
 export async function retrieveKPIMetrics({
   durationDays = 30,
@@ -14,6 +12,7 @@ export async function retrieveKPIMetrics({
   durationDays?: DashboardDurationDays;
 } = {}) {
   const since = getSinceDate(durationDays);
+  const createdAtSelect = { createdAt: true } as const;
 
   const [
     totalVolunteers,
@@ -25,6 +24,9 @@ export async function retrieveKPIMetrics({
     organizationsWithPaidPlan,
     organizationWithYearlyPaidPlan,
     userWithYearlyPaidPlan,
+    volunteerRows,
+    organizatorRows,
+    organizationRows,
   ] = await prisma.$transaction([
     prisma.user.count({
       where: {
@@ -85,6 +87,26 @@ export async function retrieveKPIMetrics({
         subscriptionType: "YEARLY",
       },
     }),
+    prisma.user.findMany({
+      where: {
+        role: "USER",
+        createdAt: { gte: since },
+      },
+      select: createdAtSelect,
+    }),
+    prisma.user.findMany({
+      where: {
+        role: "ORGANIZATION",
+        createdAt: { gte: since },
+      },
+      select: createdAtSelect,
+    }),
+    prisma.organization.findMany({
+      where: {
+        createdAt: { gte: since },
+      },
+      select: createdAtSelect,
+    }),
   ]);
 
   return {
@@ -99,5 +121,10 @@ export async function retrieveKPIMetrics({
     organizationsWithPaidPlan,
     organizationWithYearlyPaidPlan,
     userWithYearlyPaidPlan,
+    kpiRows: {
+      volunteerRows,
+      organizatorRows,
+      organizationRows,
+    },
   };
 }

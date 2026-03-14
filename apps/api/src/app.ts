@@ -176,13 +176,18 @@ app.use(
   authMiddleware,
   hasRoleMiddleware,
   rateLimitMiddleware({
-    additionalTags: ["comment"],
+    additionalTags: ["home"],
     limit: 20,
   }),
   homeRoute,
 );
 
-app.use("/dashboard", authMiddleware, superAdminMiddleware, dashboardRoutes);
+app.use(
+  "/dashboard",
+  authMiddleware,
+  //  superAdminMiddleware,
+  dashboardRoutes,
+);
 
 // Test
 app.get(

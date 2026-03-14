@@ -5,15 +5,34 @@ import * as React from 'react';
 import { LineChart } from '@/components/ui/charts/line-chart';
 import { Container } from '@/components/ui/container';
 
-// TODO: Copy the same layout and then share it accross multiple KPIS
-export const TotalUsersKPI = () => {
+// Types
+import type { DashboardKPIIntervalPoint } from '@repo/types/dashboard';
+
+type KPIKey = 'totalVolunteers' | 'totalOrganizations' | 'totalOrganizators';
+
+export const TotalUsersKPI = ({
+	title,
+	total,
+	series,
+	seriesKey,
+}: {
+	title: string;
+	total: number;
+	series: DashboardKPIIntervalPoint[];
+	seriesKey: KPIKey;
+}) => {
+	const chartData = series.map((point) => ({
+		week: point.week,
+		value: point[seriesKey],
+	}));
+
 	return (
 		<Container className="flex w-full flex-1 flex-col rounded-lg px-6 py-5">
-			<p className="text-md font-medium">Total users</p>
+			<p className="text-md font-medium">{title}</p>
 
 			<div className="flex flex-1 justify-between gap-4">
 				<div>
-					<p className="text-lg font-semibold">155</p>
+					<p className="text-lg font-semibold">{total}</p>
 					<p className="text-muted-foreground text-sm">
 						in the selected period
 					</p>
@@ -21,11 +40,7 @@ export const TotalUsersKPI = () => {
 
 				<div className="flex flex-1">
 					<div className="ml-auto aspect-video w-full max-w-64">
-						<LineChart
-							data={[{ name: 'Total users', value: 155 }]}
-							xKey="name"
-							yKey="value"
-						/>
+						<LineChart data={chartData} xKey="week" yKey="value" />
 					</div>
 				</div>
 			</div>
