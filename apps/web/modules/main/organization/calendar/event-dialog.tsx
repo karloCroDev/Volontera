@@ -26,6 +26,7 @@ import { RadioIconVisual } from '@/components/ui/radio';
 // Lib
 import { formatDate } from '@/lib/utils/time-adjustments';
 import { ResizableTextArea } from '@/components/ui/resizable-input';
+import { EventCard } from '@/modules/main/organization/calendar/event-card';
 
 // TODO: Change this once I get from prisma for the sake of consistency
 type Priority = 'LOW_PRIORITY' | 'MEDIUM_PRIORITY' | 'HIGH_PRIORITY';
@@ -50,17 +51,19 @@ export const EventDialog: React.FC<{
 					date={date}
 					// onClick={() => onDatePress?.(date)}
 					className={twJoin(
-						'border-input-border group relative h-28 w-full cursor-pointer border-b border-r p-2 text-left align-top outline-none',
+						'border-input-border group relative flex h-28 w-full cursor-pointer flex-col border-b border-r p-2 text-left align-top outline-none',
 						'data-[hovered]:bg-accent/30 data-[pressed]:bg-accent/50',
 						'data-[selected]:bg-accent/40',
 						'data-[outside-month]:bg-background data-[outside-month]:text-muted-foreground',
 						'data-[disabled]:cursor-not-allowed data-[disabled]:opacity-50'
 					)}
 				>
-					<div>
-						<div className="flex items-start justify-between">
-							<span className="text-sm font-medium">{date.day}</span>
-						</div>
+					<span className="text-sm">{date.day}</span>
+
+					<div className="mt-2 flex flex-1 flex-col gap-2 overflow-scroll">
+						{[...Array(8)].map((_, indx) => (
+							<EventCard key={indx} />
+						))}
 					</div>
 				</CalendarCell>
 			}
@@ -71,22 +74,7 @@ export const EventDialog: React.FC<{
 			<div>
 				<div className="my-4 flex max-h-60 flex-col gap-3 overflow-y-scroll">
 					{[...Array(8)].map((_, indx) => (
-						<div
-							className="border-input-border relative flex items-center justify-between rounded border px-4 py-3"
-							key={indx}
-						>
-							<TooltipTrigger delay={500}>
-								<Tooltip>
-									<Container className="rounded-md p-2">Low priority</Container>
-								</Tooltip>
-								<AriaButton className="bg-success absolute left-1 h-[calc(100%-0.5rem)] w-1.5 cursor-help rounded-full" />
-							</TooltipTrigger>
-							<p>Task xxx</p>
-							<div className="flex items-center gap-2 text-sm">
-								<p className="text-muted-foreground">Time:</p>
-								<p className="italic">{formatDate(date.toString())}</p>
-							</div>
-						</div>
+						<EventCard key={indx} time={`${9 + indx}:00`} size="lg" />
 					))}
 				</div>
 
