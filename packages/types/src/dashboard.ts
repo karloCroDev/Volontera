@@ -19,7 +19,7 @@ export type DashboardKPIMetricsResponse = ServerHandleResponse<true> & {
   totalUnpaidUsers: number;
   totalPaidUsers: number;
   usersWithPaidPlan: number;
-  organizationsWithPaidPlan: number;
-  organizationWithYearlyPaidPlan: number;
+  organizatorsWithPaidPlan: number;
+  organizatorsWithYearlyPaidPlan: number;
   userWithYearlyPaidPlan: number;
 };

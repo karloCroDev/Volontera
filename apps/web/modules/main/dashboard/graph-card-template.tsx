@@ -20,7 +20,7 @@ export const GraphCardTemplate = ({
 			</div>
 
 			<div className="flex-1">
-				<div className="max-w-84 mx-auto flex aspect-video size-full items-center justify-center">
+				<div className="max-w-84 mx-auto flex aspect-video size-full items-center justify-center text-sm">
 					{children}
 				</div>
 			</div>

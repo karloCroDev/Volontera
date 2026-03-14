@@ -12,7 +12,6 @@ export async function retrieveKPIMetrics({
   durationDays?: DashboardDurationDays;
 } = {}) {
   const since = getSinceDate(durationDays);
-  const createdAtSelect = { createdAt: true } as const;
 
   const [
     totalVolunteers,
@@ -21,8 +20,8 @@ export async function retrieveKPIMetrics({
     totalUnpaidUsers,
     totalPaidUsers,
     usersWithPaidPlan,
-    organizationsWithPaidPlan,
-    organizationWithYearlyPaidPlan,
+    organizatorsWithPaidPlan,
+    organizatorsWithYearlyPaidPlan,
     userWithYearlyPaidPlan,
     volunteerRows,
     organizatorRows,
@@ -87,25 +86,27 @@ export async function retrieveKPIMetrics({
         subscriptionType: "YEARLY",
       },
     }),
+
+    // Rowovi za KPI seriju
     prisma.user.findMany({
       where: {
         role: "USER",
         createdAt: { gte: since },
       },
-      select: createdAtSelect,
+      select: { createdAt: true },
     }),
     prisma.user.findMany({
       where: {
         role: "ORGANIZATION",
         createdAt: { gte: since },
       },
-      select: createdAtSelect,
+      select: { createdAt: true },
     }),
     prisma.organization.findMany({
       where: {
         createdAt: { gte: since },
       },
-      select: createdAtSelect,
+      select: { createdAt: true },
     }),
   ]);
 
@@ -118,8 +119,8 @@ export async function retrieveKPIMetrics({
     totalUnpaidUsers,
     totalPaidUsers,
     usersWithPaidPlan,
-    organizationsWithPaidPlan,
-    organizationWithYearlyPaidPlan,
+    organizatorsWithPaidPlan,
+    organizatorsWithYearlyPaidPlan,
     userWithYearlyPaidPlan,
     kpiRows: {
       volunteerRows,

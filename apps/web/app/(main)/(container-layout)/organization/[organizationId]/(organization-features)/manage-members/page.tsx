@@ -129,7 +129,7 @@ const Dashboard = ({
 				title="Tasks ratio"
 				subtitle="Total tasks ration between priorities inside the organization"
 			>
-				<div className="mt-auto aspect-square">
+				<div className="mx-auto mt-auto w-3/4 flex-1 text-sm">
 					<PieChart data={pieTasks} dataKey="count" />
 				</div>
 			</ChartContainer>

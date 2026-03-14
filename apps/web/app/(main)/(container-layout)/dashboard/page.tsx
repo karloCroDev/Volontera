@@ -63,12 +63,20 @@ export default async function DashboardPage({
 
 	const barChartData = [
 		{
-			name: 'Free plan',
-			value: metrics.success ? metrics.totalUnpaidUsers : 0,
+			name: 'Volunteers monthly',
+			value: metrics.success ? metrics.usersWithPaidPlan : 0,
 		},
 		{
-			name: 'Pro plan',
-			value: metrics.success ? metrics.totalPaidUsers : 0,
+			name: 'Volunteers yearly',
+			value: metrics.success ? metrics.userWithYearlyPaidPlan : 0,
+		},
+		{
+			name: 'Organizators - monthly',
+			value: metrics.success ? metrics.organizatorsWithPaidPlan : 0,
+		},
+		{
+			name: 'Organizators - yearly',
+			value: metrics.success ? metrics.organizatorsWithYearlyPaidPlan : 0,
 		},
 	];
 
@@ -96,8 +104,8 @@ export default async function DashboardPage({
 
 			<div className="mb-6 flex flex-col gap-4 lg:flex-row">
 				<GraphCardTemplate
-					title="Pro vs non pro users"
-					subtitle="Distribution of users by pro status"
+					title="Pro vs non pro volunteers and organizations"
+					subtitle="Distribution of volunteers and organizations by pro status"
 				>
 					{pieChartData.some((item) => item.count > 0) ? (
 						<PieChart data={pieChartData} dataKey="count" />
@@ -108,8 +116,8 @@ export default async function DashboardPage({
 					)}
 				</GraphCardTemplate>
 				<GraphCardTemplate
-					title="Users with specific plan"
-					subtitle="Distribution of users by their plan"
+					title="Volunteers and organizations with specific PRO plan"
+					subtitle="Distribution of types of PRO volunteers and organizations by their plan"
 				>
 					{barChartData.some((item) => item.value > 0) ? (
 						<BarChart data={barChartData} xKey="name" yKey="value" />
