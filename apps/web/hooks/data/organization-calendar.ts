@@ -57,7 +57,7 @@ export const useCreateOrganizationEvent = (
 			createOrganizationEvent(data),
 		onSuccess: async (...args) => {
 			await queryClient.invalidateQueries({
-				queryKey: ['organization-calendar'],
+				predicate: (query) => query.queryKey.includes('organization-calendar'),
 			});
 
 			await options?.onSuccess?.(...args);
@@ -81,7 +81,7 @@ export const useUpdateOrganizationEvent = (
 			updateOrganizationEvent(data),
 		onSuccess: async (...args) => {
 			await queryClient.invalidateQueries({
-				queryKey: ['organization-calendar'],
+				predicate: (query) => query.queryKey.includes('organization-calendar'),
 			});
 
 			await options?.onSuccess?.(...args);
@@ -105,7 +105,7 @@ export const useDeleteOrganizationEvent = (
 			deleteOrganizationEvent(data),
 		onSuccess: async (...args) => {
 			await queryClient.invalidateQueries({
-				queryKey: ['organization-calendar'],
+				predicate: (query) => query.queryKey.includes('organization-calendar'),
 			});
 
 			await options?.onSuccess?.(...args);

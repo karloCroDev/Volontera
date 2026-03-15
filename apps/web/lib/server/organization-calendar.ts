@@ -5,7 +5,7 @@ import { serverFetch } from '@/lib/utils/server-fetch';
 import { ServerHandleResponse } from '@repo/types/general';
 import { RetrieveOrganizationCalendarResponse } from '@repo/types/organization-calendar';
 
-export async function retrieveOrganizationCalendarServer(
+export async function retrieveOrganizationCalendar(
 	organizationId: string
 ): Promise<RetrieveOrganizationCalendarResponse | ServerHandleResponse<false>> {
 	return await serverFetch({

@@ -44,10 +44,13 @@ export async function updateOrganizationEvent(
 }
 
 export async function deleteOrganizationEvent({
+	organizationId,
 	eventId,
 }: DeleteOrganizationEventArgs) {
 	try {
-		const res = await API().delete(`/organization-calendar/events/${eventId}`);
+		const res = await API().delete(
+			`/organization-calendar/events/${organizationId}/${eventId}`
+		);
 		return res.data;
 	} catch (err) {
 		catchError(err);

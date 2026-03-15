@@ -13,14 +13,43 @@ import { twMerge } from 'tailwind-merge';
 import { Container } from '@/components/ui/container';
 import { Trash2 } from 'lucide-react';
 
+// Types
+import type { RetrieveOrganizationCalendarResponse } from '@repo/types/organization-calendar';
+type CalendarEvent =
+	RetrieveOrganizationCalendarResponse['calendar']['events'][number];
+
+const priorityColorMap: Record<CalendarEvent['status'], string> = {
+	LOW_PRIORITY: 'bg-success',
+	MEDIUM_PRIORITY: 'bg-pending',
+	HIGH_PRIORITY: 'bg-destructive',
+};
+
+const priorityLabelMap: Record<CalendarEvent['status'], string> = {
+	LOW_PRIORITY: 'Low priority',
+	MEDIUM_PRIORITY: 'Medium priority',
+	HIGH_PRIORITY: 'High priority',
+};
+
+function formatEventTime(date: Date | string) {
+	const d = new Date(date);
+	return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+}
+
 export const EventCard: React.FC<
 	React.ComponentPropsWithoutRef<'div'> & {
-		time?: string;
 		size?: 'sm' | 'lg';
+		event?: CalendarEvent;
 	}
-> = ({ time, size = 'sm' }) => {
-	const markerStyle =
-		'bg-success absolute left-1 h-[calc(100%-0.5rem)] w-1.5  rounded-full';
+> = ({ size = 'sm', event }) => {
+	const priorityColor = event ? priorityColorMap[event.status] : 'bg-success';
+	const priorityLabel = event ? priorityLabelMap[event.status] : 'Low priority';
+	const content = event?.content ?? 'Event';
+	const timeRange = event
+		? `${formatEventTime(event.startTime)} – ${formatEventTime(event.endTime)}`
+		: undefined;
+
+	const markerStyle = `${priorityColor} absolute left-1 h-[calc(100%-0.5rem)] w-1.5 rounded-full`;
+
 	return (
 		<div
 			className={twMerge(
@@ -32,21 +61,23 @@ export const EventCard: React.FC<
 			{size === 'lg' && (
 				<TooltipTrigger delay={250}>
 					<Tooltip>
-						<Container className="rounded-md p-2">Low priority</Container>
+						<Container className="rounded-md p-2">{priorityLabel}</Container>
 					</Tooltip>
-					<AriaButton className="bg-success absolute left-1 h-[calc(100%-8px)] w-1.5 cursor-help rounded-full" />
+					<AriaButton
+						className={`${priorityColor} absolute left-1 h-[calc(100%-8px)] w-1.5 cursor-help rounded-full`}
+					/>
 				</TooltipTrigger>
 			)}
 
 			{size === 'sm' && <div className={markerStyle} />}
-			<p className="ml-2">Task xxx</p>
+			<p className="ml-2 truncate">{content}</p>
 
 			<div className="flex items-center gap-4">
-				{time && (
+				{size === 'lg' && (
 					<>
 						<div className="flex items-center gap-2 text-sm">
 							<p className="text-muted-foreground">Time:</p>
-							<p className="italic">{time}</p>
+							<p className="italic">{timeRange}</p>
 						</div>
 						<Trash2 className="hover:text-destructive text-muted-foreground absolute size-4 cursor-pointer opacity-0 transition-opacity group-hover:static group-hover:opacity-100" />
 					</>

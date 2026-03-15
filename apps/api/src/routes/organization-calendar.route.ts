@@ -66,7 +66,7 @@ organizationCalendarRoutes
   );
 
 organizationCalendarRoutes.delete(
-  "/events/:eventId",
+  "/events/:organizationId/:eventId",
   validate({
     schema: deleteOrganizationEventSchema,
     responseOutput: "toast",

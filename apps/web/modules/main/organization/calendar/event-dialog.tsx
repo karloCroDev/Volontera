@@ -13,12 +13,20 @@ import { Dialog } from '@/components/ui/dialog';
 import { EventCard } from '@/modules/main/organization/calendar/event-card';
 import { AddEventForm } from '@/modules/main/organization/calendar/add-event-form';
 
+// Types
+import type { RetrieveOrganizationCalendarResponse } from '@repo/types/organization-calendar';
+type CalendarEvent =
+	RetrieveOrganizationCalendarResponse['calendar']['events'][number];
+
 // Lib
 import { formatDate } from '@/lib/utils/time-adjustments';
 
 export const EventDialog: React.FC<{
 	date: CalendarCellProps['date'];
-}> = ({ date }) => {
+	events: CalendarEvent[];
+	calendarId: string;
+	organizationId: string;
+}> = ({ date, events, calendarId, organizationId }) => {
 	return (
 		<Dialog
 			triggerChildren={
@@ -36,8 +44,8 @@ export const EventDialog: React.FC<{
 					<span className="text-sm">{date.day}</span>
 
 					<div className="mt-2 flex flex-1 flex-col gap-2 overflow-scroll">
-						{[...Array(8)].map((_, indx) => (
-							<EventCard key={indx} />
+						{events.slice(0, 3).map((event) => (
+							<EventCard key={event.id} event={event} />
 						))}
 					</div>
 				</CalendarCell>
@@ -48,14 +56,24 @@ export const EventDialog: React.FC<{
 		>
 			<div>
 				<div className="my-4 flex max-h-60 flex-col gap-3 overflow-y-scroll">
-					{[...Array(8)].map((_, indx) => (
-						<EventCard key={indx} time={`${9 + indx}:00`} size="lg" />
-					))}
+					{events.length > 0 ? (
+						events.map((event) => (
+							<EventCard key={event.id} event={event} size="lg" />
+						))
+					) : (
+						<p className="text-muted-foreground py-4 text-center text-sm">
+							No events for this day.
+						</p>
+					)}
 				</div>
 
 				<hr className="bg-input-border my-6 h-px w-full border-0" />
 
-				<AddEventForm />
+				<AddEventForm
+					calendarId={calendarId}
+					organizationId={organizationId}
+					date={date}
+				/>
 			</div>
 		</Dialog>
 	);
