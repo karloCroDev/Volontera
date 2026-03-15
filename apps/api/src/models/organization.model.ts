@@ -150,6 +150,9 @@ export async function createOrganization({
       groupChat: {
         create: {},
       },
+      organizationCalendar: {
+        create: {},
+      },
     },
   });
 }

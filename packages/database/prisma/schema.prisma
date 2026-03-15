@@ -45,6 +45,7 @@ model User {
   DOB                String?
   address            String?
   onboardingFinished Boolean   @default(false)
+  isBanned           Boolean   @default(false)
 
   // Reset password token
   resetToken           String? @unique
@@ -202,6 +203,7 @@ model Organization {
   organizationLeaveFeedbacks OrganizationLeaveFeedback[]
   organizationTasksBoards    OrganizationTasksBoards[]
   organizationTasks          OrganizationTask[]
+  organizationCalendar       OrganizationCalendar?
 }
 
 enum OrganizationMemberRole {
@@ -223,6 +225,7 @@ model OrganizationMember {
   user                                  User                               @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId                                String
   role                                  OrganizationMemberRole             @default(MEMBER)
+  isBanned                              Boolean                            @default(false)
   createdAt                             DateTime                           @default(now())
   updatedAt                             DateTime                           @updatedAt
   organizatonMembersAsiggnedToTaskCards OrganizatonMembersAsiggnedToTask[]
@@ -443,26 +446,26 @@ model OrganizationTasksBoards {
   @@index([organizationId])
 }
 
-enum OrganizationTaskStatus {
+enum OrganizationTasksAndCalendarStatus {
   LOW_PRIORITY
   MEDIUM_PRIORITY
   HIGH_PRIORITY
 }
 
 model OrganizationTask {
-  id                        String                      @id @default(cuid())
-  organization              Organization                @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  id                        String                             @id @default(cuid())
+  organization              Organization                       @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   organizationId            String
   organizationTaskInfos     OrganizationTaskInfo?
   organizationTaskQuestions OrganizationTaskQuestions[]
   title                     String
   dueDate                   String
-  status                    OrganizationTaskStatus
+  status                    OrganizationTasksAndCalendarStatus
   authorId                  String
-  organizationTasksBoard    OrganizationTasksBoards?    @relation(fields: [organizationTasksBoardId], references: [id], onDelete: Cascade)
+  organizationTasksBoard    OrganizationTasksBoards?           @relation(fields: [organizationTasksBoardId], references: [id], onDelete: Cascade)
   organizationTasksBoardId  String?
-  createdAt                 DateTime                    @default(now())
-  updatedAt                 DateTime                    @updatedAt
+  createdAt                 DateTime                           @default(now())
+  updatedAt                 DateTime                           @updatedAt
 
   @@index([organizationId])
 }
@@ -503,4 +506,30 @@ model OrganizationTaskQuestions {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+// Ako bude vise kalendar po organizaciji, pa ostavi ovu tablicu
+model OrganizationCalendar {
+  id             String                      @id @default(cuid())
+  organization   Organization                @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  organizationId String                      @unique
+  events         OrganizationCalendarEvent[]
+  createdAt      DateTime                    @default(now())
+  updatedAt      DateTime                    @updatedAt
+}
+
+model OrganizationCalendarEvent {
+  id                   String                             @id @default(cuid())
+  organizationCalendar OrganizationCalendar               @relation(fields: [calendarId], references: [id], onDelete: Cascade)
+  calendarId           String
+  status               OrganizationTasksAndCalendarStatus
+  content              String
+  startTime            DateTime
+  endTime              DateTime
+  date                 DateTime
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([calendarId, date])
 }

@@ -25,6 +25,7 @@ import {
 // Middleware
 import { organizationRolesMiddleware } from "@/middleware/organization-roles.middleware";
 import { validate } from "@/middleware/validate.middleware";
+import { proPlanUserMiddleware } from "@/middleware/payment.middleware";
 
 // Schemas
 import {
@@ -46,8 +47,6 @@ import {
   retrieveAllOrganizationBoardSchema,
   createLlmTaskSchema,
 } from "@repo/schemas/organization-tasks";
-import { createLlmTask } from "@/lib/structured-llm-response";
-import { proPlanUserMiddleware } from "@/middleware/payment.middleware";
 
 export const organizationTasksRoutes = Router();
 
