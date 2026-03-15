@@ -7,10 +7,11 @@ import {
 	TooltipTrigger,
 	Button as AriaButton,
 } from 'react-aria-components';
-import { twJoin, twMerge } from 'tailwind-merge';
+import { twMerge } from 'tailwind-merge';
 
 // Components
 import { Container } from '@/components/ui/container';
+import { Trash2 } from 'lucide-react';
 
 export const EventCard: React.FC<
 	React.ComponentPropsWithoutRef<'div'> & {
@@ -23,7 +24,7 @@ export const EventCard: React.FC<
 	return (
 		<div
 			className={twMerge(
-				'border-input-border relative flex items-center justify-between rounded border',
+				'border-input-border group relative flex items-center justify-between rounded border',
 				size === 'lg' && 'px-4 py-3',
 				size === 'sm' && 'px-2 py-1'
 			)}
@@ -39,12 +40,18 @@ export const EventCard: React.FC<
 
 			{size === 'sm' && <div className={markerStyle} />}
 			<p className="ml-2">Task xxx</p>
-			{time && (
-				<div className="flex items-center gap-2 text-sm">
-					<p className="text-muted-foreground">Time:</p>
-					<p className="italic">{time}</p>
-				</div>
-			)}
+
+			<div className="flex items-center gap-4">
+				{time && (
+					<>
+						<div className="flex items-center gap-2 text-sm">
+							<p className="text-muted-foreground">Time:</p>
+							<p className="italic">{time}</p>
+						</div>
+						<Trash2 className="hover:text-destructive text-muted-foreground absolute size-4 cursor-pointer opacity-0 transition-opacity group-hover:static group-hover:opacity-100" />
+					</>
+				)}
+			</div>
 		</div>
 	);
 };

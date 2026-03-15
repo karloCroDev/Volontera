@@ -3,7 +3,7 @@
 // External packages
 import * as React from 'react';
 import { Form, Input, Label as AriaLabel } from 'react-aria-components';
-import { ArrowRight, Trash } from 'lucide-react';
+import { ArrowRight, Trash2 } from 'lucide-react';
 import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 
@@ -141,7 +141,7 @@ export const AdditionalInformationForm = withReactQueryProvider(() => {
 													onChange(undefined);
 												}}
 											>
-												<Trash className="size-4" />
+												<Trash2 className="size-4" />
 											</Button>
 										)
 									}
