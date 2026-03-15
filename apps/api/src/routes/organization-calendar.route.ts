@@ -40,34 +40,33 @@ organizationCalendarRoutes.get(
   retrieveOrganizationCalendarController,
 );
 
-organizationCalendarRoutes.post(
-  "/events/create",
-  validate({
-    schema: createOrganizationEventSchema,
-    responseOutput: "toast",
-    type: "body",
-  }),
-  organizationRolesMiddleware({
-    aquiredRoles: ["ADMIN"],
-  }),
-  createOrganizationEventController,
-);
-
-organizationCalendarRoutes.patch(
-  "/events/update",
-  validate({
-    schema: updateOrganizationEventSchema,
-    responseOutput: "toast",
-    type: "body",
-  }),
-  organizationRolesMiddleware({
-    aquiredRoles: ["ADMIN"],
-  }),
-  updateOrganizationEventController,
-);
+organizationCalendarRoutes
+  .route("/events")
+  .post(
+    validate({
+      schema: createOrganizationEventSchema,
+      responseOutput: "toast",
+      type: "body",
+    }),
+    organizationRolesMiddleware({
+      aquiredRoles: ["ADMIN"],
+    }),
+    createOrganizationEventController,
+  )
+  .patch(
+    validate({
+      schema: updateOrganizationEventSchema,
+      responseOutput: "toast",
+      type: "body",
+    }),
+    organizationRolesMiddleware({
+      aquiredRoles: ["ADMIN"],
+    }),
+    updateOrganizationEventController,
+  );
 
 organizationCalendarRoutes.delete(
-  "/events/:organizationId/:eventId",
+  "/events/:eventId",
   validate({
     schema: deleteOrganizationEventSchema,
     responseOutput: "toast",

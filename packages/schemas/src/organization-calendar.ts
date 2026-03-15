@@ -24,7 +24,6 @@ export const createOrganizationEventSchema = z
     status: organizationCalendarStatusSchema,
     calendarId: z.string(),
   })
-  .extend(organizationIdSchema.shape)
   .refine((data) => data.endTime > data.startTime, {
     message: "End time must be after start time",
     path: ["endTime"],
@@ -40,7 +39,6 @@ export const updateOrganizationEventSchema = z
     startTime: z.coerce.date(),
     endTime: z.coerce.date(),
   })
-  .extend(organizationIdSchema.shape)
   .refine((data) => data.endTime > data.startTime, {
     message: "End time must be after start time",
     path: ["endTime"],
