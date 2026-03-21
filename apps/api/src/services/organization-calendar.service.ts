@@ -22,8 +22,14 @@ import {
 
 export async function retrieveOrganizationCalendarService({
   organizationId,
+  month,
+  year,
 }: RetrieveOrganizationCalendarArgs) {
-  const calendar = await retrieveOrganizationCalendar(organizationId);
+  const calendar = await retrieveOrganizationCalendar({
+    organizationId,
+    month,
+    year,
+  });
 
   return serverFetchOutput({
     status: 200,

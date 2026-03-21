@@ -26,9 +26,17 @@ import { withReactQueryProvider } from '@/lib/utils/react-query';
 export const CalendarGrid = withReactQueryProvider(() => {
 	const params = useParams<{ organizationId: string }>();
 	const { timeZone, focusedDate, setFocusedDate } = useCalendarContext();
-	const { data } = useRetrieveOrganizationCalendar({
-		organizationId: params.organizationId,
-	});
+	const { data } = useRetrieveOrganizationCalendar(
+		{
+			organizationId: params.organizationId,
+			month: focusedDate.month,
+			year: focusedDate.year,
+		},
+		{
+			refetchOnMount: false,
+			refetchOnReconnect: false,
+		}
+	);
 
 	const events = data?.calendar?.events ?? [];
 

@@ -1,13 +1,41 @@
 // Database
 import { OrganizationTasksAndCalendarStatus, prisma } from "@repo/database";
 
-export async function retrieveOrganizationCalendar(organizationId: string) {
+export async function retrieveOrganizationCalendar({
+  organizationId,
+  month,
+  year,
+}: {
+  organizationId: string;
+  month?: number;
+  year?: number;
+}) {
+  const shouldFilterByMonth = month !== undefined && year !== undefined;
+  const monthStart = shouldFilterByMonth
+    ? new Date(Date.UTC(year, month - 1, 1, 0, 0, 0, 0))
+    : undefined;
+  const monthEnd = shouldFilterByMonth
+    ? new Date(Date.UTC(year, month, 1, 0, 0, 0, 0))
+    : undefined;
+
   return await prisma.organizationCalendar.findUnique({
     where: {
       organizationId,
     },
     include: {
-      events: true,
+      events: shouldFilterByMonth
+        ? {
+            where: {
+              date: {
+                gte: monthStart,
+                lt: monthEnd,
+              },
+            },
+            orderBy: [{ date: "asc" }, { startTime: "asc" }],
+          }
+        : {
+            orderBy: [{ date: "asc" }, { startTime: "asc" }],
+          },
     },
   });
 }

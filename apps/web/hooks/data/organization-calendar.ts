@@ -35,7 +35,12 @@ export const useRetrieveOrganizationCalendar = (
 	>
 ) => {
 	return useSuspenseQuery<RetrieveOrganizationCalendarResponse>({
-		queryKey: [data.organizationId, 'organization-calendar'],
+		queryKey: [
+			data.organizationId,
+			'organization-calendar',
+			data.year ?? null,
+			data.month ?? null,
+		],
 		queryFn: () => retrieveOrganizationCalendar(data),
 		...options,
 	});

@@ -14,6 +14,7 @@ import {
   CreateOrganizationEventArgs,
   DeleteOrganizationEventArgs,
   RetrieveOrganizationCalendarArgs,
+  retrieveOrganizationCalendarArgsSchema,
   UpdateOrganizationEventArgs,
 } from "@repo/schemas/organization-calendar";
 
@@ -25,8 +26,13 @@ export async function retrieveOrganizationCalendarController(
   res: Response,
 ) {
   try {
+    const data = retrieveOrganizationCalendarArgsSchema.parse({
+      ...req.params,
+      ...req.query,
+    });
+
     const result = await retrieveOrganizationCalendarService(
-      req.params as RetrieveOrganizationCalendarArgs,
+      data as RetrieveOrganizationCalendarArgs,
     );
 
     return res.status(result.status).json(result.body);

@@ -15,6 +15,7 @@ import { Trash2 } from 'lucide-react';
 
 // Types
 import type { RetrieveOrganizationCalendarResponse } from '@repo/types/organization-calendar';
+
 type CalendarEvent =
 	RetrieveOrganizationCalendarResponse['calendar']['events'][number];
 
@@ -39,8 +40,10 @@ export const EventCard: React.FC<
 	React.ComponentPropsWithoutRef<'div'> & {
 		size?: 'sm' | 'lg';
 		event?: CalendarEvent;
+		onDelete?: (eventId: string) => void;
+		isDeleting?: boolean;
 	}
-> = ({ size = 'sm', event }) => {
+> = ({ size = 'sm', event, onDelete, isDeleting = false }) => {
 	const priorityColor = event ? priorityColorMap[event.status] : 'bg-success';
 	const priorityLabel = event ? priorityLabelMap[event.status] : 'Low priority';
 	const content = event?.content ?? 'Event';
@@ -79,7 +82,14 @@ export const EventCard: React.FC<
 							<p className="text-muted-foreground">Time:</p>
 							<p className="italic">{timeRange}</p>
 						</div>
-						<Trash2 className="hover:text-destructive text-muted-foreground absolute size-4 cursor-pointer opacity-0 transition-opacity group-hover:static group-hover:opacity-100" />
+						<AriaButton
+							onPress={() => event?.id && onDelete?.(event.id)}
+							isDisabled={!event || !onDelete || isDeleting}
+							className="hover:text-destructive text-muted-foreground absolute inline-flex size-4 cursor-pointer items-center justify-center opacity-0 transition-opacity disabled:pointer-events-none disabled:opacity-40 group-hover:static group-hover:opacity-100"
+							aria-label="Delete event"
+						>
+							<Trash2 className="size-4" />
+						</AriaButton>
 					</>
 				)}
 			</div>

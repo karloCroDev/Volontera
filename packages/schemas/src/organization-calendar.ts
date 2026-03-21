@@ -11,8 +11,40 @@ const organizationCalendarStatusSchema = z.enum([
 ]);
 
 export const retrieveOrganizationCalendarSchema = organizationIdSchema;
+const retrieveOrganizationCalendarFiltersSchema = z.object({
+  month: z.coerce.number().int().min(1).max(12).optional(),
+  year: z.coerce.number().int().min(1970).max(9999).optional(),
+});
+
+export const retrieveOrganizationCalendarQuerySchema =
+  retrieveOrganizationCalendarFiltersSchema.refine(
+    (data) =>
+      (data.month === undefined && data.year === undefined) ||
+      (data.month !== undefined && data.year !== undefined),
+    {
+      message: "Month and year must be provided together",
+      path: ["month"],
+    },
+  );
+
+export const retrieveOrganizationCalendarArgsSchema =
+  retrieveOrganizationCalendarSchema
+    .extend(retrieveOrganizationCalendarFiltersSchema.shape)
+    .refine(
+      (data) =>
+        (data.month === undefined && data.year === undefined) ||
+        (data.month !== undefined && data.year !== undefined),
+      {
+        message: "Month and year must be provided together",
+        path: ["month"],
+      },
+    );
+
+export type RetrieveOrganizationCalendarQueryArgs = z.infer<
+  typeof retrieveOrganizationCalendarQuerySchema
+>;
 export type RetrieveOrganizationCalendarArgs = z.infer<
-  typeof retrieveOrganizationCalendarSchema
+  typeof retrieveOrganizationCalendarArgsSchema
 >;
 
 export const createOrganizationEventSchema = z

@@ -18,6 +18,7 @@ import { validate } from "@/middleware/validate.middleware";
 import {
   createOrganizationEventSchema,
   deleteOrganizationEventSchema,
+  retrieveOrganizationCalendarQuerySchema,
   retrieveOrganizationCalendarSchema,
   updateOrganizationEventSchema,
 } from "@repo/schemas/organization-calendar";
@@ -32,6 +33,11 @@ organizationCalendarRoutes.get(
     schema: retrieveOrganizationCalendarSchema,
     responseOutput: "server",
     type: "params",
+  }),
+  validate({
+    schema: retrieveOrganizationCalendarQuerySchema,
+    responseOutput: "server",
+    type: "query",
   }),
   organizationRolesMiddleware({
     aquiredRoles: ["MEMBER", "ADMIN"],

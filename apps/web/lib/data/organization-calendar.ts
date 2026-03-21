@@ -12,9 +12,14 @@ import {
 
 export async function retrieveOrganizationCalendar({
 	organizationId,
+	month,
+	year,
 }: RetrieveOrganizationCalendarArgs) {
 	try {
-		const res = await API().get(`/organization-calendar/${organizationId}`);
+		const res = await API().get(`/organization-calendar/${organizationId}`, {
+			params:
+				month !== undefined && year !== undefined ? { month, year } : undefined,
+		});
 		return res.data;
 	} catch (err) {
 		catchError(err);

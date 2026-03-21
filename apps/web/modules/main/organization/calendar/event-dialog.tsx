@@ -20,6 +20,7 @@ type CalendarEvent =
 
 // Lib
 import { formatDate } from '@/lib/utils/time-adjustments';
+import { useDeleteOrganizationEvent } from '@/hooks/data/organization-calendar';
 
 export const EventDialog: React.FC<{
 	date: CalendarCellProps['date'];
@@ -27,6 +28,16 @@ export const EventDialog: React.FC<{
 	calendarId: string;
 	organizationId: string;
 }> = ({ date, events, calendarId, organizationId }) => {
+	const { mutate: deleteEvent, isPending: isDeletingEvent } =
+		useDeleteOrganizationEvent();
+
+	const handleDeleteEvent = React.useCallback(
+		(eventId: string) => {
+			deleteEvent({ organizationId, eventId });
+		},
+		[deleteEvent, organizationId]
+	);
+
 	return (
 		<Dialog
 			triggerChildren={
@@ -58,7 +69,13 @@ export const EventDialog: React.FC<{
 				<div className="my-4 flex max-h-60 flex-col gap-3 overflow-y-scroll">
 					{events.length > 0 ? (
 						events.map((event) => (
-							<EventCard key={event.id} event={event} size="lg" />
+							<EventCard
+								key={event.id}
+								event={event}
+								size="lg"
+								onDelete={handleDeleteEvent}
+								isDeleting={isDeletingEvent}
+							/>
 						))
 					) : (
 						<p className="text-muted-foreground py-4 text-center text-sm">
