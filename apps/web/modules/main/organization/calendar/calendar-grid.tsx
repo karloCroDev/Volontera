@@ -9,7 +9,7 @@ import {
 	CalendarGridHeader,
 	CalendarHeaderCell,
 } from 'react-aria-components';
-import { getLocalTimeZone, today } from '@internationalized/date';
+import { DateValue, getLocalTimeZone, today } from '@internationalized/date';
 import { twJoin } from 'tailwind-merge';
 import { useParams } from 'next/navigation';
 
@@ -26,37 +26,37 @@ import { withReactQueryProvider } from '@/lib/utils/react-query';
 export const CalendarGrid = withReactQueryProvider(() => {
 	const params = useParams<{ organizationId: string }>();
 	const { timeZone, focusedDate, setFocusedDate } = useCalendarContext();
-	const { data } = useRetrieveOrganizationCalendar(
-		{
-			organizationId: params.organizationId,
-			month: focusedDate.month,
-			year: focusedDate.year,
-		},
-		{
-			refetchOnMount: false,
-			refetchOnReconnect: false,
-		}
-	);
+	const resolvedTimeZone = timeZone || getLocalTimeZone();
+	const { data } = useRetrieveOrganizationCalendar({
+		organizationId: params.organizationId,
+		month: focusedDate.month,
+		year: focusedDate.year,
+	});
 
 	const events = data?.calendar?.events ?? [];
 
-	const defaultDate = React.useMemo(
-		() => today(timeZone || getLocalTimeZone()),
-		[timeZone]
+	const todayDate = React.useMemo(
+		() => today(resolvedTimeZone),
+		[resolvedTimeZone]
 	);
 
 	const todayWeekday = React.useMemo(() => {
 		const formatter = new Intl.DateTimeFormat('en-US', { weekday: 'long' });
-		return formatter.format(today(timeZone).toDate(timeZone));
-	}, [timeZone]);
+		return formatter.format(todayDate.toDate(resolvedTimeZone));
+	}, [todayDate, resolvedTimeZone]);
 
+	const isDateUnavailable = React.useCallback(
+		(date: DateValue) => date.compare(todayDate) < 0,
+		[todayDate]
+	);
 	return (
 		<Calendar
 			aria-label="Organization calendar"
-			defaultFocusedValue={defaultDate}
-			defaultValue={defaultDate}
+			defaultFocusedValue={today(resolvedTimeZone)}
+			defaultValue={today(resolvedTimeZone)}
 			focusedValue={focusedDate}
 			onFocusChange={setFocusedDate}
+			isDateUnavailable={isDateUnavailable}
 			className="w-full"
 			firstDayOfWeek="mon"
 		>
@@ -93,7 +93,7 @@ export const CalendarGrid = withReactQueryProvider(() => {
 									date={date}
 									events={dayEvents}
 									calendarId={data.calendar.id}
-									organizationId={params.organizationId}
+									timeZone={resolvedTimeZone}
 									key={date.toString()}
 								/>
 							);

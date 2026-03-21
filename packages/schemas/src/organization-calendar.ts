@@ -10,6 +10,13 @@ const organizationCalendarStatusSchema = z.enum([
   "HIGH_PRIORITY",
 ]);
 
+function getStartOfCurrentUtcDay() {
+  const now = new Date();
+  return new Date(
+    Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()),
+  );
+}
+
 export const retrieveOrganizationCalendarSchema = organizationIdSchema;
 const retrieveOrganizationCalendarFiltersSchema = z.object({
   month: z.coerce.number().int().min(1).max(12).optional(),
@@ -60,6 +67,10 @@ export const createOrganizationEventSchema = z
   .refine((data) => data.endTime > data.startTime, {
     message: "End time must be after start time",
     path: ["endTime"],
+  })
+  .refine((data) => data.date >= getStartOfCurrentUtcDay(), {
+    message: "Cannot create events in the past",
+    path: ["date"],
   });
 export type CreateOrganizationEventArgs = z.infer<
   typeof createOrganizationEventSchema

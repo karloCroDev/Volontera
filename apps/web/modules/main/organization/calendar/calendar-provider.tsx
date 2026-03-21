@@ -2,7 +2,7 @@
 
 // External packages
 import * as React from 'react';
-import { CalendarDate, getLocalTimeZone, today } from '@internationalized/date';
+import { CalendarDate, getLocalTimeZone } from '@internationalized/date';
 
 // Hooks
 import { useSetParams } from '@/hooks/utils/useSetParams';
@@ -26,7 +26,7 @@ export const useCalendarContext = () => {
 
 export const CalendarProvider: React.FC<{
 	children: React.ReactNode;
-	defaultFocusedDate?: {
+	defaultFocusedDate: {
 		year: number;
 		month: number;
 		day: number;
@@ -35,23 +35,14 @@ export const CalendarProvider: React.FC<{
 	const timeZone = getLocalTimeZone();
 	const { searchParams, setParams } = useSetParams();
 
-	const [focusedDate, setFocusedDate] = React.useState<CalendarDate>(() =>
-		defaultFocusedDate
-			? new CalendarDate(
-					defaultFocusedDate.year,
-					defaultFocusedDate.month,
-					defaultFocusedDate.day
-				)
-			: today(timeZone)
+	const [focusedDate, setFocusedDate] = React.useState<CalendarDate>(
+		() =>
+			new CalendarDate(
+				defaultFocusedDate.year,
+				defaultFocusedDate.month,
+				defaultFocusedDate.day
+			)
 	);
-
-	const prevMonth = React.useCallback(() => {
-		setFocusedDate((current) => current.subtract({ months: 1 }));
-	}, []);
-
-	const nextMonth = React.useCallback(() => {
-		setFocusedDate((current) => current.add({ months: 1 }));
-	}, []);
 
 	const monthLabel = React.useMemo(() => {
 		const formatter = new Intl.DateTimeFormat('en-US', {
@@ -86,8 +77,10 @@ export const CalendarProvider: React.FC<{
 			value={{
 				focusedDate,
 				monthLabel,
-				nextMonth,
-				prevMonth,
+				nextMonth: () =>
+					setFocusedDate((current) => current.add({ months: 1 })),
+				prevMonth: () =>
+					setFocusedDate((current) => current.subtract({ months: 1 })),
 				setFocusedDate,
 				timeZone,
 			}}

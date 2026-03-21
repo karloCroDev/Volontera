@@ -20,6 +20,10 @@ import {
   UpdateOrganizationEventArgs,
 } from "@repo/schemas/organization-calendar";
 
+function isDateTimeInThePast(date: Date) {
+  return date.getTime() < Date.now();
+}
+
 export async function retrieveOrganizationCalendarService({
   organizationId,
   month,
@@ -42,6 +46,14 @@ export async function retrieveOrganizationCalendarService({
 export async function createOrganizationEventService(
   data: CreateOrganizationEventArgs,
 ) {
+  if (isDateTimeInThePast(data.startTime)) {
+    return toastResponseOutput({
+      status: 400,
+      title: "Invalid Event Date",
+      message: "You cannot create events in the past.",
+    });
+  }
+
   await createOrganizationEvent({
     calendarId: data.calendarId,
     content: data.content,
@@ -61,6 +73,14 @@ export async function createOrganizationEventService(
 export async function updateOrganizationEventService(
   data: UpdateOrganizationEventArgs,
 ) {
+  if (isDateTimeInThePast(data.startTime)) {
+    return toastResponseOutput({
+      status: 400,
+      title: "Invalid Event Date",
+      message: "You cannot move events to the past.",
+    });
+  }
+
   await updateOrganizationEvent({
     eventId: data.eventId,
     content: data.content,

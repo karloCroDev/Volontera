@@ -30,6 +30,7 @@ import type { CreateOrganizationEventArgs } from '@repo/schemas/organization-cal
 
 // Lib
 import { toast } from '@/lib/utils/toast';
+import { useParams } from 'next/navigation';
 
 type Status = 'LOW_PRIORITY' | 'MEDIUM_PRIORITY' | 'HIGH_PRIORITY';
 
@@ -53,9 +54,9 @@ function toUTCNoon(date: CalendarDate): Date {
 
 export const AddEventForm: React.FC<{
 	calendarId: string;
-	organizationId: string;
 	date: CalendarDate;
-}> = ({ calendarId, organizationId, date }) => {
+}> = ({ calendarId, date }) => {
+	const params = useParams<{ organizationId: string }>();
 	const [startTime, setStartTime] = React.useState<string>('09:00');
 	const [endTime, setEndTime] = React.useState<string>('10:00');
 
@@ -96,7 +97,7 @@ export const AddEventForm: React.FC<{
 		const payload: CreateOrganizationEventArgs = {
 			content,
 			status,
-			organizationId,
+			organizationId: params.organizationId,
 			calendarId,
 			date: toUTCNoon(date),
 			startTime: combineDateAndTime(date, startTime),

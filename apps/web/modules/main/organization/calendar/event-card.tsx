@@ -7,51 +7,45 @@ import {
 	TooltipTrigger,
 	Button as AriaButton,
 } from 'react-aria-components';
-import { twMerge } from 'tailwind-merge';
+import { twJoin, twMerge } from 'tailwind-merge';
+import { Trash2 } from 'lucide-react';
+import { useParams } from 'next/navigation';
 
 // Components
 import { Container } from '@/components/ui/container';
-import { Trash2 } from 'lucide-react';
 
 // Types
 import type { RetrieveOrganizationCalendarResponse } from '@repo/types/organization-calendar';
 
+// Hooks
+import { useDeleteOrganizationEvent } from '@/hooks/data/organization-calendar';
+
+// Lib
+import { toast } from '@/lib/utils/toast';
+import { formatIntervalTime } from '@/lib/utils/time-adjustments';
+
 type CalendarEvent =
 	RetrieveOrganizationCalendarResponse['calendar']['events'][number];
 
-const priorityColorMap: Record<CalendarEvent['status'], string> = {
-	LOW_PRIORITY: 'bg-success',
-	MEDIUM_PRIORITY: 'bg-pending',
-	HIGH_PRIORITY: 'bg-destructive',
+const priorityColorAndLabelObj: Record<
+	CalendarEvent['status'],
+	{ bg: string; label: string }
+> = {
+	LOW_PRIORITY: { bg: 'bg-success', label: 'Low priority' },
+	MEDIUM_PRIORITY: { bg: 'bg-pending', label: 'Medium priority' },
+	HIGH_PRIORITY: { bg: 'bg-destructive', label: 'High priority' },
 };
-
-const priorityLabelMap: Record<CalendarEvent['status'], string> = {
-	LOW_PRIORITY: 'Low priority',
-	MEDIUM_PRIORITY: 'Medium priority',
-	HIGH_PRIORITY: 'High priority',
-};
-
-function formatEventTime(date: Date | string) {
-	const d = new Date(date);
-	return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
-}
 
 export const EventCard: React.FC<
 	React.ComponentPropsWithoutRef<'div'> & {
 		size?: 'sm' | 'lg';
-		event?: CalendarEvent;
-		onDelete?: (eventId: string) => void;
-		isDeleting?: boolean;
+		event: CalendarEvent;
 	}
-> = ({ size = 'sm', event, onDelete, isDeleting = false }) => {
-	const priorityColor = event ? priorityColorMap[event.status] : 'bg-success';
-	const priorityLabel = event ? priorityLabelMap[event.status] : 'Low priority';
-	const content = event?.content ?? 'Event';
-	const timeRange = event
-		? `${formatEventTime(event.startTime)} – ${formatEventTime(event.endTime)}`
-		: undefined;
+> = ({ size = 'sm', event }) => {
+	const params = useParams<{ organizationId: string }>();
+	const { mutate, isPending } = useDeleteOrganizationEvent();
 
-	const markerStyle = `${priorityColor} absolute left-1 h-[calc(100%-0.5rem)] w-1.5 rounded-full`;
+	const priorityLabel = priorityColorAndLabelObj[event.status].label;
 
 	return (
 		<div
@@ -67,24 +61,54 @@ export const EventCard: React.FC<
 						<Container className="rounded-md p-2">{priorityLabel}</Container>
 					</Tooltip>
 					<AriaButton
-						className={`${priorityColor} absolute left-1 h-[calc(100%-8px)] w-1.5 cursor-help rounded-full`}
+						className={twJoin(
+							'absolute left-1 h-[calc(100%-0.5rem)] w-1.5 rounded-full',
+							priorityColorAndLabelObj[event.status].bg
+						)}
 					/>
 				</TooltipTrigger>
 			)}
 
-			{size === 'sm' && <div className={markerStyle} />}
-			<p className="ml-2 truncate">{content}</p>
+			{size === 'sm' && (
+				<div
+					className={twJoin(
+						'absolute left-1 h-[calc(100%-0.5rem)] w-1.5 rounded-full',
+						priorityColorAndLabelObj[event.status].bg
+					)}
+				/>
+			)}
+			<p className="ml-2 truncate">{event?.content}</p>
 
 			<div className="flex items-center gap-4">
 				{size === 'lg' && (
 					<>
 						<div className="flex items-center gap-2 text-sm">
 							<p className="text-muted-foreground">Time:</p>
-							<p className="italic">{timeRange}</p>
+							<p className="italic">
+								{formatIntervalTime(event.startTime)} -
+								{formatIntervalTime(event.endTime)}
+							</p>
 						</div>
 						<AriaButton
-							onPress={() => event?.id && onDelete?.(event.id)}
-							isDisabled={!event || !onDelete || isDeleting}
+							onPress={() =>
+								event.id &&
+								mutate(
+									{
+										organizationId: params.organizationId,
+										eventId: event.id,
+									},
+									{
+										onError: ({ message, title }) => {
+											toast({
+												title,
+												content: message,
+												variant: 'error',
+											});
+										},
+									}
+								)
+							}
+							isDisabled={isPending}
 							className="hover:text-destructive text-muted-foreground absolute inline-flex size-4 cursor-pointer items-center justify-center opacity-0 transition-opacity disabled:pointer-events-none disabled:opacity-40 group-hover:static group-hover:opacity-100"
 							aria-label="Delete event"
 						>

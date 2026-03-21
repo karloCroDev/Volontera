@@ -16,3 +16,8 @@ export function formatDate(dateString: string) {
 
 	return `${day}. ${month}. ${year}.`;
 }
+
+export function formatIntervalTime(date: Date | string) {
+	const d = new Date(date);
+	return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+}
