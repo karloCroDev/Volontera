@@ -30,6 +30,12 @@ export default async function BoardPage({
 
 	if (!member.success) return; // Handling in layout
 
+	const canMoveTasks = hasWantedOrganizationRole({
+		userRole: member.organizationMember.role,
+		requiredRoles: ['ADMIN'],
+		ownerHasAllAccess: true,
+	});
+
 	return (
 		<div className="flex flex-1 flex-col">
 			<div className="mb-6 flex flex-col justify-between gap-x-8 gap-y-4 overflow-x-scroll lg:flex-row lg:items-center">
@@ -42,11 +48,7 @@ export default async function BoardPage({
 				</div>
 				<div className="flex justify-between gap-4 lg:justify-start">
 					<SortTasksSelect />
-					{hasWantedOrganizationRole({
-						userRole: member.organizationMember.role,
-						requiredRoles: ['ADMIN'],
-						ownerHasAllAccess: true,
-					}) && <AddBoardDialog />}
+					{canMoveTasks && <AddBoardDialog />}
 				</div>
 			</div>
 			<div className="flex min-h-0 flex-1 gap-4 overflow-scroll">
@@ -58,6 +60,7 @@ export default async function BoardPage({
 					<BoardsWithTasks
 						organizationId={organizationId}
 						filter={searchParamsResolved.filter}
+						canMoveTasks={canMoveTasks}
 					/>
 				</Suspense>
 			</div>
@@ -68,9 +71,11 @@ export default async function BoardPage({
 async function BoardsWithTasks({
 	organizationId,
 	filter,
+	canMoveTasks,
 }: {
 	organizationId: string;
 	filter?: string;
+	canMoveTasks: boolean;
 }) {
 	const boardWithTasks = await retrieveAllOrganizationBoardsWithTasks(
 		organizationId,
@@ -102,5 +107,10 @@ async function BoardsWithTasks({
 	);
 
 	const dehydratedState = dehydrate(queryClient);
-	return <BoardsMapping dehydratedState={dehydratedState} />;
+	return (
+		<BoardsMapping
+			dehydratedState={dehydratedState}
+			canMoveTasks={canMoveTasks}
+		/>
+	);
 }

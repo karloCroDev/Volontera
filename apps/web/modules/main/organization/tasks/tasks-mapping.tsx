@@ -17,9 +17,6 @@ import { useQueryClient } from '@tanstack/react-query';
 // Types
 import { RetrieveAllOrganizationBoardsWithTasksResponse } from '@repo/types/organization-tasks';
 
-// Permissions
-import { hasWantedOrganizationRole } from '@repo/permissons/index';
-
 // Components
 import { Dialog } from '@/components/ui/dialog';
 
@@ -30,7 +27,6 @@ import { TaskCardDetails } from '@/modules/main/organization/tasks/task-card-det
 // Hooks
 import { useRetrieveAllBoardTasksArgs } from '@/hooks/data/organization-tasks';
 import { useMoveTask } from '@/hooks/data/organization-tasks';
-import { useRetrieveOrganizationMember } from '@/hooks/data/organization-managment';
 
 // Lib
 import { toast } from '@/lib/utils/toast';
@@ -46,23 +42,14 @@ type Task =
 
 export const TasksMapping: React.FC<{
 	boardId: string;
-}> = ({ boardId }) => {
+	canMoveTasks: boolean;
+}> = ({ boardId, canMoveTasks }) => {
 	const params = useParams<{ organizationId: string }>();
 	const searchParams = useSearchParams();
 	const filter = searchParams.get('filter') as
 		| 'your-tasks'
 		| 'assigned-by-you'
 		| null;
-
-	const { data: member } = useRetrieveOrganizationMember({
-		organizationId: params.organizationId,
-	});
-
-	const canMoveTasks = hasWantedOrganizationRole({
-		userRole: member?.success ? member.organizationMember.role : undefined,
-		requiredRoles: ['ADMIN'],
-		ownerHasAllAccess: true,
-	});
 
 	const { mutate: mutateMoveTask } = useMoveTask();
 	const { data } = useRetrieveAllBoardTasksArgs(
@@ -354,6 +341,7 @@ export const TasksMapping: React.FC<{
 
 	return (
 		<GridList
+			key={canMoveTasks ? 'tasks-grid-movable' : 'tasks-grid-readonly'}
 			items={data?.tasks ?? []}
 			aria-label="Tasks"
 			selectionMode="single"
@@ -363,6 +351,7 @@ export const TasksMapping: React.FC<{
 					<p className="text-muted-foreground text-center">No tasks found.</p>
 				</div>
 			)}
+			// suppressHydrationWarning
 			className="no-scrollbar flex flex-1 flex-col gap-4 outline-none"
 		>
 			{(task) => (

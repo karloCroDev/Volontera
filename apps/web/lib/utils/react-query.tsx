@@ -7,15 +7,41 @@ import * as React from 'react';
 import {
 	DehydratedState,
 	HydrationBoundary,
+	isServer,
 	QueryClient,
 	QueryClientProvider,
 } from '@tanstack/react-query';
 
-const queryClient = new QueryClient();
+const makeQueryClient = () =>
+	new QueryClient({
+		defaultOptions: {
+			queries: {
+				// Avoid immediate refetch right after hydration.
+				staleTime: 1000 * 30,
+			},
+		},
+	});
+
+let browserQueryClient: QueryClient | undefined;
+
+const getQueryClient = () => {
+	if (isServer) {
+		return makeQueryClient();
+	}
+
+	if (!browserQueryClient) {
+		browserQueryClient = makeQueryClient();
+	}
+
+	return browserQueryClient;
+};
+
 export const ReactQueryProvider: React.FC<{
 	children?: React.ReactNode;
 	dehydratedState?: DehydratedState;
 }> = ({ children, dehydratedState }) => {
+	const queryClient = getQueryClient();
+
 	return (
 		<QueryClientProvider client={queryClient}>
 			{dehydratedState ? (
