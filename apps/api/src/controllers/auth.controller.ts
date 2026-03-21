@@ -2,7 +2,7 @@
 import { Request, Response } from "express";
 
 // Schemas
-import type { VerifyEmailArgs } from "@repo/schemas/auth";
+import { VerifyEmailArgs } from "@repo/schemas/auth";
 
 // Services
 import {

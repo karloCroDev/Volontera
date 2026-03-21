@@ -1,5 +1,5 @@
 // Types
-import type { DashboardDurationDays } from "@repo/types/dashboard";
+import { DashboardDurationDays } from "@repo/types/dashboard";
 
 export type DashboardKPIRows = {
   volunteerRows: Array<{ createdAt: Date }>;

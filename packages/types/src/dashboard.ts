@@ -1,4 +1,4 @@
-import type { ServerHandleResponse } from "./general";
+import { ServerHandleResponse } from "./general";
 
 export type DashboardDurationDays = 30 | 60 | 90;
 

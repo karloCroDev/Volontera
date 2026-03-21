@@ -2,7 +2,7 @@
 import { serverFetch } from '@/lib/utils/server-fetch';
 
 // Types
-import type {
+import {
 	DashboardDurationDays,
 	DashboardKPIMetricsResponse,
 } from '@repo/types/dashboard';

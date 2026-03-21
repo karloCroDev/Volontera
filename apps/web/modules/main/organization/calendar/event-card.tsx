@@ -15,7 +15,7 @@ import { useParams } from 'next/navigation';
 import { Container } from '@/components/ui/container';
 
 // Types
-import type { RetrieveOrganizationCalendarResponse } from '@repo/types/organization-calendar';
+import { RetrieveOrganizationCalendarResponse } from '@repo/types/organization-calendar';
 
 // Hooks
 import { useDeleteOrganizationEvent } from '@/hooks/data/organization-calendar';

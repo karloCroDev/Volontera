@@ -11,7 +11,7 @@ import {
 } from 'react-aria-components';
 import { twMerge } from 'tailwind-merge';
 import { Controller, useForm } from 'react-hook-form';
-import type { CalendarDate } from '@internationalized/date';
+import { CalendarDate } from '@internationalized/date';
 
 // Components
 import { Button } from '@/components/ui/button';
@@ -26,7 +26,7 @@ import { Error } from '@/components/ui/error';
 import { useCreateOrganizationEvent } from '@/hooks/data/organization-calendar';
 
 // Schemas
-import type { CreateOrganizationEventArgs } from '@repo/schemas/organization-calendar';
+import { CreateOrganizationEventArgs } from '@repo/schemas/organization-calendar';
 
 // Lib
 import { toast } from '@/lib/utils/toast';
