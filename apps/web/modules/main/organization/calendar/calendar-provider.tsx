@@ -2,11 +2,10 @@
 
 // External packages
 import * as React from 'react';
-import {
-	getLocalTimeZone,
-	today,
-	type CalendarDate,
-} from '@internationalized/date';
+import { CalendarDate, getLocalTimeZone } from '@internationalized/date';
+
+// Hooks
+import { useSetParams } from '@/hooks/utils/useSetParams';
 
 const CalendarContext = React.createContext<{
 	timeZone: string;
@@ -27,21 +26,23 @@ export const useCalendarContext = () => {
 
 export const CalendarProvider: React.FC<{
 	children: React.ReactNode;
-	defaultFocusedDate?: CalendarDate;
+	defaultFocusedDate: {
+		year: number;
+		month: number;
+		day: number;
+	};
 }> = ({ children, defaultFocusedDate }) => {
 	const timeZone = getLocalTimeZone();
+	const { searchParams, setParams } = useSetParams();
 
 	const [focusedDate, setFocusedDate] = React.useState<CalendarDate>(
-		() => defaultFocusedDate ?? today(timeZone)
+		() =>
+			new CalendarDate(
+				defaultFocusedDate.year,
+				defaultFocusedDate.month,
+				defaultFocusedDate.day
+			)
 	);
-
-	const prevMonth = React.useCallback(() => {
-		setFocusedDate((current) => current.subtract({ months: 1 }));
-	}, []);
-
-	const nextMonth = React.useCallback(() => {
-		setFocusedDate((current) => current.add({ months: 1 }));
-	}, []);
 
 	const monthLabel = React.useMemo(() => {
 		const formatter = new Intl.DateTimeFormat('en-US', {
@@ -51,13 +52,35 @@ export const CalendarProvider: React.FC<{
 		return formatter.format(focusedDate.toDate(timeZone));
 	}, [focusedDate, timeZone]);
 
+	React.useEffect(() => {
+		const month = String(focusedDate.month);
+		const year = String(focusedDate.year);
+
+		if (
+			searchParams.get('month') === month &&
+			searchParams.get('year') === year
+		) {
+			return;
+		}
+
+		setParams(
+			{
+				month,
+				year,
+			},
+			{ replace: true }
+		);
+	}, [focusedDate.month, focusedDate.year, searchParams, setParams]);
+
 	return (
 		<CalendarContext.Provider
 			value={{
 				focusedDate,
 				monthLabel,
-				nextMonth,
-				prevMonth,
+				nextMonth: () =>
+					setFocusedDate((current) => current.add({ months: 1 })),
+				prevMonth: () =>
+					setFocusedDate((current) => current.subtract({ months: 1 })),
 				setFocusedDate,
 				timeZone,
 			}}

@@ -13,24 +13,33 @@ import { useRetrieveAllOrganizationBoards } from '@/hooks/data/organization-task
 // Lib
 import { withReactQueryProvider } from '@/lib/utils/react-query';
 
-export const BoardsMapping = withReactQueryProvider(() => {
-	const params = useParams<{ organizationId: string }>();
-	const { data } = useRetrieveAllOrganizationBoards(
-		{
-			organizationId: params.organizationId,
-		},
-		{}
-	);
-	return data.boards.length > 0 ? (
-		data.boards.map((board) => (
-			<TasksBoard
-				tasks={<TasksMapping boardId={board.id} />}
-				boardId={board.id}
-				title={board.title}
-				key={board.id}
-			/>
-		))
-	) : (
-		<p className="text-muted-foreground mx-auto w-fit">No boards found.</p>
-	);
-});
+type BoardsMappingProps = {
+	canMoveTasks: boolean;
+};
+
+export const BoardsMapping = withReactQueryProvider<BoardsMappingProps>(
+	({ canMoveTasks }) => {
+		const params = useParams<{ organizationId: string }>();
+		const { data } = useRetrieveAllOrganizationBoards(
+			{
+				organizationId: params.organizationId,
+			},
+			{}
+		);
+		return data.boards.length > 0 ? (
+			data.boards.map((board) => (
+				<TasksBoard
+					tasks={
+						<TasksMapping boardId={board.id} canMoveTasks={canMoveTasks} />
+					}
+					boardId={board.id}
+					title={board.title}
+					canMoveTasks={canMoveTasks}
+					key={board.id}
+				/>
+			))
+		) : (
+			<p className="text-muted-foreground mx-auto w-fit">No boards found.</p>
+		);
+	}
+);

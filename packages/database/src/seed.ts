@@ -6,7 +6,7 @@ import { fileURLToPath } from "node:url";
 import {
   OrganizationJoinRequestStatus,
   OrganizationMemberRole,
-  OrganizationTaskStatus,
+  OrganizationTasksAndCalendarStatus,
   SenderType,
 } from "../generated/prisma";
 
@@ -614,19 +614,19 @@ async function main() {
         title: "Coordinate volunteers for the weekend event",
         description:
           "Responsibilities: volunteer list, outreach, role assignment, and attendance confirmation.",
-        status: OrganizationTaskStatus.MEDIUM_PRIORITY,
+        status: OrganizationTasksAndCalendarStatus.MEDIUM_PRIORITY,
       },
       {
         title: "Prepare equipment and safety brief",
         description:
           "Prepare gloves, bags, first-aid kit, and a short safety checklist.",
-        status: OrganizationTaskStatus.HIGH_PRIORITY,
+        status: OrganizationTasksAndCalendarStatus.HIGH_PRIORITY,
       },
       {
         title: "Publish recap after the event",
         description:
           "Write a short summary: volunteer count, impact metrics, and next steps.",
-        status: OrganizationTaskStatus.LOW_PRIORITY,
+        status: OrganizationTasksAndCalendarStatus.LOW_PRIORITY,
       },
     ];
 

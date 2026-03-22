@@ -1,7 +1,7 @@
-import type { ServerHandleResponse } from "./general";
-import type { User as PrismaUser } from "@repo/database";
+import { ServerHandleResponse } from "./general";
+import { User as PrismaUser } from "@repo/database";
 import { RetrieveOrganizationPostsResponse } from "./post";
-import type { OrganizationWithOwner } from "./organization";
+import { OrganizationWithOwner } from "./organization";
 
 // Session (User)
 export type UserResponse = Omit<PrismaUser, "password"> &

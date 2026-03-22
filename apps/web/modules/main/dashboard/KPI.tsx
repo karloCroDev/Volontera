@@ -6,7 +6,7 @@ import { LineChart } from '@/components/ui/charts/line-chart';
 import { Container } from '@/components/ui/container';
 
 // Types
-import type { DashboardKPIIntervalPoint } from '@repo/types/dashboard';
+import { DashboardKPIIntervalPoint } from '@repo/types/dashboard';
 
 type KPIKey = 'totalVolunteers' | 'totalOrganizations' | 'totalOrganizators';
 

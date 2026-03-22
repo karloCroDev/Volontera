@@ -2,7 +2,7 @@
 
 // External packages
 import * as React from 'react';
-import { Trash } from 'lucide-react';
+import { Trash2 } from 'lucide-react';
 import { Label as AriaLabel, Input as AriaInput } from 'react-aria-components';
 import { Controller, useFormContext } from 'react-hook-form';
 
@@ -128,7 +128,7 @@ export const ProfileForm: React.FC<{
 														}
 													}}
 												>
-													<Trash className="size-4" />
+													<Trash2 className="size-4" />
 												</Button>
 											)
 										}

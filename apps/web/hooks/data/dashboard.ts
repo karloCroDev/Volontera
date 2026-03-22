@@ -5,7 +5,7 @@ import { useQuery, UseQueryOptions } from '@tanstack/react-query';
 import { retrieveDashboardKPIMetrics } from '@/lib/data/dashboard';
 
 // Types
-import type {
+import {
 	DashboardDurationDays,
 	DashboardKPIMetricsResponse,
 } from '@repo/types/dashboard';

@@ -36,6 +36,7 @@ import { organizationTasksRoutes } from "@/routes/organization-tasks.route";
 import { homeRoute } from "@/routes/home.route";
 import { rateLimitMiddleware } from "@/middleware/rate-limit.middleware";
 import { dashboardRoutes } from "@/routes/dashboard.route";
+import { organizationCalendarRoutes } from "@/routes/organization-calendar.route";
 
 // Security middleware
 app.use(helmet());
@@ -140,6 +141,16 @@ app.use(
     limit: 75,
   }),
   organizationTasksRoutes,
+);
+app.use(
+  "/organization-calendar",
+  authMiddleware,
+  hasRoleMiddleware,
+  rateLimitMiddleware({
+    additionalTags: ["organization-calendar"],
+    limit: 60,
+  }),
+  organizationCalendarRoutes,
 );
 app.use(
   "/search",

@@ -7,7 +7,7 @@ import { User } from "@repo/database";
 // Models
 import { resend } from "@/lib/config/resend";
 import { findUserById } from "@/models/user.model";
-import { createUploadUrl, deleteImage } from "@/lib/aws-s3-functions";
+import { createUploadUrl } from "@/lib/aws-s3-functions";
 import {
   finishOnboarding,
   updateUserAppType,

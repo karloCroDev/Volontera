@@ -37,12 +37,9 @@ type OrgChatMessage =
 export const GroupChatMapping = withReactQueryProvider(() => {
 	const params = useParams<{ organizationId: string }>();
 	const organizationId = params.organizationId;
-	const { data } = useRetrieveAllOrganizationGroupChatMessages(
-		{
-			organizationId,
-		},
-		{}
-	);
+	const { data } = useRetrieveAllOrganizationGroupChatMessages({
+		organizationId,
+	});
 
 	const { socketGlobal } = useSocketContext();
 	React.useEffect(() => {
@@ -86,10 +83,9 @@ export const GroupChatMapping = withReactQueryProvider(() => {
 		data.organizationGroupChat.messages
 	);
 
-	// // Stavljalju poruke koje su fetchane iz hooka u state (radi lakšeg upravljanja porukama sa ws)
-	// React.useEffect(() => {
-	// 	setMessages(data.organizationGroupChat.messages);
-	// }, [data]);
+	React.useEffect(() => {
+		setMessages(data.organizationGroupChat.messages);
+	}, [data.organizationGroupChat.messages]);
 
 	// Scrolla se na dna containera kada se pojavi nova poruka
 	const containerRef = React.useRef<HTMLDivElement | null>(null);

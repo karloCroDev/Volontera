@@ -4,9 +4,9 @@
 import * as React from 'react';
 
 // Types
-import type { UserResponse } from '@repo/types/user';
-import type { ServerHandleResponse } from '@repo/types/general';
-import type { GeneratePaymentLinkResponse } from '@repo/types/payment';
+import { UserResponse } from '@repo/types/user';
+import { ServerHandleResponse } from '@repo/types/general';
+import { GeneratePaymentLinkResponse } from '@repo/types/payment';
 
 // Components
 import { Carousel } from '@/components/ui/carousel';

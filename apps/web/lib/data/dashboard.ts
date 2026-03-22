@@ -3,7 +3,7 @@ import { API } from '@/lib/utils/axios-client';
 import { catchError } from '@/lib/utils/error';
 
 // Types
-import type {
+import {
 	DashboardDurationDays,
 	DashboardKPIMetricsResponse,
 } from '@repo/types/dashboard';

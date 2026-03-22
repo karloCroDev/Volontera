@@ -1,5 +1,5 @@
 // External packages
-import type { Metadata } from 'next';
+import { Metadata } from 'next';
 import localFont from 'next/font/local';
 
 // Components
