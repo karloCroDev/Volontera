@@ -5,7 +5,6 @@ import * as React from 'react';
 import { CalendarCellProps } from 'react-aria-components';
 import { CalendarCell } from 'react-aria-components';
 import { today } from '@internationalized/date';
-import { twJoin } from 'tailwind-merge';
 
 // Components
 import { Dialog } from '@/components/ui/dialog';
@@ -34,12 +33,7 @@ export const EventDialog: React.FC<{
 	const dayCell = (
 		<CalendarCell
 			date={date}
-			className={twJoin(
-				'border-input-border group relative flex h-28 w-full flex-col border-b border-r p-2 text-left align-top outline-none',
-
-				!isPastDate &&
-					'data-[hovered]:bg-accent/30 data-[pressed]:bg-accent/50 data-[selected]:bg-accent/40 data-[unavailable]:bg-background data-[unavailable]:text-muted-foreground data-[unavailable]:cursor-not-allowed data-[unavailable]:opacity-50'
-			)}
+			className="border-input-border data-[hovered]:bg-accent/30 data-[pressed]:bg-accent/50 data-[selected]:bg-accent/40 data-[unavailable]:bg-background data-[unavailable]:text-muted-foreground data-[outside-month]:bg-background group relative flex h-28 w-full cursor-pointer flex-col border-b border-r p-2 text-left align-top outline-none data-[unavailable]:cursor-not-allowed data-[outside-month]:opacity-50 data-[unavailable]:opacity-50"
 		>
 			<span className="text-sm">{date.day}</span>
 
@@ -81,4 +75,8 @@ export const EventDialog: React.FC<{
 			</div>
 		</Dialog>
 	);
+};
+
+const DayCell = () => {
+	return;
 };

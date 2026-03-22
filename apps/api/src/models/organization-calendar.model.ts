@@ -12,10 +12,10 @@ export async function retrieveOrganizationCalendar({
 }) {
   const shouldFilterByMonth = month !== undefined && year !== undefined;
   const monthStart = shouldFilterByMonth
-    ? new Date(Date.UTC(year, month - 1, 1, 0, 0, 0, 0))
+    ? new Date(year, month - 1, 1, 0, 0, 0, 0)
     : undefined;
   const monthEnd = shouldFilterByMonth
-    ? new Date(Date.UTC(year, month, 1, 0, 0, 0, 0))
+    ? new Date(year, month, 1, 0, 0, 0, 0)
     : undefined;
 
   return await prisma.organizationCalendar.findUnique({
@@ -63,6 +63,76 @@ export async function createOrganizationEvent({
       startTime,
       content,
       calendarId,
+    },
+  });
+}
+
+export async function findOverlappingOrganizationEvent({
+  calendarId,
+  date,
+  startTime,
+  endTime,
+  excludeEventId,
+}: {
+  calendarId: string;
+  date: Date;
+  startTime: Date;
+  endTime: Date;
+  excludeEventId?: string;
+}) {
+  const dayStart = new Date(
+    date.getFullYear(),
+    date.getMonth(),
+    date.getDate(),
+    0,
+    0,
+    0,
+    0,
+  );
+  const dayEnd = new Date(
+    date.getFullYear(),
+    date.getMonth(),
+    date.getDate() + 1,
+    0,
+    0,
+    0,
+    0,
+  );
+
+  return await prisma.organizationCalendarEvent.findFirst({
+    where: {
+      calendarId,
+      date: {
+        gte: dayStart,
+        lt: dayEnd,
+      },
+      id: excludeEventId
+        ? {
+            not: excludeEventId,
+          }
+        : undefined,
+      startTime: {
+        lt: endTime,
+      },
+      endTime: {
+        gt: startTime,
+      },
+    },
+    select: {
+      id: true,
+    },
+  });
+}
+
+export async function retrieveOrganizationCalendarEventById(eventId: string) {
+  return await prisma.organizationCalendarEvent.findUnique({
+    where: {
+      id: eventId,
+    },
+    select: {
+      id: true,
+      calendarId: true,
+      date: true,
     },
   });
 }

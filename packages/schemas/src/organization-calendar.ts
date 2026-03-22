@@ -4,7 +4,7 @@ import { z } from "zod";
 // Schemas
 import { organizationIdSchema } from "./organization";
 
-const organizationCalendarStatusSchema = z.enum([
+export const organizationCalendarStatusSchema = z.enum([
   "LOW_PRIORITY",
   "MEDIUM_PRIORITY",
   "HIGH_PRIORITY",
@@ -12,9 +12,7 @@ const organizationCalendarStatusSchema = z.enum([
 
 function getStartOfCurrentUtcDay() {
   const now = new Date();
-  return new Date(
-    Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()),
-  );
+  return new Date(now.getFullYear(), now.getMonth(), now.getDate());
 }
 
 export const retrieveOrganizationCalendarSchema = organizationIdSchema;
@@ -54,7 +52,7 @@ export type RetrieveOrganizationCalendarArgs = z.infer<
   typeof retrieveOrganizationCalendarArgsSchema
 >;
 
-export const createOrganizationEventSchema = z
+export const createOrganizationEventBaseSchema = z
   .object({
     content: z.string().min(1).max(500),
     startTime: z.coerce.date(),
@@ -63,7 +61,9 @@ export const createOrganizationEventSchema = z
     status: organizationCalendarStatusSchema,
     calendarId: z.string(),
   })
-  .extend(organizationIdSchema.shape)
+  .extend(organizationIdSchema.shape);
+
+export const createOrganizationEventSchema = createOrganizationEventBaseSchema
   .refine((data) => data.endTime > data.startTime, {
     message: "End time must be after start time",
     path: ["endTime"],

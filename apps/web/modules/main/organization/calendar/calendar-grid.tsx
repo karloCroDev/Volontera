@@ -83,9 +83,9 @@ export const CalendarGrid = withReactQueryProvider(() => {
 							const dayEvents = events.filter((event) => {
 								const d = new Date(event.date as unknown as string);
 								return (
-									d.getUTCFullYear() === date.year &&
-									d.getUTCMonth() + 1 === date.month &&
-									d.getUTCDate() === date.day
+									d.getFullYear() === date.year &&
+									d.getMonth() + 1 === date.month &&
+									d.getDate() === date.day
 								);
 							});
 							return (

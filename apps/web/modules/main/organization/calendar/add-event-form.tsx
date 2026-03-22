@@ -3,6 +3,7 @@
 // External packages
 import * as React from 'react';
 import { Plus } from 'lucide-react';
+import { zodResolver } from '@hookform/resolvers/zod';
 import {
 	Input as AriaInput,
 	Form,
@@ -12,6 +13,7 @@ import {
 import { twMerge } from 'tailwind-merge';
 import { Controller, useForm } from 'react-hook-form';
 import { CalendarDate } from '@internationalized/date';
+import { z } from 'zod';
 
 // Components
 import { Button } from '@/components/ui/button';
@@ -26,30 +28,28 @@ import { Error } from '@/components/ui/error';
 import { useCreateOrganizationEvent } from '@/hooks/data/organization-calendar';
 
 // Schemas
-import { CreateOrganizationEventArgs } from '@repo/schemas/organization-calendar';
+import { createOrganizationEventBaseSchema } from '@repo/schemas/organization-calendar';
 
 // Lib
 import { toast } from '@/lib/utils/toast';
 import { useParams } from 'next/navigation';
 
-type Status = 'LOW_PRIORITY' | 'MEDIUM_PRIORITY' | 'HIGH_PRIORITY';
+const addEventFormSchema = createOrganizationEventBaseSchema.pick({
+	content: true,
+	status: true,
+});
 
-type AddEventFormValues = {
-	content: string;
-	status: Status;
-};
+type AddEventFormValues = z.infer<typeof addEventFormSchema>;
 
 function combineDateAndTime(date: CalendarDate, timeStr: string): Date {
 	const parts = timeStr.split(':');
 	const hours = Number(parts[0]);
 	const minutes = Number(parts[1]);
-	return new Date(
-		Date.UTC(date.year, date.month - 1, date.day, hours, minutes, 0)
-	);
+	return new Date(date.year, date.month - 1, date.day, hours, minutes, 0, 0);
 }
 
-function toUTCNoon(date: CalendarDate): Date {
-	return new Date(Date.UTC(date.year, date.month - 1, date.day, 12, 0, 0));
+function toLocalNoon(date: CalendarDate): Date {
+	return new Date(date.year, date.month - 1, date.day, 12, 0, 0, 0);
 }
 
 export const AddEventForm: React.FC<{
@@ -69,6 +69,7 @@ export const AddEventForm: React.FC<{
 		setError,
 		formState: { errors },
 	} = useForm<AddEventFormValues>({
+		resolver: zodResolver(addEventFormSchema),
 		defaultValues: {
 			content: '',
 			status: 'MEDIUM_PRIORITY',
@@ -94,29 +95,32 @@ export const AddEventForm: React.FC<{
 	};
 
 	const onSubmit = ({ content, status }: AddEventFormValues) => {
-		const payload: CreateOrganizationEventArgs = {
-			content,
-			status,
-			organizationId: params.organizationId,
-			calendarId,
-			date: toUTCNoon(date),
-			startTime: combineDateAndTime(date, startTime),
-			endTime: combineDateAndTime(date, endTime),
-		};
-
-		mutate(payload, {
-			onSuccess({ title, message }) {
-				toast({ title, content: message, variant: 'success' });
-				reset();
-				setStartTime('09:00');
-				setEndTime('10:00');
+		mutate(
+			{
+				content,
+				status,
+				organizationId: params.organizationId,
+				calendarId,
+				date: toLocalNoon(date),
+				startTime: combineDateAndTime(date, startTime),
+				endTime: combineDateAndTime(date, endTime),
 			},
-			onError(err) {
-				setError('root', { type: 'server', message: err.message });
-			},
-		});
+			{
+				onSuccess({ title, message }) {
+					toast({ title, content: message, variant: 'success' });
+					reset();
+					setStartTime('09:00');
+					setEndTime('10:00');
+				},
+				onError(err) {
+					console.log(err.message);
+					setError('root', { type: 'server', message: err.message });
+				},
+			}
+		);
 	};
 
+	console.log(errors);
 	return (
 		<Form className="flex flex-col gap-2" onSubmit={handleSubmit(onSubmit)}>
 			<div className="flex flex-col md:flex-row md:justify-between">
@@ -207,13 +211,6 @@ export const AddEventForm: React.FC<{
 			<Controller
 				control={control}
 				name="content"
-				rules={{
-					required: 'Event content is required',
-					maxLength: {
-						value: 500,
-						message: 'Content must be at most 500 characters',
-					},
-				}}
 				render={({ field }) => (
 					<ResizableTextArea
 						className="w-full !max-w-full"

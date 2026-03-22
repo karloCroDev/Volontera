@@ -8,7 +8,9 @@ import {
 import {
   createOrganizationEvent,
   deleteOrganizationEvent,
+  findOverlappingOrganizationEvent,
   retrieveOrganizationCalendar,
+  retrieveOrganizationCalendarEventById,
   updateOrganizationEvent,
 } from "@/models/organization-calendar.model";
 
@@ -19,10 +21,6 @@ import {
   RetrieveOrganizationCalendarArgs,
   UpdateOrganizationEventArgs,
 } from "@repo/schemas/organization-calendar";
-
-function isDateTimeInThePast(date: Date) {
-  return date.getTime() < Date.now();
-}
 
 export async function retrieveOrganizationCalendarService({
   organizationId,
@@ -46,20 +44,39 @@ export async function retrieveOrganizationCalendarService({
 export async function createOrganizationEventService(
   data: CreateOrganizationEventArgs,
 ) {
-  if (isDateTimeInThePast(data.startTime)) {
+  const startTime = new Date(data.startTime);
+  const endTime = new Date(data.endTime);
+  const date = new Date(data.date);
+
+  if (startTime.getTime() < Date.now()) {
     return toastResponseOutput({
       status: 400,
       title: "Invalid Event Date",
-      message: "You cannot create events in the past.",
+      message: "You cannot move events to the past.",
+    });
+  }
+
+  const overlappingEvent = await findOverlappingOrganizationEvent({
+    calendarId: data.calendarId,
+    date,
+    startTime,
+    endTime,
+  });
+
+  if (overlappingEvent) {
+    return toastResponseOutput({
+      status: 400,
+      title: "Overlapping Event",
+      message: "This time interval overlaps with another event on that day.",
     });
   }
 
   await createOrganizationEvent({
     calendarId: data.calendarId,
     content: data.content,
-    date: data.date,
-    startTime: data.startTime,
-    endTime: data.endTime,
+    date,
+    startTime,
+    endTime,
     status: data.status,
   });
 
@@ -73,7 +90,10 @@ export async function createOrganizationEventService(
 export async function updateOrganizationEventService(
   data: UpdateOrganizationEventArgs,
 ) {
-  if (isDateTimeInThePast(data.startTime)) {
+  const startTime = new Date(data.startTime);
+  const endTime = new Date(data.endTime);
+
+  if (startTime.getTime() < Date.now()) {
     return toastResponseOutput({
       status: 400,
       title: "Invalid Event Date",
@@ -81,11 +101,39 @@ export async function updateOrganizationEventService(
     });
   }
 
+  const existingEvent = await retrieveOrganizationCalendarEventById(
+    data.eventId,
+  );
+
+  if (!existingEvent) {
+    return toastResponseOutput({
+      status: 400,
+      title: "Event Not Found",
+      message: "The selected event no longer exists.",
+    });
+  }
+
+  const overlappingEvent = await findOverlappingOrganizationEvent({
+    calendarId: existingEvent.calendarId,
+    date: existingEvent.date,
+    startTime,
+    endTime,
+    excludeEventId: data.eventId,
+  });
+
+  if (overlappingEvent) {
+    return toastResponseOutput({
+      status: 400,
+      title: "Overlapping Event",
+      message: "This time interval overlaps with another event on that day.",
+    });
+  }
+
   await updateOrganizationEvent({
     eventId: data.eventId,
     content: data.content,
-    startTime: data.startTime,
-    endTime: data.endTime,
+    startTime,
+    endTime,
   });
 
   return toastResponseOutput({
