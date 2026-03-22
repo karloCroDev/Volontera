@@ -87,6 +87,7 @@ export async function createOrganizationEventService(
   });
 }
 
+// TODO: Vidi hoću li updateanje organizacija implementirati na frontendu
 export async function updateOrganizationEventService(
   data: UpdateOrganizationEventArgs,
 ) {

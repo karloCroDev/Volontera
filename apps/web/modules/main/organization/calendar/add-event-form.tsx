@@ -13,7 +13,7 @@ import {
 import { twMerge } from 'tailwind-merge';
 import { Controller, useForm } from 'react-hook-form';
 import { CalendarDate } from '@internationalized/date';
-import { z } from 'zod';
+import { useParams } from 'next/navigation';
 
 // Components
 import { Button } from '@/components/ui/button';
@@ -28,18 +28,13 @@ import { Error } from '@/components/ui/error';
 import { useCreateOrganizationEvent } from '@/hooks/data/organization-calendar';
 
 // Schemas
-import { createOrganizationEventBaseSchema } from '@repo/schemas/organization-calendar';
+import {
+	createOrganizationEventSchema,
+	CreateOrganizationEventArgs,
+} from '@repo/schemas/organization-calendar';
 
 // Lib
 import { toast } from '@/lib/utils/toast';
-import { useParams } from 'next/navigation';
-
-const addEventFormSchema = createOrganizationEventBaseSchema.pick({
-	content: true,
-	status: true,
-});
-
-type AddEventFormValues = z.infer<typeof addEventFormSchema>;
 
 function combineDateAndTime(date: CalendarDate, timeStr: string): Date {
 	const parts = timeStr.split(':');
@@ -68,8 +63,13 @@ export const AddEventForm: React.FC<{
 		reset,
 		setError,
 		formState: { errors },
-	} = useForm<AddEventFormValues>({
-		resolver: zodResolver(addEventFormSchema),
+	} = useForm<Pick<CreateOrganizationEventArgs, 'content' | 'status'>>({
+		resolver: zodResolver(
+			createOrganizationEventSchema.pick({
+				content: true,
+				status: true,
+			})
+		),
 		defaultValues: {
 			content: '',
 			status: 'MEDIUM_PRIORITY',
@@ -83,18 +83,10 @@ export const AddEventForm: React.FC<{
 		}
 	};
 
-	const handleStartTimeChange = (newStartTime: string) => {
-		setStartTime(newStartTime);
-		if (endTime < newStartTime) {
-			setEndTime(newStartTime);
-		}
-	};
-
-	const handleEndTimeChange = (newEndTime: string) => {
-		setEndTime(newEndTime < startTime ? startTime : newEndTime);
-	};
-
-	const onSubmit = ({ content, status }: AddEventFormValues) => {
+	const onSubmit = ({
+		content,
+		status,
+	}: Pick<CreateOrganizationEventArgs, 'content' | 'status'>) => {
 		mutate(
 			{
 				content,
@@ -131,7 +123,12 @@ export const AddEventForm: React.FC<{
 							aria-label="Event start time"
 							type="time"
 							value={startTime}
-							onChange={(e) => handleStartTimeChange(e.target.value)}
+							onChange={(e) => {
+								setStartTime(e.target.value);
+								if (endTime < e.target.value) {
+									setEndTime(e.target.value);
+								}
+							}}
 							onKeyDown={stopCalendarNavigationKeys}
 							className={twMerge(
 								getTextFieldBasicStyles,
@@ -147,7 +144,11 @@ export const AddEventForm: React.FC<{
 							type="time"
 							min={startTime}
 							value={endTime}
-							onChange={(e) => handleEndTimeChange(e.target.value)}
+							onChange={(e) =>
+								setEndTime(
+									e.target.value < startTime ? startTime : e.target.value
+								)
+							}
 							onKeyDown={stopCalendarNavigationKeys}
 							className={twMerge(
 								getTextFieldBasicStyles,
