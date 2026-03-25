@@ -9,10 +9,12 @@ import { useSearchParams } from 'next/navigation';
 // Components
 import { TextEditor } from '@/components/ui/text-editor/text-editor';
 import { Button } from '@/components/ui/button';
+import { ReplyIndicator } from '@/components/ui/message/reply-indicator';
 import {
 	ImageItemArgs,
 	isLocalImageItem,
 } from '@/components/ui/dnd-mapping-images';
+import { useMessagesReply } from '@/components/ui/message/reply-context';
 
 // Hooks
 import { useStartConversationOrStartAndSendDirectMessage } from '@/hooks/data/direct-messages';
@@ -23,12 +25,14 @@ import { IRevalidateTag } from '@/lib/server/revalidation';
 
 export const MessageForm = withReactQueryProvider(() => {
 	const searchParams = useSearchParams();
+	const { setReplyingTo } = useMessagesReply();
 
 	const [value, setValue] = React.useState('');
 	const [images, setImages] = React.useState<ImageItemArgs>([]);
 	const { mutate, isPending } =
 		useStartConversationOrStartAndSendDirectMessage();
 
+	// Karlo: Prebaci ovo u zod jer postoji schema za ovo
 	const onSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
 		if (!searchParams.get('userId') || !value) return;
@@ -50,11 +54,13 @@ export const MessageForm = withReactQueryProvider(() => {
 			},
 			{
 				onSuccess() {
+					// Karlo: Ovo moram maknuti tj. prebaci u react query
 					IRevalidateTag('direct-messages');
 				},
 				onSettled() {
 					setValue('');
 					setImages([]);
+					setReplyingTo(null);
 				},
 			}
 		);
@@ -65,6 +71,7 @@ export const MessageForm = withReactQueryProvider(() => {
 			className="lg:max-w-3/4 bg-background absolute bottom-4 left-1/2 w-full flex-none -translate-x-1/2 rounded-lg"
 			onSubmit={onSubmit}
 		>
+			<ReplyIndicator />
 			<TextEditor
 				images={images}
 				setImages={setImages}

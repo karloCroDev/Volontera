@@ -19,11 +19,13 @@ import { useCreateOrganizationGroupChatMessage } from '@/hooks/data/organization
 
 // Schemas
 import { OrganizationGroupChatMessageArgs } from '@repo/schemas/organization-group-chat';
-// import { useCreateOrganizationGroupChatMessage } from '@/hooks/data/organization-group-chat';
+import { ReplyIndicator } from '@/components/ui/message/reply-indicator';
+import { useMessagesReply } from '@/components/ui/message/reply-context';
 
 export const AddMessageForm: React.FC<{
 	groupChatId: OrganizationGroupChatMessageArgs['groupChatId'];
 }> = ({ groupChatId }) => {
+	const { setReplyingTo } = useMessagesReply();
 	const [value, setValue] = React.useState('');
 	const [images, setImages] = React.useState<ImageItemArgs>([]);
 	const { mutate, isPending } = useCreateOrganizationGroupChatMessage();
@@ -53,6 +55,7 @@ export const AddMessageForm: React.FC<{
 				onSuccess: () => {
 					setValue('');
 					setImages([]);
+					setReplyingTo(null);
 				},
 			}
 		);
@@ -63,6 +66,7 @@ export const AddMessageForm: React.FC<{
 			className="lg:max-w-3/4 bg-background absolute bottom-4 left-1/2 w-full flex-none -translate-x-1/2 rounded-lg"
 			onSubmit={onSubmit}
 		>
+			<ReplyIndicator />
 			<TextEditor
 				images={images}
 				setImages={setImages}

@@ -9,6 +9,7 @@ import { useParams } from 'next/navigation';
 import { Avatar } from '@/components/ui/avatar';
 import { Message } from '@/components/ui/message/message';
 import { MessageImages } from '@/components/ui/message/message-images';
+import { useMessagesReply } from '@/components/ui/message/reply-context';
 
 // Hooks
 import {
@@ -36,9 +37,9 @@ type OrgChatMessage =
 
 export const GroupChatMapping = withReactQueryProvider(() => {
 	const params = useParams<{ organizationId: string }>();
-	const organizationId = params.organizationId;
+	const { replyingTo, setReplyingTo } = useMessagesReply();
 	const { data } = useRetrieveAllOrganizationGroupChatMessages({
-		organizationId,
+		organizationId: params.organizationId,
 	});
 
 	const { socketGlobal } = useSocketContext();
@@ -58,7 +59,7 @@ export const GroupChatMapping = withReactQueryProvider(() => {
 			messageId: string;
 			organizationId: string;
 		}) => {
-			if (payload.organizationId !== organizationId) return;
+			if (payload.organizationId !== params.organizationId) return;
 			setMessages((prev) =>
 				prev?.filter((msg) => msg.id !== payload.messageId)
 			);
@@ -77,15 +78,15 @@ export const GroupChatMapping = withReactQueryProvider(() => {
 				handleMessageDeleted
 			);
 		};
-	}, [organizationId, socketGlobal]);
+	}, [params.organizationId, socketGlobal]);
 
 	const [messages, setMessages] = React.useState(
 		data.organizationGroupChat.messages
 	);
 
-	React.useEffect(() => {
-		setMessages(data.organizationGroupChat.messages);
-	}, [data.organizationGroupChat.messages]);
+	// React.useEffect(() => {
+	// 	setMessages(data.organizationGroupChat.messages);
+	// }, [data.organizationGroupChat.messages]);
 
 	// Scrolla se na dna containera kada se pojavi nova poruka
 	const containerRef = React.useRef<HTMLDivElement | null>(null);
@@ -110,6 +111,13 @@ export const GroupChatMapping = withReactQueryProvider(() => {
 						key={message.id}
 						date={new Date(message.createdAt)}
 						variant={user?.id === message.author.id ? 'primary' : 'secondary'}
+						isBeingRepliedTo={replyingTo?.id === message.id}
+						onReplyClick={() =>
+							setReplyingTo({
+								id: message.id,
+								content: message.content,
+							})
+						}
 						avatar={
 							<Avatar
 								imageProps={{
@@ -136,7 +144,7 @@ export const GroupChatMapping = withReactQueryProvider(() => {
 						}
 						deleteAction={() =>
 							mutateDeleteMessage({
-								organizationId,
+								organizationId: params.organizationId,
 								messageId: message.id,
 							})
 						}

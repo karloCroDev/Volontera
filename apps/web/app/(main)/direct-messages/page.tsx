@@ -1,12 +1,15 @@
 // Modules
 import { ListUsers } from '@/modules/main/direct-messages/list-users';
-import { MessageForm } from '@/modules/main/direct-messages/message-form';
 import { MessageWrapper } from '@/modules/main/direct-messages/message-wrapper';
 import { UsersInfoHeader } from '@/modules/main/direct-messages/users-info-header';
 import { ConversationMapping } from '@/modules/main/direct-messages/conversation-mapping';
+import { MessageForm } from '@/modules/main/direct-messages/message-form';
 
 // Lib
 import { getListOfAllDirectMessages } from '@/lib/server/direct-messages';
+
+// Components
+import { MessagesReplyProvider } from '@/components/ui/message/reply-context';
 
 export default async function DirectMessagesPage() {
 	const listOfAllDirectMessages = await getListOfAllDirectMessages();
@@ -19,8 +22,10 @@ export default async function DirectMessagesPage() {
 				<UsersInfoHeader />
 
 				<div className="relative min-h-0 flex-1 px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
-					<ConversationMapping />
-					<MessageForm />
+					<MessagesReplyProvider>
+						<ConversationMapping />
+						<MessageForm />
+					</MessagesReplyProvider>
 				</div>
 			</MessageWrapper>
 		</div>

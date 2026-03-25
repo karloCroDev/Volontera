@@ -2,18 +2,26 @@
 import { CheckCheck } from 'lucide-react';
 import { twJoin, twMerge } from 'tailwind-merge';
 
-// Lib
-import { formatTime } from '@/lib/utils/time-adjustments';
+// Components
 import { DeleteMessageButton } from '@/components/ui/message/delete-message-button';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Reply, ReplyButton } from '@/components/ui/message/reply';
+
+// Lib
+import { formatTime } from '@/lib/utils/time-adjustments';
+
+export type VariantProps = 'primary' | 'secondary';
 
 export const Message: React.FC<
 	React.ComponentPropsWithoutRef<'div'> & {
 		avatar: React.ReactNode;
 		date: Date;
-		variant?: 'primary' | 'secondary';
+		variant?: VariantProps;
 		images?: React.ReactNode;
 		deleteAction?: () => void;
+		reply?: string;
+		onReplyClick?: () => void;
+		isBeingRepliedTo?: boolean;
 	}
 > = ({
 	/* eslint react/prop-types: 0 */
@@ -24,10 +32,14 @@ export const Message: React.FC<
 	deleteAction,
 	images,
 	className,
+	reply,
+	onReplyClick,
+	isBeingRepliedTo,
 	...rest
 }) => {
 	return (
 		<div className="mb-4 flex flex-col gap-4">
+			{reply && <Reply reply={reply} variant={variant} />}
 			<div className={twJoin(variant === 'primary' && 'ml-auto')}>{images}</div>
 
 			<div
@@ -35,7 +47,7 @@ export const Message: React.FC<
 				className={twMerge(
 					'group flex gap-4 md:gap-8',
 					variant === 'primary' && 'flex-row-reverse',
-
+					isBeingRepliedTo && 'bg-muted/50 rounded-lg p-2',
 					className
 				)}
 			>
@@ -49,7 +61,8 @@ export const Message: React.FC<
 							variant === 'primary' &&
 								'bg-accent text-accent-foreground border-accent-foreground rounded-tr-none',
 							variant === 'secondary' &&
-								'border-input-border text-background-foreground bg-muted rounded-tl-none'
+								'border-input-border text-background-foreground bg-muted rounded-tl-none',
+							isBeingRepliedTo && 'ring-accent ring-2'
 						)}
 					>
 						<div className="prose prose-custom !max-w-full">{children}</div>
@@ -62,6 +75,7 @@ export const Message: React.FC<
 					</div>
 				</div>
 
+				<ReplyButton onPress={onReplyClick} />
 				{variant === 'primary' && deleteAction && (
 					<DeleteMessageButton action={deleteAction} />
 				)}

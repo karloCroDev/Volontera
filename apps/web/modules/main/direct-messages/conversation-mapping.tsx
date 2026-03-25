@@ -10,6 +10,7 @@ import Link from 'next/link';
 import { Message, MessageSkeleton } from '@/components/ui/message/message';
 import { Avatar } from '@/components/ui/avatar';
 import { MessageImages } from '@/components/ui/message/message-images';
+import { useMessagesReply } from '@/components/ui/message/reply-context';
 
 // Hooks
 import {
@@ -34,6 +35,7 @@ import { DeleteDirectMessageArgs } from '@repo/schemas/direct-messages';
 export const ConversationMapping = withReactQueryProvider(() => {
 	const searchParams = useSearchParams();
 	const recieverId = searchParams.get('userId');
+	const { replyingTo, setReplyingTo } = useMessagesReply();
 
 	const { data: conversation, isLoading } =
 		useGetDirectMessagesConversationById(
@@ -87,6 +89,7 @@ export const ConversationMapping = withReactQueryProvider(() => {
 
 	// Brisanje poruke
 	const { mutate: mutateDeleteMessage } = useDeleteDirectMessageById();
+
 	return (
 		<div
 			className="no-scrollbar pb-50 h-full min-h-0 overflow-y-auto scroll-smooth"
@@ -107,6 +110,13 @@ export const ConversationMapping = withReactQueryProvider(() => {
 							key={message.id}
 							variant={message.author.id === user?.id ? 'primary' : 'secondary'}
 							date={new Date(message.createdAt)}
+							isBeingRepliedTo={replyingTo?.id === message.id}
+							onReplyClick={() =>
+								setReplyingTo({
+									id: message.id,
+									content: message.content,
+								})
+							}
 							avatar={
 								<Link href={`/profile/${message.author.id}`}>
 									<Avatar
