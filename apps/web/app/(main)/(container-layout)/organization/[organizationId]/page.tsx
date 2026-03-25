@@ -142,7 +142,7 @@ export default async function OrganizationPage({
 									organizationDetailsById.organization._count
 										.organizationFollowers
 								}
-							</strong>
+							</strong>{' '}
 							followers
 						</p>
 					</div>

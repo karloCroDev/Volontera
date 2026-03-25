@@ -5,6 +5,7 @@ import { Organization, prisma, User } from "@repo/database";
 import {
   CreateOrganizationArgs,
   SendRequestToJoinOrganizationArgs,
+  UpdateOrganizationArgs,
 } from "@repo/schemas/organization";
 
 // Owners only
@@ -152,6 +153,51 @@ export async function createOrganization({
       },
       organizationCalendar: {
         create: {},
+      },
+    },
+  });
+}
+
+export async function updateOrganization({
+  data,
+  imageKeys,
+}: {
+  data: UpdateOrganizationArgs;
+  imageKeys: {
+    avatarImageKey?: string;
+    coverImageKey?: string;
+  };
+}) {
+  const additionalLinksData = (data.additional_links ?? []).map((link) => ({
+    url: link.url,
+    name: link.label,
+  }));
+
+  return prisma.organization.update({
+    where: {
+      id: data.organizationId,
+    },
+    data: {
+      name: data.organization_name,
+      bio: data.organization_bio,
+      avatarImage: imageKeys.avatarImageKey,
+      organizationInfo: {
+        update: {
+          bio: data.organization_bio,
+          type: data.organization_type,
+          location: data.organization_location,
+          externalFormLink: data.external_form_link,
+          coverImage: imageKeys.coverImageKey,
+          additionalLinks: {
+            deleteMany: {},
+            createMany:
+              additionalLinksData.length > 0
+                ? {
+                    data: additionalLinksData,
+                  }
+                : undefined,
+          },
+        },
       },
     },
   });

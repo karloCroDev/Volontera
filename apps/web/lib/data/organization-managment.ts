@@ -1,6 +1,7 @@
 // Lib
 import { API } from '@/lib/utils/axios-client';
 import { catchError } from '@/lib/utils/error';
+import { UpdateOrganizationArgs } from '@repo/schemas/organization';
 
 // Schemas
 import {
@@ -11,6 +12,7 @@ import {
 	RetrieveAllMembersInOrganizationArgs,
 	RetrieveOrganizationMemberArgs,
 } from '@repo/schemas/organization-managment';
+import { DataWithFiles } from '@repo/types/upload';
 
 export async function retrieveAllRequestsToJoinOrganization({
 	organizationId,
@@ -87,6 +89,48 @@ export async function leaveOrganization({
 		const res = await API().delete(
 			`/organization-managment/leave/${organizationId}`
 		);
+		return res.data;
+	} catch (err) {
+		catchError(err);
+	}
+}
+
+export async function updateOrganization({
+	data,
+	files,
+}: DataWithFiles<UpdateOrganizationArgs>) {
+	try {
+		const res = await API().patch(
+			'/organization-managment/update-organization',
+			data
+		);
+		let fileIndex = 0;
+		const avatarFile = data.organization_avatar_image
+			? files?.[fileIndex++]
+			: undefined;
+		const coverFile = data.organization_cover_image
+			? files?.[fileIndex]
+			: undefined;
+
+		if (res.data?.imageAvatar && data.organization_avatar_image && avatarFile) {
+			await API({
+				headers: {
+					'Content-type': data.organization_avatar_image.contentType,
+				},
+			}).put(res.data.imageAvatar, avatarFile);
+		}
+
+		if (res.data?.imageCover && data.organization_cover_image && coverFile) {
+			await API({
+				headers: {
+					'Content-type': data.organization_cover_image.contentType,
+				},
+			}).put(res.data.imageCover, coverFile);
+		}
+
+		delete res.data?.imageAvatar;
+		delete res.data?.imageCover;
+
 		return res.data;
 	} catch (err) {
 		catchError(err);

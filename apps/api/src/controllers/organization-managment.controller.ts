@@ -11,6 +11,7 @@ import {
   retrieveAllMembersInOrganizationService,
   retrieveDataAboutOrganizationService,
   retrieveOrganizationMemberService,
+  updateOrganizationService,
 } from "@/services/organization-managment.service";
 
 // Schemas
@@ -25,6 +26,7 @@ import {
 
 // Lib
 import { handleServerErrorResponse } from "@/lib/utils/error-response";
+import { UpdateOrganizationArgs } from "@repo/schemas/organization";
 
 export async function retrieveAllRequestsToJoinOrganizationController(
   req: Request,
@@ -121,6 +123,21 @@ export async function retrieveDataAboutOrganizationController(
     return res.status(result.status).json(result.body);
   } catch (error) {
     handleServerErrorResponse(res, error);
+  }
+}
+
+export async function updateOrganizationController(
+  req: Request,
+  res: Response,
+) {
+  try {
+    const result = await updateOrganizationService({
+      data: req.body as UpdateOrganizationArgs,
+    });
+
+    return res.status(result.status).json(result.body);
+  } catch (err) {
+    handleServerErrorResponse(res, err);
   }
 }
 
