@@ -11,9 +11,7 @@ import {
   ForgotPasswordArgs,
   LoginArgs,
   RegisterArgs,
-  ResetEmailArgs,
   resetPasswordSchema,
-  VerifyEmailArgs,
 } from "@repo/schemas/auth";
 
 // Models
@@ -191,7 +189,10 @@ export type VerifyOtpServiceResult =
 export async function verifyOtpService({
   code,
   email,
-}: VerifyEmailArgs): Promise<VerifyOtpServiceResult> {
+}: {
+  code: string;
+  email: string;
+}): Promise<VerifyOtpServiceResult> {
   const user = await findUserForOtpVerification(email);
 
   if (!user || !user.verificationToken) {
@@ -219,7 +220,7 @@ export async function verifyOtpService({
   });
 }
 
-export async function resetVerifyTokenService({ email }: ResetEmailArgs) {
+export async function resetVerifyTokenService(email: string) {
   const { hashedOtp, expireDate } = await verifyUser(email);
 
   const { count } = await updateVerificationToken({

@@ -70,14 +70,7 @@ authRoutes.post(
   }),
   verifyTokenController,
 );
-authRoutes.post(
-  "/reset-verify-token",
-  validate({
-    schema: verifyEmailSchema,
-    responseOutput: "form",
-  }),
-  resetVerifyTokenController,
-);
+authRoutes.post("/reset-verify-token", resetVerifyTokenController);
 
 // Google OAuth sign in method
 authRoutes.get(

@@ -26,7 +26,7 @@ import {
 
 // Lib
 import { handleServerErrorResponse } from "@/lib/utils/error-response";
-import { UpdateOrganizationArgs } from "@repo/schemas/organization";
+import { UpdateOrganizationArgs } from "@repo/schemas/organization-managment";
 
 export async function retrieveAllRequestsToJoinOrganizationController(
   req: Request,

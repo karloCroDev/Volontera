@@ -46,7 +46,7 @@ export const LoginForm = withReactQueryProvider(() => {
 	const onSubmit = async (data: LoginArgs) => {
 		mutate(data, {
 			onSuccess({ title, message }) {
-				router.push(`/auth/login/verify-otp?email=${data.email}`);
+				router.push('/auth/login/verify-otp');
 				toast({
 					title,
 					content: message,

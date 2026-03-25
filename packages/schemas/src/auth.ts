@@ -40,12 +40,6 @@ export type ResetPasswordArgs = z.infer<typeof resetPasswordSchema>;
 
 // Verify email
 export const verifyEmailSchema = z.object({
-  code: z.string().min(6).max(6),
-  email: z.email(),
+  code: z.string().length(6),
 });
 export type VerifyEmailArgs = z.infer<typeof verifyEmailSchema>;
-export const resetEmail = z.object({
-  email: z.email(),
-});
-
-export type ResetEmailArgs = z.infer<typeof resetEmail>;

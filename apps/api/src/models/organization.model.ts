@@ -5,8 +5,8 @@ import { Organization, prisma, User } from "@repo/database";
 import {
   CreateOrganizationArgs,
   SendRequestToJoinOrganizationArgs,
-  UpdateOrganizationArgs,
 } from "@repo/schemas/organization";
+import { UpdateOrganizationArgs } from "@repo/schemas/organization-managment";
 
 // Owners only
 export async function listOrganizationsOrganizator(userId: User["id"]) {

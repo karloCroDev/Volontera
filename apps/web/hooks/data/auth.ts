@@ -20,7 +20,6 @@ import {
 	ForgotPasswordArgs,
 	LoginArgs,
 	RegisterArgs,
-	ResetEmailArgs,
 	ResetPasswordArgs,
 	VerifyEmailArgs,
 } from '@repo/schemas/auth';
@@ -28,7 +27,6 @@ import {
 // Types
 import { ErrorFormResponse, SuccessfulResponse } from '@repo/types/general';
 
-// Authentication (basics)
 export const useLogin = (
 	options?: UseMutationOptions<SuccessfulResponse, ErrorFormResponse, LoginArgs>
 ) => {
@@ -63,7 +61,6 @@ export const useRegister = (
 	});
 };
 
-// Reseting password
 export const useForgotPassword = (
 	options?: UseMutationOptions<
 		SuccessfulResponse,
@@ -102,7 +99,6 @@ export const useResetPassword = (
 	});
 };
 
-// Email verification
 export const useVerifyEmail = (
 	options?: UseMutationOptions<SuccessfulResponse, Error, VerifyEmailArgs>
 ) => {
@@ -118,12 +114,12 @@ export const useVerifyEmail = (
 	});
 };
 export const useResetEmail = (
-	options?: UseMutationOptions<SuccessfulResponse, Error, ResetEmailArgs>
+	options?: UseMutationOptions<SuccessfulResponse, Error, void>
 ) => {
 	const queryClient = useQueryClient();
 	return useMutation({
-		mutationKey: ['verify-email'],
-		mutationFn: (values: ResetEmailArgs) => resendEmail(values),
+		mutationKey: ['reset-verify-token'],
+		mutationFn: () => resendEmail(),
 		onSuccess: async (...args) => {
 			await queryClient.invalidateQueries({ queryKey: ['session'] });
 			await options?.onSuccess?.(...args);

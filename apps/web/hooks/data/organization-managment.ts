@@ -39,7 +39,7 @@ import {
 	ErrorToastResponse,
 	SuccessfulResponse,
 } from '@repo/types/general';
-import { UpdateOrganizationArgs } from '@repo/schemas/organization';
+import { UpdateOrganizationArgs } from '@repo/schemas/organization-managment';
 import { DataWithFiles } from '@repo/types/upload';
 
 export const useAcceptOrDeclineUsersRequestToJoinOrganization = (

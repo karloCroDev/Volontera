@@ -1,7 +1,7 @@
 // Lib
 import { API } from '@/lib/utils/axios-client';
 import { catchError } from '@/lib/utils/error';
-import { UpdateOrganizationArgs } from '@repo/schemas/organization';
+import { UpdateOrganizationArgs } from '@repo/schemas/organization-managment';
 
 // Schemas
 import {

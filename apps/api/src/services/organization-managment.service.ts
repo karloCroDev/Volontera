@@ -26,7 +26,7 @@ import { updateOrganization } from "@/models/organization.model";
 
 // Database
 import { User } from "@repo/database";
-import { UpdateOrganizationArgs } from "@repo/schemas/organization";
+import { UpdateOrganizationArgs } from "@repo/schemas/organization-managment";
 
 // Schemas
 import {

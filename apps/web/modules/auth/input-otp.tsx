@@ -4,7 +4,7 @@
 import * as React from 'react';
 import { OTPInput, SlotProps } from 'input-otp';
 import { twJoin } from 'tailwind-merge';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 
@@ -19,14 +19,11 @@ import { useResetEmail, useVerifyEmail } from '@/hooks/data/auth';
 import { withReactQueryProvider } from '@/lib/utils/react-query';
 
 export const InputOTP = withReactQueryProvider(() => {
-	const searchParams = useSearchParams();
 	const router = useRouter();
 
 	const { mutate: mutateVerifyEmail, isPending: isPendingVerify } =
 		useVerifyEmail();
 	const { mutate: mutateResetEmail } = useResetEmail();
-
-	const email = searchParams.get('email') || '';
 
 	const [error, setError] = React.useState('');
 	return (
@@ -37,7 +34,7 @@ export const InputOTP = withReactQueryProvider(() => {
 				onChange={(val) => {
 					if (val.length === 6) {
 						mutateVerifyEmail(
-							{ code: val, email },
+							{ code: val },
 							{
 								onSuccess: () => {
 									router.push('/home');
@@ -72,7 +69,7 @@ export const InputOTP = withReactQueryProvider(() => {
 					className="px-0 underline-offset-8 transition-all hover:underline md:px-4"
 					iconRight={<ArrowRight className="size-4" />}
 					onPress={() => {
-						mutateResetEmail({ email });
+						mutateResetEmail();
 					}}
 					isLoading={isPendingVerify}
 				>

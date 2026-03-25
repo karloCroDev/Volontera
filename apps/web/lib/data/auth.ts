@@ -6,7 +6,6 @@ import {
 	ForgotPasswordArgs,
 	LoginArgs,
 	RegisterArgs,
-	ResetEmailArgs,
 	ResetPasswordArgs,
 	VerifyEmailArgs,
 } from '@repo/schemas/auth';
@@ -14,7 +13,6 @@ import {
 // Lib
 import { catchError } from '@/lib/utils/error';
 
-// Authentication (basics)
 export async function login(data: LoginArgs) {
 	try {
 		const res = await API().post('auth/login', data);
@@ -33,7 +31,6 @@ export async function register(data: RegisterArgs) {
 	}
 }
 
-// Reseting password
 export async function forgotPassword(data: ForgotPasswordArgs) {
 	try {
 		const res = await API().post('auth/forgot-password', data);
@@ -52,7 +49,6 @@ export async function resetPassword(data: ResetPasswordArgs) {
 	}
 }
 
-// Email verification
 export async function verifyEmail(data: VerifyEmailArgs) {
 	try {
 		const res = await API().post('auth/verify-token', data);
@@ -62,9 +58,9 @@ export async function verifyEmail(data: VerifyEmailArgs) {
 	}
 }
 
-export async function resendEmail(data: ResetEmailArgs) {
+export async function resendEmail() {
 	try {
-		const res = await API().post('auth/reset-verify-token', data);
+		const res = await API().post('auth/reset-verify-token', {});
 		return res.data;
 	} catch (err) {
 		catchError(err);
