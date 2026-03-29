@@ -8,39 +8,51 @@ import { ChevronLeft, ChevronRight, SearchIcon } from 'lucide-react';
 // Components
 import { Button } from '@/components/ui/button';
 import { Avatar } from '@/components/ui/avatar';
-import { SelectContainer, SelectItem } from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
+import { SelectContainer, SelectItem } from '@/components/ui/select';
+
+// Hooks
 import { useDashboardPaginatedUsers } from '@/hooks/data/dashboard';
+import { useDebounce } from '@/hooks/utils/useDebounce';
 
 // Lib
 import { withReactQueryProvider } from '@/lib/utils/react-query';
 import { convertToFullname } from '@/lib/utils/converter';
 
-type UserFilter = 'all' | 'users' | 'organizators';
+// Modules
+import {
+	UserFilter,
+	UserInfo,
+	UsersInfoSkelton,
+} from '@/modules/main/dashboard/users-info';
 
-const mapUiFilterToApiRole = (
-	filter: UserFilter
-): 'USER' | 'ORGANIZATION' | undefined => {
-	if (filter === 'users') return 'USER';
-	if (filter === 'organizators') return 'ORGANIZATION';
-	return undefined;
-};
-
-export const ManageUsers = withReactQueryProvider(() => {
+export const ListUsers = withReactQueryProvider(() => {
 	const [query, setQuery] = React.useState('');
 	const [filter, setFilter] = React.useState<UserFilter>('all');
 	const [offset, setOffset] = React.useState(0);
+	const debouncedSearch = useDebounce(query, 300);
+	const normalizedSearch = debouncedSearch.trim() || undefined;
+
+	React.useEffect(() => {
+		setOffset(0);
+	}, [normalizedSearch]);
 
 	const usersQuery = useDashboardPaginatedUsers({
 		offset,
 		limit: 8,
-		filter: mapUiFilterToApiRole(filter),
+		filter:
+			filter === 'all'
+				? undefined
+				: filter === 'users'
+					? 'USER'
+					: 'ORGANIZATION',
+		search: normalizedSearch,
 	});
 
 	const pagination = usersQuery.data?.pagination;
 
 	return (
-		<div className="border-input-border flex flex-col rounded-xl border shadow-xl">
+		<div className="border-input-border flex flex-shrink-0 flex-col overflow-hidden rounded-xl border shadow-xl">
 			<Form
 				className="bg-muted flex items-center justify-between px-6 py-4"
 				onSubmit={(e) => e.preventDefault()}
@@ -64,60 +76,14 @@ export const ManageUsers = withReactQueryProvider(() => {
 			</Form>
 
 			<div className="flex h-[520px] flex-col items-center">
+				{usersQuery.isLoading &&
+					[...Array(8)].map((_, index) => <UsersInfoSkelton key={index} />)}
 				{usersQuery.data?.users && usersQuery.data.users.length > 0 ? (
 					usersQuery.data?.users.map((user) => {
-						return (
-							<div
-								className="border-input-border flex w-full justify-between border-t px-4 py-3"
-								key={user.id}
-							>
-								<div className="flex min-w-0 items-center gap-4">
-									<Avatar
-										imageProps={{
-											src: user.image || '',
-											alt: `${convertToFullname({
-												firstname: user.firstName,
-												lastname: user.lastName,
-											})} profile image`,
-										}}
-										size="sm"
-									>
-										{convertToFullname({
-											firstname: user.firstName,
-											lastname: user.lastName,
-										})}
-									</Avatar>
-									<div>
-										<p>
-											{' '}
-											{convertToFullname({
-												firstname: user.firstName,
-												lastname: user.lastName,
-											})}
-										</p>
-										<p className="text-muted-foreground truncate text-xs">
-											{user.email}
-										</p>
-									</div>
-								</div>
-								<div className="flex items-center gap-8">
-									<p className="text-muted-foreground ml-auto text-sm">
-										{user.role === 'ORGANIZATION' ? 'Organizator' : 'Volunteer'}
-									</p>
-									<Button
-										size="xs"
-										variant="outline"
-										colorScheme="destructive"
-										isFullyRounded
-									>
-										Ban
-									</Button>
-								</div>
-							</div>
-						);
+						return <UserInfo key={user.id} user={user} />;
 					})
 				) : (
-					<p className="text-muted-foreground">
+					<p className="text-muted-foreground flex flex-1 items-center justify-center">
 						No users found for the selected filters.
 					</p>
 				)}

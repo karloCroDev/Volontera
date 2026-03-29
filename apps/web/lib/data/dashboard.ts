@@ -31,10 +31,12 @@ export async function retrievePaginatedDashboardUsers({
 	offset = 0,
 	limit = 10,
 	filter,
+	search,
 }: {
 	offset?: number;
 	limit?: number;
 	filter?: 'USER' | 'ORGANIZATION';
+	search?: string;
 }): Promise<DashboardPaginatedUsersResponse> {
 	try {
 		const res = await API().get('/dashboard/users', {
@@ -42,6 +44,7 @@ export async function retrievePaginatedDashboardUsers({
 				offset,
 				limit,
 				filter,
+				search,
 			},
 		});
 

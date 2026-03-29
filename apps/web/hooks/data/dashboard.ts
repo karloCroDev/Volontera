@@ -41,10 +41,12 @@ export const useDashboardPaginatedUsers = (
 		offset = 0,
 		limit = 10,
 		filter,
+		search,
 	}: {
 		offset?: number;
 		limit?: number;
 		filter?: 'USER' | 'ORGANIZATION';
+		search?: string;
 	} = {},
 	options?: Omit<
 		UseQueryOptions<
@@ -56,8 +58,13 @@ export const useDashboardPaginatedUsers = (
 	>
 ) => {
 	return useQuery({
-		queryKey: ['dashboard', 'users', { offset, limit, filter: filter ?? null }],
-		queryFn: () => retrievePaginatedDashboardUsers({ offset, limit, filter }),
+		queryKey: [
+			'dashboard',
+			'users',
+			{ offset, limit, filter: filter ?? null, search: search ?? null },
+		],
+		queryFn: () =>
+			retrievePaginatedDashboardUsers({ offset, limit, filter, search }),
 		...options,
 	});
 };

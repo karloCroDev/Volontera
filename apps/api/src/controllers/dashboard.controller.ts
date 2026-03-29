@@ -35,7 +35,10 @@ export async function retrievePaginatedUsersController(
 ) {
   const data = dashboardUsersPaginationQuerySchema.parse(req.query);
   try {
-    const result = await retrievePaginatedUsersService({ data });
+    const result = await retrievePaginatedUsersService({
+      data,
+      userId: req.user.userId,
+    });
     return res.status(result.status).json(result.body);
   } catch (err) {
     handleServerErrorResponse(res, err);

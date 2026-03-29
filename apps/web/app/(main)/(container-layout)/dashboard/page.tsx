@@ -4,7 +4,7 @@ import { dehydrate, QueryClient } from '@tanstack/react-query';
 import { Heading } from '@/components/ui/heading';
 import { GraphCardTemplate } from '@/modules/main/dashboard/graph-card-template';
 import { TotalUsersKPI } from '@/modules/main/dashboard/KPI';
-import { ManageUsers } from '@/modules/main/dashboard/list-users';
+import { ListUsers } from '@/modules/main/dashboard/list-users';
 import { PeriodSelect } from '@/modules/main/dashboard/period-select';
 
 // Lib
@@ -144,7 +144,7 @@ export default async function DashboardPage({
 			</div>
 			{/* <DashboardRoutingHeader /> TODO: Ako stignem napraviti reporte onda ovo dodaj sigurno! */}
 
-			<ManageUsers dehydratedState={dehydratedState} />
+			<ListUsers dehydratedState={dehydratedState} />
 		</>
 	);
 }

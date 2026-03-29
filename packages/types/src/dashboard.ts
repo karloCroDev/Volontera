@@ -1,19 +1,19 @@
-import { ServerHandleResponse } from "./general";
+// Database
 import { User as PrismaUser } from "@repo/database";
 
-export type DashboardDurationDays = 30 | 60 | 90;
+import { ServerHandleResponse } from "./general";
 
-export type DashboardKPIIntervalPoint = {
-  week: string;
-  totalVolunteers: number;
-  totalOrganizations: number;
-  totalOrganizators: number;
-};
+export type DashboardDurationDays = 30 | 60 | 90;
 
 export type DashboardKPIMetricsResponse = ServerHandleResponse<true> & {
   durationDays: DashboardDurationDays;
   since: string;
-  kpiSeries: DashboardKPIIntervalPoint[];
+  kpiSeries: {
+    week: string;
+    totalVolunteers: number;
+    totalOrganizations: number;
+    totalOrganizators: number;
+  }[];
   totalVolunteers: number;
   totalOrganizators: number;
   totalOrganizations: number;
@@ -25,29 +25,12 @@ export type DashboardKPIMetricsResponse = ServerHandleResponse<true> & {
   userWithYearlyPaidPlan: number;
 };
 
-export type DashboardPaginatedUser = Pick<
-  PrismaUser,
-  | "id"
-  | "firstName"
-  | "lastName"
-  | "email"
-  | "image"
-  | "role"
-  | "subscriptionTier"
-  | "subscriptionType"
-  | "isBanned"
-  | "onboardingFinished"
-  | "createdAt"
->;
-
-export type DashboardUsersPaginationMeta = {
-  total: number;
-  offset: number;
-  limit: number;
-  hasMore: boolean;
-};
-
 export type DashboardPaginatedUsersResponse = ServerHandleResponse<true> & {
-  users: DashboardPaginatedUser[];
-  pagination: DashboardUsersPaginationMeta;
+  users: Omit<PrismaUser, "password">[];
+  pagination: {
+    total: number;
+    offset: number;
+    limit: number;
+    hasMore: boolean;
+  };
 };

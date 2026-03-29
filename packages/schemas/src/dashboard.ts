@@ -2,6 +2,12 @@
 import { z } from "zod";
 import { paginationSchema } from "./pagination";
 
+const coerceFirstQueryValue = <T extends z.ZodTypeAny>(schema: T) =>
+  z.preprocess((value) => {
+    if (Array.isArray(value)) return value[0];
+    return value;
+  }, schema);
+
 export const dashboardKPIMetricsQuerySchema = z.object({
   durationDays: z.enum(["30", "60", "90"]).optional(),
 });
@@ -9,6 +15,13 @@ export const dashboardKPIMetricsQuerySchema = z.object({
 export const dashboardUsersPaginationQuerySchema = z
   .object({
     filter: z.enum(["USER", "ORGANIZATION"]).optional(),
+    search: coerceFirstQueryValue(
+      z.preprocess((value) => {
+        if (typeof value !== "string") return undefined;
+        const trimmedValue = value.trim();
+        return trimmedValue.length > 0 ? trimmedValue : undefined;
+      }, z.string().max(100).optional()),
+    ),
   })
   .extend(paginationSchema.shape);
 
