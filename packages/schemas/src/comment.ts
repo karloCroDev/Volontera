@@ -2,7 +2,6 @@
 import { z } from "zod";
 
 // Comments
-
 export const retrievePostCommentsSchema = z.object({
   postId: z.cuid(),
 });

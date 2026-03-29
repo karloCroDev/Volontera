@@ -3,13 +3,19 @@ import express from "express";
 import { Router } from "express";
 
 // Controllers
-import { retrieveKPIMetricsController } from "@/controllers/dashboard.controller";
+import {
+  retrieveKPIMetricsController,
+  retrievePaginatedUsersController,
+} from "@/controllers/dashboard.controller";
 
 // Middleware
 import { validate } from "@/middleware/validate.middleware";
 
 // Schemas
-import { dashboardKPIMetricsQuerySchema } from "@repo/schemas/dashboard";
+import {
+  dashboardKPIMetricsQuerySchema,
+  dashboardUsersPaginationQuerySchema,
+} from "@repo/schemas/dashboard";
 
 export const dashboardRoutes = Router();
 
@@ -23,4 +29,14 @@ dashboardRoutes.get(
     responseOutput: "server",
   }),
   retrieveKPIMetricsController,
+);
+
+dashboardRoutes.get(
+  "/users",
+  validate({
+    schema: dashboardUsersPaginationQuerySchema,
+    type: "query",
+    responseOutput: "server",
+  }),
+  retrievePaginatedUsersController,
 );

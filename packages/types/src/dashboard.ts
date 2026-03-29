@@ -1,4 +1,5 @@
 import { ServerHandleResponse } from "./general";
+import { User as PrismaUser } from "@repo/database";
 
 export type DashboardDurationDays = 30 | 60 | 90;
 
@@ -22,4 +23,31 @@ export type DashboardKPIMetricsResponse = ServerHandleResponse<true> & {
   organizatorsWithPaidPlan: number;
   organizatorsWithYearlyPaidPlan: number;
   userWithYearlyPaidPlan: number;
+};
+
+export type DashboardPaginatedUser = Pick<
+  PrismaUser,
+  | "id"
+  | "firstName"
+  | "lastName"
+  | "email"
+  | "image"
+  | "role"
+  | "subscriptionTier"
+  | "subscriptionType"
+  | "isBanned"
+  | "onboardingFinished"
+  | "createdAt"
+>;
+
+export type DashboardUsersPaginationMeta = {
+  total: number;
+  offset: number;
+  limit: number;
+  hasMore: boolean;
+};
+
+export type DashboardPaginatedUsersResponse = ServerHandleResponse<true> & {
+  users: DashboardPaginatedUser[];
+  pagination: DashboardUsersPaginationMeta;
 };

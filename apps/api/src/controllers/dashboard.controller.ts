@@ -2,10 +2,16 @@
 import { Request, Response } from "express";
 
 // Schemas
-import { dashboardKPIMetricsQuerySchema } from "@repo/schemas/dashboard";
+import {
+  dashboardKPIMetricsQuerySchema,
+  dashboardUsersPaginationQuerySchema,
+} from "@repo/schemas/dashboard";
 
 // Services
-import { retrieveKPIMetricsService } from "@/services/dashboard.service";
+import {
+  retrieveKPIMetricsService,
+  retrievePaginatedUsersService,
+} from "@/services/dashboard.service";
 
 // Lib
 import { handleServerErrorResponse } from "@/lib/utils/error-response";
@@ -17,6 +23,19 @@ export async function retrieveKPIMetricsController(
   const data = dashboardKPIMetricsQuerySchema.parse(req.query);
   try {
     const result = await retrieveKPIMetricsService({ data });
+    return res.status(result.status).json(result.body);
+  } catch (err) {
+    handleServerErrorResponse(res, err);
+  }
+}
+
+export async function retrievePaginatedUsersController(
+  req: Request,
+  res: Response,
+) {
+  const data = dashboardUsersPaginationQuerySchema.parse(req.query);
+  try {
+    const result = await retrievePaginatedUsersService({ data });
     return res.status(result.status).json(result.body);
   } catch (err) {
     handleServerErrorResponse(res, err);

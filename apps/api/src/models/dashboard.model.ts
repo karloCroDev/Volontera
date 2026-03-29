@@ -4,6 +4,9 @@ import { prisma } from "@repo/database";
 // Lib
 import { getSinceDate } from "@/lib/utils/dashboard-kpi";
 
+// Types
+import { UserRole } from "@repo/database";
+
 export type DashboardDurationDays = 30 | 60 | 90;
 
 export async function retrieveKPIMetrics({
@@ -128,4 +131,40 @@ export async function retrieveKPIMetrics({
       organizationRows,
     },
   };
+}
+
+export async function retrievePaginatedUsers({
+  offset = 0,
+  limit = 10,
+  filter,
+}: {
+  offset?: number;
+  limit?: number;
+  filter?: UserRole;
+}) {
+  const [users, total] = await prisma.$transaction([
+    prisma.user.findMany({
+      where: {
+        role: {
+          in: !filter ? ["USER", "ORGANIZATION"] : [filter],
+        },
+      },
+
+      omit: { password: true },
+      orderBy: {
+        createdAt: "desc",
+      },
+      skip: +offset,
+      take: +limit,
+    }),
+    prisma.user.count({
+      where: {
+        role: {
+          in: !filter ? ["USER", "ORGANIZATION"] : [filter],
+        },
+      },
+    }),
+  ]);
+
+  return { users, total };
 }

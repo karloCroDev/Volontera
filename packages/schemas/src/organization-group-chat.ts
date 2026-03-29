@@ -1,5 +1,7 @@
 // External packages
 import { z } from "zod";
+
+// Schemas
 import { uploadImageSchema } from "./image";
 import { organizationIdSchema } from "./organization";
 

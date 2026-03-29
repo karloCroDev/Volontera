@@ -6,10 +6,7 @@ import { retrieveRecentAlgoPostsService } from "@/services/home.service";
 
 // Lib
 import { handleServerErrorResponse } from "@/lib/utils/error-response";
-import {
-  retrieveAlgoPostsSchema,
-  RetrieveAlgoPostsSchemaArgs,
-} from "@repo/schemas/home";
+import { retrieveAlgoPostsSchema } from "@repo/schemas/home";
 
 export async function retrieveRecentAlgoPostsController(
   req: Request,
