@@ -6,9 +6,10 @@ import { dehydrate, QueryClient } from '@tanstack/react-query';
 import { retreiveAllrganizationGroupChatMessages } from '@/lib/server/organization-group-chat';
 
 // Modules
+import { SocketRoomContext } from '@/modules/main/organization/group-chat/socker-room-context';
 import { GroupChatMapping } from '@/modules/main/organization/group-chat/group-chat-mapping';
 import { AddMessageForm } from '@/modules/main/organization/group-chat/add-message-form';
-import { SocketRoomContext } from '@/modules/main/organization/group-chat/socker-room-context';
+import { MessagesReplyProvider } from '@/components/ui/message/reply-context';
 
 export default async function GroupChatPage({
 	params,
@@ -28,11 +29,14 @@ export default async function GroupChatPage({
 		queryFn: async () => groupChat,
 	});
 	const dehydratedState = dehydrate(queryClient);
+
 	return (
 		<SocketRoomContext>
 			<div className="relative min-h-[600px] flex-1 gap-4 px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
-				<GroupChatMapping dehydratedState={dehydratedState} />
-				<AddMessageForm groupChatId={groupChat.organizationGroupChat.id} />
+				<MessagesReplyProvider>
+					<GroupChatMapping dehydratedState={dehydratedState} />
+					<AddMessageForm groupChatId={groupChat.organizationGroupChat.id} />
+				</MessagesReplyProvider>
 			</div>
 		</SocketRoomContext>
 	);

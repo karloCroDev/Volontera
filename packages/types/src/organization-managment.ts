@@ -3,7 +3,7 @@ import {
   OrganizationMember,
   User,
 } from "@repo/database";
-import { ServerHandleResponse } from "./general";
+import { ServerHandleResponse, SuccessfulResponse } from "./general";
 
 export type RetrieveAllMembersInOrganizationResponse =
   ServerHandleResponse<true> & {
@@ -34,3 +34,8 @@ export type RetrieveDataAboutOrganizationResponse =
     lowPriority: number;
     mediumPriority: number;
   };
+
+export type UpdateOrganizationResponse = SuccessfulResponse & {
+  imageAvatar?: string;
+  imageCover?: string;
+};

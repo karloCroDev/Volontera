@@ -52,7 +52,7 @@ export const RegisterForm = withReactQueryProvider(() => {
 					content: message,
 					variant: 'success',
 				});
-				router.push(`/auth/login/verify-otp?email=${data.email}`);
+				router.push('/auth/login/verify-otp');
 			},
 
 			onError(err) {

@@ -4,12 +4,7 @@ import { Layout, LayoutColumn } from '@/components/ui/layout-grid';
 // Modules
 import { InputOTP } from '@/modules/auth/input-otp';
 
-export default async function VerifyOtp({
-	searchParams,
-}: {
-	searchParams: Promise<{ email: string }>;
-}) {
-	const { email } = await searchParams;
+export default function VerifyOtp() {
 	return (
 		<Layout>
 			<LayoutColumn
@@ -19,8 +14,7 @@ export default async function VerifyOtp({
 			>
 				<h1 className="lg:text-max text-3xl lg:mt-8">Verification code</h1>
 				<p className="text-muted-foreground mt-4 text-center text-sm md:text-base">
-					We sent you a six digit code to your {email}; enter it below to
-					continue
+					We sent you a six digit code to your email; enter it below to continue
 				</p>
 				<InputOTP />
 			</LayoutColumn>

@@ -8,13 +8,27 @@ import { Input as AriaInput } from 'react-aria-components';
 
 // Components
 import { Button } from '@/components/ui/button';
+import { twMerge } from 'tailwind-merge';
 
 export const InsertPhoto: React.FC<
 	React.ComponentPropsWithoutRef<'label'> & {
 		file?: File;
+		existingImageSrc?: string;
+		isRequired?: boolean;
 		onFileChange?: (file?: File) => void;
+		isFullyRounded?: boolean;
 	}
-> = ({ children, htmlFor, file, onFileChange, ...rest }) => {
+> = ({
+	children,
+	htmlFor,
+	file,
+	existingImageSrc,
+	isRequired = true,
+	onFileChange,
+	isFullyRounded = false,
+	className,
+	...rest
+}) => {
 	const [previewUrl, setPreviewUrl] = React.useState<string | undefined>();
 
 	React.useEffect(() => {
@@ -27,14 +41,19 @@ export const InsertPhoto: React.FC<
 		return () => URL.revokeObjectURL(url);
 	}, [file]);
 
+	const imageSrc = previewUrl ?? existingImageSrc;
+
 	return (
 		<>
 			<label
 				{...rest}
 				htmlFor={htmlFor}
-				className="border-input-border text-muted-foreground relative flex aspect-[4/3] flex-1 cursor-pointer flex-col items-center justify-center overflow-hidden rounded-2xl border border-dashed px-4"
+				className={twMerge(
+					'border-input-border text-muted-foreground relative flex aspect-[4/3] size-full flex-1 cursor-pointer flex-col items-center justify-center overflow-hidden rounded-2xl border border-dashed px-4',
+					className
+				)}
 			>
-				{file && previewUrl ? (
+				{imageSrc ? (
 					<>
 						<Button
 							className="absolute right-2 top-2 z-20 p-1"
@@ -46,18 +65,13 @@ export const InsertPhoto: React.FC<
 						>
 							<X className="size-4" />
 						</Button>
-						<Image
-							src={previewUrl}
-							alt="Avatar"
-							className="object-cover"
-							fill
-						/>
+						<Image src={imageSrc} alt="Avatar" className="object-cover" fill />
 					</>
 				) : (
 					<>
 						<Camera />
 						<p className="text-center">{children}</p>
-						<p>(required)</p>
+						{isRequired && <p>(required)</p>}
 					</>
 				)}
 			</label>

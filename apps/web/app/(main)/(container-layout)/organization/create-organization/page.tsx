@@ -8,7 +8,7 @@ import { Heading } from '@/components/ui/heading';
 import { getSession } from '@/lib/server/user';
 
 // Modules
-import { CreateOrganizationForm } from '@/modules/main/organization/create-organizations/create-organization-form';
+import { CreateOrganizationForm } from '@/modules/main/organization/create-organization/create-organization-form';
 
 // Permissions
 import { isOrganizationAccount } from '@repo/permissons/index';

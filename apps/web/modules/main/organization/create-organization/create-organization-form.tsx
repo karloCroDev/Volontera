@@ -14,8 +14,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
 // Modules
-import { InsertPhoto } from '@/modules/main/organization/create-organizations/insert-photo';
-import { PreviewForm } from '@/modules/main/organization/create-organizations/preview-form';
+import { InsertPhoto } from '@/modules/main/organization/create-organization/insert-photo';
+import { PreviewForm } from '@/modules/main/organization/create-organization/preview-form';
 
 // Lib
 import { toast } from '@/lib/utils/toast';

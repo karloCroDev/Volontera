@@ -12,6 +12,7 @@ import {
   leaveOrganizationController,
   retrieveDataAboutOrganizationController,
   deleteOrganizationController,
+  updateOrganizationController,
 } from "@/controllers/organization-managment.controller";
 
 // Schemas
@@ -24,6 +25,7 @@ import {
   retrieveOrganizationMemberSchema,
   leaveOrganizationSchema,
   retrieveDataAboutOrganizationSchema,
+  updateOrganizationSchema,
 } from "@repo/schemas/organization-managment";
 
 // Middleware
@@ -62,6 +64,7 @@ organizationManagmentRoutes.get(
   }),
   retrieveAllUsersInOrganizationController,
 );
+
 organizationManagmentRoutes.get(
   "/member/:organizationId",
   validate({
@@ -74,6 +77,21 @@ organizationManagmentRoutes.get(
     aquiredRoles: ["MEMBER", "ADMIN"],
   }),
   retrieveOrganizationMemberController,
+);
+
+organizationManagmentRoutes.delete(
+  "/leave/:organizationId",
+  validate({
+    schema: leaveOrganizationSchema,
+    type: "params",
+    responseOutput: "form",
+  }),
+  organizationRolesMiddleware({
+    type: "params",
+    aquiredRoles: ["MEMBER", "ADMIN"],
+    ownerHasAllAccess: false,
+  }),
+  leaveOrganizationController,
 );
 
 // Admin
@@ -111,21 +129,6 @@ organizationManagmentRoutes.post(
   demoteOrPromoteOrganizationMemberController,
 );
 
-organizationManagmentRoutes.delete(
-  "/leave/:organizationId",
-  validate({
-    schema: leaveOrganizationSchema,
-    type: "params",
-    responseOutput: "form",
-  }),
-  organizationRolesMiddleware({
-    type: "params",
-    aquiredRoles: ["MEMBER", "ADMIN"],
-    ownerHasAllAccess: false,
-  }),
-  leaveOrganizationController,
-);
-
 // Owner only
 organizationManagmentRoutes.delete(
   "/delete/:organizationId",
@@ -138,4 +141,14 @@ organizationManagmentRoutes.delete(
     type: "params",
   }),
   deleteOrganizationController,
+);
+
+organizationManagmentRoutes.patch(
+  "/update-organization",
+  validate({
+    schema: updateOrganizationSchema,
+    responseOutput: "form",
+  }),
+  organizationRolesMiddleware({}),
+  updateOrganizationController,
 );

@@ -27,16 +27,20 @@ import {
 	retrieveOrganizationMember,
 	retrieveAllRequestsToJoinOrganization,
 	leaveOrganization,
+	updateOrganization,
 } from '@/lib/data/organization-managment';
 import {
 	RetirveAllRequestsToJoinOrganizationResponse,
 	RetrieveOrganizationMemberResponse,
+	UpdateOrganizationResponse,
 } from '@repo/types/organization-managment';
 import {
 	ErrorFormResponse,
 	ErrorToastResponse,
 	SuccessfulResponse,
 } from '@repo/types/general';
+import { UpdateOrganizationArgs } from '@repo/schemas/organization-managment';
+import { DataWithFiles } from '@repo/types/upload';
 
 export const useAcceptOrDeclineUsersRequestToJoinOrganization = (
 	options?: UseMutationOptions<
@@ -73,6 +77,29 @@ export const useDemoteOrPromoteOrganizationMember = (
 		mutationKey: ['accept-or-decline-request'],
 		mutationFn: (data: DemoteOrPromoteOrganizationMemberArgs) =>
 			demoteOrPromoteOrganizationMember(data),
+		onSuccess: async (...args) => {
+			await queryClient.invalidateQueries({
+				queryKey: ['organization'],
+				exact: false,
+			});
+			await options?.onSuccess?.(...args);
+		},
+		...options,
+	});
+};
+
+export const useUpdateOrganization = (
+	options?: UseMutationOptions<
+		UpdateOrganizationResponse,
+		ErrorFormResponse,
+		DataWithFiles<UpdateOrganizationArgs>
+	>
+) => {
+	const queryClient = useQueryClient();
+	return useMutation({
+		mutationKey: ['update-organization'],
+		mutationFn: (data: DataWithFiles<UpdateOrganizationArgs>) =>
+			updateOrganization(data),
 		onSuccess: async (...args) => {
 			await queryClient.invalidateQueries({
 				queryKey: ['organization'],

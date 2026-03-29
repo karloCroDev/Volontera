@@ -1,4 +1,5 @@
 // Lib
+import { createUploadUrl } from "@/lib/aws-s3-functions";
 import {
   serverFetchOutput,
   toastResponseOutput,
@@ -21,9 +22,11 @@ import {
   retrieveDataAboutOrganization,
   deleteOrganizationAsOwner,
 } from "@/models/organization-managment.model";
+import { updateOrganization } from "@/models/organization.model";
 
 // Database
 import { User } from "@repo/database";
+import { UpdateOrganizationArgs } from "@repo/schemas/organization-managment";
 
 // Schemas
 import {
@@ -193,6 +196,38 @@ export async function retrieveDataAboutOrganizationService({
       mediumPriority,
       memberUserCount,
       totalUserCount,
+    },
+  });
+}
+
+export async function updateOrganizationService({
+  data,
+}: {
+  data: UpdateOrganizationArgs;
+}) {
+  const organizationAvatarUploadUrl = data.organization_avatar_image
+    ? await createUploadUrl(data.organization_avatar_image)
+    : null;
+
+  const organizationCoverUploadUrl = data.organization_cover_image
+    ? await createUploadUrl(data.organization_cover_image)
+    : null;
+
+  await updateOrganization({
+    data,
+    imageKeys: {
+      avatarImageKey: organizationAvatarUploadUrl?.key,
+      coverImageKey: organizationCoverUploadUrl?.key,
+    },
+  });
+
+  return toastResponseOutput({
+    status: 200,
+    title: "Organization Updated",
+    message: "Organization details updated successfully",
+    data: {
+      imageAvatar: organizationAvatarUploadUrl?.url,
+      imageCover: organizationCoverUploadUrl?.url,
     },
   });
 }

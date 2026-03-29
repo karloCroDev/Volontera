@@ -3,7 +3,6 @@ import {
   OrganizationMember,
   OrganizationInfo,
   Organization,
-  OrganizationFollowers,
   AdditionalLinks,
   User,
 } from "@repo/database";
