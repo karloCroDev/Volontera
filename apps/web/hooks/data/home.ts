@@ -12,8 +12,6 @@ import { retrieveRecentAlgoHomePosts } from '@/lib/data/home';
 import { RetrieveHomePostsResponse } from '@repo/types/home';
 import { RetrieveAlgoPostsSchemaArgs } from '@repo/schemas/home';
 
-//
-
 export const homeQueryKeys = {
 	all: ['home'] as const,
 	feed: (feed: RetrieveAlgoPostsSchemaArgs['filter'], limit: number) =>

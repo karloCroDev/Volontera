@@ -46,11 +46,14 @@ export async function retrieveKPIMetricsService({
 export async function retrievePaginatedUsersService({
   data,
 }: {
-  data: DashboardUsersPaginationQuery;
+  data: DashboardUsersPaginationQuery & {
+    filter?: "USER" | "ORGANIZATION";
+  };
 }) {
   const { users, total } = await retrievePaginatedUsers({
     offset: data.offset,
     limit: data.limit,
+    filter: data.filter,
   });
 
   return serverFetchOutput({

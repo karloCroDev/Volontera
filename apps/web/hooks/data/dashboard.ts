@@ -2,19 +2,17 @@
 import { useQuery, UseQueryOptions } from '@tanstack/react-query';
 
 // Lib
-import { retrieveDashboardKPIMetrics } from '@/lib/data/dashboard';
+import {
+	retrieveDashboardKPIMetrics,
+	retrievePaginatedDashboardUsers,
+} from '@/lib/data/dashboard';
 
 // Types
 import {
 	DashboardDurationDays,
+	DashboardPaginatedUsersResponse,
 	DashboardKPIMetricsResponse,
 } from '@repo/types/dashboard';
-
-export const dashboardQueryKeys = {
-	all: ['dashboard'] as const,
-	kpis: (durationDays: DashboardDurationDays) =>
-		[...dashboardQueryKeys.all, 'kpis', durationDays] as const,
-};
 
 export const useDashboardKPIMetrics = (
 	{
@@ -26,15 +24,40 @@ export const useDashboardKPIMetrics = (
 		UseQueryOptions<
 			DashboardKPIMetricsResponse,
 			Error,
-			DashboardKPIMetricsResponse,
-			ReturnType<typeof dashboardQueryKeys.kpis>
+			DashboardKPIMetricsResponse
 		>,
 		'queryKey' | 'queryFn'
 	>
 ) => {
 	return useQuery({
-		queryKey: dashboardQueryKeys.kpis(durationDays),
+		queryKey: ['dashboard', 'kpis', { durationDays }],
 		queryFn: () => retrieveDashboardKPIMetrics({ durationDays }),
+		...options,
+	});
+};
+
+export const useDashboardPaginatedUsers = (
+	{
+		offset = 0,
+		limit = 10,
+		filter,
+	}: {
+		offset?: number;
+		limit?: number;
+		filter?: 'USER' | 'ORGANIZATION';
+	} = {},
+	options?: Omit<
+		UseQueryOptions<
+			DashboardPaginatedUsersResponse,
+			Error,
+			DashboardPaginatedUsersResponse
+		>,
+		'queryKey' | 'queryFn'
+	>
+) => {
+	return useQuery({
+		queryKey: ['dashboard', 'users', { offset, limit, filter: filter ?? null }],
+		queryFn: () => retrievePaginatedDashboardUsers({ offset, limit, filter }),
 		...options,
 	});
 };

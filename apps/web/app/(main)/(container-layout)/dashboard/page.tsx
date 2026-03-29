@@ -1,3 +1,5 @@
+import { dehydrate, QueryClient } from '@tanstack/react-query';
+
 // Modules
 import { Heading } from '@/components/ui/heading';
 import { GraphCardTemplate } from '@/modules/main/dashboard/graph-card-template';
@@ -6,7 +8,10 @@ import { ListUsers } from '@/modules/main/dashboard/list-users';
 import { PeriodSelect } from '@/modules/main/dashboard/period-select';
 
 // Lib
-import { retrieveDashboardKPIMetrics } from '@/lib/server/dashboard';
+import {
+	retrieveDashboardKPIMetrics,
+	retrieveDashboardPaginatedUsers,
+} from '@/lib/server/dashboard';
 
 // Types
 import { DashboardDurationDays } from '@repo/types/dashboard';
@@ -15,20 +20,29 @@ import { DashboardDurationDays } from '@repo/types/dashboard';
 import { PieChart } from '@/components/ui/charts/pie-chart';
 import { BarChart } from '@/components/ui/charts/bar-chart';
 
-function parseDurationDays(value?: string): DashboardDurationDays {
-	if (value === '60') return 60;
-	if (value === '90') return 90;
-	return 30;
-}
-
 export default async function DashboardPage({
 	searchParams,
 }: {
 	searchParams: Promise<{ durationDays?: string }>;
 }) {
+	const queryClient = new QueryClient();
+	await queryClient.prefetchQuery({
+		queryKey: ['dashboard', 'users', { offset: 0, limit: 8, filter: null }],
+		queryFn: async () => {
+			return await retrieveDashboardPaginatedUsers({
+				offset: 0,
+				limit: 8,
+			});
+		},
+	});
+	const dehydratedState = dehydrate(queryClient);
+
 	const resolvedSearchParams = await searchParams;
-	const durationDays = parseDurationDays(resolvedSearchParams.durationDays);
-	const metrics = await retrieveDashboardKPIMetrics({ durationDays });
+	const metrics = await retrieveDashboardKPIMetrics({
+		durationDays: resolvedSearchParams.durationDays
+			? (Number(resolvedSearchParams.durationDays) as DashboardDurationDays)
+			: 30,
+	});
 
 	// KPI cards data
 	const metricCards = [
@@ -130,7 +144,7 @@ export default async function DashboardPage({
 			</div>
 			{/* <DashboardRoutingHeader /> TODO: Ako stignem napraviti reporte onda ovo dodaj sigurno! */}
 
-			<ListUsers />
+			<ListUsers dehydratedState={dehydratedState} />
 		</>
 	);
 }
