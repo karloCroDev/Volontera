@@ -51,21 +51,17 @@ export default async function CalendarPage({
 
 	return (
 		<CalendarProvider defaultFocusedDate={{ year, month, day: 1 }}>
-			<div className="mb-6 flex flex-col justify-between gap-x-8 gap-y-4 overflow-x-scroll lg:flex-row lg:items-center">
-				<div>
+			<div className="mb-6 flex flex-col justify-between gap-x-8 lg:flex-row lg:items-center lg:gap-y-4">
+				<div className="hidden lg:block">
 					<h4 className="text-xl lg:text-2xl">Calendar</h4>
 					<p className="text-muted-foreground">
 						All events that are happening inside this organization
 					</p>
 				</div>
-				<div className="flex justify-between gap-4 lg:justify-start">
-					<DateTracker />
-				</div>
+				<DateTracker />
 			</div>
 
-			<div className="flex flex-1 overflow-x-scroll">
-				<CalendarGrid dehydratedState={dehydratedState} />
-			</div>
+			<CalendarGrid dehydratedState={dehydratedState} />
 		</CalendarProvider>
 	);
 }

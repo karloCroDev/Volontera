@@ -39,15 +39,15 @@ export default async function LandingPage() {
 			<Layout className="scroll-smooth">
 				<LayoutColumn>
 					{/* Hero Section */}
-					<section id="hero" className="mb-20 mt-40 px-6">
+					<section id="hero" className="mb-20 mt-40">
 						<div className="mx-auto max-w-3xl text-center">
 							<div className="flex items-center justify-center gap-4">
-								<Logo className="size-48" />
-								<h1 className="text-start text-5xl font-bold italic md:text-6xl">
+								<Logo className="hidden size-48 md:block" />
+								<h1 className="text-balance text-center text-5xl font-bold italic md:text-start md:text-6xl">
 									Your all-in-one volunteering platform
 								</h1>
 							</div>
-							<p className="text-muted-foreground text-md mb-8">
+							<p className="text-muted-foreground text-md mb-8 mt-4">
 								Volontera is a powerful platform designed to help you achieve
 								your volunteering goals easier and smarter inside one
 								centralized place
@@ -78,7 +78,7 @@ export default async function LandingPage() {
 					</section>
 
 					{/* Features Section */}
-					<section id="features" className="px-6 py-20">
+					<section id="features" className="py-20">
 						<div className="mx-auto">
 							<h2 className="mb-4 text-center text-4xl font-bold">
 								Main features
@@ -146,7 +146,7 @@ export default async function LandingPage() {
 					</section>
 
 					{/* Pricing Section */}
-					<section id="pricing" className="px-6 py-20">
+					<section id="pricing" className="py-20">
 						<div className="mx-auto">
 							<h2 className="mb-4 text-center text-4xl font-bold" id="pricing">
 								Subscription plans{' '}
@@ -165,7 +165,7 @@ export default async function LandingPage() {
 					</section>
 
 					{/* FAQ Section */}
-					<section id="FAQ" className="px-6 py-20">
+					<section id="FAQ" className="py-20">
 						<div className="mx-auto max-w-3xl">
 							<h2 className="mb-4 text-center text-4xl font-bold">
 								Frequently Asked Questions

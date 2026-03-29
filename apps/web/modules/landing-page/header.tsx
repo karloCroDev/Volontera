@@ -12,6 +12,7 @@ import { Avatar } from '@/components/ui/avatar';
 import { convertToFullname, convertToPascalCase } from '@/lib/utils/converter';
 import { UserResponse } from '@repo/types/user';
 import { ServerHandleResponse } from '@repo/types/general';
+import { Logo } from '@/components/icons';
 
 export const Header: React.FC<{
 	user: UserResponse | ServerHandleResponse<false>;
@@ -19,7 +20,8 @@ export const Header: React.FC<{
 	<header className="bg-background border-b-input-border h-22 fixed top-0 z-50 w-full border-b">
 		<Layout>
 			<LayoutColumn className="flex items-center justify-between py-4">
-				<Volontera />
+				<Volontera className="hidden md:flex" />
+				<Logo className="size-12 md:hidden" />
 
 				<nav className="hidden items-center gap-8 md:flex">
 					<LinkAsButton variant="blank" href="/#features">

@@ -1,11 +1,9 @@
 // Database
 import { prisma } from "@repo/database";
+import { UserRole } from "@repo/database";
 
 // Lib
 import { getSinceDate } from "@/lib/utils/dashboard-kpi";
-
-// Types
-import { UserRole } from "@repo/database";
 
 export type DashboardDurationDays = 30 | 60 | 90;
 
