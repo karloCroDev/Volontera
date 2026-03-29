@@ -2,7 +2,7 @@
 import { Request, Response } from "express";
 
 // Services
-import { searchUsersService } from "@/services/search.service";
+import { searchUsersAndOrganizationsService } from "@/services/search.service";
 
 // Schemas
 import { SearchUserArgs } from "@repo/schemas/search";
@@ -10,9 +10,12 @@ import { SearchUserArgs } from "@repo/schemas/search";
 // Lib
 import { handleServerErrorResponse } from "@/lib/utils/error-response";
 
-export async function searchUsersController(req: Request, res: Response) {
+export async function searchUsersAndOrganizationsController(
+  req: Request,
+  res: Response,
+) {
   try {
-    const result = await searchUsersService({
+    const result = await searchUsersAndOrganizationsService({
       data: req.params as SearchUserArgs,
       userId: req.user.userId,
     });

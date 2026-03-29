@@ -26,7 +26,7 @@ const mapUiFilterToApiRole = (
 	return undefined;
 };
 
-export const ListUsers = withReactQueryProvider(() => {
+export const ManageUsers = withReactQueryProvider(() => {
 	const [query, setQuery] = React.useState('');
 	const [filter, setFilter] = React.useState<UserFilter>('all');
 	const [offset, setOffset] = React.useState(0);

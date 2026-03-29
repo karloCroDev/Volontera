@@ -1,5 +1,5 @@
 // Models
-import { searchUsers } from "@/models/search.model";
+import { searchUsersAndOrganizations } from "@/models/search.model";
 
 // Lib
 import { toastResponseOutput } from "@/lib/utils/service-output";
@@ -10,14 +10,14 @@ import { User } from "@repo/database";
 // Schemas
 import { SearchUserArgs } from "@repo/schemas/search";
 
-export async function searchUsersService({
+export async function searchUsersAndOrganizationsService({
   data,
   userId,
 }: {
   data: SearchUserArgs;
   userId: User["id"];
 }) {
-  const { organizations, users } = await searchUsers({
+  const { organizations, users } = await searchUsersAndOrganizations({
     query: data.query,
     userId,
   });

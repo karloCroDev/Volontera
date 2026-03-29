@@ -1,13 +1,15 @@
 // Database
-import { prisma, User } from "@repo/database";
+import { prisma, User, UserRole } from "@repo/database";
 
-export async function searchUsers({
-  query,
-  userId,
-}: {
+type SearchProps = {
   query: string;
   userId: User["id"];
-}) {
+};
+
+export async function searchUsersAndOrganizations({
+  query,
+  userId,
+}: SearchProps) {
   return prisma.$transaction(async (tx) => {
     const users = await tx.user.findMany({
       where: {
@@ -22,16 +24,8 @@ export async function searchUsers({
           },
         ],
       },
-      select: {
-        id: true,
-        firstName: true,
-        lastName: true,
-        email: true,
-        image: true,
-        role: true,
-        subscriptionTier: true,
-        subscriptionType: true,
-        onboardingFinished: true,
+      omit: {
+        password: true,
       },
       take: 5,
     });
@@ -40,30 +34,46 @@ export async function searchUsers({
       where: {
         name: { contains: query, mode: "insensitive" },
       },
-      select: {
-        id: true,
-        name: true,
-        bio: true,
-        avatarImage: true,
-        owner: {
-          select: {
-            id: true,
-            firstName: true,
-            lastName: true,
-            email: true,
-            image: true,
-            role: true,
-            subscriptionTier: true,
-            subscriptionType: true,
-            onboardingFinished: true,
-          },
-        },
-      },
       take: 5,
     });
     return {
       users,
       organizations,
     };
+  });
+}
+
+export async function searchUsers({
+  query,
+  userId,
+  filter,
+}: SearchProps & {
+  filter?: UserRole;
+}) {
+  return await prisma.user.findMany({
+    where: {
+      role: filter ? filter : undefined,
+      AND: [
+        { NOT: { id: userId } },
+        {
+          OR: [
+            { firstName: { contains: query, mode: "insensitive" } },
+            { lastName: { contains: query, mode: "insensitive" } },
+            { email: { contains: query, mode: "insensitive" } },
+          ],
+        },
+      ],
+    },
+    omit: {
+      password: true,
+    },
+  });
+}
+
+export async function searchOrganizations({ query }: { query: string }) {
+  return await prisma.organization.findMany({
+    where: {
+      name: { contains: query, mode: "insensitive" },
+    },
   });
 }

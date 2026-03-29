@@ -1,5 +1,5 @@
 // Database
-import { Organization, User } from "@repo/database";
+import { User } from "@repo/database";
 import { OrganizationWithOwner } from "./organization";
 
 export type SearchResponse = {
