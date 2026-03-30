@@ -57,7 +57,7 @@ export const CalendarGrid = withReactQueryProvider(() => {
 			focusedValue={focusedDate}
 			onFocusChange={setFocusedDate}
 			isDateUnavailable={isDateUnavailable}
-			className="w-full"
+			className="min-h-[500px] w-full flex-1 overflow-x-scroll"
 			firstDayOfWeek="mon"
 		>
 			<div className="border-input-border bg-muted w-full min-w-[850px] overflow-hidden rounded-lg border">

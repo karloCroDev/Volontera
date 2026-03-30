@@ -11,7 +11,7 @@ import Markdown from 'react-markdown';
 import { Avatar } from '@/components/ui/avatar';
 import { Collapsible } from '@/components/ui/collapsible';
 import { LinkAsButton } from '@/components/ui/link-as-button';
-import { PostLike } from '@/components/ui/post/post-like';
+import { PostLike } from './post-like';
 import { SharePost } from '@/components/ui/post/share-post';
 import { EditPostDialog } from '@/components/ui/post/edit-post-dialog';
 import { DeletePostDialog } from '@/components/ui/post/delete-post-dialog';
@@ -27,7 +27,6 @@ import { convertToFullname } from '@/lib/utils/converter';
 import { formatTime } from '@/lib/utils/time-adjustments';
 
 // Hooks
-import { useSession } from '@/hooks/data/user';
 import { useIsMobile } from '@/hooks/utils/useIsMobile';
 
 export const Post: React.FC<{
@@ -35,8 +34,8 @@ export const Post: React.FC<{
 	isInsideOrganization?: boolean;
 	hasAnAdminAccess?: boolean;
 }> = ({ post, isInsideOrganization = false, hasAnAdminAccess = false }) => {
-	const { data: user } = useSession();
-	const hasUserLiked = post.postLikes.some((like) => like.userId === user?.id);
+	// API returns postLikes already filtered for the current user.
+	const hasUserLiked = post.postLikes.length > 0;
 
 	const splittedContent = post.content.split('.');
 

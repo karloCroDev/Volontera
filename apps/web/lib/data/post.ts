@@ -10,7 +10,8 @@ import {
 	RetrievePostArgs,
 	RetrieveOrganizationPostsArgs,
 	RetrieveOrganizationPostsQueryArgs,
-	LikeOrDislikePostArgs,
+	DislikePostArgs,
+	LikePostArgs,
 } from '@repo/schemas/post';
 import { DataWithFiles } from '@repo/types/upload';
 
@@ -67,9 +68,18 @@ export async function retrievePostWithComments({ postId }: RetrievePostArgs) {
 	}
 }
 
-export async function toggleLike({ postId }: LikeOrDislikePostArgs) {
+export async function likePost({ postId }: LikePostArgs) {
 	try {
-		const res = await API().patch('/post/toggle-like', { postId });
+		const res = await API().patch('/post/like', { postId });
+		return res.data;
+	} catch (err) {
+		catchError(err);
+	}
+}
+
+export async function dislikePost({ postId }: DislikePostArgs) {
+	try {
+		const res = await API().patch('/post/dislike', { postId });
 		return res.data;
 	} catch (err) {
 		catchError(err);

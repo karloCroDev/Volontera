@@ -62,7 +62,12 @@ export const retrievePost = z.object({
 });
 export type RetrievePostArgs = z.infer<typeof retrievePost>;
 
-export const likeOrDislikePostSchema = z.object({
+const postReactionSchema = z.object({
   postId: z.cuid(),
 });
-export type LikeOrDislikePostArgs = z.infer<typeof likeOrDislikePostSchema>;
+
+export const likePostSchema = postReactionSchema;
+export type LikePostArgs = z.infer<typeof likePostSchema>;
+
+export const dislikePostSchema = postReactionSchema;
+export type DislikePostArgs = z.infer<typeof dislikePostSchema>;

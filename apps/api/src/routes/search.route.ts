@@ -3,7 +3,7 @@ import express from "express";
 import { Router } from "express";
 
 // Controllers
-import { searchUsersController } from "@/controllers/search.controller";
+import { searchUsersAndOrganizationsController } from "@/controllers/search.controller";
 
 // Middleware
 import { validate } from "@/middleware/validate.middleware";
@@ -22,5 +22,5 @@ searchRoutes.get(
     responseOutput: "form",
     type: "params",
   }),
-  searchUsersController,
+  searchUsersAndOrganizationsController,
 );

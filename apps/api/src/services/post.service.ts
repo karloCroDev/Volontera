@@ -3,7 +3,6 @@ import { calculatePostRankingScore } from "@/lib/utils/algorithm-formula";
 import { createUploadUrl } from "@/lib/aws-s3-functions";
 import { getOrganizationDetailsById } from "@/models/organization.model";
 import {
-  checkIfUserLiked,
   createPost,
   deletePost,
   dislikePost,
@@ -30,8 +29,9 @@ import { User } from "@repo/database";
 import { RetrievePostCommentsArgs } from "@repo/schemas/comment";
 import {
   CreatePostArgs,
+  DislikePostArgs,
   DeletePostArgs,
-  LikeOrDislikePostArgs,
+  LikePostArgs,
   RetrieveOrganizationPostsRequestArgs,
   RetrievePostArgs,
   UpdatePostArgs,
@@ -182,35 +182,40 @@ export async function retrievePostWithCommentsService({
   });
 }
 
-export async function toggleLikePostService({
+export async function likePostService({
   data,
   userId,
 }: {
-  data: LikeOrDislikePostArgs;
+  data: LikePostArgs;
   userId: User["id"];
 }) {
-  const userLiked = await checkIfUserLiked({
+  await likePost({
     postId: data.postId,
     userId,
   });
 
-  if (userLiked) {
-    await dislikePost({
-      postId: data.postId,
-      userId,
-    });
-  } else {
-    await likePost({
-      postId: data.postId,
-      userId,
-    });
-  }
+  return toastResponseOutput({
+    status: 200,
+    message: "Post liked successfully",
+    title: "Post Liked",
+  });
+}
+
+export async function dislikePostService({
+  data,
+  userId,
+}: {
+  data: DislikePostArgs;
+  userId: User["id"];
+}) {
+  await dislikePost({
+    postId: data.postId,
+    userId,
+  });
 
   return toastResponseOutput({
     status: 200,
-    message: userLiked
-      ? "Post disliked successfully"
-      : "Post liked successfully",
-    title: userLiked ? "Post Disliked" : "Post Liked",
+    message: "Post disliked successfully",
+    title: "Post Disliked",
   });
 }

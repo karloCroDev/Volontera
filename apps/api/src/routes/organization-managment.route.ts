@@ -9,6 +9,7 @@ import {
   retrieveOrganizationMemberController,
   acceptOrDeclineUsersRequestToJoinOrganizationController,
   demoteOrPromoteOrganizationMemberController,
+  removeOrganizationMemberController,
   leaveOrganizationController,
   retrieveDataAboutOrganizationController,
   deleteOrganizationController,
@@ -21,6 +22,7 @@ import {
   deleteOrganizationSchema,
   demoteOrPromoteOrganizationMemberSchema,
   retirveAllRequestsToJoinOrganizationSchema,
+  removeOrganizationMemberSchema,
   retrieveAllMembersInOrganizationSchema,
   retrieveOrganizationMemberSchema,
   leaveOrganizationSchema,
@@ -127,6 +129,16 @@ organizationManagmentRoutes.post(
   }),
   organizationRolesMiddleware({}),
   demoteOrPromoteOrganizationMemberController,
+);
+
+organizationManagmentRoutes.post(
+  "/remove-member",
+  validate({
+    schema: removeOrganizationMemberSchema,
+    responseOutput: "toast",
+  }),
+  organizationRolesMiddleware({}),
+  removeOrganizationMemberController,
 );
 
 // Owner only

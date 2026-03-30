@@ -13,10 +13,11 @@ import {
 import {
 	createPost,
 	deletePost,
+	dislikePost,
+	likePost,
 	retrieveOrganizationPosts,
 	retrievePostData,
 	retrievePostWithComments,
-	toggleLike,
 	updatePost,
 } from '@/lib/data/post';
 
@@ -32,7 +33,8 @@ import { DataWithFiles } from '@repo/types/upload';
 import {
 	CreatePostArgs,
 	DeletePostArgs,
-	LikeOrDislikePostArgs,
+	DislikePostArgs,
+	LikePostArgs,
 	RetrievePostArgs,
 	UpdatePostArgs,
 	RetrieveOrganizationPostsQueryArgs,
@@ -83,11 +85,11 @@ export const useDeletePost = (
 	});
 };
 
-export const useToggleLike = <TContext = unknown>(
+export const useLikePost = <TContext = unknown>(
 	options?: UseMutationOptions<
 		SuccessfulResponse,
 		ErrorToastResponse,
-		LikeOrDislikePostArgs,
+		LikePostArgs,
 		TContext
 	>
 ) => {
@@ -95,7 +97,31 @@ export const useToggleLike = <TContext = unknown>(
 	return useMutation({
 		...options,
 		mutationKey: ['like-post'],
-		mutationFn: (data: LikeOrDislikePostArgs) => toggleLike(data),
+		mutationFn: (data: LikePostArgs) => likePost(data),
+
+		onSuccess: async (...args) => {
+			await queryClient.invalidateQueries({
+				queryKey: ['posts'],
+				exact: false,
+			});
+			await options?.onSuccess?.(...args);
+		},
+	});
+};
+
+export const useDislikePost = <TContext = unknown>(
+	options?: UseMutationOptions<
+		SuccessfulResponse,
+		ErrorToastResponse,
+		DislikePostArgs,
+		TContext
+	>
+) => {
+	const queryClient = useQueryClient();
+	return useMutation({
+		...options,
+		mutationKey: ['dislike-post'],
+		mutationFn: (data: DislikePostArgs) => dislikePost(data),
 
 		onSuccess: async (...args) => {
 			await queryClient.invalidateQueries({

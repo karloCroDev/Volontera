@@ -43,9 +43,9 @@ export function organizationRolesMiddleware({
       },
     });
 
-    if (!cachedMember) {
+    if (!cachedMember || cachedMember.role === "BANNED") {
       return res.status(400).json({
-        message: "Forbidden: Not a member of the organization",
+        message: "Forbidden access to this organization",
         success: false,
       });
     }

@@ -19,7 +19,7 @@ export type InputProps = React.ComponentPropsWithoutRef<'input'> & {
 	label: string;
 	error?: string;
 	inputProps?: React.ComponentPropsWithoutRef<'input'> & AriaProps;
-	size?: 'sm' | 'md';
+	inputSize?: 'sm' | 'md';
 	iconLeft?: React.ReactNode;
 	iconRight?: React.ReactNode;
 };
@@ -27,7 +27,7 @@ export type InputProps = React.ComponentPropsWithoutRef<'input'> & {
 export const Input: React.FC<InputProps> = ({
 	label,
 	error,
-	size = 'md',
+	inputSize = 'md',
 	inputProps,
 	iconLeft,
 	iconRight,
@@ -38,14 +38,14 @@ export const Input: React.FC<InputProps> = ({
 		<>
 			<div
 				{...rest}
-				className={twMerge('relative', size === 'sm' && 'text-sm', className)}
+				className={twMerge('relative', inputSize === 'sm' && 'text-sm', className)}
 			>
 				<AriaInput
 					{...inputProps}
 					className={twMerge(
 						getTextFieldBasicStyles,
-						size === 'sm' && 'h-12 px-3 pt-2',
-						size === 'md' && 'h-14 px-4 pt-3',
+						inputSize === 'sm' && 'h-12 px-3 pt-2',
+						inputSize === 'md' && 'h-14 px-4 pt-3',
 						inputProps?.className
 					)}
 					placeholder=""
@@ -53,8 +53,8 @@ export const Input: React.FC<InputProps> = ({
 				<Label
 					className={twJoin(
 						'text-muted-foreground pointer-events-none absolute top-1/2 z-0 flex origin-left scale-75 items-center gap-2 transition-transform peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100',
-						size === 'sm' && 'left-3 -translate-y-[22px]',
-						size === 'md' && 'left-4 -translate-y-[24px]'
+						inputSize === 'sm' && 'left-3 -translate-y-[22px]',
+						inputSize === 'md' && 'left-4 -translate-y-[24px]'
 					)}
 				>
 					{iconLeft}
@@ -64,7 +64,7 @@ export const Input: React.FC<InputProps> = ({
 			</div>
 
 			{error && (
-				<Error className={size === 'sm' ? 'mt-1.5 text-xs' : 'text-sm'}>
+				<Error className={inputSize === 'sm' ? 'mt-1.5 text-xs' : 'text-sm'}>
 					{error}
 				</Error>
 			)}

@@ -1,5 +1,5 @@
 // External packages
-import { notFound } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 import { UserLock } from 'lucide-react';
 
 // Components
@@ -34,6 +34,8 @@ export default async function OrganizationFeaturesLayout({
 
 	if (!organizationDetailsById.success) notFound();
 
+	if (member.success && member.organizationMember.role === 'BANNED')
+		redirect(`/organization/${organizationId}/banned`);
 	const isOwner =
 		session.success &&
 		session.id === organizationDetailsById.organization.owner.id;

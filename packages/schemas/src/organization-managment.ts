@@ -29,10 +29,18 @@ export type LeaveOrganizationArgs = z.infer<typeof leaveOrganizationSchema>;
 export const demoteOrPromoteOrganizationMemberSchema = z.object({
   organizationId: z.cuid(),
   userId: z.cuid(),
-  role: z.enum(["ADMIN", "MEMBER"]),
+  role: z.enum(["ADMIN", "MEMBER", "BANNED"]),
 });
 export type DemoteOrPromoteOrganizationMemberArgs = z.infer<
   typeof demoteOrPromoteOrganizationMemberSchema
+>;
+
+export const removeOrganizationMemberSchema = z.object({
+  organizationId: z.cuid(),
+  userId: z.cuid(),
+});
+export type RemoveOrganizationMemberArgs = z.infer<
+  typeof removeOrganizationMemberSchema
 >;
 
 export const acceptOrDeclineUsersRequestToJoinOrganizationSchema = z.object({

@@ -14,21 +14,28 @@ import {
 	AcceptOrDeclineUsersRequestToJoinOrganizationArgs,
 	DeleteOrganizationArgs,
 	DemoteOrPromoteOrganizationMemberArgs,
+	RemoveOrganizationMemberArgs,
 	RetirveAllRequestsToJoinOrganizationArgs,
 	RetrieveOrganizationMemberArgs,
 	RetrieveAllMembersInOrganizationArgs,
 	LeaveOrganizationArgs,
 } from '@repo/schemas/organization-managment';
+import { UpdateOrganizationArgs } from '@repo/schemas/organization-managment';
+
+// Lib
 import {
 	acceptOrDeclineUsersRequestToJoinOrganization,
 	deleteOrganization,
 	demoteOrPromoteOrganizationMember,
 	retrieveAllUsersInOrganization,
+	removeOrganizationMember,
 	retrieveOrganizationMember,
 	retrieveAllRequestsToJoinOrganization,
 	leaveOrganization,
 	updateOrganization,
 } from '@/lib/data/organization-managment';
+
+// Types
 import {
 	RetirveAllRequestsToJoinOrganizationResponse,
 	RetrieveOrganizationMemberResponse,
@@ -39,7 +46,6 @@ import {
 	ErrorToastResponse,
 	SuccessfulResponse,
 } from '@repo/types/general';
-import { UpdateOrganizationArgs } from '@repo/schemas/organization-managment';
 import { DataWithFiles } from '@repo/types/upload';
 
 export const useAcceptOrDeclineUsersRequestToJoinOrganization = (
@@ -77,6 +83,29 @@ export const useDemoteOrPromoteOrganizationMember = (
 		mutationKey: ['accept-or-decline-request'],
 		mutationFn: (data: DemoteOrPromoteOrganizationMemberArgs) =>
 			demoteOrPromoteOrganizationMember(data),
+		onSuccess: async (...args) => {
+			await queryClient.invalidateQueries({
+				queryKey: ['organization'],
+				exact: false,
+			});
+			await options?.onSuccess?.(...args);
+		},
+		...options,
+	});
+};
+
+export const useRemoveOrganizationMember = (
+	options?: UseMutationOptions<
+		SuccessfulResponse,
+		ErrorToastResponse,
+		RemoveOrganizationMemberArgs
+	>
+) => {
+	const queryClient = useQueryClient();
+	return useMutation({
+		mutationKey: ['remove-organization-member'],
+		mutationFn: (data: RemoveOrganizationMemberArgs) =>
+			removeOrganizationMember(data),
 		onSuccess: async (...args) => {
 			await queryClient.invalidateQueries({
 				queryKey: ['organization'],

@@ -3,13 +3,22 @@ import express from "express";
 import { Router } from "express";
 
 // Controllers
-import { retrieveKPIMetricsController } from "@/controllers/dashboard.controller";
+import {
+  banUserController,
+  retrieveKPIMetricsController,
+  retrievePaginatedUsersController,
+  unbanUserController,
+} from "@/controllers/dashboard.controller";
 
 // Middleware
 import { validate } from "@/middleware/validate.middleware";
 
 // Schemas
-import { dashboardKPIMetricsQuerySchema } from "@repo/schemas/dashboard";
+import {
+  dashboardKPIMetricsQuerySchema,
+  dashboardUsersPaginationQuerySchema,
+} from "@repo/schemas/dashboard";
+import { userSchema } from "@repo/schemas/user";
 
 export const dashboardRoutes = Router();
 
@@ -23,4 +32,32 @@ dashboardRoutes.get(
     responseOutput: "server",
   }),
   retrieveKPIMetricsController,
+);
+
+dashboardRoutes.get(
+  "/users",
+  validate({
+    schema: dashboardUsersPaginationQuerySchema,
+    type: "query",
+    responseOutput: "server",
+  }),
+  retrievePaginatedUsersController,
+);
+
+dashboardRoutes.post(
+  "/users/ban",
+  validate({
+    schema: userSchema,
+    responseOutput: "toast",
+  }),
+  banUserController,
+);
+
+dashboardRoutes.post(
+  "/users/unban",
+  validate({
+    schema: userSchema,
+    responseOutput: "toast",
+  }),
+  unbanUserController,
 );

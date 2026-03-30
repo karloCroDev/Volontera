@@ -17,6 +17,7 @@ import {
   retirveAllRequestsToJoinOrganization,
   retrieveAllMembersInOrganization,
   demoteOrPromoteOrganizationMember,
+  removeOrganizationMember,
   acceptOrDeclineUsersRequestToJoinOrganization,
   leaveOrganization,
   retrieveDataAboutOrganization,
@@ -34,6 +35,7 @@ import {
   DeleteOrganizationArgs,
   DemoteOrPromoteOrganizationMemberArgs,
   LeaveOrganizationArgs,
+  RemoveOrganizationMemberArgs,
   RetirveAllRequestsToJoinOrganizationArgs,
   RetrieveAllMembersInOrganizationArgs,
   RetrieveDataAboutOrganizationArgs,
@@ -116,6 +118,23 @@ export async function demoteOrPromoteOrganizationMemberService(
   return toastResponseOutput({
     message: "Organization member role updated successfully",
     title: "Member Role Updated",
+    status: 200,
+  });
+}
+
+export async function removeOrganizationMemberService(
+  data: RemoveOrganizationMemberArgs,
+) {
+  await removeOrganizationMember(data);
+
+  await createNotification({
+    content: "You have been removed from the organization.",
+    userId: data.userId,
+  });
+
+  return toastResponseOutput({
+    message: "Organization member removed successfully",
+    title: "Member Removed",
     status: 200,
   });
 }
