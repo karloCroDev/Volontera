@@ -25,9 +25,16 @@ export const dashboardUsersPaginationQuerySchema = z
   })
   .extend(paginationSchema.shape);
 
+export const dashboardBanOrUnbanUserSchema = z.object({
+  userId: z.cuid(),
+});
+
 export type DashboardKPIMetricsQuery = z.infer<
   typeof dashboardKPIMetricsQuerySchema
 >;
 export type DashboardUsersPaginationQuery = z.infer<
   typeof dashboardUsersPaginationQuerySchema
+>;
+export type DashboardBanOrUnbanUserArgs = z.infer<
+  typeof dashboardBanOrUnbanUserSchema
 >;

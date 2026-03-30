@@ -181,3 +181,25 @@ export async function retrievePaginatedUsers({
 
   return { users, total };
 }
+
+export async function banUser(userId: string) {
+  return await prisma.user.update({
+    where: {
+      id: userId,
+      role: {
+        not: "ADMIN",
+      },
+    },
+
+    data: { isBanned: true },
+  });
+}
+
+export async function unbanUser(userId: string) {
+  return await prisma.user.update({
+    where: {
+      id: userId,
+    },
+    data: { isBanned: false },
+  });
+}

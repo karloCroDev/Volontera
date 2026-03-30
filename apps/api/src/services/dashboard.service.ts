@@ -1,5 +1,8 @@
 // Lib
-import { serverFetchOutput } from "@/lib/utils/service-output";
+import {
+  serverFetchOutput,
+  toastResponseOutput,
+} from "@/lib/utils/service-output";
 
 // Schemas
 import {
@@ -9,8 +12,10 @@ import {
 
 // Models
 import {
+  banUser,
   retrieveKPIMetrics,
   retrievePaginatedUsers,
+  unbanUser,
 } from "@/models/dashboard.model";
 
 // Lib
@@ -68,5 +73,53 @@ export async function retrievePaginatedUsersService({
         hasMore: data.offset + users.length < total,
       },
     },
+  });
+}
+
+export async function banUserService({
+  userId,
+  adminUserId,
+}: {
+  userId: string;
+  adminUserId: string;
+}) {
+  const bannedUser = await banUser(userId);
+
+  return toastResponseOutput({
+    status: 200,
+    title: `User ${bannedUser.firstName} ${bannedUser.lastName} banned`,
+    message: `The user ${bannedUser.firstName} ${bannedUser.lastName} has been banned successfully`,
+  });
+}
+
+export async function unbanUserService({
+  userId,
+  adminUserId,
+}: {
+  userId: string;
+  adminUserId: string;
+}) {
+  if (userId === adminUserId) {
+    return toastResponseOutput({
+      status: 400,
+      title: "Invalid action",
+      message: "You cannot unban your own account",
+    });
+  }
+
+  const unbannedUser = await unbanUser(userId);
+
+  if (!unbannedUser) {
+    return toastResponseOutput({
+      status: 404,
+      title: "User not found",
+      message: "Could not find a user to unban",
+    });
+  }
+
+  return toastResponseOutput({
+    status: 200,
+    title: `User ${unbannedUser.firstName} ${unbannedUser.lastName} unbanned`,
+    message: `The user ${unbannedUser.firstName} ${unbannedUser.lastName} has been unbanned successfully`,
   });
 }

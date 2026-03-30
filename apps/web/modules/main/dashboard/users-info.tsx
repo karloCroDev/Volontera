@@ -9,10 +9,11 @@ import { Avatar } from '@/components/ui/avatar';
 import { Skeleton } from '@/components/ui/skeleton';
 
 // Hooks
+import { useBanOrUnbanDashboardUser } from '@/hooks/data/dashboard';
 
 // Lib
 import { convertToFullname } from '@/lib/utils/converter';
-import { UserResponse } from '@repo/types/user';
+import { toast } from '@/lib/utils/toast';
 import { DashboardPaginatedUsersResponse } from '@repo/types/dashboard';
 
 export type UserFilter = 'all' | 'users' | 'organizators';
@@ -38,6 +39,8 @@ export const UsersInfoSkelton = () => (
 export const UserInfo: React.FC<{
 	user: DashboardPaginatedUsersResponse['users'][0];
 }> = ({ user }) => {
+	const { mutate, isPending } = useBanOrUnbanDashboardUser();
+
 	return (
 		<div className="border-input-border flex w-full justify-between border-t px-4 py-3">
 			<div className="flex min-w-0 items-center gap-4">
@@ -58,7 +61,6 @@ export const UserInfo: React.FC<{
 				</Avatar>
 				<div>
 					<p>
-						{' '}
 						{convertToFullname({
 							firstname: user.firstName,
 							lastname: user.lastName,
@@ -74,10 +76,35 @@ export const UserInfo: React.FC<{
 				<Button
 					size="xs"
 					variant="outline"
-					colorScheme="destructive"
+					colorScheme={user.isBanned ? 'success' : 'destructive'}
 					isFullyRounded
+					isLoading={isPending}
+					onPress={() => {
+						mutate(
+							{
+								userId: user.id,
+								shouldBan: !user.isBanned,
+							},
+							{
+								onSuccess: ({ title, message }) => {
+									toast({
+										title,
+										content: message,
+										variant: 'success',
+									});
+								},
+								onError: (error) => {
+									toast({
+										title: 'Error',
+										content: error.message,
+										variant: 'error',
+									});
+								},
+							}
+						);
+					}}
 				>
-					Ban
+					{user.isBanned ? 'Unban' : 'Ban'}
 				</Button>
 			</div>
 		</div>

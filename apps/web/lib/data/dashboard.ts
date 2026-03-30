@@ -1,6 +1,7 @@
 // Lib
 import { API } from '@/lib/utils/axios-client';
 import { catchError } from '@/lib/utils/error';
+import { UserSchemaArgs } from '@repo/schemas/user';
 
 // Types
 import {
@@ -8,6 +9,7 @@ import {
 	DashboardPaginatedUsersResponse,
 	DashboardKPIMetricsResponse,
 } from '@repo/types/dashboard';
+import { SuccessfulResponse } from '@repo/types/general';
 
 export async function retrieveDashboardKPIMetrics({
 	durationDays = 30,
@@ -48,6 +50,30 @@ export async function retrievePaginatedDashboardUsers({
 			},
 		});
 
+		return res.data;
+	} catch (err) {
+		catchError(err);
+		throw err;
+	}
+}
+
+export async function banDashboardUser(
+	data: UserSchemaArgs
+): Promise<SuccessfulResponse> {
+	try {
+		const res = await API().post('/dashboard/users/ban', data);
+		return res.data;
+	} catch (err) {
+		catchError(err);
+		throw err;
+	}
+}
+
+export async function unbanDashboardUser(
+	data: UserSchemaArgs
+): Promise<SuccessfulResponse> {
+	try {
+		const res = await API().post('/dashboard/users/unban', data);
 		return res.data;
 	} catch (err) {
 		catchError(err);

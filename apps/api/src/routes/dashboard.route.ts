@@ -4,8 +4,10 @@ import { Router } from "express";
 
 // Controllers
 import {
+  banUserController,
   retrieveKPIMetricsController,
   retrievePaginatedUsersController,
+  unbanUserController,
 } from "@/controllers/dashboard.controller";
 
 // Middleware
@@ -16,6 +18,7 @@ import {
   dashboardKPIMetricsQuerySchema,
   dashboardUsersPaginationQuerySchema,
 } from "@repo/schemas/dashboard";
+import { userSchema } from "@repo/schemas/user";
 
 export const dashboardRoutes = Router();
 
@@ -39,4 +42,22 @@ dashboardRoutes.get(
     responseOutput: "server",
   }),
   retrievePaginatedUsersController,
+);
+
+dashboardRoutes.post(
+  "/users/ban",
+  validate({
+    schema: userSchema,
+    responseOutput: "toast",
+  }),
+  banUserController,
+);
+
+dashboardRoutes.post(
+  "/users/unban",
+  validate({
+    schema: userSchema,
+    responseOutput: "toast",
+  }),
+  unbanUserController,
 );

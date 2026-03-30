@@ -118,8 +118,8 @@ export default async function DashboardPage({
 
 			<div className="mb-6 flex flex-col gap-4 lg:flex-row">
 				<GraphCardTemplate
-					title="Pro vs non pro volunteers and organizations"
-					subtitle="Distribution of volunteers and organizations by pro status"
+					title="PRO vs non PRO volunteers and organizations"
+					subtitle="Distribution of volunteers and organizations by PRO status"
 				>
 					{pieChartData.some((item) => item.count > 0) ? (
 						<PieChart data={pieChartData} dataKey="count" />

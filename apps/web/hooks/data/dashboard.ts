@@ -1,11 +1,21 @@
 // External packages
-import { useQuery, UseQueryOptions } from '@tanstack/react-query';
+import {
+	useMutation,
+	UseMutationOptions,
+	useQuery,
+	UseQueryOptions,
+	useQueryClient,
+} from '@tanstack/react-query';
 
 // Lib
 import {
+	banDashboardUser,
 	retrieveDashboardKPIMetrics,
 	retrievePaginatedDashboardUsers,
+	unbanDashboardUser,
 } from '@/lib/data/dashboard';
+import { UserSchemaArgs } from '@repo/schemas/user';
+import { ErrorToastResponse, SuccessfulResponse } from '@repo/types/general';
 
 // Types
 import {
@@ -65,6 +75,30 @@ export const useDashboardPaginatedUsers = (
 		],
 		queryFn: () =>
 			retrievePaginatedDashboardUsers({ offset, limit, filter, search }),
+		...options,
+	});
+};
+
+export const useBanOrUnbanDashboardUser = (
+	options?: UseMutationOptions<
+		SuccessfulResponse,
+		ErrorToastResponse,
+		UserSchemaArgs & { shouldBan: boolean }
+	>
+) => {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationKey: ['dashboard-user-ban-unban'],
+		mutationFn: ({ userId, shouldBan }) =>
+			shouldBan ? banDashboardUser({ userId }) : unbanDashboardUser({ userId }),
+		onSuccess: async (...args) => {
+			await queryClient.invalidateQueries({
+				queryKey: ['dashboard', 'users'],
+				exact: false,
+			});
+			await options?.onSuccess?.(...args);
+		},
 		...options,
 	});
 };
