@@ -7,6 +7,7 @@ import {
   deleteOrganizationService,
   demoteOrPromoteOrganizationMemberService,
   leaveOrganizationService,
+  removeOrganizationMemberService,
   retirveAllRequestsToJoinOrganizationService,
   retrieveAllMembersInOrganizationService,
   retrieveDataAboutOrganizationService,
@@ -80,6 +81,18 @@ export async function demoteOrPromoteOrganizationMemberController(
 ) {
   try {
     const result = await demoteOrPromoteOrganizationMemberService(req.body);
+    return res.status(result.status).json(result.body);
+  } catch (err) {
+    handleServerErrorResponse(res, err);
+  }
+}
+
+export async function removeOrganizationMemberController(
+  req: Request,
+  res: Response,
+) {
+  try {
+    const result = await removeOrganizationMemberService(req.body);
     return res.status(result.status).json(result.body);
   } catch (err) {
     handleServerErrorResponse(res, err);

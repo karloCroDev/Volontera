@@ -8,6 +8,7 @@ import {
 	AcceptOrDeclineUsersRequestToJoinOrganizationArgs,
 	DeleteOrganizationArgs,
 	DemoteOrPromoteOrganizationMemberArgs,
+	RemoveOrganizationMemberArgs,
 	RetirveAllRequestsToJoinOrganizationArgs,
 	RetrieveAllMembersInOrganizationArgs,
 	RetrieveOrganizationMemberArgs,
@@ -62,6 +63,17 @@ export async function demoteOrPromoteOrganizationMember(
 			'/organization-managment/demote-promote-member',
 			data
 		);
+		return res.data;
+	} catch (err) {
+		catchError(err);
+	}
+}
+
+export async function removeOrganizationMember(
+	data: RemoveOrganizationMemberArgs
+) {
+	try {
+		const res = await API().post('/organization-managment/remove-member', data);
 		return res.data;
 	} catch (err) {
 		catchError(err);

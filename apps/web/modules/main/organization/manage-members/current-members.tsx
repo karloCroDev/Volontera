@@ -4,10 +4,12 @@
 import * as React from 'react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
+import { Radio, RadioGroup } from 'react-aria-components';
 
 // Components
 import { Button } from '@/components/ui/button';
 import { Avatar } from '@/components/ui/avatar';
+import { RadioIconVisual } from '@/components/ui/radio';
 
 // Types
 import { RetrieveAllMembersInOrganizationResponse } from '@repo/types/organization-managment';
@@ -18,31 +20,63 @@ import { toast } from '@/lib/utils/toast';
 import { IRevalidateTag } from '@/lib/server/revalidation';
 
 // Hooks
-import { useDemoteOrPromoteOrganizationMember } from '@/hooks/data/organization-managment';
+import {
+	useDemoteOrPromoteOrganizationMember,
+	useRemoveOrganizationMember,
+} from '@/hooks/data/organization-managment';
 
 // Schemas
 import { DemoteOrPromoteOrganizationMemberArgs } from '@repo/schemas/organization-managment';
 
-// Permissions
-import { hasWantedOrganizationRole } from '@repo/permissons/index';
-
-export const CurrentUsersForm: React.FC<{
+export const CurrentMembers: React.FC<{
 	users: RetrieveAllMembersInOrganizationResponse;
 }> = ({ users }) => {
 	const params = useParams<{ organizationId: string }>();
-	const { mutate } = useDemoteOrPromoteOrganizationMember();
+	const { mutate: mutateDemoteOrPromoteMember } =
+		useDemoteOrPromoteOrganizationMember();
+	const { mutate: mutateRemoveMember } = useRemoveOrganizationMember();
 
-	const onSubmit = ({
+	const demoteOrPromoteMember = ({
 		role,
 		userId,
 	}: {
 		userId: DemoteOrPromoteOrganizationMemberArgs['userId'];
 		role: DemoteOrPromoteOrganizationMemberArgs['role'];
 	}) => {
-		mutate(
+		mutateDemoteOrPromoteMember(
 			{
 				userId,
 				role,
+				organizationId: params.organizationId,
+			},
+			{
+				onSuccess({ message, title }) {
+					toast({
+						title,
+						content: message,
+						variant: 'success',
+					});
+					IRevalidateTag('organization-members');
+				},
+				onError({ title, message }) {
+					toast({
+						title,
+						content: message,
+						variant: 'error',
+					});
+				},
+			}
+		);
+	};
+
+	const removeMember = ({
+		userId,
+	}: {
+		userId: DemoteOrPromoteOrganizationMemberArgs['userId'];
+	}) => {
+		mutateRemoveMember(
+			{
+				userId,
 				organizationId: params.organizationId,
 			},
 			{
@@ -102,56 +136,61 @@ export const CurrentUsersForm: React.FC<{
 						<p className="text-muted-foreground text-sm">
 							{convertToPascalCase(memeber.role)}
 						</p>
+						<Button
+							className="ml-auto"
+							isFullyRounded
+							colorScheme="destructive"
+							size="xs"
+							variant="outline"
+							onPress={() =>
+								removeMember({
+									userId: memeber.user.id,
+								})
+							}
+						>
+							Remove member
+						</Button>
 
-						<div className="ml-auto flex gap-3">
-							<Button
-								isFullyRounded
-								colorScheme="destructive"
-								size="xs"
-								// onPress={() =>
-								// 	onSubmit({
-								// 		role: 'ADMIN',
-								// 		userId: memeber.user.id,
-								// 	})
-								// }
+						<RadioGroup
+							value={memeber.role}
+							onChange={(role) => {
+								if (role === memeber.role) {
+									return;
+								}
+
+								demoteOrPromoteMember({
+									role: role as DemoteOrPromoteOrganizationMemberArgs['role'],
+									userId: memeber.user.id,
+								});
+							}}
+							aria-label={`Member status for ${convertToFullname({
+								firstname: memeber.user.firstName || '',
+								lastname: memeber.user.lastName || '',
+							})}`}
+							className="flex items-center gap-4"
+						>
+							<Radio
+								className="group flex cursor-pointer items-center gap-2"
+								value="BANNED"
 							>
-								Ban member
-							</Button>
-
-							{hasWantedOrganizationRole({
-								userRole: memeber.role,
-								requiredRoles: ['MEMBER'],
-								ownerHasAllAccess: false,
-							}) ? (
-								<Button
-									isFullyRounded
-									colorScheme="success"
-									size="xs"
-									onPress={() =>
-										onSubmit({
-											role: 'ADMIN',
-											userId: memeber.user.id,
-										})
-									}
-								>
-									Set to admin
-								</Button>
-							) : (
-								<Button
-									isFullyRounded
-									colorScheme="yellow"
-									size="xs"
-									onPress={() =>
-										onSubmit({
-											role: 'MEMBER',
-											userId: memeber.user.id,
-										})
-									}
-								>
-									Remove admin role
-								</Button>
-							)}
-						</div>
+								<RadioIconVisual className="size-3 rounded-full" />
+								<p className="text-xs">Banned</p>
+							</Radio>
+							<Radio
+								className="group flex cursor-pointer items-center gap-2"
+								value="MEMBER"
+							>
+								<RadioIconVisual className="size-3 rounded-full" />
+								<p className="text-xs">Member</p>
+							</Radio>
+							<Radio
+								className="group flex cursor-pointer items-center gap-2"
+								value="ADMIN"
+							>
+								<RadioIconVisual className="size-3 rounded-full" />
+								<p className="text-xs">Admin</p>
+							</Radio>
+						</RadioGroup>
 					</div>
 				))
 			) : (

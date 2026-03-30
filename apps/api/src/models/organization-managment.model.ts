@@ -127,6 +127,32 @@ export async function demoteOrPromoteOrganizationMember({
   });
 }
 
+export async function removeOrganizationMember({
+  organizationId,
+  userId,
+}: {
+  organizationId: Organization["id"];
+  userId: User["id"];
+}) {
+  return prisma.$transaction(async (tx) => {
+    await tx.organizationJoinRequest.deleteMany({
+      where: {
+        organizationId,
+        requesterId: userId,
+      },
+    });
+
+    await tx.organizationMember.delete({
+      where: {
+        organizationId_userId: {
+          organizationId,
+          userId,
+        },
+      },
+    });
+  });
+}
+
 export async function retrieveOrganizationMember({
   organizationId,
   userId,

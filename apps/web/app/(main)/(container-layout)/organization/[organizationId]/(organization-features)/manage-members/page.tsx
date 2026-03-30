@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation';
 import { ChartArea } from 'lucide-react';
 
 // Modules
-import { CurrentUsersForm } from '@/modules/main/organization/manage-members/current-users-form';
+import { CurrentMembers } from '@/modules/main/organization/manage-members/current-members';
 import { RequestsForm } from '@/modules/main/organization/manage-members/requests-form';
 import { PieChart } from '@/components/ui/charts/pie-chart';
 import { BarChart } from '@/components/ui/charts/bar-chart';
@@ -75,7 +75,7 @@ export default async function ManagePage({
 				Members{' '}
 				{/* <span className="italic">({organizationData.totalUserCount - 1})</span> */}
 			</h2>
-			<CurrentUsersForm users={users} />
+			<CurrentMembers users={users} />
 
 			<h2 className="mb-6 mt-10 text-xl underline underline-offset-4 lg:text-2xl">
 				Settings

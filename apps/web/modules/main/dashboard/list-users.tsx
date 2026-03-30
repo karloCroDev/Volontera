@@ -76,9 +76,9 @@ export const ListUsers = withReactQueryProvider(() => {
 			</Form>
 
 			<div className="flex h-[520px] flex-col items-center">
-				{usersQuery.isLoading &&
-					[...Array(8)].map((_, index) => <UsersInfoSkelton key={index} />)}
-				{usersQuery.data?.users && usersQuery.data.users.length > 0 ? (
+				{usersQuery.isLoading || debouncedSearch !== query ? (
+					[...Array(8)].map((_, index) => <UsersInfoSkelton key={index} />)
+				) : usersQuery.data?.users && usersQuery.data.users.length > 0 ? (
 					usersQuery.data?.users.map((user) => {
 						return <UserInfo key={user.id} user={user} />;
 					})

@@ -74,7 +74,7 @@ export const Search = () => {
 						{data?.organizations && data.organizations.length > 0 ? (
 							data.organizations.map((organization) => (
 								<SearchOutput
-									isVerified={organization.owner.subscriptionTier === 'PRO'}
+									// isVerified={organization?.owner.subscriptionTier === 'PRO'}
 									image={organization.avatarImage}
 									key={organization.id}
 									type="organization"
@@ -100,7 +100,7 @@ export const Search = () => {
 						{data?.users && data.users.length > 0 ? (
 							data.users.map((user) => (
 								<SearchOutput
-									isVerified={user.subscriptionTier === 'PRO'}
+									isVerified={user?.subscriptionTier === 'PRO'}
 									image={user.image}
 									key={user.id}
 									type="user"

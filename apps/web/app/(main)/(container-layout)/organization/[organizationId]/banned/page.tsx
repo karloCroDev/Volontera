@@ -12,10 +12,10 @@ export default async function BannedPage() {
 		<div className="flex h-screen flex-col items-center justify-center">
 			<Ban className="text-destructive size-80" />
 
-			<div className="mt-8 flex gap-4 lg:mt-10 lg:gap-6">
+			<div className="mt-8 flex flex-col gap-4 lg:mt-10 lg:flex-row lg:gap-6">
 				<div className="max-w-3xl">
-					<h1 className="text-4xl font-semibold">
-						You have been banned from this organization
+					<h1 className="text-balance text-4xl font-semibold">
+						You have been banned from activities in this organization
 					</h1>
 					<p className="text-muted-foreground mt-2">
 						Please contact the organization owner for more information:
@@ -29,6 +29,7 @@ export default async function BannedPage() {
 						size="sm"
 						iconRight={<MessageCircle />}
 						isFullyRounded
+						className="self-center"
 						iconLeft={
 							<Avatar
 								imageProps={
