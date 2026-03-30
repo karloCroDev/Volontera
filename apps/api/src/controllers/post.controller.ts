@@ -5,7 +5,8 @@ import { Request, Response } from "express";
 import {
   createPostService,
   deletePostService,
-  toggleLikePostService,
+  dislikePostService,
+  likePostService,
   retrieveOrganizationPostsService,
   retrievePostDataService,
   retrievePostWithCommentsService,
@@ -105,9 +106,22 @@ export async function retrievePostWithCommentsController(
   }
 }
 
-export async function toggleLikePostController(req: Request, res: Response) {
+export async function likePostController(req: Request, res: Response) {
   try {
-    const result = await toggleLikePostService({
+    const result = await likePostService({
+      data: req.body,
+      userId: req.user.userId,
+    });
+
+    return res.status(result.status).json(result.body);
+  } catch (err) {
+    handleServerErrorResponse(res, err);
+  }
+}
+
+export async function dislikePostController(req: Request, res: Response) {
+  try {
+    const result = await dislikePostService({
       data: req.body,
       userId: req.user.userId,
     });

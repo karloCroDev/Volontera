@@ -214,22 +214,6 @@ export async function retrieveComments(postId: Post["id"]) {
   });
 }
 
-export async function checkIfUserLiked({
-  postId,
-  userId,
-}: {
-  postId: Post["id"];
-  userId: User["id"];
-}) {
-  return prisma.postLikes.findUnique({
-    where: {
-      postId_userId: {
-        postId,
-        userId,
-      },
-    },
-  });
-}
 export async function likePost({
   postId,
   userId,
@@ -264,6 +248,45 @@ export async function dislikePost({
 }
 
 // Home (with cool algorithm later)
+
+export async function toggleUserLike({
+  postId,
+  userId,
+}: {
+  postId: Post["id"];
+  userId: User["id"];
+}) {
+  const like = await prisma.postLikes.findUnique({
+    where: {
+      postId_userId: {
+        postId,
+        userId,
+      },
+    },
+    select: { postId: true }, // minimal select
+  });
+
+  if (like) {
+    await prisma.postLikes.delete({
+      where: {
+        postId_userId: {
+          postId,
+          userId,
+        },
+      },
+    });
+    return false; // was liked, now disliked
+  } else {
+    await prisma.postLikes.create({
+      data: {
+        postId,
+        userId,
+      },
+    });
+    return true; // was not liked, now liked
+  }
+}
+
 export async function retrieveHomePosts() {
   return prisma.post.findMany({
     include: {

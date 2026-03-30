@@ -6,10 +6,11 @@ import { Router } from "express";
 import {
   createPostController,
   deletePostController,
+  dislikePostController,
+  likePostController,
   retrieveOrganizationPostsController,
   retrievePostDataController,
   retrievePostWithCommentsController,
-  toggleLikePostController,
   updatePostController,
 } from "@/controllers/post.controller";
 
@@ -22,9 +23,10 @@ import { organizationRolesMiddleware } from "@/middleware/organization-roles.mid
 import {
   createPostSchema,
   deletePostSchema,
+  dislikePostSchema,
+  likePostSchema,
   retrievePost,
   updatePostSchema,
-  likeOrDislikePostSchema,
   retrieveOrganizationPostsSchema,
   retrieveOrganizationPostsQuerySchema,
 } from "@repo/schemas/post";
@@ -108,13 +110,23 @@ postRoutes.get(
 );
 
 postRoutes.patch(
-  "/toggle-like",
+  "/like",
   validate({
-    schema: likeOrDislikePostSchema,
+    schema: likePostSchema,
     responseOutput: "server",
     type: "body",
   }),
-  toggleLikePostController,
+  likePostController,
+);
+
+postRoutes.patch(
+  "/dislike",
+  validate({
+    schema: dislikePostSchema,
+    responseOutput: "server",
+    type: "body",
+  }),
+  dislikePostController,
 );
 
 // postRoutes.route('/home')

@@ -11,7 +11,7 @@ import { Button } from '@/components/ui/button';
 
 // Hooks
 import { useSession } from '@/hooks/data/user';
-import { useToggleLike } from '@/hooks/data/post';
+import { useDislikePost, useLikePost } from '@/hooks/data/post';
 
 // Types
 import {
@@ -19,9 +19,43 @@ import {
 	RetrievePostWithComments,
 } from '@repo/types/post';
 import { RetrieveHomePostsResponse } from '@repo/types/home';
+import { ErrorToastResponse } from '@repo/types/general';
 
 // Lib
 import { toast } from '@/lib/utils/toast';
+
+type PostLikeItem = {
+	id: string;
+	postLikes: Array<{ userId: string; postId?: string }>;
+	_count: { postLikes: number };
+};
+
+type LikeContext = {
+	previousLocal: { count: number; hasUserLiked: boolean };
+	previousQueries: Array<[QueryKey, unknown]>;
+};
+
+const isPostQueryKey = (queryKey: QueryKey): boolean => {
+	const root = queryKey[0];
+	return root === 'posts' || root === 'home' || root === 'post-with-comments';
+};
+
+const toggleLikeInPost = (post: PostLikeItem, userId: string): PostLikeItem => {
+	const userHasLiked = post.postLikes.some((like) => like.userId === userId);
+
+	return {
+		...post,
+		postLikes: userHasLiked
+			? post.postLikes.filter((like) => like.userId !== userId)
+			: [...post.postLikes, { userId, postId: post.id }],
+		_count: {
+			...post._count,
+			postLikes: userHasLiked
+				? post._count.postLikes - 1
+				: post._count.postLikes + 1,
+		},
+	};
+};
 
 export const PostLike: React.FC<{
 	count: number;
@@ -34,172 +68,123 @@ export const PostLike: React.FC<{
 	const [optimisticCount, setOptimisticCount] = React.useState(count);
 	const [optimisticHasUserLiked, setOptimisticHasUserLiked] =
 		React.useState(hasUserLiked);
-	const toggleInPost = React.useCallback(
-		<
-			T extends {
-				id: string;
-				postLikes: Array<{ userId: string; postId?: string }>;
-				_count: { postLikes: number };
-			},
-		>(
-			post: T
-		): T => {
-			if (!user?.id) return post;
-			const userHasLiked = post.postLikes.some(
-				(like) => like.userId === user.id
-			);
-			return {
-				...post,
-				postLikes: userHasLiked
-					? post.postLikes.filter((like) => like.userId !== user.id)
-					: [...post.postLikes, { userId: user.id, postId: post.id }],
-				_count: {
-					...post._count,
-					postLikes: userHasLiked
-						? post._count.postLikes - 1
-						: post._count.postLikes + 1,
-				},
-			};
-		},
-		[user?.id]
-	);
 
-	const updateAllCaches = React.useCallback(
-		(targetPostId: string) => {
-			if (!user?.id) return;
-
-			// 1) Organization posts lists (any key starting with 'posts')
+	const updatePostCaches = React.useCallback(
+		(targetPostId: string, userId: string) => {
 			queryClient.setQueriesData(
-				{ queryKey: ['posts'], exact: false },
-				(oldData: RetrieveOrganizationPostsResponse | undefined) => {
-					if (!oldData) return oldData;
-					return {
-						...oldData,
-						posts: oldData.posts.map((post) =>
-							post.id === targetPostId ? toggleInPost(post) : post
-						),
-					};
-				}
-			);
+				{ predicate: (query) => isPostQueryKey(query.queryKey) },
+				(oldData: unknown) => {
+					if (!oldData || typeof oldData !== 'object') return oldData;
 
-			// 2) Home feed (infinite query, any key starting with 'home')
-			queryClient.setQueriesData(
-				{ queryKey: ['home'], exact: false },
-				(oldData: InfiniteData<RetrieveHomePostsResponse> | undefined) => {
-					if (!oldData) return oldData;
-					return {
-						...oldData,
-						pages: oldData.pages.map((page) => ({
-							...page,
-							posts: page.posts.map((post) =>
-								post.id === targetPostId ? toggleInPost(post) : post
+					const maybeHome = oldData as InfiniteData<RetrieveHomePostsResponse>;
+					if (Array.isArray(maybeHome.pages)) {
+						return {
+							...maybeHome,
+							pages: maybeHome.pages.map((page) => ({
+								...page,
+								posts: page.posts.map((post) =>
+									post.id === targetPostId
+										? toggleLikeInPost(post, userId)
+										: post
+								),
+							})),
+						};
+					}
+
+					const maybePosts = oldData as RetrieveOrganizationPostsResponse;
+					if (Array.isArray(maybePosts.posts)) {
+						return {
+							...maybePosts,
+							posts: maybePosts.posts.map((post) =>
+								post.id === targetPostId ? toggleLikeInPost(post, userId) : post
 							),
-						})),
-					};
-				}
-			);
+						};
+					}
 
-			// 3) Single post w/ comments (any key starting with 'post-with-comments')
-			queryClient.setQueriesData(
-				{ queryKey: ['post-with-comments'], exact: false },
-				(oldData: RetrievePostWithComments | undefined) => {
-					if (!oldData?.post) return oldData;
-					if (oldData.post.id !== targetPostId) return oldData;
-					return {
-						...oldData,
-						post: toggleInPost(oldData.post),
-					};
+					const maybePost = oldData as RetrievePostWithComments;
+					if (maybePost.post && maybePost.post.id === targetPostId) {
+						return {
+							...maybePost,
+							post: toggleLikeInPost(maybePost.post, userId),
+						};
+					}
+
+					return oldData;
 				}
 			);
 		},
-		[queryClient, toggleInPost, user?.id]
+		[queryClient]
 	);
 
-	type LikeContext = {
-		previousLocal: { count: number; hasUserLiked: boolean };
-		previousQueries: Array<[QueryKey, unknown]>;
-	};
-
-	const { mutate, isPending } = useToggleLike({
-		onMutate: async ({ postId: targetPostId }) => {
-			if (!user?.id) {
-				toast({
-					title: 'Not signed in',
-					content: 'Please sign in to like posts.',
-					variant: 'error',
-				});
-				return {
-					previousLocal: {
-						count: optimisticCount,
-						hasUserLiked: optimisticHasUserLiked,
-					},
-					previousQueries: [],
-				} satisfies LikeContext;
-			}
-
-			await Promise.all([
-				queryClient.cancelQueries({ queryKey: ['posts'], exact: false }),
-				queryClient.cancelQueries({ queryKey: ['home'], exact: false }),
-				queryClient.cancelQueries({
-					queryKey: ['post-with-comments'],
-					exact: false,
-				}),
-			]);
-
-			const previousQueries = [
-				...queryClient.getQueriesData({ queryKey: ['posts'], exact: false }),
-				...queryClient.getQueriesData({ queryKey: ['home'], exact: false }),
-				...queryClient.getQueriesData({
-					queryKey: ['post-with-comments'],
-					exact: false,
-				}),
-			] as Array<[QueryKey, unknown]>;
-
-			const previousLocal = {
-				count: optimisticCount,
-				hasUserLiked: optimisticHasUserLiked,
-			};
-
-			// Local optimistic UI (works even when the parent is a server component)
-			setOptimisticHasUserLiked((prev) => !prev);
-			setOptimisticCount(
-				(prev) => prev + (previousLocal.hasUserLiked ? -1 : 1)
-			);
-
-			// Cache optimistic update (keeps lists consistent across pages)
-			updateAllCaches(targetPostId);
-
-			return { previousLocal, previousQueries } satisfies LikeContext;
-		},
-
-		onError: ({ message, title }, _, context) => {
-			if (context?.previousLocal) {
-				setOptimisticCount(context.previousLocal.count);
-				setOptimisticHasUserLiked(context.previousLocal.hasUserLiked);
-			}
-
-			if (context?.previousQueries?.length) {
-				for (const [key, data] of context.previousQueries) {
-					queryClient.setQueryData(key, data);
-				}
-			}
-
+	const onMutate = async ({ postId: targetPostId }: { postId: string }) => {
+		if (!user?.id) {
 			toast({
-				title,
-				content: message,
+				title: 'Not signed in',
+				content: 'Please sign in to like posts.',
 				variant: 'error',
 			});
-		},
+			return {
+				previousLocal: {
+					count: optimisticCount,
+					hasUserLiked: optimisticHasUserLiked,
+				},
+				previousQueries: [],
+			} satisfies LikeContext;
+		}
 
-		onSettled: () => {
-			queryClient.invalidateQueries({ queryKey: ['posts'], exact: false });
-			queryClient.invalidateQueries({ queryKey: ['home'], exact: false });
-			queryClient.invalidateQueries({
-				queryKey: ['post-with-comments'],
-				exact: false,
-			});
-		},
-	});
+		await queryClient.cancelQueries({
+			predicate: (query) => isPostQueryKey(query.queryKey),
+		});
+
+		const previousQueries = queryClient.getQueriesData({
+			predicate: (query) => isPostQueryKey(query.queryKey),
+		});
+
+		const previousLocal = {
+			count: optimisticCount,
+			hasUserLiked: optimisticHasUserLiked,
+		};
+
+		setOptimisticHasUserLiked((prev) => !prev);
+		setOptimisticCount((prev) => prev + (previousLocal.hasUserLiked ? -1 : 1));
+
+		updatePostCaches(targetPostId, user.id);
+
+		return { previousLocal, previousQueries } satisfies LikeContext;
+	};
+
+	const onError = (
+		{ message, title }: ErrorToastResponse,
+		_: { postId: string },
+		context: LikeContext | undefined
+	) => {
+		if (context?.previousLocal) {
+			setOptimisticCount(context.previousLocal.count);
+			setOptimisticHasUserLiked(context.previousLocal.hasUserLiked);
+		}
+
+		if (context?.previousQueries?.length) {
+			for (const [queryKey, data] of context.previousQueries) {
+				queryClient.setQueryData(queryKey, data);
+			}
+		}
+
+		toast({
+			title,
+			content: message,
+			variant: 'error',
+		});
+	};
+
+	const onSettled = () => {
+		queryClient.invalidateQueries({
+			predicate: (query) => isPostQueryKey(query.queryKey),
+		});
+	};
+
+	const likeMutation = useLikePost({ onMutate, onError, onSettled });
+	const dislikeMutation = useDislikePost({ onMutate, onError, onSettled });
+	const isPending = likeMutation.isPending || dislikeMutation.isPending;
 
 	return (
 		<div className="ml-auto flex items-center gap-4" suppressHydrationWarning>
@@ -208,7 +193,12 @@ export const PostLike: React.FC<{
 				variant="blank"
 				isDisabled={isPending}
 				onPress={() => {
-					mutate({ postId });
+					if (optimisticHasUserLiked) {
+						dislikeMutation.mutate({ postId });
+						return;
+					}
+
+					likeMutation.mutate({ postId });
 				}}
 			>
 				<Heart
