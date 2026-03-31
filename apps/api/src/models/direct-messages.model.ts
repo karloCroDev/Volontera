@@ -47,6 +47,17 @@ export async function getDirectMessagesConversationById({
       directMessages: {
         include: {
           directMessagesImages: true,
+          parentMessage: {
+            select: {
+              id: true,
+              content: true,
+              author: {
+                omit: {
+                  password: true,
+                },
+              },
+            },
+          },
           author: {
             omit: {
               password: true,
@@ -191,6 +202,17 @@ export async function startConversationOSendDirectMessage({
       // Trebam vratiti slike i autora da ih mogu prikazati odmah nakon slanja poruke (websocket)
       include: {
         directMessagesImages: true,
+        parentMessage: {
+          select: {
+            id: true,
+            content: true,
+            author: {
+              omit: {
+                password: true,
+              },
+            },
+          },
+        },
         author: {
           omit: {
             password: true,
@@ -212,6 +234,109 @@ export async function startConversationOSendDirectMessage({
     return {
       message,
       conversation,
+    };
+  });
+}
+
+export async function createDirectMessageReply({
+  senderId,
+  parentMessageId,
+  content,
+  imageKeys,
+}: {
+  senderId: User["id"];
+  parentMessageId: DirectMessages["id"];
+  content: string;
+  imageKeys?: string[];
+}) {
+  return prisma.$transaction(async (tx) => {
+    // Fetch parent message with conversation participants for auth and delivery.
+    const parentMessage = await tx.directMessages.findUnique({
+      where: { id: parentMessageId },
+      include: {
+        replyMessage: {
+          select: {
+            id: true,
+          },
+        },
+        conversation: {
+          select: {
+            id: true,
+            participants: {
+              select: {
+                userId: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (!parentMessage) {
+      throw new Error("Parent message not found");
+    }
+
+    const participantIds = parentMessage.conversation.participants.map(
+      (participant) => participant.userId,
+    );
+
+    if (!participantIds.includes(senderId)) {
+      throw new Error("You are not allowed to reply in this conversation");
+    }
+
+    if (parentMessage.replyMessage) {
+      throw new Error("This message already has a reply");
+    }
+
+    const reply = await tx.directMessages.create({
+      data: {
+        conversationId: parentMessage.conversation.id,
+        authorId: senderId,
+        content,
+        parentMessageId,
+        ...(imageKeys && imageKeys.length
+          ? {
+              directMessagesImages: {
+                create: imageKeys.map((key) => ({
+                  imageUrl: key,
+                })),
+              },
+            }
+          : {}),
+      },
+      include: {
+        directMessagesImages: true,
+        author: {
+          omit: {
+            password: true,
+          },
+        },
+        parentMessage: {
+          select: {
+            id: true,
+            content: true,
+            author: {
+              omit: {
+                password: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    await tx.directMessagesConversations.update({
+      where: {
+        id: parentMessage.conversation.id,
+      },
+      data: {
+        lastMessage: content,
+      },
+    });
+
+    return {
+      reply,
+      participantIds,
     };
   });
 }

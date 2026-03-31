@@ -168,6 +168,11 @@ model DirectMessages {
   updatedAt            DateTime               @updatedAt
   directMessagesImages DirectMessagesImages[]
 
+  // 1:1 self relation for replies
+  parentMessage   DirectMessages? @relation("DirectMessageReply", fields: [parentMessageId], references: [id], onDelete: Cascade)
+  parentMessageId String?         @unique
+  replyMessage    DirectMessages? @relation("DirectMessageReply")
+
   @@index([conversationId, createdAt])
 }
 

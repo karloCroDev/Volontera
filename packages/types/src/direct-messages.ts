@@ -26,5 +26,10 @@ export type GetDirectMessagesConversationByIdResponse = SuccessfulResponse & {
   directMessages: (DirectMessages & {
     author: Omit<User, "password">;
     directMessagesImages: DirectMessagesImages[];
+    parentMessage: {
+      id: string;
+      content: string;
+      author: Omit<User, "password">;
+    } | null;
   })[];
 };

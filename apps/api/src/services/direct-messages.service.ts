@@ -5,6 +5,7 @@ import {
   listAllDirectMessagesConversation,
   searchAllUsers,
   startConversationOSendDirectMessage,
+  createDirectMessageReply,
 } from "@/models/direct-messages.model";
 
 // Lib
@@ -19,6 +20,7 @@ import {
   ConversationArgs,
   CreateDirectMessageArgs,
   DeleteDirectMessageArgs,
+  ReplyMessageArgs,
 } from "@repo/schemas/direct-messages";
 import { PresignImagesSchemaArgs } from "@repo/schemas/image";
 
@@ -209,5 +211,57 @@ export async function startConversationOrStartAndSendDirectMessageService({
     status: 200,
     title: "Message is sent",
     message: "Message is successfully sent to the wanted user",
+  });
+}
+
+export async function createDirectMessageReplyService({
+  userId,
+  data,
+}: {
+  data: ReplyMessageArgs;
+  userId: User["id"];
+}) {
+  const { reply, participantIds } = await createDirectMessageReply({
+    senderId: userId,
+    parentMessageId: data.parentMessageId,
+    content: data.content,
+    imageKeys: data.imageKeys,
+  });
+
+  const replyImageKeys = reply.directMessagesImages
+    .map((img) => img.imageUrl)
+    .filter(Boolean);
+
+  const replyUrlsByKey = await resolveImageKeysToUrls(replyImageKeys);
+
+  const enrichedReply = {
+    ...reply,
+    directMessagesImages: reply.directMessagesImages.flatMap((img) => {
+      const presignedUrl = img.imageUrl ? replyUrlsByKey[img.imageUrl] : null;
+      if (!presignedUrl) return [];
+      return [{ ...img, imageUrl: presignedUrl }];
+    }),
+  };
+
+  participantIds.forEach((participantId) => {
+    const participantSocketId = getReceiverSocketId(participantId);
+    if (!participantSocketId) return;
+    io.to(participantSocketId).emit("new-chat", enrichedReply);
+  });
+
+  const receiverUserId = participantIds.find(
+    (participantId) => participantId !== userId,
+  );
+  if (receiverUserId) {
+    await createNotification({
+      content: `New direct message reply from ${reply.author.firstName} ${reply.author.lastName}: ${data.content.substring(0, 20)}`,
+      userId: receiverUserId,
+    });
+  }
+
+  return toastResponseOutput({
+    status: 200,
+    title: "Reply is sent",
+    message: "Your reply has been sent successfully",
   });
 }

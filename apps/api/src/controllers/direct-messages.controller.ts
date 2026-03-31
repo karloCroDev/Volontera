@@ -8,6 +8,7 @@ import {
   listAllDirectMessagesConversationsService,
   searchAllUsersWithQueryService,
   startConversationOrStartAndSendDirectMessageService,
+  createDirectMessageReplyService,
 } from "@/services/direct-messages.service";
 
 // Schemas
@@ -15,6 +16,7 @@ import {
   ConversationArgs,
   DeleteDirectMessageArgs,
   SearchArgs,
+  ReplyMessageArgs,
 } from "@repo/schemas/direct-messages";
 
 // Lib
@@ -86,6 +88,21 @@ export async function startConversationOrStartAndSendDirectMessageController(
   try {
     const result = await startConversationOrStartAndSendDirectMessageService({
       data: req.body,
+      userId: req.user.userId,
+    });
+    return res.status(result.status).json(result.body);
+  } catch (err) {
+    handleServerErrorResponse(res, err);
+  }
+}
+
+export async function createDirectMessageReplyController(
+  req: Request,
+  res: Response,
+) {
+  try {
+    const result = await createDirectMessageReplyService({
+      data: req.body as ReplyMessageArgs,
       userId: req.user.userId,
     });
     return res.status(result.status).json(result.body);

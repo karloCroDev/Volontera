@@ -34,3 +34,17 @@ export const deleteDirectMessageSchema = z.object({
   messageId: z.cuid(),
 });
 export type DeleteDirectMessageArgs = z.infer<typeof deleteDirectMessageSchema>;
+
+export const replyMessageSchema = z.object({
+  content: z.string().min(1).max(200),
+  parentMessageId: z.cuid(),
+  imageKeys: z.array(z.string()).optional(),
+});
+export type ReplyMessageArgs = z.infer<typeof replyMessageSchema>;
+
+export const createReplySchema = z.object({
+  content: z.string().min(1).max(200),
+  parentMessageId: z.cuid(),
+  images: uploadImageSchema.shape.image.array().optional(),
+});
+export type CreateReplyArgs = z.infer<typeof createReplySchema>;
