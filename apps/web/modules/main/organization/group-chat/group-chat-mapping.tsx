@@ -10,6 +10,7 @@ import { Avatar } from '@/components/ui/avatar';
 import { Message } from '@/components/ui/message/message';
 import { MessageImages } from '@/components/ui/message/message-images';
 import { useMessagesReply } from '@/components/ui/message/reply-context';
+import { MessageIndicator } from '@/components/ui/message/message-indicator';
 
 // Hooks
 import {
@@ -84,75 +85,79 @@ export const GroupChatMapping = withReactQueryProvider(() => {
 		data.organizationGroupChat.messages
 	);
 
-	// Scrolla se na dna containera kada se pojavi nova poruka
 	const containerRef = React.useRef<HTMLDivElement | null>(null);
-	React.useLayoutEffect(() => {
-		const el = containerRef.current;
-		if (!el) return;
-		el.scrollTop = el.scrollHeight;
-	}, [messages]);
+	const lastMessageId = messages?.[messages.length - 1]?.id;
 
 	const { data: user } = useSession();
 
 	const { mutate: mutateDeleteMessage } =
 		useDeleteOrganizationGroupChatMessage();
 	return (
-		<div
-			className="no-scrollbar pb-50 h-full min-h-0 overflow-y-auto scroll-smooth"
-			ref={containerRef}
-		>
-			{messages && messages.length > 0 ? (
-				messages.map((message) => (
-					<Message
-						key={message.id}
-						date={new Date(message.createdAt)}
-						variant={user?.id === message.author.id ? 'primary' : 'secondary'}
-						isBeingRepliedTo={replyingTo?.id === message.id}
-						onReplyClick={() =>
-							setReplyingTo({
-								id: message.id,
-								content: message.content,
-							})
-						}
-						avatar={
-							<Avatar
-								imageProps={{
-									src: message.author.image
-										? `${process.env.NEXT_PUBLIC_AWS_CLOUDFRONT_URL}/${message.author.image}`
-										: undefined,
-								}}
-								isVerified={message.author.subscriptionTier === 'PRO'}
-							>
-								{convertToFullname({
-									firstname: message.author.firstName,
-									lastname: message.author.lastName,
-								})}
-							</Avatar>
-						}
-						images={
-							message.organizationGroupChatMessageImages[0]?.imageUrl && (
-								<MessageImages
-									imageUrls={message.organizationGroupChatMessageImages
-										.map((img) => img.imageUrl)
-										.filter(Boolean)}
-								/>
-							)
-						}
-						deleteAction={() =>
-							mutateDeleteMessage({
-								organizationId: params.organizationId,
-								messageId: message.id,
-							})
-						}
-					>
-						<Markdown>{message.content}</Markdown>
-					</Message>
-				))
-			) : (
-				<p className="text-muted-foreground text-center">
-					No messages yet. Be the first to send a message!
-				</p>
-			)}
+		<div className="relative h-full min-h-0">
+			<div
+				className="no-scrollbar pb-50 h-full min-h-0 overflow-y-auto scroll-smooth"
+				ref={containerRef}
+			>
+				{messages && messages.length > 0 ? (
+					messages.map((message) => (
+						<Message
+							key={message.id}
+							date={new Date(message.createdAt)}
+							variant={user?.id === message.author.id ? 'primary' : 'secondary'}
+							isBeingRepliedTo={replyingTo?.id === message.id}
+							onReplyClick={() =>
+								setReplyingTo({
+									id: message.id,
+									content: message.content,
+								})
+							}
+							avatar={
+								<Avatar
+									imageProps={{
+										src: message.author.image
+											? `${process.env.NEXT_PUBLIC_AWS_CLOUDFRONT_URL}/${message.author.image}`
+											: undefined,
+									}}
+									isVerified={message.author.subscriptionTier === 'PRO'}
+								>
+									{convertToFullname({
+										firstname: message.author.firstName,
+										lastname: message.author.lastName,
+									})}
+								</Avatar>
+							}
+							images={
+								message.organizationGroupChatMessageImages[0]?.imageUrl && (
+									<MessageImages
+										imageUrls={message.organizationGroupChatMessageImages
+											.map((img) => img.imageUrl)
+											.filter(Boolean)}
+									/>
+								)
+							}
+							deleteAction={() =>
+								mutateDeleteMessage({
+									organizationId: params.organizationId,
+									messageId: message.id,
+								})
+							}
+						>
+							<Markdown>{message.content}</Markdown>
+						</Message>
+					))
+				) : (
+					<p className="text-muted-foreground text-center">
+						No messages yet. Be the first to send a message!
+					</p>
+				)}
+			</div>
+
+			<MessageIndicator
+				containerRef={containerRef}
+				lastItemId={lastMessageId}
+				resetKey={params.organizationId}
+				offset={120}
+			/>
 		</div>
 	);
 });

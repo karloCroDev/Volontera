@@ -134,7 +134,7 @@ export const MessageForm = withReactQueryProvider(() => {
 
 	return (
 		<Form
-			className="lg:max-w-3/4 bg-background absolute bottom-4 left-1/2 w-full -translate-x-1/2 rounded-lg"
+			className="lg:max-w-3/4 bg-background absolute bottom-4 left-1/2 w-full -translate-x-1/2 rounded-lg px-4 sm:px-6 lg:px-0"
 			onSubmit={handleSubmit(onSubmit)}
 		>
 			<ReplyIndicator />

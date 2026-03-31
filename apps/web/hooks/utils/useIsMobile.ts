@@ -8,7 +8,7 @@ export function useIsMobile(MOBILE_BREAKPOINT = 1024) {
 		undefined
 	);
 
-	React.useEffect(() => {
+	React.useLayoutEffect(() => {
 		const mql = window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`);
 
 		const onChange = () => {
