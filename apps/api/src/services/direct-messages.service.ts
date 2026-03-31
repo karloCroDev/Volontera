@@ -127,7 +127,10 @@ export async function getDirectMessagesConversationByIdService({
     status: 200,
     message: "Conversation retrieved successfully",
     title: "Conversation retrieved successfully",
-    data: { directMessages: enrichedMessages },
+    data: {
+      conversationId: conversation?.id ?? null,
+      directMessages: enrichedMessages,
+    },
   });
 }
 
@@ -138,18 +141,20 @@ export async function deleteDirectMessageByIdService({
   data: DeleteDirectMessageArgs;
   userId: User["id"];
 }) {
-  const deletedMessage = await deleteDirectMessageById({
+  const { participants, deletedMessageIds } = await deleteDirectMessageById({
+    conversationId: data.conversationId,
     messageId: data.messageId,
     userId,
   });
 
   // Oba dva korisnika pošaljem kako se izbrisala poruka (ili poruke ako sadrže reply koji odgovara na poruku)
-  deletedMessage.participants.forEach((participant) => {
+  participants.forEach((participant) => {
     const participantSocketId = getReceiverSocketId(participant.userId);
     if (!participantSocketId) return;
     io.to(participantSocketId).emit("direct-messages:message-deleted", {
+      conversationId: data.conversationId,
       messageId: data.messageId,
-      messageIds: deletedMessage.deletedMessageIds,
+      messageIds: deletedMessageIds,
     });
   });
 
@@ -222,40 +227,13 @@ export async function createDirectMessageReplyService({
   data: ReplyMessageArgs;
   userId: User["id"];
 }) {
-  let createReplyResult: Awaited<ReturnType<typeof createDirectMessageReply>>;
-
-  try {
-    createReplyResult = await createDirectMessageReply({
-      senderId: userId,
-      parentMessageId: data.parentMessageId,
-      content: data.content,
-      imageKeys: data.imageKeys,
-    });
-  } catch (err) {
-    if (err instanceof Error && err.message === "Parent message not found") {
-      return toastResponseOutput({
-        status: 404,
-        title: "Reply target not found",
-        message:
-          "The message you are replying to was deleted. Please choose another message.",
-      });
-    }
-
-    if (
-      err instanceof Error &&
-      err.message === "You are not allowed to reply in this conversation"
-    ) {
-      return toastResponseOutput({
-        status: 403,
-        title: "Reply denied",
-        message: "You are not allowed to reply in this conversation.",
-      });
-    }
-
-    throw err;
-  }
-
-  const { reply, participantIds } = createReplyResult;
+  const { reply, participantIds } = await createDirectMessageReply({
+    senderId: userId,
+    conversationId: data.conversationId,
+    parentMessageId: data.parentMessageId,
+    content: data.content,
+    imageKeys: data.imageKeys,
+  });
 
   const replyImageKeys = reply.directMessagesImages
     .map((img) => img.imageUrl)

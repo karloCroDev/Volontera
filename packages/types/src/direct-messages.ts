@@ -23,6 +23,7 @@ export type StartConversationOrStartAndSendDirectMessageResonse =
   };
 
 export type GetDirectMessagesConversationByIdResponse = SuccessfulResponse & {
+  conversationId: DirectMessagesConversations["id"] | null;
   directMessages: (DirectMessages & {
     author: Omit<User, "password">;
     directMessagesImages: DirectMessagesImages[];

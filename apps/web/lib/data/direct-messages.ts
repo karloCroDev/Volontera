@@ -45,10 +45,13 @@ export async function getDirectMessagesConversationById({
 }
 
 export async function deleteDirectMessageById({
+	conversationId,
 	messageId,
 }: DeleteDirectMessageArgs) {
 	try {
-		const res = await API().delete(`direct-messages/${messageId}`);
+		const res = await API().delete(
+			`direct-messages/${conversationId}/${messageId}`
+		);
 		return res.data;
 	} catch (err) {
 		catchError(err);
@@ -127,6 +130,7 @@ export async function createDirectMessageReply({
 
 		// Posaljem reply s keyevima slika
 		const res = await API().post('direct-messages/conversation/reply', {
+			conversationId: data.conversationId,
 			content: data.content,
 			parentMessageId: data.parentMessageId,
 			...(imageKeys && imageKeys.length ? { imageKeys } : {}),

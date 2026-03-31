@@ -1,10 +1,5 @@
 // Database
-import {
-  prisma,
-  User,
-  DirectMessagesConversations,
-  DirectMessages,
-} from "@repo/database";
+import { prisma, User, DirectMessages } from "@repo/database";
 
 export async function listAllDirectMessagesConversation(userId: User["id"]) {
   return prisma.directMessagesConversations.findMany({
@@ -106,30 +101,23 @@ export async function searchAllUsers({
 }
 
 export async function deleteDirectMessageById({
+  conversationId,
   messageId,
   userId,
 }: {
+  conversationId: DirectMessages["conversationId"];
   messageId: DirectMessages["id"];
   userId: User["id"];
 }) {
   return prisma.$transaction(async (tx) => {
-    const message = await tx.directMessages.findFirst({
+    const message = await tx.directMessages.findUnique({
       where: {
+        conversationId,
         id: messageId,
         authorId: userId,
       },
       select: {
         id: true,
-        conversationId: true,
-        conversation: {
-          select: {
-            participants: {
-              select: {
-                userId: true,
-              },
-            },
-          },
-        },
         replyMessage: {
           select: {
             id: true,
@@ -138,8 +126,11 @@ export async function deleteDirectMessageById({
       },
     });
 
+    // Karlo: Bolje handleaj ovaj error (neće biti sigurno prikazan na frontendu, ali dobro za znati)
     if (!message) {
-      throw new Error("Message not found or you are not allowed to delete it");
+      throw new Error(
+        "Message not found or you are not the author of the message",
+      );
     }
 
     const deletedMessageIds = [
@@ -155,7 +146,7 @@ export async function deleteDirectMessageById({
 
     const latestMessage = await tx.directMessages.findFirst({
       where: {
-        conversationId: message.conversationId,
+        conversationId,
       },
       orderBy: {
         createdAt: "desc",
@@ -167,35 +158,30 @@ export async function deleteDirectMessageById({
 
     await tx.directMessagesConversations.update({
       where: {
-        id: message.conversationId,
+        id: conversationId,
       },
       data: {
         lastMessage: latestMessage?.content ?? null,
       },
     });
 
+    const participants = await tx.directMessagesConversations.findUnique({
+      where: {
+        id: conversationId,
+      },
+      select: {
+        participants: {
+          select: {
+            userId: true,
+          },
+        },
+      },
+    });
+
     return {
       deletedMessageIds,
-      participants: message.conversation.participants,
+      participants: participants?.participants ?? [],
     };
-  });
-}
-
-// U sidbearu prikaz posljednje poruke u konverzaciji (bolje nego tražiti sve poruke i uzimati zadnju i sigurno će se svaki put kada se pošalje nova poruka ažurirati taj podatak)
-export async function updateDirectMessagesConversationLastMessage({
-  conversationId,
-  lastMessage,
-}: {
-  conversationId: DirectMessagesConversations["id"];
-  lastMessage: DirectMessagesConversations["lastMessage"];
-}) {
-  return prisma.directMessagesConversations.update({
-    where: {
-      id: conversationId,
-    },
-    data: {
-      lastMessage,
-    },
   });
 }
 
@@ -279,8 +265,6 @@ export async function startConversationOSendDirectMessage({
       },
     });
 
-    // Uhh vidi je li trebam ionako ista vratiti
-
     return {
       message,
       conversation,
@@ -290,48 +274,21 @@ export async function startConversationOSendDirectMessage({
 
 export async function createDirectMessageReply({
   senderId,
+  conversationId,
   parentMessageId,
   content,
   imageKeys,
 }: {
   senderId: User["id"];
+  conversationId: DirectMessages["conversationId"];
   parentMessageId: DirectMessages["id"];
   content: string;
   imageKeys?: string[];
 }) {
   return prisma.$transaction(async (tx) => {
-    // Fetch parent message with conversation participants for auth and delivery.
-    const parentMessage = await tx.directMessages.findUnique({
-      where: { id: parentMessageId },
-      include: {
-        conversation: {
-          select: {
-            id: true,
-            participants: {
-              select: {
-                userId: true,
-              },
-            },
-          },
-        },
-      },
-    });
-
-    if (!parentMessage) {
-      throw new Error("Parent message not found");
-    }
-
-    const participantIds = parentMessage.conversation.participants.map(
-      (participant) => participant.userId,
-    );
-
-    if (!participantIds.includes(senderId)) {
-      throw new Error("You are not allowed to reply in this conversation");
-    }
-
     const reply = await tx.directMessages.create({
       data: {
-        conversationId: parentMessage.conversation.id,
+        conversationId,
         authorId: senderId,
         content,
         parentMessageId,
@@ -368,16 +325,29 @@ export async function createDirectMessageReply({
 
     await tx.directMessagesConversations.update({
       where: {
-        id: parentMessage.conversation.id,
+        id: conversationId,
       },
       data: {
         lastMessage: content,
       },
     });
 
+    const participants = await tx.directMessagesConversations.findUnique({
+      where: {
+        id: conversationId,
+      },
+      select: {
+        participants: {
+          select: {
+            userId: true,
+          },
+        },
+      },
+    });
+
     return {
       reply,
-      participantIds,
+      participantIds: participants?.participants.map((p) => p.userId) ?? [],
     };
   });
 }

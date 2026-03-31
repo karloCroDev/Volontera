@@ -63,10 +63,16 @@ export const ConversationMapping = withReactQueryProvider(() => {
 		};
 
 		const handleMessageDeleted = ({
+			conversationId,
 			messageId,
 			messageIds,
 		}: DeleteDirectMessageArgs & { messageIds?: string[] }) => {
-			// If server includes conversationId, ignore deletes from other conversations
+			if (
+				conversation?.conversationId &&
+				conversationId !== conversation.conversationId
+			)
+				return;
+
 			const idsToDelete = new Set(
 				messageIds?.length ? messageIds : [messageId]
 			);
@@ -123,6 +129,7 @@ export const ConversationMapping = withReactQueryProvider(() => {
 								onReplyClick={() =>
 									setReplyingTo({
 										id: message.id,
+										conversationId: message.conversationId,
 										content: message.content,
 									})
 								}
@@ -153,6 +160,7 @@ export const ConversationMapping = withReactQueryProvider(() => {
 								}
 								deleteAction={() =>
 									mutateDeleteMessage({
+										conversationId: message.conversationId,
 										messageId: message.id,
 									})
 								}
