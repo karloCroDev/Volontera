@@ -15,6 +15,7 @@ import {
 	searchAllUsers,
 	startConversationOrStartAndSendDirectMessage,
 	deleteDirectMessageById,
+	createDirectMessageReply,
 } from '@/lib/data/direct-messages';
 
 import {
@@ -22,6 +23,7 @@ import {
 	ConversationArgs,
 	MessageArgs,
 	DeleteDirectMessageArgs,
+	CreateReplyArgs,
 } from '@repo/schemas/direct-messages';
 
 // Types
@@ -96,6 +98,22 @@ export const useDeleteDirectMessageById = (
 		mutationKey: ['direct-messages-conversation'],
 		mutationFn: (values: DeleteDirectMessageArgs) =>
 			deleteDirectMessageById(values),
+		...options,
+	});
+};
+
+export const useCreateDirectMessageReply = (
+	options?: UseMutationOptions<
+		StartConversationOrStartAndSendDirectMessageResonse,
+		ErrorToastResponse,
+		DataWithFiles<CreateReplyArgs>
+	>
+) => {
+	// Websocketi updateaju razgovor, nema potrebe za invalidacijom
+	return useMutation({
+		mutationKey: ['direct-messages-reply'],
+		mutationFn: (values: DataWithFiles<CreateReplyArgs>) =>
+			createDirectMessageReply(values),
 		...options,
 	});
 };

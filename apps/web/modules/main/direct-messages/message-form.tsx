@@ -5,6 +5,9 @@ import * as React from 'react';
 import { Send } from 'lucide-react';
 import { Form } from 'react-aria-components';
 import { useSearchParams } from 'next/navigation';
+import { useForm, Controller } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
 
 // Components
 import { TextEditor } from '@/components/ui/text-editor/text-editor';
@@ -17,78 +20,167 @@ import {
 import { useMessagesReply } from '@/components/ui/message/reply-context';
 
 // Hooks
-import { useStartConversationOrStartAndSendDirectMessage } from '@/hooks/data/direct-messages';
+import {
+	useStartConversationOrStartAndSendDirectMessage,
+	useCreateDirectMessageReply,
+} from '@/hooks/data/direct-messages';
+
+// Schemas
+import {
+	messageSchema,
+	createReplySchema,
+} from '@repo/schemas/direct-messages';
 
 // Lib
 import { withReactQueryProvider } from '@/lib/utils/react-query';
 import { IRevalidateTag } from '@/lib/server/revalidation';
 
+const messageFormSchema = z.object({
+	content: z.string().min(1).max(200),
+});
+
+type MessageFormValues = z.infer<typeof messageFormSchema>;
+
 export const MessageForm = withReactQueryProvider(() => {
 	const searchParams = useSearchParams();
-	const { setReplyingTo } = useMessagesReply();
+	const { setReplyingTo, replyingTo } = useMessagesReply();
 
-	const [value, setValue] = React.useState('');
 	const [images, setImages] = React.useState<ImageItemArgs>([]);
 	const { mutate, isPending } =
 		useStartConversationOrStartAndSendDirectMessage();
+	const { mutate: mutateReply, isPending: isReplyPending } =
+		useCreateDirectMessageReply();
 
-	// Karlo: Prebaci ovo u zod jer postoji schema za ovo
-	const onSubmit = (e: React.FormEvent) => {
-		e.preventDefault();
-		if (!searchParams.get('userId') || !value) return;
+	const isReplying = !!replyingTo;
 
-		mutate(
-			{
-				data: {
-					content: value,
-					particpantId: searchParams.get('userId') || '',
-					images: images
-						.filter(isLocalImageItem)
-						.map(({ contentType, filename, size }) => ({
-							contentType,
-							filename,
-							size,
-						})),
-				},
-				files: images.filter(isLocalImageItem).map((img) => img.file),
-			},
-			{
-				onSuccess() {
-					// Karlo: Ovo moram maknuti tj. prebaci u react query
-					IRevalidateTag('direct-messages');
-				},
-				onSettled() {
-					setValue('');
-					setImages([]);
-					setReplyingTo(null);
-				},
+	const {
+		control,
+		reset,
+		setError,
+		formState: { errors, isValid },
+		handleSubmit,
+	} = useForm<MessageFormValues>({
+		resolver: zodResolver(messageFormSchema),
+		mode: 'onChange',
+		defaultValues: {
+			content: '',
+		},
+	});
+
+	const onSettled = () => {
+		reset();
+		setImages([]);
+		setReplyingTo(null);
+	};
+
+	const localImages = images.filter(isLocalImageItem);
+	const imagePayload = localImages.map(({ contentType, filename, size }) => ({
+		contentType,
+		filename,
+		size,
+	}));
+
+	const onSubmit = (formData: MessageFormValues) => {
+		const userId = searchParams.get('userId');
+
+		if (!isReplying && !userId) return;
+
+		if (isReplying) {
+			if (!replyingTo?.id) return;
+
+			const parsedReply = createReplySchema.safeParse({
+				content: formData.content,
+				parentMessageId: replyingTo.id,
+				...(imagePayload.length > 0 ? { images: imagePayload } : {}),
+			});
+
+			if (!parsedReply.success) {
+				setError('content', {
+					type: 'manual',
+					message: parsedReply.error.issues[0]?.message || 'Invalid reply data',
+				});
+				return;
 			}
-		);
+
+			mutateReply(
+				{
+					data: parsedReply.data,
+					files: localImages.map((img) => img.file),
+				},
+				{
+					onSuccess() {
+						IRevalidateTag('direct-messages');
+					},
+					onSettled,
+				}
+			);
+		} else {
+			const parsedMessage = messageSchema.safeParse({
+				content: formData.content,
+				particpantId: userId,
+				...(imagePayload.length > 0 ? { images: imagePayload } : {}),
+			});
+
+			if (!parsedMessage.success) {
+				setError('content', {
+					type: 'manual',
+					message:
+						parsedMessage.error.issues[0]?.message || 'Invalid message data',
+				});
+				return;
+			}
+
+			mutate(
+				{
+					data: parsedMessage.data,
+					files: localImages.map((img) => img.file),
+				},
+				{
+					onSuccess() {
+						IRevalidateTag('direct-messages');
+					},
+					onSettled,
+				}
+			);
+		}
 	};
 
 	return (
 		<Form
 			className="lg:max-w-3/4 bg-background absolute bottom-4 left-1/2 w-full flex-none -translate-x-1/2 rounded-lg"
-			onSubmit={onSubmit}
+			onSubmit={handleSubmit(onSubmit)}
 		>
 			<ReplyIndicator />
-			<TextEditor
-				images={images}
-				setImages={setImages}
-				value={value}
-				setValue={setValue}
-				hasAnImage
-				label="Enter your message..."
-				iconsRight={
-					<Button
-						type="submit"
-						className="p-2"
-						isLoading={isPending}
-						isDisabled={!value || isPending}
-					>
-						<Send />
-					</Button>
-				}
+			<Controller
+				name="content"
+				control={control}
+				render={({ field: { value, onChange } }) => (
+					<>
+						<TextEditor
+							images={images}
+							setImages={setImages}
+							value={value}
+							setValue={onChange}
+							hasAnImage
+							label={isReplying ? 'Write a reply...' : 'Enter your message...'}
+							iconsRight={
+								<Button
+									type="submit"
+									className="p-2"
+									isLoading={isPending || isReplyPending}
+									isDisabled={!isValid || !value || isPending || isReplyPending}
+								>
+									<Send />
+								</Button>
+							}
+						/>
+						{errors.content && (
+							<p className="text-destructive mt-1 text-sm">
+								{errors.content.message}
+							</p>
+						)}
+					</>
+				)}
 			/>
 		</Form>
 	);

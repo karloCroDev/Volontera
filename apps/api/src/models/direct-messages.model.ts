@@ -254,11 +254,6 @@ export async function createDirectMessageReply({
     const parentMessage = await tx.directMessages.findUnique({
       where: { id: parentMessageId },
       include: {
-        replyMessage: {
-          select: {
-            id: true,
-          },
-        },
         conversation: {
           select: {
             id: true,
@@ -282,10 +277,6 @@ export async function createDirectMessageReply({
 
     if (!participantIds.includes(senderId)) {
       throw new Error("You are not allowed to reply in this conversation");
-    }
-
-    if (parentMessage.replyMessage) {
-      throw new Error("This message already has a reply");
     }
 
     const reply = await tx.directMessages.create({

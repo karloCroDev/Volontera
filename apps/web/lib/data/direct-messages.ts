@@ -8,6 +8,7 @@ import {
 	ConversationArgs,
 	MessageArgs,
 	DeleteDirectMessageArgs,
+	CreateReplyArgs,
 } from '@repo/schemas/direct-messages';
 import { PresignImagesSchemaArgs } from '@repo/schemas/image';
 
@@ -87,6 +88,47 @@ export async function startConversationOrStartAndSendDirectMessage({
 		const res = await API().post('direct-messages/conversation/message', {
 			content: data.content,
 			particpantId: data.particpantId,
+			...(imageKeys && imageKeys.length ? { imageKeys } : {}),
+		});
+		return res.data;
+	} catch (err) {
+		catchError(err);
+	}
+}
+
+export async function createDirectMessageReply({
+	data,
+	files,
+}: DataWithFiles<CreateReplyArgs>) {
+	try {
+		let imageKeys: string[] | undefined;
+
+		// Dobivam presigned URL-ove i keyve slika, te uploadam slike
+		if (data.images && data.images.length && files && files.length) {
+			const presignRes = await API().post('image/presign-images', {
+				images: data.images,
+			} as PresignImagesSchemaArgs);
+
+			// Uploadam slike
+			if (presignRes.data?.images) {
+				await Promise.all(
+					presignRes.data.images.map(
+						async (img: { key: string; url: string }, index: number) =>
+							await API({
+								headers: { 'Content-type': data.images![index]!.contentType },
+							}).put(img.url, files[index])
+					)
+				);
+				imageKeys = presignRes.data.images.map(
+					(img: { key: string }) => img.key
+				);
+			}
+		}
+
+		// Posaljem reply s keyevima slika
+		const res = await API().post('direct-messages/conversation/reply', {
+			content: data.content,
+			parentMessageId: data.parentMessageId,
 			...(imageKeys && imageKeys.length ? { imageKeys } : {}),
 		});
 		return res.data;

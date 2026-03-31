@@ -64,6 +64,10 @@ export const ConversationMapping = withReactQueryProvider(() => {
 		const handleMessageDeleted = ({ messageId }: DeleteDirectMessageArgs) => {
 			// If server includes conversationId, ignore deletes from other conversations
 
+			if (replyingTo?.id === messageId) {
+				setReplyingTo(null);
+			}
+
 			setMessages((prev) => prev?.filter((msg) => msg.id !== messageId));
 		};
 
@@ -74,7 +78,7 @@ export const ConversationMapping = withReactQueryProvider(() => {
 			socketGlobal.off('new-chat', handleNewChat);
 			socketGlobal.off('direct-messages:message-deleted', handleMessageDeleted);
 		};
-	}, [recieverId, socketGlobal]);
+	}, [recieverId, replyingTo?.id, setReplyingTo, socketGlobal]);
 
 	// Dobivam trenutno ulogiranog korisnika za prikaz varijanti poruka
 	const { data: user } = useSession();
@@ -110,6 +114,7 @@ export const ConversationMapping = withReactQueryProvider(() => {
 							key={message.id}
 							variant={message.author.id === user?.id ? 'primary' : 'secondary'}
 							date={new Date(message.createdAt)}
+							reply={message.parentMessage?.content || undefined}
 							isBeingRepliedTo={replyingTo?.id === message.id}
 							onReplyClick={() =>
 								setReplyingTo({
