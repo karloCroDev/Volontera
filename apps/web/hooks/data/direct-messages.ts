@@ -18,6 +18,7 @@ import {
 	createDirectMessageReply,
 } from '@/lib/data/direct-messages';
 
+// Schemas
 import {
 	SearchArgs,
 	ConversationArgs,
@@ -31,12 +32,16 @@ import { DataWithFiles } from '@repo/types/upload';
 import { ErrorToastResponse } from '@repo/types/general';
 import {
 	GetDirectMessagesConversationByIdResponse,
+	ListConversationsResponse,
 	SearchUsersResponse,
 	StartConversationOrStartAndSendDirectMessageResonse,
 } from '@repo/types/direct-messages';
 
 export const useGetListOfDirectMessages = (
-	options?: Omit<UseSuspenseQueryOptions<boolean>, 'queryKey' | 'queryFn'>
+	options?: Omit<
+		UseSuspenseQueryOptions<ListConversationsResponse>,
+		'queryKey' | 'queryFn'
+	>
 ) => {
 	return useSuspenseQuery({
 		queryKey: ['direct-messages'],
@@ -77,7 +82,6 @@ export const useStartConversationOrStartAndSendDirectMessage = (
 		DataWithFiles<MessageArgs>
 	>
 ) => {
-	// Websocketi updateaju razgovor, nema potrebe za invalidacijom
 	return useMutation({
 		mutationKey: ['direct-messages-conversation'],
 		mutationFn: (values: DataWithFiles<MessageArgs>) =>
@@ -93,7 +97,6 @@ export const useDeleteDirectMessageById = (
 		DeleteDirectMessageArgs
 	>
 ) => {
-	// Websocketi updateaju razgovor, nema potrebe za invalidacijom
 	return useMutation({
 		mutationKey: ['direct-messages-conversation'],
 		mutationFn: (values: DeleteDirectMessageArgs) =>
@@ -109,7 +112,6 @@ export const useCreateDirectMessageReply = (
 		DataWithFiles<CreateReplyArgs>
 	>
 ) => {
-	// Websocketi updateaju razgovor, nema potrebe za invalidacijom
 	return useMutation({
 		mutationKey: ['direct-messages-reply'],
 		mutationFn: (values: DataWithFiles<CreateReplyArgs>) =>

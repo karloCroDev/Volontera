@@ -84,10 +84,6 @@ export const GroupChatMapping = withReactQueryProvider(() => {
 		data.organizationGroupChat.messages
 	);
 
-	// React.useEffect(() => {
-	// 	setMessages(data.organizationGroupChat.messages);
-	// }, [data.organizationGroupChat.messages]);
-
 	// Scrolla se na dna containera kada se pojavi nova poruka
 	const containerRef = React.useRef<HTMLDivElement | null>(null);
 	React.useLayoutEffect(() => {

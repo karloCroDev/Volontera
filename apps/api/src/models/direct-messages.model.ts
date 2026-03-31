@@ -112,22 +112,72 @@ export async function deleteDirectMessageById({
   messageId: DirectMessages["id"];
   userId: User["id"];
 }) {
-  return prisma.directMessages.delete({
-    where: {
-      id: messageId,
-      authorId: userId,
-    },
-    include: {
-      conversation: {
-        select: {
-          participants: {
-            select: {
-              userId: true,
+  return prisma.$transaction(async (tx) => {
+    const message = await tx.directMessages.findFirst({
+      where: {
+        id: messageId,
+        authorId: userId,
+      },
+      select: {
+        id: true,
+        conversationId: true,
+        conversation: {
+          select: {
+            participants: {
+              select: {
+                userId: true,
+              },
             },
           },
         },
+        replyMessage: {
+          select: {
+            id: true,
+          },
+        },
       },
-    },
+    });
+
+    if (!message) {
+      throw new Error("Message not found or you are not allowed to delete it");
+    }
+
+    const deletedMessageIds = [
+      message.id,
+      ...message.replyMessage.map((reply) => reply.id),
+    ];
+
+    await tx.directMessages.delete({
+      where: {
+        id: messageId,
+      },
+    });
+
+    const latestMessage = await tx.directMessages.findFirst({
+      where: {
+        conversationId: message.conversationId,
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+      select: {
+        content: true,
+      },
+    });
+
+    await tx.directMessagesConversations.update({
+      where: {
+        id: message.conversationId,
+      },
+      data: {
+        lastMessage: latestMessage?.content ?? null,
+      },
+    });
+
+    return {
+      deletedMessageIds,
+      participants: message.conversation.participants,
+    };
   });
 }
 

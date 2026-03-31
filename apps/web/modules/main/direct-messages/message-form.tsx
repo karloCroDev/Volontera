@@ -7,7 +7,6 @@ import { Form } from 'react-aria-components';
 import { useSearchParams } from 'next/navigation';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
 
 // Components
 import { TextEditor } from '@/components/ui/text-editor/text-editor';
@@ -29,28 +28,22 @@ import {
 import {
 	messageSchema,
 	createReplySchema,
+	MessageArgs,
 } from '@repo/schemas/direct-messages';
 
 // Lib
 import { withReactQueryProvider } from '@/lib/utils/react-query';
-import { IRevalidateTag } from '@/lib/server/revalidation';
-
-const messageFormSchema = z.object({
-	content: z.string().min(1).max(200),
-});
-
-type MessageFormValues = z.infer<typeof messageFormSchema>;
 
 export const MessageForm = withReactQueryProvider(() => {
 	const searchParams = useSearchParams();
 	const { setReplyingTo, replyingTo } = useMessagesReply();
 
-	const [images, setImages] = React.useState<ImageItemArgs>([]);
 	const { mutate, isPending } =
 		useStartConversationOrStartAndSendDirectMessage();
 	const { mutate: mutateReply, isPending: isReplyPending } =
 		useCreateDirectMessageReply();
 
+	const [images, setImages] = React.useState<ImageItemArgs>([]);
 	const isReplying = !!replyingTo;
 
 	const {
@@ -59,9 +52,8 @@ export const MessageForm = withReactQueryProvider(() => {
 		setError,
 		formState: { errors, isValid },
 		handleSubmit,
-	} = useForm<MessageFormValues>({
-		resolver: zodResolver(messageFormSchema),
-		mode: 'onChange',
+	} = useForm<Pick<MessageArgs, 'content'>>({
+		resolver: zodResolver(messageSchema.pick({ content: true })),
 		defaultValues: {
 			content: '',
 		},
@@ -80,11 +72,12 @@ export const MessageForm = withReactQueryProvider(() => {
 		size,
 	}));
 
-	const onSubmit = (formData: MessageFormValues) => {
+	const onSubmit = (formData: Pick<MessageArgs, 'content'>) => {
 		const userId = searchParams.get('userId');
 
 		if (!isReplying && !userId) return;
 
+		// Ovako moram handleati reply opciju jer ovisi kojem apiu ću poslati podatke, a oba imaju različite zahtjeve za payload (nije idealno, ali ne vidim jednostavnije rješenje) paa moram testirati zadovoljavajucu zod schemu
 		if (isReplying) {
 			if (!replyingTo?.id) return;
 
@@ -108,9 +101,6 @@ export const MessageForm = withReactQueryProvider(() => {
 					files: localImages.map((img) => img.file),
 				},
 				{
-					onSuccess() {
-						IRevalidateTag('direct-messages');
-					},
 					onSettled,
 				}
 			);
@@ -136,9 +126,6 @@ export const MessageForm = withReactQueryProvider(() => {
 					files: localImages.map((img) => img.file),
 				},
 				{
-					onSuccess() {
-						IRevalidateTag('direct-messages');
-					},
 					onSettled,
 				}
 			);
@@ -147,7 +134,7 @@ export const MessageForm = withReactQueryProvider(() => {
 
 	return (
 		<Form
-			className="lg:max-w-3/4 bg-background absolute bottom-4 left-1/2 w-full flex-none -translate-x-1/2 rounded-lg"
+			className="lg:max-w-3/4 bg-background absolute bottom-4 left-1/2 w-full -translate-x-1/2 rounded-lg"
 			onSubmit={handleSubmit(onSubmit)}
 		>
 			<ReplyIndicator />

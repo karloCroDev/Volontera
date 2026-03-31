@@ -143,12 +143,13 @@ export async function deleteDirectMessageByIdService({
     userId,
   });
 
-  // Oba dva korisnika pošaljem kako se izbrisala poruka
-  deletedMessage.conversation.participants.forEach((participant) => {
+  // Oba dva korisnika pošaljem kako se izbrisala poruka (ili poruke ako sadrže reply koji odgovara na poruku)
+  deletedMessage.participants.forEach((participant) => {
     const participantSocketId = getReceiverSocketId(participant.userId);
     if (!participantSocketId) return;
     io.to(participantSocketId).emit("direct-messages:message-deleted", {
-      messageId: deletedMessage.id,
+      messageId: data.messageId,
+      messageIds: deletedMessage.deletedMessageIds,
     });
   });
 

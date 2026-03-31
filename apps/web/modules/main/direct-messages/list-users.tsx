@@ -4,23 +4,43 @@
 import * as React from 'react';
 import { useSearchParams } from 'next/navigation';
 import { twJoin } from 'tailwind-merge';
+import { useQueryClient } from '@tanstack/react-query';
 
 // Modules
 import { UsersSearch } from '@/modules/main/direct-messages/users-search';
 import { UsersSidebar } from '@/modules/main/direct-messages/users-sidebar';
 
-// Types
-import { ListConversationsResponse } from '@repo/types/direct-messages';
 import { useSocketContext } from '@/modules/main/direct-messages/socket-context';
+import { useGetListOfDirectMessages } from '@/hooks/data/direct-messages';
+import { withReactQueryProvider } from '@/lib/utils/react-query';
 
-export const ListUsers: React.FC<{
-	listOfAllDirectMessages: ListConversationsResponse;
-}> = ({ listOfAllDirectMessages }) => {
+export const ListUsers = withReactQueryProvider(() => {
 	const searchParams = useSearchParams();
+	const queryClient = useQueryClient();
+	const { data: listOfAllDirectMessages } = useGetListOfDirectMessages();
+	const { onlineUsers, socketGlobal } = useSocketContext();
 
 	const isActive = searchParams.get('userId');
 
-	const { onlineUsers } = useSocketContext();
+	React.useEffect(() => {
+		if (!socketGlobal) return;
+
+		const syncSidebar = () => {
+			queryClient.invalidateQueries({
+				predicate: ({ queryKey }) =>
+					typeof queryKey[0] === 'string' &&
+					queryKey[0].startsWith('direct-messages'),
+			});
+		};
+
+		socketGlobal.on('new-chat', syncSidebar);
+		socketGlobal.on('direct-messages:message-deleted', syncSidebar);
+
+		return () => {
+			socketGlobal.off('new-chat', syncSidebar);
+			socketGlobal.off('direct-messages:message-deleted', syncSidebar);
+		};
+	}, [queryClient, socketGlobal]);
 
 	return (
 		<aside
@@ -54,4 +74,4 @@ export const ListUsers: React.FC<{
 			</div>
 		</aside>
 	);
-};
+});

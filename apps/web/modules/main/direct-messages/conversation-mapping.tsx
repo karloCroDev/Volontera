@@ -61,14 +61,20 @@ export const ConversationMapping = withReactQueryProvider(() => {
 			setMessages((prev) => (prev ? [...prev, newChat] : [newChat]));
 		};
 
-		const handleMessageDeleted = ({ messageId }: DeleteDirectMessageArgs) => {
+		const handleMessageDeleted = ({
+			messageId,
+			messageIds,
+		}: DeleteDirectMessageArgs & { messageIds?: string[] }) => {
 			// If server includes conversationId, ignore deletes from other conversations
+			const idsToDelete = new Set(
+				messageIds?.length ? messageIds : [messageId]
+			);
 
-			if (replyingTo?.id === messageId) {
+			if (replyingTo?.id && idsToDelete.has(replyingTo.id)) {
 				setReplyingTo(null);
 			}
 
-			setMessages((prev) => prev?.filter((msg) => msg.id !== messageId));
+			setMessages((prev) => prev?.filter((msg) => !idsToDelete.has(msg.id)));
 		};
 
 		socketGlobal.on('new-chat', handleNewChat);

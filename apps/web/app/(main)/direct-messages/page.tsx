@@ -1,3 +1,6 @@
+// External packages
+import { dehydrate, QueryClient } from '@tanstack/react-query';
+
 // Modules
 import { ListUsers } from '@/modules/main/direct-messages/list-users';
 import { MessageWrapper } from '@/modules/main/direct-messages/message-wrapper';
@@ -12,11 +15,18 @@ import { getListOfAllDirectMessages } from '@/lib/server/direct-messages';
 import { MessagesReplyProvider } from '@/components/ui/message/reply-context';
 
 export default async function DirectMessagesPage() {
-	const listOfAllDirectMessages = await getListOfAllDirectMessages();
+	const queryClient = new QueryClient();
+
+	await queryClient.prefetchQuery({
+		queryKey: ['direct-messages'],
+		queryFn: getListOfAllDirectMessages,
+	});
+
+	const dehydratedState = dehydrate(queryClient);
 
 	return (
 		<div className="flex h-full">
-			<ListUsers listOfAllDirectMessages={listOfAllDirectMessages} />
+			<ListUsers dehydratedState={dehydratedState} />
 
 			<MessageWrapper>
 				<UsersInfoHeader />
