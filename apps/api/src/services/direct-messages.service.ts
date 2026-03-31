@@ -5,6 +5,7 @@ import {
   listAllDirectMessagesConversation,
   searchAllUsers,
   startConversationOSendDirectMessage,
+  createDirectMessageReply,
 } from "@/models/direct-messages.model";
 
 // Lib
@@ -19,6 +20,7 @@ import {
   ConversationArgs,
   CreateDirectMessageArgs,
   DeleteDirectMessageArgs,
+  ReplyMessageArgs,
 } from "@repo/schemas/direct-messages";
 import { PresignImagesSchemaArgs } from "@repo/schemas/image";
 
@@ -141,12 +143,13 @@ export async function deleteDirectMessageByIdService({
     userId,
   });
 
-  // Oba dva korisnika pošaljem kako se izbrisala poruka
-  deletedMessage.conversation.participants.forEach((participant) => {
+  // Oba dva korisnika pošaljem kako se izbrisala poruka (ili poruke ako sadrže reply koji odgovara na poruku)
+  deletedMessage.participants.forEach((participant) => {
     const participantSocketId = getReceiverSocketId(participant.userId);
     if (!participantSocketId) return;
     io.to(participantSocketId).emit("direct-messages:message-deleted", {
-      messageId: deletedMessage.id,
+      messageId: data.messageId,
+      messageIds: deletedMessage.deletedMessageIds,
     });
   });
 
@@ -209,5 +212,85 @@ export async function startConversationOrStartAndSendDirectMessageService({
     status: 200,
     title: "Message is sent",
     message: "Message is successfully sent to the wanted user",
+  });
+}
+
+export async function createDirectMessageReplyService({
+  userId,
+  data,
+}: {
+  data: ReplyMessageArgs;
+  userId: User["id"];
+}) {
+  let createReplyResult: Awaited<ReturnType<typeof createDirectMessageReply>>;
+
+  try {
+    createReplyResult = await createDirectMessageReply({
+      senderId: userId,
+      parentMessageId: data.parentMessageId,
+      content: data.content,
+      imageKeys: data.imageKeys,
+    });
+  } catch (err) {
+    if (err instanceof Error && err.message === "Parent message not found") {
+      return toastResponseOutput({
+        status: 404,
+        title: "Reply target not found",
+        message:
+          "The message you are replying to was deleted. Please choose another message.",
+      });
+    }
+
+    if (
+      err instanceof Error &&
+      err.message === "You are not allowed to reply in this conversation"
+    ) {
+      return toastResponseOutput({
+        status: 403,
+        title: "Reply denied",
+        message: "You are not allowed to reply in this conversation.",
+      });
+    }
+
+    throw err;
+  }
+
+  const { reply, participantIds } = createReplyResult;
+
+  const replyImageKeys = reply.directMessagesImages
+    .map((img) => img.imageUrl)
+    .filter(Boolean);
+
+  const replyUrlsByKey = await resolveImageKeysToUrls(replyImageKeys);
+
+  const enrichedReply = {
+    ...reply,
+    directMessagesImages: reply.directMessagesImages.flatMap((img) => {
+      const presignedUrl = img.imageUrl ? replyUrlsByKey[img.imageUrl] : null;
+      if (!presignedUrl) return [];
+      return [{ ...img, imageUrl: presignedUrl }];
+    }),
+  };
+
+  participantIds.forEach((participantId) => {
+    const participantSocketId = getReceiverSocketId(participantId);
+    if (!participantSocketId) return;
+    io.to(participantSocketId).emit("new-chat", enrichedReply);
+  });
+
+  const receiverUserId = participantIds.find(
+    (participantId) => participantId !== userId,
+  );
+  if (receiverUserId) {
+    await createNotification({
+      content: `New direct message reply from ${reply.author.firstName} ${reply.author.lastName}: ${data.content.substring(0, 20)}`,
+      userId: receiverUserId,
+    });
+  }
+
+  return toastResponseOutput({
+    status: 200,
+    title: "Reply is sent",
+    message: "Your reply has been sent successfully",
   });
 }

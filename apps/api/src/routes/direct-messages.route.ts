@@ -9,6 +9,7 @@ import {
   listAllDirectMessagesConversationsController,
   searchAllUsersWithQueryController,
   startConversationOrStartAndSendDirectMessageController,
+  createDirectMessageReplyController,
 } from "@/controllers/direct-messages.controller";
 
 // Middleware
@@ -20,6 +21,7 @@ import {
   conversationSchema,
   createDirectMessageSchema,
   deleteDirectMessageSchema,
+  replyMessageSchema,
 } from "@repo/schemas/direct-messages";
 
 export const directMessagesRoutes = Router();
@@ -35,7 +37,7 @@ directMessagesRoutes.get(
     responseOutput: "toast",
     type: "params",
   }),
-  getDirectMessagesConversationByIdServiceController
+  getDirectMessagesConversationByIdServiceController,
 );
 
 // Get the params from the url
@@ -46,7 +48,7 @@ directMessagesRoutes.get(
     responseOutput: "toast",
     type: "params",
   }),
-  searchAllUsersWithQueryController
+  searchAllUsersWithQueryController,
 );
 
 directMessagesRoutes.post(
@@ -56,7 +58,17 @@ directMessagesRoutes.post(
     responseOutput: "toast",
     type: "body",
   }),
-  startConversationOrStartAndSendDirectMessageController
+  startConversationOrStartAndSendDirectMessageController,
+);
+
+directMessagesRoutes.post(
+  "/conversation/reply",
+  validate({
+    schema: replyMessageSchema,
+    responseOutput: "toast",
+    type: "body",
+  }),
+  createDirectMessageReplyController,
 );
 
 directMessagesRoutes.delete(
@@ -66,5 +78,5 @@ directMessagesRoutes.delete(
     responseOutput: "toast",
     type: "params",
   }),
-  deleteDirectMessageByIdController
+  deleteDirectMessageByIdController,
 );

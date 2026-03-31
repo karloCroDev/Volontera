@@ -11,6 +11,7 @@ import { Message, MessageSkeleton } from '@/components/ui/message/message';
 import { Avatar } from '@/components/ui/avatar';
 import { MessageImages } from '@/components/ui/message/message-images';
 import { useMessagesReply } from '@/components/ui/message/reply-context';
+import { MessageIndicator } from '@/components/ui/message/message-indicator';
 
 // Hooks
 import {
@@ -61,10 +62,20 @@ export const ConversationMapping = withReactQueryProvider(() => {
 			setMessages((prev) => (prev ? [...prev, newChat] : [newChat]));
 		};
 
-		const handleMessageDeleted = ({ messageId }: DeleteDirectMessageArgs) => {
+		const handleMessageDeleted = ({
+			messageId,
+			messageIds,
+		}: DeleteDirectMessageArgs & { messageIds?: string[] }) => {
 			// If server includes conversationId, ignore deletes from other conversations
+			const idsToDelete = new Set(
+				messageIds?.length ? messageIds : [messageId]
+			);
 
-			setMessages((prev) => prev?.filter((msg) => msg.id !== messageId));
+			if (replyingTo?.id && idsToDelete.has(replyingTo.id)) {
+				setReplyingTo(null);
+			}
+
+			setMessages((prev) => prev?.filter((msg) => !idsToDelete.has(msg.id)));
 		};
 
 		socketGlobal.on('new-chat', handleNewChat);
@@ -74,88 +85,94 @@ export const ConversationMapping = withReactQueryProvider(() => {
 			socketGlobal.off('new-chat', handleNewChat);
 			socketGlobal.off('direct-messages:message-deleted', handleMessageDeleted);
 		};
-	}, [recieverId, socketGlobal]);
+	}, [recieverId, replyingTo?.id, setReplyingTo, socketGlobal]);
 
 	// Dobivam trenutno ulogiranog korisnika za prikaz varijanti poruka
 	const { data: user } = useSession();
 
-	// Scrolla se na dna containera kada se pojavi nova poruka
 	const containerRef = React.useRef<HTMLDivElement | null>(null);
-	React.useLayoutEffect(() => {
-		const el = containerRef.current;
-		if (!el) return;
-		el.scrollTop = el.scrollHeight;
-	}, [messages]);
 
 	// Brisanje poruke
 	const { mutate: mutateDeleteMessage } = useDeleteDirectMessageById();
 
 	return (
-		<div
-			className="no-scrollbar pb-50 h-full min-h-0 overflow-y-auto scroll-smooth"
-			ref={containerRef}
-		>
-			{isLoading &&
-				[...Array(5)].map((_, indx) => (
-					<MessageSkeleton
-						key={indx}
-						variant={indx % 2 === 0 ? 'primary' : 'secondary'}
-					/>
-				))}
+		<div className="relative h-full min-h-0">
+			<div
+				className="no-scrollbar pb-50 h-full min-h-0 overflow-y-auto scroll-smooth"
+				ref={containerRef}
+			>
+				{isLoading &&
+					[...Array(5)].map((_, indx) => (
+						<MessageSkeleton
+							key={indx}
+							variant={indx % 2 === 0 ? 'primary' : 'secondary'}
+						/>
+					))}
 
-			{!isLoading &&
-				(messages && messages.length > 0 ? (
-					messages.map((message) => (
-						<Message
-							key={message.id}
-							variant={message.author.id === user?.id ? 'primary' : 'secondary'}
-							date={new Date(message.createdAt)}
-							isBeingRepliedTo={replyingTo?.id === message.id}
-							onReplyClick={() =>
-								setReplyingTo({
-									id: message.id,
-									content: message.content,
-								})
-							}
-							avatar={
-								<Link href={`/profile/${message.author.id}`}>
-									<Avatar
-										imageProps={{
-											src: message.author.image
-												? `${process.env.NEXT_PUBLIC_AWS_CLOUDFRONT_URL}/${message.author.image}`
-												: '',
-										}}
-									>
-										{convertToFullname({
-											firstname: message.author.firstName,
-											lastname: message.author.lastName,
-										})}
-									</Avatar>
-								</Link>
-							}
-							images={
-								message.directMessagesImages[0]?.imageUrl && (
-									<MessageImages
-										imageUrls={message.directMessagesImages
-											.map((img) => img.imageUrl)
-											.filter(Boolean)}
-									/>
-								)
-							}
-							deleteAction={() =>
-								mutateDeleteMessage({
-									messageId: message.id,
-								})
-							}
-						>
-							<Markdown>{message.content}</Markdown>
-						</Message>
-					))
-				) : (
-					<p className="text-muted-foreground text-center">
-						No messages found. Start a new conversation
-					</p>
-				))}
+				{!isLoading &&
+					(messages && messages.length > 0 ? (
+						messages.map((message) => (
+							<Message
+								key={message.id}
+								variant={
+									message.author.id === user?.id ? 'primary' : 'secondary'
+								}
+								date={new Date(message.createdAt)}
+								reply={message.parentMessage?.content || undefined}
+								isBeingRepliedTo={replyingTo?.id === message.id}
+								onReplyClick={() =>
+									setReplyingTo({
+										id: message.id,
+										content: message.content,
+									})
+								}
+								avatar={
+									<Link href={`/profile/${message.author.id}`}>
+										<Avatar
+											imageProps={{
+												src: message.author.image
+													? `${process.env.NEXT_PUBLIC_AWS_CLOUDFRONT_URL}/${message.author.image}`
+													: '',
+											}}
+										>
+											{convertToFullname({
+												firstname: message.author.firstName,
+												lastname: message.author.lastName,
+											})}
+										</Avatar>
+									</Link>
+								}
+								images={
+									message.directMessagesImages[0]?.imageUrl && (
+										<MessageImages
+											imageUrls={message.directMessagesImages
+												.map((img) => img.imageUrl)
+												.filter(Boolean)}
+										/>
+									)
+								}
+								deleteAction={() =>
+									mutateDeleteMessage({
+										messageId: message.id,
+									})
+								}
+							>
+								<Markdown>{message.content}</Markdown>
+							</Message>
+						))
+					) : (
+						<p className="text-muted-foreground text-center">
+							No messages found. Start a new conversation
+						</p>
+					))}
+			</div>
+
+			<MessageIndicator
+				containerRef={containerRef}
+				lastItemId={messages?.[messages.length - 1]?.id}
+				resetKey={recieverId || undefined}
+				offset={120}
+			/>
 		</div>
 	);
 });

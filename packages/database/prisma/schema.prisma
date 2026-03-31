@@ -168,6 +168,11 @@ model DirectMessages {
   updatedAt            DateTime               @updatedAt
   directMessagesImages DirectMessagesImages[]
 
+  // 1:N self relation: each message can reply to one parent, and each parent can have many replies.
+  parentMessage   DirectMessages?  @relation("DirectMessageReply", fields: [parentMessageId], references: [id], onDelete: Cascade)
+  parentMessageId String?
+  replyMessage    DirectMessages[] @relation("DirectMessageReply")
+
   @@index([conversationId, createdAt])
 }
 

@@ -17,22 +17,13 @@ export const Reply: React.FC<{
 	return (
 		<div
 			className={twMerge(
-				'text-muted-foreground md:max-w-3/5 w-4/5" border-input-border mt-6 flex items-baseline gap-4 rounded-lg border p-3',
+				'text-muted-foreground md:max-w-3/5 w-4/5" border-input-border mt-6 flex items-baseline gap-2 rounded-lg border p-3',
 				variant === 'primary' && 'ml-auto'
 			)}
 		>
-			<Quote />
-			<p className="text-xs">
-				{reply} Lorem ipsum dolor, sit amet consectetur adipisicing elit. Itaque
-				nam laudantium aperiam iusto tenetur porro id modi quibusdam odio
-				nesciunt adipisci quisquam corrupti incidunt necessitatibus repellendus,
-				reprehenderit voluptatum pariatur mollitia? Lorem ipsum dolor sit amet
-				consectetur adipisicing elit. Temporibus adipisci, consequuntur
-				sapiente, minima voluptate rem facilis a inventore modi minus laboriosam
-				saepe, sint incidunt quidem deserunt nesciunt? Obcaecati, deserunt
-				consequatur.
-			</p>
-			<Quote />
+			<Quote className="size-2" />
+			<p className="text-xs">{reply}</p>
+			<Quote className="size-2" />
 		</div>
 	);
 };
