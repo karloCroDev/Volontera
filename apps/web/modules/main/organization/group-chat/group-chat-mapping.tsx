@@ -43,6 +43,10 @@ export const GroupChatMapping = withReactQueryProvider(() => {
 		organizationId: params.organizationId,
 	});
 
+	const [messages, setMessages] = React.useState(
+		data.organizationGroupChat.messages
+	);
+
 	const { socketGlobal } = useSocketContext();
 	React.useEffect(() => {
 		if (!socketGlobal) return;
@@ -58,12 +62,20 @@ export const GroupChatMapping = withReactQueryProvider(() => {
 
 		const handleMessageDeleted = (payload: {
 			messageId: string;
+			messageIds?: string[];
 			organizationId: string;
 		}) => {
 			if (payload.organizationId !== params.organizationId) return;
-			setMessages((prev) =>
-				prev?.filter((msg) => msg.id !== payload.messageId)
+
+			const idsToDelete = new Set(
+				payload.messageIds?.length ? payload.messageIds : [payload.messageId]
 			);
+
+			if (replyingTo?.id && idsToDelete.has(replyingTo.id)) {
+				setReplyingTo(null);
+			}
+
+			setMessages((prev) => prev?.filter((msg) => !idsToDelete.has(msg.id)));
 		};
 
 		socketGlobal.on('organization-group-chat:new-message', handleNewMessage);
@@ -79,11 +91,7 @@ export const GroupChatMapping = withReactQueryProvider(() => {
 				handleMessageDeleted
 			);
 		};
-	}, [params.organizationId, socketGlobal]);
-
-	const [messages, setMessages] = React.useState(
-		data.organizationGroupChat.messages
-	);
+	}, [params.organizationId, replyingTo?.id, setReplyingTo, socketGlobal]);
 
 	const containerRef = React.useRef<HTMLDivElement | null>(null);
 	const lastMessageId = messages?.[messages.length - 1]?.id;
@@ -104,10 +112,12 @@ export const GroupChatMapping = withReactQueryProvider(() => {
 							key={message.id}
 							date={new Date(message.createdAt)}
 							variant={user?.id === message.author.id ? 'primary' : 'secondary'}
+							reply={message.parentMessage?.content || undefined}
 							isBeingRepliedTo={replyingTo?.id === message.id}
 							onReplyClick={() =>
 								setReplyingTo({
 									id: message.id,
+									conversationId: message.groupChatId,
 									content: message.content,
 								})
 							}

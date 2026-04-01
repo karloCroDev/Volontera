@@ -87,7 +87,8 @@ export const MessageIndicator: React.FC<{
 	return (
 		<Button
 			isFullyRounded
-			className="absolute bottom-4 right-4 z-10"
+			variant="outline"
+			className="absolute bottom-4 right-4 z-10 p-2"
 			onClick={() => scrollToBottom()}
 		>
 			<ArrowDown />

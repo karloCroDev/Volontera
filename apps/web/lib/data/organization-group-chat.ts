@@ -47,6 +47,9 @@ export async function createGroupChatMessage({
 			content: data.content,
 			groupChatId: data.groupChatId,
 			organizationId: data.organizationId,
+			...(data.parentMessageId
+				? { parentMessageId: data.parentMessageId }
+				: {}),
 			...(imageKeys && imageKeys.length ? { imageKeys } : {}),
 		});
 		return res.data;
