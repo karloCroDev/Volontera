@@ -9,18 +9,36 @@ import { ConversationMapping } from '@/modules/main/direct-messages/conversation
 import { MessageForm } from '@/modules/main/direct-messages/message-form';
 
 // Lib
-import { getListOfAllDirectMessages } from '@/lib/server/direct-messages';
+import {
+	getDirectMessagesConversationById,
+	getListOfAllDirectMessages,
+} from '@/lib/server/direct-messages';
 
 // Components
 import { MessagesReplyProvider } from '@/components/ui/message/reply-context';
 
-export default async function DirectMessagesPage() {
+export default async function DirectMessagesPage({
+	searchParams,
+}: {
+	searchParams: Promise<{ userId?: string }>;
+}) {
 	const queryClient = new QueryClient();
+	const resolvedSearchParams = await searchParams;
 
 	await queryClient.prefetchQuery({
 		queryKey: ['direct-messages'],
 		queryFn: getListOfAllDirectMessages,
 	});
+
+	if (resolvedSearchParams.userId) {
+		await queryClient.prefetchQuery({
+			queryKey: ['direct-messages-conversation', resolvedSearchParams.userId],
+			queryFn: () =>
+				getDirectMessagesConversationById({
+					recieverId: resolvedSearchParams.userId!,
+				}),
+		});
+	}
 
 	const dehydratedState = dehydrate(queryClient);
 
@@ -33,7 +51,7 @@ export default async function DirectMessagesPage() {
 
 				<div className="relative min-h-0 flex-1 px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
 					<MessagesReplyProvider>
-						<ConversationMapping />
+						<ConversationMapping dehydratedState={dehydratedState} />
 						<MessageForm />
 					</MessagesReplyProvider>
 				</div>

@@ -45,12 +45,11 @@ export const ConversationMapping = withReactQueryProvider(() => {
 			},
 			{ enabled: !!recieverId }
 		);
+	const activeConversationId = conversation?.conversationId;
 
 	// Samo stavljam nove poruke kada se razgovor učita
 	const [messages, setMessages] = React.useState(conversation?.directMessages);
-	React.useEffect(() => {
-		setMessages(conversation?.directMessages);
-	}, [conversation]);
+
 	// Slušam nove poruke preko socketa
 	const { socketGlobal } = useSocketContext();
 	React.useEffect(() => {
@@ -63,13 +62,13 @@ export const ConversationMapping = withReactQueryProvider(() => {
 		};
 
 		const handleMessageDeleted = ({
-			conversationId,
+			conversationId: payloadConversationId,
 			messageId,
 			messageIds,
 		}: DeleteDirectMessageArgs & { messageIds?: string[] }) => {
 			if (
-				conversation?.conversationId &&
-				conversationId !== conversation.conversationId
+				activeConversationId &&
+				payloadConversationId !== activeConversationId
 			)
 				return;
 
@@ -91,7 +90,13 @@ export const ConversationMapping = withReactQueryProvider(() => {
 			socketGlobal.off('new-chat', handleNewChat);
 			socketGlobal.off('direct-messages:message-deleted', handleMessageDeleted);
 		};
-	}, [recieverId, replyingTo?.id, setReplyingTo, socketGlobal]);
+	}, [
+		activeConversationId,
+		recieverId,
+		replyingTo?.id,
+		setReplyingTo,
+		socketGlobal,
+	]);
 
 	// Dobivam trenutno ulogiranog korisnika za prikaz varijanti poruka
 	const { data: user } = useSession();
