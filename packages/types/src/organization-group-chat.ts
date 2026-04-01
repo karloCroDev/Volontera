@@ -11,6 +11,11 @@ export type RetrieveAllOrganizationGroupChatMessagesResponse =
     organizationGroupChat: OrganizationGroupChat & {
       messages: (OrganizationGroupChatMessage & {
         organizationGroupChatMessageImages: OrganizationGroupChatMessageImage[];
+        parentMessage:
+          | (Pick<OrganizationGroupChatMessage, "id" | "content"> & {
+              author: Omit<User, "password">;
+            })
+          | null;
         author: Omit<User, "password">;
       })[];
     };

@@ -424,6 +424,9 @@ model OrganizationGroupChatMessage {
   authorId                           String
   content                            String
   organizationGroupChatMessageImages OrganizationGroupChatMessageImage[]
+  parentMessage                      OrganizationGroupChatMessage?       @relation("OrganizationGroupChatMessageReply", fields: [parentMessageId], references: [id], onDelete: Cascade)
+  parentMessageId                    String?
+  replyMessage                       OrganizationGroupChatMessage[]      @relation("OrganizationGroupChatMessageReply")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

@@ -153,17 +153,20 @@ export async function deleteOrganizationGroupChatMessageService({
   data: DeleteOrganizationGroupChatMessageArgs;
   userId: User["id"];
 }) {
-  const deletedMessage = await deleteOrganizationGroupChatMessage({
-    messageId: data.messageId,
-    userId,
-  });
+  const { organizationId, deletedMessageIds } =
+    await deleteOrganizationGroupChatMessage({
+      messageId: data.messageId,
+      userId,
+    });
 
-  io.to(
-    `organization:${deletedMessage.organizationGroupChat.organizationId}`,
-  ).emit("organization-group-chat:message-deleted", {
-    messageId: deletedMessage.id,
-    organizationId: deletedMessage.organizationGroupChat.organizationId,
-  });
+  io.to(`organization:${organizationId}`).emit(
+    "organization-group-chat:message-deleted",
+    {
+      messageId: data.messageId,
+      messageIds: deletedMessageIds,
+      organizationId,
+    },
+  );
 
   return toastResponseOutput({
     title: "Message deleted",

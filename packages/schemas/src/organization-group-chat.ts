@@ -16,6 +16,7 @@ export const organizationGroupChatMessageSchema = z
   .object({
     content: z.string().min(1).max(200),
     groupChatId: z.cuid(),
+    parentMessageId: z.cuid().optional(),
     images: uploadImageSchema.shape.image.array().optional(),
   })
   .extend(organizationIdSchema.shape);
@@ -27,6 +28,7 @@ export const createOrganizationGroupChatMessageSchema = z
   .object({
     content: z.string().min(1).max(200),
     groupChatId: z.cuid(),
+    parentMessageId: z.cuid().optional(),
     imageKeys: z.array(z.string()).optional(),
   })
   .extend(organizationIdSchema.shape);
