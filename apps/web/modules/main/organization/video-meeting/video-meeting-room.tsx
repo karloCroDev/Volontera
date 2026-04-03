@@ -21,6 +21,8 @@ import { Container } from '@/components/ui/container';
 // Modules
 import { VideoOptions } from '@/modules/main/organization/video-meeting/video-options';
 import { useSocketContext } from '@/modules/main/direct-messages/socket-context';
+import { ScreenShareTile } from '@/modules/main/organization/video-meeting/screen-sharing-tile';
+import { JoiningMeetingOverlay } from '@/modules/main/organization/video-meeting/joining-meeting-overlay';
 
 // Hooks
 import {
@@ -42,7 +44,6 @@ import { MeetingTile } from '@/modules/main/organization/video-meeting/meeting-t
 
 // Types
 import { UserResponse } from '@repo/types/user';
-import { ScreenShareTile } from '@/modules/main/organization/video-meeting/screen-sharing-tile';
 
 export const VideoMeetingRoom: React.FC<{
 	organizationId: string;
@@ -426,13 +427,13 @@ export const VideoMeetingRoom: React.FC<{
 			<audio ref={audioElementRef} autoPlay />
 
 			{permissionError && (
-				<div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+				<div className="border-destructive/80 bg-destructive rounded-lg border px-4 py-3 text-sm text-white">
 					{permissionError}
 				</div>
 			)}
 
 			{!isRoomLive ? (
-				<div className="border-input-border bg-muted/30 flex flex-1 items-center justify-center rounded-lg border p-8 shadow-lg">
+				<Container className="flex flex-1 items-center justify-center rounded-lg border p-8">
 					<div className="max-w-xl text-center">
 						<div className="border-input-border bg-background mx-auto mb-6 flex size-16 items-center justify-center rounded-lg border shadow-lg">
 							<PlayCircle className="text-primary size-8" />
@@ -469,7 +470,7 @@ export const VideoMeetingRoom: React.FC<{
 							)}
 						</div>
 					</div>
-				</div>
+				</Container>
 			) : (
 				<>
 					<div className="border-input-border relative flex-1 rounded-lg border p-4 shadow-lg">
@@ -482,9 +483,9 @@ export const VideoMeetingRoom: React.FC<{
 								isHost
 							/>
 						) : (
-							<div className="bg-muted/40 text-muted-foreground flex h-full min-h-[360px] items-center justify-center rounded-lg">
+							<Container className="text-muted-foreground flex h-full min-h-[360px] items-center justify-center rounded-lg">
 								Waiting for the host to join the room.
-							</div>
+							</Container>
 						)}
 
 						{screenTile && meetingSession && (
@@ -529,14 +530,7 @@ export const VideoMeetingRoom: React.FC<{
 				</>
 			)}
 
-			{isJoining && (
-				<div className="fixed inset-0 z-50 flex items-center justify-center bg-black/35 backdrop-blur-sm">
-					<div className="flex items-center gap-3 rounded-full border border-white/15 bg-black/80 px-4 py-3 text-sm text-white shadow-2xl">
-						<Loader2 className="size-4 animate-spin" />
-						Preparing the meeting room...
-					</div>
-				</div>
-			)}
+			{isJoining && <JoiningMeetingOverlay />}
 		</div>
 	);
 };
