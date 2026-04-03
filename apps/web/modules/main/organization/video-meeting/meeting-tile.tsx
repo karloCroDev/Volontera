@@ -17,15 +17,11 @@ import { OrganizationVideoMeetingParticipant } from '@repo/types/organizaton-vid
 export const MeetingTile: React.FC<{
 	participant: OrganizationVideoMeetingParticipant;
 	tileState?: VideoTileState;
-	hasAudio?: boolean;
-	hasVideo?: boolean;
 	meetingSession: MeetingSession | null;
 	currentUserId: string;
 	isHost?: boolean;
 }> = ({
 	currentUserId,
-	hasAudio,
-	hasVideo,
 	meetingSession,
 	participant,
 	tileState,
@@ -46,28 +42,19 @@ export const MeetingTile: React.FC<{
 		};
 	}, [meetingSession, tileId]);
 
-	const hasVideoEnabled = hasVideo ?? !!tileState;
-	const hasAudioEnabled = hasAudio ?? true;
+	const hasVideo = !!tileState;
 	const isMuted = currentUserId === participant.userId;
-	const videoState = hasVideoEnabled ? 'on' : 'off';
-	const audioState = hasAudioEnabled ? 'unmuted' : 'muted';
 
 	return isHost ? (
 		<HostMeetingTile
-			hasVideo={hasVideoEnabled}
-			hasAudio={hasAudioEnabled}
-			videoState={videoState}
-			audioState={audioState}
+			hasVideo={hasVideo}
 			isMuted={isMuted}
 			participant={participant}
 			ref={videoRef}
 		/>
 	) : (
 		<GuestMeetingTile
-			hasVideo={hasVideoEnabled}
-			hasAudio={hasAudioEnabled}
-			videoState={videoState}
-			audioState={audioState}
+			hasVideo={hasVideo}
 			isMuted={isMuted}
 			participant={participant}
 			ref={videoRef}
@@ -78,17 +65,11 @@ export const MeetingTile: React.FC<{
 type TileProps = {
 	isMuted: boolean;
 	hasVideo: boolean;
-	hasAudio: boolean;
-	videoState: 'on' | 'off';
-	audioState: 'muted' | 'unmuted';
 	participant: OrganizationVideoMeetingParticipant;
 };
 
 const HostMeetingTile = React.forwardRef<HTMLVideoElement | null, TileProps>(
-	(
-		{ audioState, isMuted, hasAudio, hasVideo, participant, videoState },
-		videoRef
-	) => {
+	({ isMuted, hasVideo, participant }, videoRef) => {
 		return (
 			<Container className="relative size-full rounded-lg">
 				{hasVideo && (
@@ -156,18 +137,9 @@ const HostMeetingTile = React.forwardRef<HTMLVideoElement | null, TileProps>(
 HostMeetingTile.displayName = 'HostMeetingTile';
 
 const GuestMeetingTile = React.forwardRef<HTMLVideoElement | null, TileProps>(
-	(
-		{ audioState, isMuted, hasAudio, hasVideo, participant, videoState },
-		videoRef
-	) => {
+	({ isMuted, hasVideo, participant }, videoRef) => {
 		return (
-			<Container
-				className="relative flex aspect-video h-full flex-shrink-0 flex-col items-center justify-center gap-1 overflow-hidden rounded-lg"
-				data-has-video={String(hasVideo)}
-				data-has-audio={String(hasAudio)}
-				data-video-state={videoState}
-				data-audio-state={audioState}
-			>
+			<Container className="relative flex aspect-video h-full flex-shrink-0 flex-col items-center justify-center gap-1 overflow-hidden rounded-lg">
 				{hasVideo && (
 					<video
 						ref={videoRef}
