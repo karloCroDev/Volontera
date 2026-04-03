@@ -9,7 +9,7 @@ import {
 import { OrganizationMemberRole, prisma } from "@repo/database";
 import { randomUUID } from "crypto";
 
-import { chimeClient } from "@/lib/config/chime";
+import { chimeClient } from "@/lib/config/aws";
 import { initalizeRedisClient } from "@/lib/config/redis";
 import { io } from "@/ws/socket";
 
@@ -349,11 +349,15 @@ export async function leaveOrganizationVideoMeeting({
   }
 
   if (currentParticipant.isHost || meeting.hostUserId === userId) {
-    await chimeClient.send(
-      new DeleteMeetingCommand({
-        MeetingId: meeting.meeting.MeetingId!,
-      }),
-    );
+    try {
+      await chimeClient.send(
+        new DeleteMeetingCommand({
+          MeetingId: meeting.meeting.MeetingId!,
+        }),
+      );
+    } catch {
+      // Meeting can already be deleted by another host action or timeout.
+    }
 
     await deleteStoredMeeting(organizationId);
     await emitMeetingUpdate(organizationId, null);
@@ -418,11 +422,15 @@ export async function endOrganizationVideoMeeting({
     };
   }
 
-  await chimeClient.send(
-    new DeleteMeetingCommand({
-      MeetingId: meeting.meeting.MeetingId!,
-    }),
-  );
+  try {
+    await chimeClient.send(
+      new DeleteMeetingCommand({
+        MeetingId: meeting.meeting.MeetingId!,
+      }),
+    );
+  } catch {
+    // Meeting can already be deleted by another host action or timeout.
+  }
 
   await deleteStoredMeeting(organizationId);
   await emitMeetingUpdate(organizationId, null);
