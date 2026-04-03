@@ -77,6 +77,9 @@ export const VideoMeetingRoom: React.FC<{
 	);
 	const [isJoining, setIsJoining] = React.useState(false);
 	const [isLeaving, setIsLeaving] = React.useState(false);
+	const [permissionError, setPermissionError] = React.useState<string | null>(
+		null
+	);
 
 	const audioElementRef = React.useRef<HTMLAudioElement | null>(null);
 	const meetingSessionRef = React.useRef<MeetingSession | null>(null);
@@ -121,7 +124,28 @@ export const VideoMeetingRoom: React.FC<{
 		setScreenTile(null);
 		setIsJoining(false);
 		setIsLeaving(false);
+		setPermissionError(null);
 	}, []);
+
+	const prepareLocalDevices = React.useCallback(
+		async (session: MeetingSession) => {
+			const [audioDevices, videoDevices] = await Promise.all([
+				session.audioVideo.listAudioInputDevices(),
+				session.audioVideo.listVideoInputDevices(),
+			]);
+
+			const firstAudioDevice = audioDevices[0];
+			if (firstAudioDevice) {
+				await session.audioVideo.startAudioInput(firstAudioDevice.deviceId);
+			}
+
+			const firstVideoDevice = videoDevices[0];
+			if (firstVideoDevice) {
+				await session.audioVideo.startVideoInput(firstVideoDevice.deviceId);
+			}
+		},
+		[]
+	);
 
 	React.useEffect(() => {
 		if (!socketGlobal) {
@@ -223,6 +247,22 @@ export const VideoMeetingRoom: React.FC<{
 				session.audioVideo.bindAudioElement(audioElementRef.current);
 			}
 
+			try {
+				await prepareLocalDevices(session);
+				setPermissionError(null);
+			} catch (error) {
+				const permissionDenied =
+					error instanceof DOMException &&
+					(error.name === 'NotAllowedError' ||
+						error.name === 'PermissionDeniedError');
+
+				setPermissionError(
+					permissionDenied
+						? 'Camera or microphone access was denied. Please allow permissions for this site in your browser settings and rejoin the meeting.'
+						: 'Unable to access camera or microphone. Check if another app is using your devices and try again.'
+				);
+			}
+
 			session.audioVideo.start();
 
 			try {
@@ -235,7 +275,7 @@ export const VideoMeetingRoom: React.FC<{
 			meetingSessionRef.current = session;
 			setMeetingSession(session);
 		},
-		[cleanupMeetingSession, organizationId, router]
+		[cleanupMeetingSession, organizationId, prepareLocalDevices, router]
 	);
 
 	const enterMeeting = React.useCallback(
@@ -247,6 +287,7 @@ export const VideoMeetingRoom: React.FC<{
 			setIsJoining(true);
 
 			try {
+				setPermissionError(null);
 				const response =
 					mode === 'start'
 						? await startMeeting.mutateAsync(organizationId)
@@ -260,6 +301,17 @@ export const VideoMeetingRoom: React.FC<{
 				await initializeMeetingSession(
 					response.meetingResponse,
 					response.attendeeResponse
+				);
+			} catch (error) {
+				const permissionDenied =
+					error instanceof DOMException &&
+					(error.name === 'NotAllowedError' ||
+						error.name === 'PermissionDeniedError');
+
+				setPermissionError(
+					permissionDenied
+						? 'Camera or microphone access was denied. Please allow permissions for this site and join again.'
+						: 'Unable to join with camera/microphone. Please verify browser permissions and device availability.'
 				);
 			} finally {
 				setIsJoining(false);
@@ -372,6 +424,12 @@ export const VideoMeetingRoom: React.FC<{
 	return (
 		<div className="flex h-full flex-col gap-4">
 			<audio ref={audioElementRef} autoPlay />
+
+			{permissionError && (
+				<div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+					{permissionError}
+				</div>
+			)}
 
 			{!isRoomLive ? (
 				<div className="border-input-border bg-muted/30 flex flex-1 items-center justify-center rounded-lg border p-8 shadow-lg">
