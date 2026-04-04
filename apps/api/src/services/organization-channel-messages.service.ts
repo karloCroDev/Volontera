@@ -1,14 +1,4 @@
 // Models
-import {
-  createOrganizationChannelChat,
-  createOrganizationGroupChatMessage,
-  deleteOrganizationChannelChatMessage,
-  deleteOrganizationChannelChat,
-  retrieveAllOrganizationChannelChatMessages,
-  retrieveOrganizationGroupChatChannels,
-  updateOrganizationChannelChat,
-} from "@/models/organization-group-chat.model";
-
 // Database
 import { User } from "@repo/database";
 
@@ -17,14 +7,10 @@ import { hasWantedOrganizationRole } from "@repo/permissons/index";
 
 // Schemas
 import {
-  CreateOrganizationGroupChatChannelArgs,
   CreateOrganizationGroupChatMessageArgs,
-  DeleteOrganizationGroupChatChannelArgs,
   RetrieveAllOrganizationGroupChatMessagesArgs,
-  RetrieveOrganizationGroupChatChannelsArgs,
   DeleteOrganizationGroupChatMessageArgs,
-  UpdateOrganizationGroupChatChannelArgs,
-} from "@repo/schemas/organization-group-chat";
+} from "@repo/schemas/organization-channel-messages";
 
 // Models
 import { createNotifications } from "@/models/notification.model";
@@ -45,76 +31,14 @@ import { io } from "@/ws/socket";
 // Services
 import { resolveImageKeysToUrls } from "@/services/image.service";
 
-// Channels
-export async function retrieveOrganizationGroupChatChannelsService({
-  organizationId,
-}: RetrieveOrganizationGroupChatChannelsArgs) {
-  const organizationGroupChat =
-    await retrieveOrganizationGroupChatChannels(organizationId);
+// Models
+import {
+  retrieveAllOrganizationChannelChatMessages,
+  createOrganizationGroupChatMessage,
+  deleteOrganizationChannelChatMessage,
+} from "@/models/organization-channel-messages.model";
+import { retrieveOrganizationGroupChatChannels } from "@/models/organization-channel.model";
 
-  return serverFetchOutput({
-    status: 200,
-    message: "Successfully retrieved organization group chat channels",
-    data: { organizationGroupChat },
-    success: true,
-  });
-}
-
-export async function createOrganizationGroupChatChannelService({
-  data,
-}: {
-  data: CreateOrganizationGroupChatChannelArgs;
-}) {
-  const createdChannel = await createOrganizationChannelChat({
-    organizationId: data.organizationId,
-    channelName: data.channelName,
-    dsescription: data.description,
-  });
-
-  return toastResponseOutput({
-    title: `Successful created ${createdChannel.name} channel`,
-    message: `Successfully created ${createdChannel.name} channel`,
-    status: 200,
-  });
-}
-
-export async function updateOrganizationGroupChatChannelService({
-  data,
-}: {
-  data: UpdateOrganizationGroupChatChannelArgs;
-}) {
-  await updateOrganizationChannelChat({
-    channelId: data.channelId,
-    organizationId: data.organizationId,
-    channelName: data.channelName,
-    description: data.description,
-  });
-
-  return toastResponseOutput({
-    title: `Successfuly updated ${data.channelName} channel`,
-    message: `Successfully updated ${data.channelName} channel`,
-    status: 200,
-  });
-}
-
-export async function deleteOrganizationGroupChatChannelService({
-  data,
-}: {
-  data: DeleteOrganizationGroupChatChannelArgs;
-}) {
-  const deletedChannel = await deleteOrganizationChannelChat({
-    channelId: data.channelId,
-    organizationId: data.organizationId,
-  });
-
-  return toastResponseOutput({
-    title: `Successfuly deleted ${deletedChannel.name} channel`,
-    message: `Successfully deleted ${deletedChannel.name} channel`,
-    status: 200,
-  });
-}
-
-// Messages
 export async function retrieveAllOrganizationGroupChatMessagesService({
   organizationId,
 }: RetrieveAllOrganizationGroupChatMessagesArgs) {

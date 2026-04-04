@@ -25,7 +25,7 @@ import { useCreateOrganizationGroupChatMessage } from '@/hooks/data/organization
 import {
 	OrganizationGroupChatMessageArgs,
 	organizationGroupChatMessageSchema,
-} from '@repo/schemas/organization-group-chat';
+} from '@repo/schemas/organization-channel-messages';
 
 export const AddMessageForm: React.FC<{
 	groupChatId: OrganizationGroupChatMessageArgs['groupChatId'];

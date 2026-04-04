@@ -12,7 +12,7 @@ import {
 	DeleteOrganizationGroupChatMessageArgs,
 	OrganizationGroupChatMessageArgs,
 	RetrieveAllOrganizationGroupChatMessagesArgs,
-} from '@repo/schemas/organization-group-chat';
+} from '@repo/schemas/organization-channel-messages';
 
 /// Lib
 import {

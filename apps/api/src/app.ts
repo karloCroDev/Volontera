@@ -32,7 +32,8 @@ import { searchRoutes } from "@/routes/search.route";
 import { postRoutes } from "@/routes/post.route";
 import { commentRoutes } from "@/routes/comment.route";
 import { organizationManagmentRoutes } from "@/routes/organization-managment.route";
-import { organizationGroupChatRoute } from "@/routes/organization-group-chat.route";
+import { organizationChannelRoute } from "@/routes/organization-channel.route";
+import { organizationChannelMessagesRoute } from "@/routes/organization-channel-messages.route";
 import { organizationTasksRoutes } from "@/routes/organization-tasks.route";
 import { homeRoute } from "@/routes/home.route";
 import { rateLimitMiddleware } from "@/middleware/rate-limit.middleware";
@@ -134,14 +135,24 @@ app.use(
   organizationManagmentRoutes,
 );
 app.use(
-  "/organization-group-chat",
+  "/organization-channel",
   authMiddleware,
   hasRoleMiddleware,
   rateLimitMiddleware({
-    additionalTags: ["organization-group-chat"],
+    additionalTags: ["organization-channel"],
     limit: 50,
   }),
-  organizationGroupChatRoute,
+  organizationChannelRoute,
+);
+app.use(
+  "/organization-channel-messages",
+  authMiddleware,
+  hasRoleMiddleware,
+  rateLimitMiddleware({
+    additionalTags: ["organization-channel-messages"],
+    limit: 50,
+  }),
+  organizationChannelMessagesRoute,
 );
 app.use(
   "/organization-tasks",

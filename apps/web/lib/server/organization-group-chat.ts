@@ -11,7 +11,7 @@ export async function retreiveAllrganizationGroupChatMessages(
 	RetrieveAllOrganizationGroupChatMessagesResponse | ServerHandleResponse<false>
 > {
 	return await serverFetch({
-		url: `organization-group-chat/${organizationId}`,
+		url: `organization-channel-messages/${organizationId}`,
 		init: { next: { tags: ['organization-members'] }, cache: 'no-store' },
 	});
 }

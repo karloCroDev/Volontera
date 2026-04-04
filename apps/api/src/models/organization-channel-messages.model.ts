@@ -1,84 +1,11 @@
 // Database
 import {
-  Organization,
   OrganizationChannelChat,
   prisma,
   User,
   OrganizationChannelChatMessage,
 } from "@repo/database";
 
-// Channels
-export async function retrieveOrganizationGroupChatChannels(
-  organizationId: Organization["id"],
-) {
-  return prisma.organizationGroupChat.findUnique({
-    where: {
-      organizationId,
-    },
-    include: {
-      channelChat: true,
-    },
-  });
-}
-
-export async function createOrganizationChannelChat({
-  organizationId,
-  channelName,
-  dsescription,
-}: {
-  organizationId: Organization["id"];
-  channelName: OrganizationChannelChat["name"];
-  dsescription?: OrganizationChannelChat["description"];
-}) {
-  return prisma.organizationChannelChat.create({
-    data: {
-      name: channelName,
-      description: dsescription,
-      organizationId,
-    },
-  });
-}
-
-export async function deleteOrganizationChannelChat({
-  channelId,
-  organizationId,
-}: {
-  channelId: OrganizationChannelChat["id"];
-  organizationId: Organization["id"];
-}) {
-  return prisma.organizationChannelChat.delete({
-    where: {
-      id: channelId,
-      organizationId,
-    },
-  });
-}
-
-export async function updateOrganizationChannelChat({
-  channelId,
-  organizationId,
-  channelName,
-  description,
-}: {
-  channelId: OrganizationChannelChat["id"];
-  organizationId: Organization["id"];
-  channelName?: OrganizationChannelChat["name"];
-  description?: OrganizationChannelChat["description"];
-}) {
-  // TODO: Indexiraj ovo pod hitno!!!
-  return prisma.organizationChannelChat.update({
-    where: {
-      id: channelId,
-      organizationId,
-    },
-    data: {
-      ...(channelName ? { name: channelName } : {}),
-      ...(description ? { description } : {}),
-    },
-  });
-}
-
-// Messaging
 export async function retrieveAllOrganizationChannelChatMessages(
   channelChatId: OrganizationChannelChat["id"],
 ) {
