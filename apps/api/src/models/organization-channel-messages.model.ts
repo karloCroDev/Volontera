@@ -1,17 +1,23 @@
 // Database
 import {
-  OrganizationChannelChat,
+  OrganizationChannels,
   prisma,
   User,
   OrganizationChannelChatMessage,
+  Organization,
 } from "@repo/database";
 
-export async function retrieveAllOrganizationChannelChatMessages(
-  channelChatId: OrganizationChannelChat["id"],
-) {
-  return prisma.organizationChannelChat.findUnique({
+export async function retrieveAllMesssagesFromChannel({
+  channelChatId,
+  organizationId,
+}: {
+  channelChatId: OrganizationChannels["id"];
+  organizationId: Organization["id"];
+}) {
+  return prisma.organizationChannels.findFirst({
     where: {
       id: channelChatId,
+      organizationId,
     },
     include: {
       messages: {
@@ -46,7 +52,7 @@ export async function createOrganizationGroupChatMessage({
   parentMessageId,
   imageKeys,
 }: {
-  channelChatId: OrganizationChannelChat["id"];
+  channelChatId: OrganizationChannels["id"];
   senderId: User["id"];
   content: OrganizationChannelChatMessage["content"];
   parentMessageId?: OrganizationChannelChatMessage["id"];
@@ -118,11 +124,7 @@ export async function deleteOrganizationChannelChatMessage({
         // },
         organizationChannelChat: {
           select: {
-            organizationGroupChat: {
-              select: {
-                organizationId: true,
-              },
-            },
+            organizationId: true,
           },
         },
       },
@@ -146,8 +148,7 @@ export async function deleteOrganizationChannelChatMessage({
     });
 
     return {
-      organizationId:
-        message.organizationChannelChat.organizationGroupChat?.organizationId,
+      organizationId: message.organizationChannelChat.organizationId,
       deletedMessageIds,
     };
   });

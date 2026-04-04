@@ -18,12 +18,12 @@ export async function createOrganizationChannelChat({
 }: {
   organizationId: Organization["id"];
   name: OrganizationChannels["name"];
-  description: OrganizationChannels["description"];
+  description?: OrganizationChannels["description"];
 }) {
   return prisma.organizationChannels.create({
     data: {
       name,
-      description,
+      ...(description ? { description } : {}),
       organizationId,
     },
   });
@@ -52,8 +52,8 @@ export async function updateOrganizationChannelChat({
 }: {
   channelId: OrganizationChannels["id"];
   organizationId: Organization["id"];
-  name: OrganizationChannels["name"];
-  description: OrganizationChannels["description"];
+  name?: OrganizationChannels["name"];
+  description?: OrganizationChannels["description"];
 }) {
   // TODO: Indexiraj ovo pod hitno!!!
   return prisma.organizationChannels.update({
@@ -62,8 +62,8 @@ export async function updateOrganizationChannelChat({
       organizationId,
     },
     data: {
-      name,
-      description,
+      ...(name ? { name } : {}),
+      ...(description ? { description } : {}),
     },
   });
 }

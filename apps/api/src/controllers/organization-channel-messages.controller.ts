@@ -5,7 +5,7 @@ import { Request, Response } from "express";
 import {
   createOrganizationGroupChatMessageService,
   deleteOrganizationGroupChatMessageService,
-  retrieveAllOrganizationGroupChatMessagesService,
+  retrieveAllMesssagesFromChannelService,
 } from "@/services/organization-channel-messages.service";
 
 // Schemas
@@ -22,7 +22,7 @@ export async function retrieveOrganizationChannelMessagesController(
   res: Response,
 ) {
   try {
-    const result = await retrieveAllOrganizationGroupChatMessagesService(
+    const result = await retrieveAllMesssagesFromChannelService(
       req.params as RetrieveAllOrganizationChannelMessagesArgs,
     );
 

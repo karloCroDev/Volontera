@@ -25,7 +25,7 @@ export const organizationChannelMessagesRoute = Router();
 organizationChannelMessagesRoute.use(express.json());
 
 organizationChannelMessagesRoute.get(
-  "/:organizationId",
+  "/:organizationId/:groupChatId",
   validate({
     schema: retrieveAllOrganizationChannelMessagesSchema,
     type: "params",

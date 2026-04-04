@@ -2,10 +2,9 @@ import { ServerHandleResponse } from "./general";
 
 // Database
 import {
-  OrganizationChannelChat,
+  OrganizationChannels,
   OrganizationChannelChatMessage,
   OrganizationChannelChatMessageImage,
-  OrganizationGroupChat,
   User,
 } from "@repo/database";
 
@@ -13,7 +12,7 @@ export type OrganizationChannelMessage = Omit<
   OrganizationChannelChatMessage,
   "channelChatId" | "organizationChannelChatMessageImages"
 > & {
-  groupChatId: OrganizationGroupChat["id"];
+  groupChatId: OrganizationChannels["id"];
   organizationGroupChatMessageImages: OrganizationChannelChatMessageImage[];
   parentMessage:
     | (Pick<OrganizationChannelChatMessage, "id" | "content"> & {
@@ -25,10 +24,7 @@ export type OrganizationChannelMessage = Omit<
 
 export type RetrieveAllOrganizationChannelMessagesResponse =
   ServerHandleResponse<true> & {
-    organizationGroupChat: OrganizationGroupChat & {
-      channelChat: (OrganizationChannelChat & {
-        messages: OrganizationChannelMessage[];
-      })[];
+    organizationChannel: OrganizationChannels & {
       messages: OrganizationChannelMessage[];
     };
   };

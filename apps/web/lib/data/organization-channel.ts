@@ -25,7 +25,11 @@ export async function createOrganizationChannel(
 	data: CreateOrganizationChannelArgs
 ) {
 	try {
-		const res = await API().post('/organization-channel', data);
+		const res = await API().post('/organization-channel', {
+			organizationId: data.organizationId,
+			channelName: data.channelName,
+			description: data.description,
+		});
 		return res.data;
 	} catch (err) {
 		catchError(err);

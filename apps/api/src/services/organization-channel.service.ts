@@ -24,13 +24,13 @@ import {
 export async function retrieveOrganizationGroupChatChannelsService({
   organizationId,
 }: RetrieveOrganizationChannelsArgs) {
-  const organizationGroupChat =
+  const organizationChannels =
     await retrieveOrganizationGroupChatChannels(organizationId);
 
   return serverFetchOutput({
     status: 200,
     message: "Successfully retrieved organization group chat channels",
-    data: { organizationGroupChat },
+    data: { organizationChannels },
     success: true,
   });
 }
@@ -42,8 +42,8 @@ export async function createOrganizationGroupChatChannelService({
 }) {
   const createdChannel = await createOrganizationChannelChat({
     organizationId: data.organizationId,
-    channelName: data.channelName,
-    description: data.description,
+    name: data.channelName,
+    ...(data.description ? { description: data.description } : {}),
   });
 
   return toastResponseOutput({
@@ -61,8 +61,8 @@ export async function updateOrganizationGroupChatChannelService({
   await updateOrganizationChannelChat({
     channelId: data.channelId,
     organizationId: data.organizationId,
-    channelName: data.channelName,
-    description: data.description,
+    ...(data.channelName ? { name: data.channelName } : {}),
+    ...(data.description ? { description: data.description } : {}),
   });
 
   return toastResponseOutput({

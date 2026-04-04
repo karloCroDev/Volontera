@@ -33,38 +33,30 @@ import { resolveImageKeysToUrls } from "@/services/image.service";
 
 // Models
 import {
-  retrieveAllOrganizationChannelChatMessages,
+  retrieveAllMesssagesFromChannel,
   createOrganizationGroupChatMessage,
   deleteOrganizationChannelChatMessage,
 } from "@/models/organization-channel-messages.model";
-import { retrieveOrganizationGroupChatChannels } from "@/models/organization-channel.model";
 
-export async function retrieveAllOrganizationGroupChatMessagesService({
+export async function retrieveAllMesssagesFromChannelService({
   organizationId,
+  groupChatId,
 }: RetrieveAllOrganizationChannelMessagesArgs) {
-  const organizationGroupChat =
-    await retrieveOrganizationGroupChatChannels(organizationId);
+  const organizationChannel = await retrieveAllMesssagesFromChannel({
+    organizationId,
+    channelChatId: groupChatId,
+  });
 
-  if (!organizationGroupChat) {
+  if (!organizationChannel) {
     return serverFetchOutput({
       status: 400,
-      message: "Organization group chat not found",
-      data: { organizationGroupChat: null },
+      message: "Organization channel not found",
+      data: { organizationChannel: null },
       success: false,
     });
   }
 
-  const channelsWithMessages = await Promise.all(
-    organizationGroupChat.channelChat.map(async (channel) => {
-      const channelWithMessages =
-        await retrieveAllOrganizationChannelChatMessages(channel.id);
-
-      return channelWithMessages?.messages ?? [];
-    }),
-  );
-
-  const messages = channelsWithMessages
-    .flatMap((channelMessages) => channelMessages)
+  const messages = organizationChannel.messages
     .sort(
       (firstMessage, secondMessage) =>
         new Date(firstMessage.createdAt).getTime() -
@@ -85,14 +77,14 @@ export async function retrieveAllOrganizationGroupChatMessagesService({
 
   const urlsByKey = await resolveImageKeysToUrls(imageKeys);
 
-  const enrichedOrganizationGroupChat = {
-    ...organizationGroupChat,
+  const enrichedOrganizationChannel = {
+    ...organizationChannel,
     messages: messages.map((message) => ({
       ...message,
       organizationGroupChatMessageImages:
         message.organizationGroupChatMessageImages.flatMap((img) => {
           const presignedUrl = img.imageUrl ? urlsByKey[img.imageUrl] : null;
-          if (!presignedUrl) return;
+          if (!presignedUrl) return [];
           return [{ ...img, imageUrl: presignedUrl }];
         }),
     })),
@@ -100,8 +92,8 @@ export async function retrieveAllOrganizationGroupChatMessagesService({
 
   return serverFetchOutput({
     status: 200,
-    message: "Successfully retrieved all organization group chat messages",
-    data: { organizationGroupChat: enrichedOrganizationGroupChat },
+    message: "Successfully retrieved organization channel messages",
+    data: { organizationChannel: enrichedOrganizationChannel },
     success: true,
   });
 }
@@ -113,26 +105,15 @@ export async function createOrganizationGroupChatMessageService({
   data: CreateOrganizationChannelMessageArgs;
   userId: User["id"];
 }) {
-  const channels = await retrieveOrganizationGroupChatChannels(
-    data.organizationId,
-  );
-
-  if (!channels || channels.channelChat.length === 0) {
-    return toastResponseOutput({
-      title: "Error",
-      message: "No available channel for this organization",
-      status: 404,
-    });
-  }
-
-  const targetChannel =
-    channels.channelChat.find((channel) => channel.id === data.groupChatId) ??
-    channels.channelChat[0];
+  const targetChannel = await retrieveAllMesssagesFromChannel({
+    organizationId: data.organizationId,
+    channelChatId: data.groupChatId,
+  });
 
   if (!targetChannel) {
     return toastResponseOutput({
       title: "Error",
-      message: "No available channel for this organization",
+      message: "Channel not found for this organization",
       status: 404,
     });
   }

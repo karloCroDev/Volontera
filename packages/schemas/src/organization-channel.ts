@@ -9,12 +9,11 @@ export type RetrieveOrganizationChannelsArgs = z.infer<
   typeof retrieveOrganizationChannelsSchema
 >;
 
-export const createOrganizationChannelSchema = z
-  .object({
-    channelName: z.string().min(1).max(100),
-    description: z.string().max(200).optional(),
-  })
-  .extend(organizationIdSchema.shape);
+export const createOrganizationChannelSchema = z.object({
+  organizationId: z.cuid(),
+  channelName: z.string().min(1).max(100),
+  description: z.string().max(200).optional(),
+});
 export type CreateOrganizationChannelArgs = z.infer<
   typeof createOrganizationChannelSchema
 >;

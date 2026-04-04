@@ -57,10 +57,11 @@ export async function createOrganizationChannelMessage({
 
 export async function retrieveAllOrganizationChannelMessages({
 	organizationId,
+	groupChatId,
 }: RetrieveAllOrganizationChannelMessagesArgs) {
 	try {
 		const res = await API().get(
-			`organization-channel-messages/${organizationId}`
+			`organization-channel-messages/${organizationId}/${groupChatId}`
 		);
 		return res.data;
 	} catch (err) {

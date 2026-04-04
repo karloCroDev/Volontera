@@ -7,6 +7,7 @@ import { organizationIdSchema } from "./organization";
 
 export const retrieveAllOrganizationChannelMessagesSchema = z.object({
   organizationId: z.cuid(),
+  groupChatId: z.cuid(),
 });
 export type RetrieveAllOrganizationChannelMessagesArgs = z.infer<
   typeof retrieveAllOrganizationChannelMessagesSchema
