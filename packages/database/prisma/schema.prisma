@@ -207,7 +207,7 @@ model Organization {
   organizationTasksBoards    OrganizationTasksBoards[]
   organizationTasks          OrganizationTask[]
 
-  groupChat            OrganizationGroupChat?
+  groupChat            OrganizationChannels[]
   organizationCalendar OrganizationCalendar?
 }
 
@@ -406,13 +406,14 @@ model PostCommentsReplyLikes {
   @@unique([replyId, userId])
 }
 
-// Organization feeatures
-
-model OrganizationGroupChat {
-  id             String                    @id @default(cuid())
-  organization   Organization              @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  organizationId String                    @unique
-  channelChat    OrganizationChannelChat[]
+// Organization features
+model OrganizationChannels {
+  id             String                           @id @default(cuid())
+  name           String
+  description    String?
+  messages       OrganizationChannelChatMessage[]
+  organization   Organization                     @relation(fields: [organizationId], references: [id])
+  organizationId String
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -420,23 +421,9 @@ model OrganizationGroupChat {
   @@index([organizationId])
 }
 
-model OrganizationChannelChat {
-  id                              String                           @id @default(cuid())
-  name                            String
-  description                     String?
-  messages                        OrganizationChannelChatMessage[]
-  organizationGroupChat           OrganizationGroupChat?           @relation(fields: [organizationGroupChatChannelsId], references: [id])
-  organizationGroupChatChannelsId String?
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([organizationGroupChatChannelsId])
-}
-
 model OrganizationChannelChatMessage {
   id                                   String                                @id @default(cuid())
-  organizationChannelChat              OrganizationChannelChat               @relation(fields: [channelChatId], references: [id], onDelete: Cascade)
+  organizationChannelChat              OrganizationChannels                  @relation(fields: [channelChatId], references: [id], onDelete: Cascade)
   channelChatId                        String
   author                               User                                  @relation(fields: [authorId], references: [id], onDelete: Cascade)
   authorId                             String

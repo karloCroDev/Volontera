@@ -1,31 +1,28 @@
 // Database
-import { Organization, OrganizationChannelChat, prisma } from "@repo/database";
+import { Organization, OrganizationChannels, prisma } from "@repo/database";
 
 export async function retrieveOrganizationGroupChatChannels(
   organizationId: Organization["id"],
 ) {
-  return prisma.organizationGroupChat.findUnique({
+  return prisma.organizationChannels.findMany({
     where: {
       organizationId,
-    },
-    include: {
-      channelChat: true,
     },
   });
 }
 
 export async function createOrganizationChannelChat({
   organizationId,
-  channelName,
+  name,
   description,
 }: {
   organizationId: Organization["id"];
-  channelName: OrganizationChannelChat["name"];
-  description?: OrganizationChannelChat["description"];
+  name: OrganizationChannels["name"];
+  description: OrganizationChannels["description"];
 }) {
-  return prisma.organizationChannelChat.create({
+  return prisma.organizationChannels.create({
     data: {
-      name: channelName,
+      name,
       description,
       organizationId,
     },
@@ -36,10 +33,10 @@ export async function deleteOrganizationChannelChat({
   channelId,
   organizationId,
 }: {
-  channelId: OrganizationChannelChat["id"];
+  channelId: OrganizationChannels["id"];
   organizationId: Organization["id"];
 }) {
-  return prisma.organizationChannelChat.delete({
+  return prisma.organizationChannels.delete({
     where: {
       id: channelId,
       organizationId,
@@ -50,23 +47,23 @@ export async function deleteOrganizationChannelChat({
 export async function updateOrganizationChannelChat({
   channelId,
   organizationId,
-  channelName,
+  name,
   description,
 }: {
-  channelId: OrganizationChannelChat["id"];
+  channelId: OrganizationChannels["id"];
   organizationId: Organization["id"];
-  channelName?: OrganizationChannelChat["name"];
-  description?: OrganizationChannelChat["description"];
+  name: OrganizationChannels["name"];
+  description: OrganizationChannels["description"];
 }) {
   // TODO: Indexiraj ovo pod hitno!!!
-  return prisma.organizationChannelChat.update({
+  return prisma.organizationChannels.update({
     where: {
       id: channelId,
       organizationId,
     },
     data: {
-      ...(channelName ? { name: channelName } : {}),
-      ...(description ? { description } : {}),
+      name,
+      description,
     },
   });
 }
