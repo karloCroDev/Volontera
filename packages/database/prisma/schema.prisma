@@ -82,10 +82,10 @@ model User {
   postCommentsLikes            PostCommentsLikes[]
   postCommentsReplyLikes       PostCommentsReplyLikes[]
 
-  ownedOrganizations            Organization[]                 @relation("OrganizationOwner")
-  organizationGroupChatMessages OrganizationGroupChatMessage[]
-  organizationTaskQuestions     OrganizationTaskQuestions[]
-  organizationLeaveFeedbacks    OrganizationLeaveFeedback[]
+  ownedOrganizations              Organization[]                   @relation("OrganizationOwner")
+  organizationChannelChatMessages OrganizationChannelChatMessage[]
+  organizationTaskQuestions       OrganizationTaskQuestions[]
+  organizationLeaveFeedbacks      OrganizationLeaveFeedback[]
 }
 
 model Accounts {
@@ -196,11 +196,9 @@ model Organization {
   owner       User   @relation("OrganizationOwner", fields: [ownerId], references: [id], onDelete: Cascade)
 
   organizationFollowers    OrganizationFollowers[]
-  organizationInfo         OrganizationInfo?
   organizationMembers      OrganizationMember[]
   organizationJoinRequests OrganizationJoinRequest[]
-
-  groupChat OrganizationGroupChat?
+  organizationInfo         OrganizationInfo?
 
   posts                      Post[]
   createdAt                  DateTime                    @default(now())
@@ -208,7 +206,9 @@ model Organization {
   organizationLeaveFeedbacks OrganizationLeaveFeedback[]
   organizationTasksBoards    OrganizationTasksBoards[]
   organizationTasks          OrganizationTask[]
-  organizationCalendar       OrganizationCalendar?
+
+  groupChat            OrganizationChannels[]
+  organizationCalendar OrganizationCalendar?
 }
 
 enum OrganizationMemberRole {
@@ -388,9 +388,9 @@ model PostCommentsReply {
   author      User         @relation(fields: [authorId], references: [id], onDelete: Cascade)
   authorId    String
 
+  postCommentsReplyLikes PostCommentsReplyLikes[]
   createdAt              DateTime                 @default(now())
   updatedAt              DateTime                 @updatedAt
-  postCommentsReplyLikes PostCommentsReplyLikes[]
 }
 
 model PostCommentsReplyLikes {
@@ -406,41 +406,47 @@ model PostCommentsReplyLikes {
   @@unique([replyId, userId])
 }
 
-// Organization feeatures
-model OrganizationGroupChat {
-  id             String                         @id @default(cuid())
-  organization   Organization                   @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  organizationId String                         @unique
-  messages       OrganizationGroupChatMessage[]
-  createdAt      DateTime                       @default(now())
-  updatedAt      DateTime                       @updatedAt
-}
-
-model OrganizationGroupChatMessage {
-  id                                 String                              @id @default(cuid())
-  organizationGroupChat              OrganizationGroupChat               @relation(fields: [groupChatId], references: [id], onDelete: Cascade)
-  groupChatId                        String
-  author                             User                                @relation(fields: [authorId], references: [id], onDelete: Cascade)
-  authorId                           String
-  content                            String
-  organizationGroupChatMessageImages OrganizationGroupChatMessageImage[]
-  parentMessage                      OrganizationGroupChatMessage?       @relation("OrganizationGroupChatMessageReply", fields: [parentMessageId], references: [id], onDelete: Cascade)
-  parentMessageId                    String?
-  replyMessage                       OrganizationGroupChatMessage[]      @relation("OrganizationGroupChatMessageReply")
+// Organization features
+model OrganizationChannels {
+  id             String                           @id @default(cuid())
+  name           String
+  description    String?
+  messages       OrganizationChannelChatMessage[]
+  organization   Organization                     @relation(fields: [organizationId], references: [id])
+  organizationId String
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@index([groupChatId, createdAt])
+  @@index([organizationId])
 }
 
-model OrganizationGroupChatMessageImage {
-  id        String                       @id @default(cuid())
-  message   OrganizationGroupChatMessage @relation(fields: [messageId], references: [id], onDelete: Cascade)
+model OrganizationChannelChatMessage {
+  id                                   String                                @id @default(cuid())
+  organizationChannelChat              OrganizationChannels                  @relation(fields: [channelChatId], references: [id], onDelete: Cascade)
+  channelChatId                        String
+  author                               User                                  @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  authorId                             String
+  content                              String
+  organizationChannelChatMessageImages OrganizationChannelChatMessageImage[]
+
+  parentMessage   OrganizationChannelChatMessage?  @relation("OrganizationChannelChatMessageReply", fields: [parentMessageId], references: [id], onDelete: Cascade)
+  parentMessageId String?
+  replyMessage    OrganizationChannelChatMessage[] @relation("OrganizationChannelChatMessageReply")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([channelChatId, createdAt])
+}
+
+model OrganizationChannelChatMessageImage {
+  id        String                         @id @default(cuid())
+  message   OrganizationChannelChatMessage @relation(fields: [messageId], references: [id], onDelete: Cascade)
   messageId String
   imageUrl  String // ket of the image stored in s3
-  createdAt DateTime                     @default(now())
-  updatedAt DateTime                     @updatedAt
+  createdAt DateTime                       @default(now())
+  updatedAt DateTime                       @updatedAt
 }
 
 model OrganizationTasksBoards {

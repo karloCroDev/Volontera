@@ -148,9 +148,7 @@ export async function createOrganization({
           role: "OWNER",
         },
       },
-      groupChat: {
-        create: {},
-      },
+      // Zasad je samo jedan kelandar, ali u budućnosti bi moglo biti više kalendara pa bolje da ovako napravim nego di direktno querijam kalendare
       organizationCalendar: {
         create: {},
       },

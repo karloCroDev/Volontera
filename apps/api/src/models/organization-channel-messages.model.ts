@@ -1,23 +1,28 @@
 // Database
 import {
-  Organization,
-  OrganizationGroupChat,
-  OrganizationGroupChatMessage,
+  OrganizationChannels,
   prisma,
   User,
+  OrganizationChannelChatMessage,
+  Organization,
 } from "@repo/database";
 
-export async function retrieveAllOrganizationGroupChatMessages(
-  organizationId: Organization["id"],
-) {
-  return prisma.organizationGroupChat.findUnique({
+export async function retrieveAllMesssagesFromChannel({
+  channelChatId,
+  organizationId,
+}: {
+  channelChatId: OrganizationChannels["id"];
+  organizationId: Organization["id"];
+}) {
+  return prisma.organizationChannels.findFirst({
     where: {
+      id: channelChatId,
       organizationId,
     },
     include: {
       messages: {
         include: {
-          organizationGroupChatMessageImages: true,
+          organizationChannelChatMessageImages: true,
           parentMessage: {
             select: {
               id: true,
@@ -42,24 +47,24 @@ export async function retrieveAllOrganizationGroupChatMessages(
 
 export async function createOrganizationGroupChatMessage({
   content,
-  groupChatId,
+  channelChatId,
   senderId,
   parentMessageId,
   imageKeys,
 }: {
-  groupChatId: OrganizationGroupChat["id"];
+  channelChatId: OrganizationChannels["id"];
   senderId: User["id"];
-  content: OrganizationGroupChatMessage["content"];
-  parentMessageId?: OrganizationGroupChatMessage["id"];
+  content: OrganizationChannelChatMessage["content"];
+  parentMessageId?: OrganizationChannelChatMessage["id"];
   imageKeys?: string[];
 }) {
-  return prisma.organizationGroupChatMessage.create({
+  return prisma.organizationChannelChatMessage.create({
     data: {
       content,
       authorId: senderId,
-      groupChatId: groupChatId,
+      channelChatId,
       ...(parentMessageId ? { parentMessageId } : {}),
-      organizationGroupChatMessageImages: {
+      organizationChannelChatMessageImages: {
         createMany:
           imageKeys && imageKeys.length > 0
             ? {
@@ -71,7 +76,7 @@ export async function createOrganizationGroupChatMessage({
       },
     },
     include: {
-      organizationGroupChatMessageImages: true,
+      organizationChannelChatMessageImages: true,
       parentMessage: {
         select: {
           id: true,
@@ -92,15 +97,15 @@ export async function createOrganizationGroupChatMessage({
   });
 }
 
-export async function deleteOrganizationGroupChatMessage({
+export async function deleteOrganizationChannelChatMessage({
   messageId,
   userId,
 }: {
   userId: User["id"];
-  messageId: OrganizationGroupChatMessage["id"];
+  messageId: OrganizationChannelChatMessage["id"];
 }) {
   return prisma.$transaction(async (tx) => {
-    const message = await tx.organizationGroupChatMessage.findUnique({
+    const message = await tx.organizationChannelChatMessage.findUnique({
       where: {
         id: messageId,
         authorId: userId,
@@ -112,7 +117,12 @@ export async function deleteOrganizationGroupChatMessage({
             id: true,
           },
         },
-        organizationGroupChat: {
+        // organizationChannelChat: {
+        //   select: {
+        //     organizationId: true,
+        //   },
+        // },
+        organizationChannelChat: {
           select: {
             organizationId: true,
           },
@@ -131,14 +141,14 @@ export async function deleteOrganizationGroupChatMessage({
       ...message.replyMessage.map((reply) => reply.id),
     ];
 
-    await tx.organizationGroupChatMessage.delete({
+    await tx.organizationChannelChatMessage.delete({
       where: {
         id: messageId,
       },
     });
 
     return {
-      organizationId: message.organizationGroupChat.organizationId,
+      organizationId: message.organizationChannelChat.organizationId,
       deletedMessageIds,
     };
   });

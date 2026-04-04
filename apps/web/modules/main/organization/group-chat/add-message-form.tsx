@@ -19,20 +19,20 @@ import { ReplyIndicator } from '@/components/ui/message/reply-indicator';
 import { useMessagesReply } from '@/components/ui/message/reply-context';
 
 // Hooks
-import { useCreateOrganizationGroupChatMessage } from '@/hooks/data/organization-group-chat';
+import { useCreateOrganizationChannelMessage } from '@/hooks/data/organization-channel-messages';
 
 // Schemas
 import {
-	OrganizationGroupChatMessageArgs,
-	organizationGroupChatMessageSchema,
-} from '@repo/schemas/organization-group-chat';
+	OrganizationChannelMessageArgs,
+	organizationChannelMessageSchema,
+} from '@repo/schemas/organization-channel-messages';
 
 export const AddMessageForm: React.FC<{
-	groupChatId: OrganizationGroupChatMessageArgs['groupChatId'];
+	groupChatId: OrganizationChannelMessageArgs['groupChatId'];
 }> = ({ groupChatId }) => {
 	const { replyingTo, setReplyingTo } = useMessagesReply();
 	const [images, setImages] = React.useState<ImageItemArgs>([]);
-	const { mutate, isPending } = useCreateOrganizationGroupChatMessage();
+	const { mutate, isPending } = useCreateOrganizationChannelMessage();
 	const isReplying = !!replyingTo;
 
 	const {
@@ -41,9 +41,9 @@ export const AddMessageForm: React.FC<{
 		setError,
 		formState: { errors, isValid },
 		handleSubmit,
-	} = useForm<Pick<OrganizationGroupChatMessageArgs, 'content'>>({
+	} = useForm<Pick<OrganizationChannelMessageArgs, 'content'>>({
 		resolver: zodResolver(
-			organizationGroupChatMessageSchema.pick({ content: true })
+			organizationChannelMessageSchema.pick({ content: true })
 		),
 		defaultValues: {
 			content: '',
@@ -58,7 +58,7 @@ export const AddMessageForm: React.FC<{
 	};
 
 	const onSubmit = (
-		formData: Pick<OrganizationGroupChatMessageArgs, 'content'>
+		formData: Pick<OrganizationChannelMessageArgs, 'content'>
 	) => {
 		const localImages = images.filter(isLocalImageItem);
 		const imagePayload = localImages.map(({ contentType, filename, size }) => ({
@@ -70,7 +70,7 @@ export const AddMessageForm: React.FC<{
 		const isReplyingToThisGroupChat =
 			replyingTo?.id && replyingTo.conversationId === groupChatId;
 
-		const parsedMessage = organizationGroupChatMessageSchema.safeParse({
+		const parsedMessage = organizationChannelMessageSchema.safeParse({
 			groupChatId,
 			organizationId: paras.organizationId,
 			content: formData.content,

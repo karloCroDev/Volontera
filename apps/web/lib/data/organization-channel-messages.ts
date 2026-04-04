@@ -4,29 +4,27 @@ import { DataWithFiles } from '@repo/types/upload';
 // Schemas
 import { PresignImagesSchemaArgs } from '@repo/schemas/image';
 import {
-	DeleteOrganizationGroupChatMessageArgs,
-	OrganizationGroupChatMessageArgs,
-	RetrieveAllOrganizationGroupChatMessagesArgs,
-} from '@repo/schemas/organization-group-chat';
+	DeleteOrganizationChannelMessageArgs,
+	OrganizationChannelMessageArgs,
+	RetrieveAllOrganizationChannelMessagesArgs,
+} from '@repo/schemas/organization-channel-messages';
 
 // Lib
 import { API } from '@/lib/utils/axios-client';
 import { catchError } from '@/lib/utils/error';
 
-export async function createGroupChatMessage({
+export async function createOrganizationChannelMessage({
 	data,
 	files,
-}: DataWithFiles<OrganizationGroupChatMessageArgs>) {
+}: DataWithFiles<OrganizationChannelMessageArgs>) {
 	try {
 		let imageKeys: string[] | undefined;
 
-		// Dobivam presigned URL-ove i keyve slika, te uploadam slike
 		if (data.images && data.images.length && files && files.length) {
 			const presignRes = await API().post('image/presign-images', {
 				images: data.images,
 			} as PresignImagesSchemaArgs);
 
-			// Uploadam slike
 			if (presignRes.data?.images) {
 				await Promise.all(
 					presignRes.data.images.map(
@@ -42,8 +40,7 @@ export async function createGroupChatMessage({
 			}
 		}
 
-		// Onda posaljem poruku s keyevima slika (posto su websocketi moram na ovaj nacin handleati upload slika)
-		const res = await API().post('organization-group-chat/create-message', {
+		const res = await API().post('organization-channel-messages', {
 			content: data.content,
 			groupChatId: data.groupChatId,
 			organizationId: data.organizationId,
@@ -58,24 +55,27 @@ export async function createGroupChatMessage({
 	}
 }
 
-export async function retrieveAllOrganizationGroupChatMessages({
+export async function retrieveAllOrganizationChannelMessages({
 	organizationId,
-}: RetrieveAllOrganizationGroupChatMessagesArgs) {
+	groupChatId,
+}: RetrieveAllOrganizationChannelMessagesArgs) {
 	try {
-		const res = await API().get(`organization-group-chat/${organizationId}`);
+		const res = await API().get(
+			`organization-channel-messages/${organizationId}/${groupChatId}`
+		);
 		return res.data;
 	} catch (err) {
 		catchError(err);
 	}
 }
 
-export async function deleteOrganizationGroupChatMessage({
+export async function deleteOrganizationChannelMessage({
 	messageId,
 	organizationId,
-}: DeleteOrganizationGroupChatMessageArgs) {
+}: DeleteOrganizationChannelMessageArgs) {
 	try {
 		const res = await API().delete(
-			`organization-group-chat/delete-message/${organizationId}/${messageId}`
+			`organization-channel-messages/${organizationId}/${messageId}`
 		);
 		return res.data;
 	} catch (err) {

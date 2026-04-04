@@ -1,43 +1,58 @@
 // External packages
 import { notFound } from 'next/navigation';
-import { dehydrate, QueryClient } from '@tanstack/react-query';
 
 // Lib
-import { retreiveAllrganizationGroupChatMessages } from '@/lib/server/organization-group-chat';
+import { retrieveOrganizationChannelsServer } from '@/lib/server/organization-channel';
 
 // Modules
-import { SocketRoomContext } from '@/modules/main/organization/group-chat/socker-room-context';
-import { GroupChatMapping } from '@/modules/main/organization/group-chat/group-chat-mapping';
-import { AddMessageForm } from '@/modules/main/organization/group-chat/add-message-form';
-import { MessagesReplyProvider } from '@/components/ui/message/reply-context';
+import { CreateChannelDialog } from '@/modules/main/organization/channels/add-channel-dialog';
+import { ChannelsMapping } from '@/modules/main/organization/channels/channels-mapping';
+import { dehydrate, QueryClient } from '@tanstack/react-query';
+import { retrieveOrganizationMember } from '@/lib/server/organization-managment';
+import { Skeleton } from '@/components/ui/skeleton';
 
-export default async function GroupChatPage({
+export default async function GroupChatChannelPage({
 	params,
 }: {
-	params: Promise<{ organizationId: string }>;
+	params: Promise<{
+		organizationId: string;
+	}>;
 }) {
 	const { organizationId } = await params;
+	const [channels, member] = await Promise.all([
+		retrieveOrganizationChannelsServer(organizationId),
+		retrieveOrganizationMember(organizationId),
+	]);
 
-	const groupChat =
-		await retreiveAllrganizationGroupChatMessages(organizationId);
-
-	if (!groupChat.success) notFound();
+	if (!channels.success || !member.success) notFound();
 
 	const queryClient = new QueryClient();
 	await queryClient.prefetchQuery({
-		queryKey: ['organization-group-chat', organizationId],
-		queryFn: async () => groupChat,
+		queryKey: ['organization-channels', organizationId],
+		queryFn: async () => channels,
 	});
 	const dehydratedState = dehydrate(queryClient);
-
 	return (
-		<SocketRoomContext>
-			<div className="relative min-h-[600px] flex-1 gap-4 px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
-				<MessagesReplyProvider>
-					<GroupChatMapping dehydratedState={dehydratedState} />
-					<AddMessageForm groupChatId={groupChat.organizationGroupChat.id} />
-				</MessagesReplyProvider>
+		<>
+			<div className="mb-6 flex flex-col justify-between gap-x-8 gap-y-4 overflow-x-scroll lg:flex-row lg:items-center">
+				<div>
+					<h4 className="text-xl lg:text-2xl">Group chat</h4>
+					<p className="text-muted-foreground">
+						All group chat channels that are assigned inside this organization
+					</p>
+				</div>
+				{(member.organizationMember.role === 'ADMIN' ||
+					member.organizationMember.role === 'OWNER') && (
+					<CreateChannelDialog organizationId={organizationId} />
+				)}
 			</div>
-		</SocketRoomContext>
+
+			<div className="no-scrollbar border-input-border relative flex min-h-[600px] flex-1 flex-col gap-4 overflow-y-scroll rounded-lg border p-4">
+				<ChannelsMapping
+					dehydratedState={dehydratedState}
+					organizationId={organizationId}
+				/>
+			</div>
+		</>
 	);
 }

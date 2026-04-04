@@ -5,25 +5,25 @@ import { Request, Response } from "express";
 import {
   createOrganizationGroupChatMessageService,
   deleteOrganizationGroupChatMessageService,
-  retrieveAllOrganizationGroupChatMessagesService,
-} from "@/services/organization-group-chat.service";
+  retrieveAllMesssagesFromChannelService,
+} from "@/services/organization-channel-messages.service";
 
 // Schemas
 import {
-  RetrieveAllOrganizationGroupChatMessagesArgs,
-  DeleteOrganizationGroupChatMessageArgs,
-} from "@repo/schemas/organization-group-chat";
+  DeleteOrganizationChannelMessageArgs,
+  RetrieveAllOrganizationChannelMessagesArgs,
+} from "@repo/schemas/organization-channel-messages";
 
 // Lib
 import { handleServerErrorResponse } from "@/lib/utils/error-response";
 
-export async function retrieveAllOrganizationGroupChatMessagesController(
+export async function retrieveOrganizationChannelMessagesController(
   req: Request,
   res: Response,
 ) {
   try {
-    const result = await retrieveAllOrganizationGroupChatMessagesService(
-      req.params as RetrieveAllOrganizationGroupChatMessagesArgs,
+    const result = await retrieveAllMesssagesFromChannelService(
+      req.params as RetrieveAllOrganizationChannelMessagesArgs,
     );
 
     return res.status(result.status).json(result.body);
@@ -32,7 +32,7 @@ export async function retrieveAllOrganizationGroupChatMessagesController(
   }
 }
 
-export async function createOrganizationGroupChatMessageController(
+export async function createOrganizationChannelMessageController(
   req: Request,
   res: Response,
 ) {
@@ -47,13 +47,14 @@ export async function createOrganizationGroupChatMessageController(
     handleServerErrorResponse(res, err);
   }
 }
-export async function deleteOrganizationGroupChatMessageController(
+
+export async function deleteOrganizationChannelMessageController(
   req: Request,
   res: Response,
 ) {
   try {
     const result = await deleteOrganizationGroupChatMessageService({
-      data: req.params as DeleteOrganizationGroupChatMessageArgs,
+      data: req.params as DeleteOrganizationChannelMessageArgs,
       userId: req.user.userId,
     });
 
