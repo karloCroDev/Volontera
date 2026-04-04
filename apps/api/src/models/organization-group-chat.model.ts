@@ -46,7 +46,7 @@ export async function deleteOrganizationChannelChat({
   channelId: OrganizationChannelChat["id"];
   organizationId: Organization["id"];
 }) {
-  return prisma.organizationChannelChat.deleteMany({
+  return prisma.organizationChannelChat.delete({
     where: {
       id: channelId,
       organizationId,

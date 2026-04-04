@@ -207,9 +207,8 @@ model Organization {
   organizationTasksBoards    OrganizationTasksBoards[]
   organizationTasks          OrganizationTask[]
 
-  groupChat               OrganizationGroupChat?
-  organizationCalendar    OrganizationCalendar?
-  organizationGroupChatId String
+  groupChat            OrganizationGroupChat?
+  organizationCalendar OrganizationCalendar?
 }
 
 enum OrganizationMemberRole {

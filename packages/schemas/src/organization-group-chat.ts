@@ -12,6 +12,11 @@ export type RetrieveAllOrganizationGroupChatMessagesArgs = z.infer<
   typeof retrieveAllOrganizationGroupChatMessagesSchema
 >;
 
+export const retrieveOrganizationGroupChatChannelsSchema = organizationIdSchema;
+export type RetrieveOrganizationGroupChatChannelsArgs = z.infer<
+  typeof retrieveOrganizationGroupChatChannelsSchema
+>;
+
 export const organizationGroupChatMessageSchema = z
   .object({
     content: z.string().min(1).max(200),
@@ -34,6 +39,36 @@ export const createOrganizationGroupChatMessageSchema = z
   .extend(organizationIdSchema.shape);
 export type CreateOrganizationGroupChatMessageArgs = z.infer<
   typeof createOrganizationGroupChatMessageSchema
+>;
+
+export const createOrganizationGroupChatChannelSchema = z
+  .object({
+    channelName: z.string().min(1).max(100),
+    description: z.string().max(200).optional(),
+  })
+  .extend(organizationIdSchema.shape);
+export type CreateOrganizationGroupChatChannelArgs = z.infer<
+  typeof createOrganizationGroupChatChannelSchema
+>;
+
+export const updateOrganizationGroupChatChannelSchema = z
+  .object({
+    channelId: z.cuid(),
+    channelName: z.string().min(1).max(100).optional(),
+    description: z.string().max(200).optional(),
+  })
+  .extend(organizationIdSchema.shape);
+export type UpdateOrganizationGroupChatChannelArgs = z.infer<
+  typeof updateOrganizationGroupChatChannelSchema
+>;
+
+export const deleteOrganizationGroupChatChannelSchema = z
+  .object({
+    channelId: z.cuid(),
+  })
+  .extend(organizationIdSchema.shape);
+export type DeleteOrganizationGroupChatChannelArgs = z.infer<
+  typeof deleteOrganizationGroupChatChannelSchema
 >;
 
 export const deleteOrganizationGroupChatMessageSchema = z

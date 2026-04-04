@@ -4,16 +4,24 @@ import { Router } from "express";
 
 // Controllers
 import {
+  createOrganizationGroupChatChannelController,
   retrieveAllOrganizationGroupChatMessagesController,
+  retrieveOrganizationGroupChatChannelsController,
+  updateOrganizationGroupChatChannelController,
+  deleteOrganizationGroupChatChannelController,
   createOrganizationGroupChatMessageController,
   deleteOrganizationGroupChatMessageController,
 } from "@/controllers/organization-group-chat.controller";
 
 // Schemas
 import {
+  createOrganizationGroupChatChannelSchema,
   createOrganizationGroupChatMessageSchema,
+  deleteOrganizationGroupChatChannelSchema,
   deleteOrganizationGroupChatMessageSchema,
+  retrieveOrganizationGroupChatChannelsSchema,
   retrieveAllOrganizationGroupChatMessagesSchema,
+  updateOrganizationGroupChatChannelSchema,
 } from "@repo/schemas/organization-group-chat";
 
 // Middleware
@@ -35,7 +43,61 @@ organizationGroupChatRoute.get(
     type: "params",
     aquiredRoles: ["MEMBER", "ADMIN"],
   }),
-  retrieveAllOrganizationGroupChatMessagesController
+  retrieveAllOrganizationGroupChatMessagesController,
+);
+
+organizationGroupChatRoute.get(
+  "/:organizationId/channels",
+  validate({
+    schema: retrieveOrganizationGroupChatChannelsSchema,
+    type: "params",
+    responseOutput: "server",
+  }),
+  organizationRolesMiddleware({
+    type: "params",
+    aquiredRoles: ["MEMBER", "ADMIN"],
+  }),
+  retrieveOrganizationGroupChatChannelsController,
+);
+
+organizationGroupChatRoute.post(
+  "/channels",
+  validate({
+    schema: createOrganizationGroupChatChannelSchema,
+    responseOutput: "toast",
+  }),
+  organizationRolesMiddleware({
+    aquiredRoles: ["ADMIN"],
+  }),
+  createOrganizationGroupChatChannelController,
+);
+
+organizationGroupChatRoute.patch(
+  "/channels/:channelId",
+  validate({
+    schema: updateOrganizationGroupChatChannelSchema,
+    responseOutput: "toast",
+    type: "body",
+  }),
+  organizationRolesMiddleware({
+    aquiredRoles: ["ADMIN"],
+    type: "params",
+  }),
+  updateOrganizationGroupChatChannelController,
+);
+
+organizationGroupChatRoute.delete(
+  "/channels/:organizationId/:channelId",
+  validate({
+    schema: deleteOrganizationGroupChatChannelSchema,
+    responseOutput: "toast",
+    type: "params",
+  }),
+  organizationRolesMiddleware({
+    aquiredRoles: ["ADMIN"],
+    type: "params",
+  }),
+  deleteOrganizationGroupChatChannelController,
 );
 
 organizationGroupChatRoute.post(
@@ -47,7 +109,7 @@ organizationGroupChatRoute.post(
   organizationRolesMiddleware({
     aquiredRoles: ["ADMIN", "MEMBER"],
   }),
-  createOrganizationGroupChatMessageController
+  createOrganizationGroupChatMessageController,
 );
 
 organizationGroupChatRoute.delete(
@@ -61,5 +123,5 @@ organizationGroupChatRoute.delete(
     aquiredRoles: ["ADMIN", "MEMBER"],
     type: "params",
   }),
-  deleteOrganizationGroupChatMessageController
+  deleteOrganizationGroupChatMessageController,
 );
