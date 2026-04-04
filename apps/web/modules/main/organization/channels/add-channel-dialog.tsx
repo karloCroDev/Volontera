@@ -6,7 +6,6 @@ import { Plus } from 'lucide-react';
 import { Controller, useForm } from 'react-hook-form';
 import { Form } from 'react-aria-components';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useParams } from 'next/navigation';
 
 // Components
 import { Button } from '@/components/ui/button';
@@ -20,8 +19,15 @@ import {
 	createOrganizationChannelSchema,
 } from '@repo/schemas/organization-channel';
 
-export const CreateChannelDialog = () => {
-	const params = useParams<{ organizationId: string; channelId: string }>();
+// Hooks
+import { useCreateOrganizationChannel } from '@/hooks/data/organization-channel';
+import { withReactQueryProvider } from '@/lib/utils/react-query';
+import { toast } from '@/lib/utils/toast';
+
+export const CreateChannelDialog: React.FC<{
+	organizationId: string;
+}> = withReactQueryProvider(({ organizationId }) => {
+	const { mutate } = useCreateOrganizationChannel(organizationId);
 	const {
 		control,
 		formState: { errors },
@@ -29,13 +35,24 @@ export const CreateChannelDialog = () => {
 	} = useForm({
 		resolver: zodResolver(createOrganizationChannelSchema),
 		defaultValues: {
-			organizationId: params.organizationId,
+			organizationId,
 			channelName: '',
 			description: '',
 		},
 	});
 
-	const onSubmit = (data: CreateOrganizationChannelArgs) => {};
+	const onSubmit = (data: CreateOrganizationChannelArgs) => {
+		mutate(data, {
+			onSuccess: ({ message, title }) => {
+				toast({
+					title,
+					content: message,
+					variant: 'success',
+				});
+			},
+			onError: () => {},
+		});
+	};
 	return (
 		<Dialog
 			triggerChildren={<Button iconRight={<Plus />}> Create channel</Button>}
@@ -71,11 +88,11 @@ export const CreateChannelDialog = () => {
 						)}
 					/>
 				</div>
-
+				{errors.root?.message}
 				<Button type="submit" className="self-end">
 					Submit
 				</Button>
 			</Form>
 		</Dialog>
 	);
-};
+});

@@ -14,15 +14,15 @@ import { MessageIndicator } from '@/components/ui/message/message-indicator';
 
 // Hooks
 import {
-	useDeleteOrganizationGroupChatMessage,
-	useRetrieveAllOrganizationGroupChatMessages,
-} from '@/hooks/data/organization-group-chat';
+	useDeleteOrganizationChannelMessage,
+	useRetrieveAllOrganizationChannelMessages,
+} from '@/hooks/data/organization-channel-messages';
 
 // Lib
 import { convertToFullname } from '@/lib/utils/converter';
 
 // Types
-import { RetrieveAllOrganizationGroupChatMessagesResponse } from '@repo/types/organization-group-chat';
+import { RetrieveAllOrganizationChannelMessagesResponse } from '@repo/types/organization-channel-messages';
 
 // Hooks
 import { useSession } from '@/hooks/data/user';
@@ -34,17 +34,18 @@ import { useSocketContext } from '@/modules/main/direct-messages/socket-context'
 import { withReactQueryProvider } from '@/lib/utils/react-query';
 
 type OrgChatMessage =
-	RetrieveAllOrganizationGroupChatMessagesResponse['organizationGroupChat']['messages'][number];
+	RetrieveAllOrganizationChannelMessagesResponse['organizationChannel']['messages'][number];
 
 export const GroupChatMapping = withReactQueryProvider(() => {
-	const params = useParams<{ organizationId: string }>();
+	const params = useParams<{ organizationId: string; channelId: string }>();
 	const { replyingTo, setReplyingTo } = useMessagesReply();
-	const { data } = useRetrieveAllOrganizationGroupChatMessages({
+	const { data } = useRetrieveAllOrganizationChannelMessages({
 		organizationId: params.organizationId,
+		groupChatId: params.channelId,
 	});
 
 	const [messages, setMessages] = React.useState(
-		data.organizationGroupChat.messages
+		data.organizationChannel.messages
 	);
 
 	const { socketGlobal } = useSocketContext();
@@ -98,8 +99,7 @@ export const GroupChatMapping = withReactQueryProvider(() => {
 
 	const { data: user } = useSession();
 
-	const { mutate: mutateDeleteMessage } =
-		useDeleteOrganizationGroupChatMessage();
+	const { mutate: mutateDeleteMessage } = useDeleteOrganizationChannelMessage();
 	return (
 		<div className="relative h-full min-h-0">
 			<div

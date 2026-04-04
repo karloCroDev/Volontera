@@ -19,7 +19,7 @@ import { ReplyIndicator } from '@/components/ui/message/reply-indicator';
 import { useMessagesReply } from '@/components/ui/message/reply-context';
 
 // Hooks
-import { useCreateOrganizationGroupChatMessage } from '@/hooks/data/organization-group-chat';
+import { useCreateOrganizationChannelMessage } from '@/hooks/data/organization-channel-messages';
 
 // Schemas
 import {
@@ -32,7 +32,7 @@ export const AddMessageForm: React.FC<{
 }> = ({ groupChatId }) => {
 	const { replyingTo, setReplyingTo } = useMessagesReply();
 	const [images, setImages] = React.useState<ImageItemArgs>([]);
-	const { mutate, isPending } = useCreateOrganizationGroupChatMessage();
+	const { mutate, isPending } = useCreateOrganizationChannelMessage();
 	const isReplying = !!replyingTo;
 
 	const {

@@ -1,13 +1,13 @@
 // External packages
-import Link from 'next/link';
+import { notFound } from 'next/navigation';
 
-// Components
-import { Container } from '@/components/ui/container';
+// Lib
+import { retrieveOrganizationChannelsServer } from '@/lib/server/organization-channel';
 
 // Modules
 import { CreateChannelDialog } from '@/modules/main/organization/channels/add-channel-dialog';
-import { EditChannelDialog } from '@/modules/main/organization/channels/edit-channel-dialog';
-import { DeleteChannelDialog } from '@/modules/main/organization/channels/delete-channel-dialog';
+import { ChannelsMapping } from '@/modules/main/organization/channels/channels-mapping';
+import { dehydrate, QueryClient } from '@tanstack/react-query';
 
 export default async function GroupChatChannelPage({
 	params,
@@ -17,34 +17,34 @@ export default async function GroupChatChannelPage({
 	}>;
 }) {
 	const { organizationId } = await params;
-	console.log(organizationId);
+	const channels = await retrieveOrganizationChannelsServer(organizationId);
+
+	if (!channels.success) notFound();
+
+	const queryClient = new QueryClient();
+	await queryClient.prefetchQuery({
+		queryKey: ['organization-channels', organizationId],
+		queryFn: async () => channels,
+	});
+	const dehydratedState = dehydrate(queryClient);
 	return (
 		<>
-			<div className="no-scrollbar flex min-h-[600px] flex-1 flex-col gap-4 overflow-y-scroll">
-				{[...Array(10)].map((_, indx) => (
-					<Container
-						key={indx}
-						className="border-accent group/container flex rounded-lg"
-					>
-						<Link
-							className="flex-1 px-4 py-3"
-							href={`/organization/${organizationId}/group-chat/${indx}`}
-						>
-							<div>
-								<p className="text-lg font-bold"># General</p>
-								<p className="text-muted-foreground text-sm">Description</p>
-							</div>
-						</Link>
+			<div className="mb-6 flex flex-col justify-between gap-x-8 gap-y-4 overflow-x-scroll lg:flex-row lg:items-center">
+				<div>
+					<h4 className="text-xl lg:text-2xl">Group chat</h4>
+					<p className="text-muted-foreground">
+						All group chat channels that are assigned inside this organization
+					</p>
+				</div>
 
-						<div className="flex items-center justify-center gap-6 px-3 opacity-0 transition-opacity group-hover/container:opacity-100">
-							<EditChannelDialog />
-							<DeleteChannelDialog channelName="yessir" />
-						</div>
-					</Container>
-				))}
+				<CreateChannelDialog organizationId={organizationId} />
 			</div>
-			<div className="flex items-center justify-end pt-2">
-				<CreateChannelDialog />
+
+			<div className="no-scrollbar border-input-border relative flex min-h-[600px] flex-1 flex-col gap-4 overflow-y-scroll rounded-lg border p-4">
+				<ChannelsMapping
+					dehydratedState={dehydratedState}
+					organizationId={organizationId}
+				/>
 			</div>
 		</>
 	);
