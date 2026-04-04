@@ -2,9 +2,9 @@
 import {
 	useMutation,
 	UseMutationOptions,
-	useQuery,
 	useQueryClient,
 	UseQueryOptions,
+	useSuspenseQuery,
 } from '@tanstack/react-query';
 
 // Lib
@@ -31,7 +31,7 @@ export const useRetrieveOrganizationVideoMeetingState = (
 		'queryKey' | 'queryFn'
 	>
 ) => {
-	return useQuery<OrganizationVideoMeetingState, ErrorToastResponse>({
+	return useSuspenseQuery<OrganizationVideoMeetingState, ErrorToastResponse>({
 		queryKey: ['organization-video-meeting', organizationId],
 		queryFn: () => retrieveOrganizationVideoMeetingState(organizationId),
 		...options,

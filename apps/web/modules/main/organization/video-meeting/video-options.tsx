@@ -15,14 +15,12 @@ import {
 // Components
 import { Button } from '@/components/ui/button';
 
-type VideoOptionsProps = {
+export const VideoOptions = (props: {
 	meetingSession: MeetingSession | null;
 	canShareScreen: boolean;
 	isLeaving: boolean;
 	onLeave: () => Promise<void>;
-};
-
-export const VideoOptions = (props: VideoOptionsProps) => {
+}) => {
 	const [isMuted, setIsMuted] = React.useState(false);
 	const [isCameraOn, setIsCameraOn] = React.useState(false);
 	const [isSharingScreen, setIsSharingScreen] = React.useState(false);

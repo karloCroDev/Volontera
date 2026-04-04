@@ -3,7 +3,6 @@
 // External packages
 import * as React from 'react';
 import { MeetingSession, VideoTileState } from 'amazon-chime-sdk-js';
-import { twJoin } from 'tailwind-merge';
 
 // Components
 import { Avatar } from '@/components/ui/avatar';
@@ -42,20 +41,18 @@ export const MeetingTile: React.FC<{
 		};
 	}, [meetingSession, tileId]);
 
-	const hasVideo = !!tileState;
-	const isMuted = currentUserId === participant.userId;
-
+	// TODO: Riješi način na koji naćin ću handleati UI za svakog korisnika (ako se promijeni kamera ili mikrofon) jer trenutno ova verzija ne radi! Pogledaj commit "additional optimizations for video tiles" za neke UI preinake
 	return isHost ? (
 		<HostMeetingTile
-			hasVideo={hasVideo}
-			isMuted={isMuted}
+			hasVideo={!!tileState}
+			isMuted={currentUserId === participant.userId}
 			participant={participant}
 			ref={videoRef}
 		/>
 	) : (
 		<GuestMeetingTile
-			hasVideo={hasVideo}
-			isMuted={isMuted}
+			hasVideo={!!tileState}
+			isMuted={currentUserId === participant.userId}
 			participant={participant}
 			ref={videoRef}
 		/>
@@ -82,20 +79,8 @@ const HostMeetingTile = React.forwardRef<HTMLVideoElement | null, TileProps>(
 					/>
 				)}
 
-				<div
-					className={twJoin(
-						'absolute z-10 flex items-end justify-between gap-3 p-4',
-						hasVideo
-							? 'bg-muted border-input-border bottom-2 left-2 rounded-md border'
-							: 'left-1/2 -translate-x-1/2 -translate-y-1/2 bg-transparent'
-					)}
-				>
-					<div
-						className={twJoin(
-							'flex items-center gap-3',
-							!hasVideo && 'flex-col'
-						)}
-					>
+				<div className="bg-muted border-input-border absolute bottom-2 left-2 z-10 flex items-end justify-between gap-3 rounded-md border p-4">
+					<div className="flex items-center gap-3">
 						<div className="flex items-center gap-4">
 							<Avatar
 								size="lg"
@@ -149,15 +134,15 @@ const GuestMeetingTile = React.forwardRef<HTMLVideoElement | null, TileProps>(
 						className="absolute inset-0 size-full object-cover"
 					/>
 				)}
-				{hasVideo && (
-					<p className="bg-background absolute left-1 top-1 rounded-sm px-1.5 py-1 text-xs">
-						{convertToFullname({
-							firstname: participant.firstName,
-							lastname: participant.lastName,
-						})}
-					</p>
-				)}
-				{!hasVideo && (
+
+				<p className="bg-background absolute left-1 top-1 rounded-sm px-1.5 py-1 text-xs">
+					{convertToFullname({
+						firstname: participant.firstName,
+						lastname: participant.lastName,
+					})}
+				</p>
+
+				{/* {!hasVideo && (
 					<>
 						<Avatar
 							size="xs"
@@ -179,7 +164,7 @@ const GuestMeetingTile = React.forwardRef<HTMLVideoElement | null, TileProps>(
 							})}
 						</p>
 					</>
-				)}
+				)} */}
 			</Container>
 		);
 	}
