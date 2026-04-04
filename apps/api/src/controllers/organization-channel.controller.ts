@@ -11,10 +11,10 @@ import {
 
 // Schemas
 import {
-  CreateOrganizationGroupChatChannelArgs,
-  DeleteOrganizationGroupChatChannelArgs,
-  RetrieveOrganizationGroupChatChannelsArgs,
-  UpdateOrganizationGroupChatChannelArgs,
+  CreateOrganizationChannelArgs,
+  DeleteOrganizationChannelArgs,
+  RetrieveOrganizationChannelsArgs,
+  UpdateOrganizationChannelArgs,
 } from "@repo/schemas/organization-channel";
 
 // Lib
@@ -26,7 +26,7 @@ export async function retrieveOrganizationChannelsController(
 ) {
   try {
     const result = await retrieveOrganizationGroupChatChannelsService(
-      req.params as RetrieveOrganizationGroupChatChannelsArgs,
+      req.params as RetrieveOrganizationChannelsArgs,
     );
 
     return res.status(result.status).json(result.body);
@@ -41,7 +41,7 @@ export async function createOrganizationChannelController(
 ) {
   try {
     const result = await createOrganizationGroupChatChannelService({
-      data: req.body as CreateOrganizationGroupChatChannelArgs,
+      data: req.body as CreateOrganizationChannelArgs,
     });
 
     return res.status(result.status).json(result.body);
@@ -59,7 +59,7 @@ export async function updateOrganizationChannelController(
       data: {
         ...req.params,
         ...req.body,
-      } as UpdateOrganizationGroupChatChannelArgs,
+      } as UpdateOrganizationChannelArgs,
     });
 
     return res.status(result.status).json(result.body);
@@ -74,7 +74,7 @@ export async function deleteOrganizationChannelController(
 ) {
   try {
     const result = await deleteOrganizationGroupChatChannelService({
-      data: req.params as DeleteOrganizationGroupChatChannelArgs,
+      data: req.params as DeleteOrganizationChannelArgs,
     });
 
     return res.status(result.status).json(result.body);

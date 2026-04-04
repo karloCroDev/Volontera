@@ -23,12 +23,12 @@ import { useCreateOrganizationGroupChatMessage } from '@/hooks/data/organization
 
 // Schemas
 import {
-	OrganizationGroupChatMessageArgs,
-	organizationGroupChatMessageSchema,
+	OrganizationChannelMessageArgs,
+	organizationChannelMessageSchema,
 } from '@repo/schemas/organization-channel-messages';
 
 export const AddMessageForm: React.FC<{
-	groupChatId: OrganizationGroupChatMessageArgs['groupChatId'];
+	groupChatId: OrganizationChannelMessageArgs['groupChatId'];
 }> = ({ groupChatId }) => {
 	const { replyingTo, setReplyingTo } = useMessagesReply();
 	const [images, setImages] = React.useState<ImageItemArgs>([]);
@@ -41,9 +41,9 @@ export const AddMessageForm: React.FC<{
 		setError,
 		formState: { errors, isValid },
 		handleSubmit,
-	} = useForm<Pick<OrganizationGroupChatMessageArgs, 'content'>>({
+	} = useForm<Pick<OrganizationChannelMessageArgs, 'content'>>({
 		resolver: zodResolver(
-			organizationGroupChatMessageSchema.pick({ content: true })
+			organizationChannelMessageSchema.pick({ content: true })
 		),
 		defaultValues: {
 			content: '',
@@ -58,7 +58,7 @@ export const AddMessageForm: React.FC<{
 	};
 
 	const onSubmit = (
-		formData: Pick<OrganizationGroupChatMessageArgs, 'content'>
+		formData: Pick<OrganizationChannelMessageArgs, 'content'>
 	) => {
 		const localImages = images.filter(isLocalImageItem);
 		const imagePayload = localImages.map(({ contentType, filename, size }) => ({
@@ -70,7 +70,7 @@ export const AddMessageForm: React.FC<{
 		const isReplyingToThisGroupChat =
 			replyingTo?.id && replyingTo.conversationId === groupChatId;
 
-		const parsedMessage = organizationGroupChatMessageSchema.safeParse({
+		const parsedMessage = organizationChannelMessageSchema.safeParse({
 			groupChatId,
 			organizationId: paras.organizationId,
 			content: formData.content,

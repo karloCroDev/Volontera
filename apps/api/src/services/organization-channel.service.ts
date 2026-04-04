@@ -8,10 +8,10 @@ import {
 
 // Schemas
 import {
-  CreateOrganizationGroupChatChannelArgs,
-  DeleteOrganizationGroupChatChannelArgs,
-  RetrieveOrganizationGroupChatChannelsArgs,
-  UpdateOrganizationGroupChatChannelArgs,
+  CreateOrganizationChannelArgs,
+  DeleteOrganizationChannelArgs,
+  RetrieveOrganizationChannelsArgs,
+  UpdateOrganizationChannelArgs,
 } from "@repo/schemas/organization-channel";
 
 // Lib
@@ -23,7 +23,7 @@ import {
 // Channels
 export async function retrieveOrganizationGroupChatChannelsService({
   organizationId,
-}: RetrieveOrganizationGroupChatChannelsArgs) {
+}: RetrieveOrganizationChannelsArgs) {
   const organizationGroupChat =
     await retrieveOrganizationGroupChatChannels(organizationId);
 
@@ -38,7 +38,7 @@ export async function retrieveOrganizationGroupChatChannelsService({
 export async function createOrganizationGroupChatChannelService({
   data,
 }: {
-  data: CreateOrganizationGroupChatChannelArgs;
+  data: CreateOrganizationChannelArgs;
 }) {
   const createdChannel = await createOrganizationChannelChat({
     organizationId: data.organizationId,
@@ -56,7 +56,7 @@ export async function createOrganizationGroupChatChannelService({
 export async function updateOrganizationGroupChatChannelService({
   data,
 }: {
-  data: UpdateOrganizationGroupChatChannelArgs;
+  data: UpdateOrganizationChannelArgs;
 }) {
   await updateOrganizationChannelChat({
     channelId: data.channelId,
@@ -75,7 +75,7 @@ export async function updateOrganizationGroupChatChannelService({
 export async function deleteOrganizationGroupChatChannelService({
   data,
 }: {
-  data: DeleteOrganizationGroupChatChannelArgs;
+  data: DeleteOrganizationChannelArgs;
 }) {
   const deletedChannel = await deleteOrganizationChannelChat({
     channelId: data.channelId,

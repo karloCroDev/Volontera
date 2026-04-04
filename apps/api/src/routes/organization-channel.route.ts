@@ -12,10 +12,10 @@ import {
 
 // Schemas
 import {
-  createOrganizationGroupChatChannelSchema,
-  deleteOrganizationGroupChatChannelSchema,
-  retrieveOrganizationGroupChatChannelsSchema,
-  updateOrganizationGroupChatChannelSchema,
+  createOrganizationChannelSchema,
+  deleteOrganizationChannelSchema,
+  retrieveOrganizationChannelsSchema,
+  updateOrganizationChannelSchema,
 } from "@repo/schemas/organization-channel";
 
 // Middleware
@@ -29,7 +29,7 @@ organizationChannelRoute.use(express.json());
 organizationChannelRoute.get(
   "/:organizationId",
   validate({
-    schema: retrieveOrganizationGroupChatChannelsSchema,
+    schema: retrieveOrganizationChannelsSchema,
     type: "params",
     responseOutput: "server",
   }),
@@ -43,7 +43,7 @@ organizationChannelRoute.get(
 organizationChannelRoute.post(
   "/",
   validate({
-    schema: createOrganizationGroupChatChannelSchema,
+    schema: createOrganizationChannelSchema,
     responseOutput: "toast",
   }),
   organizationRolesMiddleware({
@@ -55,7 +55,7 @@ organizationChannelRoute.post(
 organizationChannelRoute.patch(
   "/:organizationId/:channelId",
   validate({
-    schema: updateOrganizationGroupChatChannelSchema.pick({
+    schema: updateOrganizationChannelSchema.pick({
       organizationId: true,
       channelId: true,
     }),
@@ -63,7 +63,7 @@ organizationChannelRoute.patch(
     type: "params",
   }),
   validate({
-    schema: updateOrganizationGroupChatChannelSchema.pick({
+    schema: updateOrganizationChannelSchema.pick({
       channelName: true,
       description: true,
     }),
@@ -80,7 +80,7 @@ organizationChannelRoute.patch(
 organizationChannelRoute.delete(
   "/:organizationId/:channelId",
   validate({
-    schema: deleteOrganizationGroupChatChannelSchema,
+    schema: deleteOrganizationChannelSchema,
     responseOutput: "toast",
     type: "params",
   }),

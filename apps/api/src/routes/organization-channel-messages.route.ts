@@ -11,9 +11,9 @@ import {
 
 // Schemas
 import {
-  createOrganizationGroupChatMessageSchema,
-  deleteOrganizationGroupChatMessageSchema,
-  retrieveAllOrganizationGroupChatMessagesSchema,
+  createOrganizationChannelMessageSchema,
+  deleteOrganizationChannelMessageSchema,
+  retrieveAllOrganizationChannelMessagesSchema,
 } from "@repo/schemas/organization-channel-messages";
 
 // Middleware
@@ -27,7 +27,7 @@ organizationChannelMessagesRoute.use(express.json());
 organizationChannelMessagesRoute.get(
   "/:organizationId",
   validate({
-    schema: retrieveAllOrganizationGroupChatMessagesSchema,
+    schema: retrieveAllOrganizationChannelMessagesSchema,
     type: "params",
     responseOutput: "server",
   }),
@@ -41,7 +41,7 @@ organizationChannelMessagesRoute.get(
 organizationChannelMessagesRoute.post(
   "/",
   validate({
-    schema: createOrganizationGroupChatMessageSchema,
+    schema: createOrganizationChannelMessageSchema,
     responseOutput: "toast",
   }),
   organizationRolesMiddleware({
@@ -53,7 +53,7 @@ organizationChannelMessagesRoute.post(
 organizationChannelMessagesRoute.delete(
   "/:organizationId/:messageId",
   validate({
-    schema: deleteOrganizationGroupChatMessageSchema,
+    schema: deleteOrganizationChannelMessageSchema,
     responseOutput: "toast",
     type: "params",
   }),

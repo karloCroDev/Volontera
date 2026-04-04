@@ -4,9 +4,9 @@ import { DataWithFiles } from '@repo/types/upload';
 // Schemas
 import { PresignImagesSchemaArgs } from '@repo/schemas/image';
 import {
-	DeleteOrganizationGroupChatMessageArgs,
-	OrganizationGroupChatMessageArgs,
-	RetrieveAllOrganizationGroupChatMessagesArgs,
+	DeleteOrganizationChannelMessageArgs,
+	OrganizationChannelMessageArgs,
+	RetrieveAllOrganizationChannelMessagesArgs,
 } from '@repo/schemas/organization-channel-messages';
 
 // Lib
@@ -16,7 +16,7 @@ import { catchError } from '@/lib/utils/error';
 export async function createGroupChatMessage({
 	data,
 	files,
-}: DataWithFiles<OrganizationGroupChatMessageArgs>) {
+}: DataWithFiles<OrganizationChannelMessageArgs>) {
 	try {
 		let imageKeys: string[] | undefined;
 
@@ -60,7 +60,7 @@ export async function createGroupChatMessage({
 
 export async function retrieveAllOrganizationGroupChatMessages({
 	organizationId,
-}: RetrieveAllOrganizationGroupChatMessagesArgs) {
+}: RetrieveAllOrganizationChannelMessagesArgs) {
 	try {
 		const res = await API().get(
 			`organization-channel-messages/${organizationId}`
@@ -74,7 +74,7 @@ export async function retrieveAllOrganizationGroupChatMessages({
 export async function deleteOrganizationGroupChatMessage({
 	messageId,
 	organizationId,
-}: DeleteOrganizationGroupChatMessageArgs) {
+}: DeleteOrganizationChannelMessageArgs) {
 	try {
 		const res = await API().delete(
 			`organization-channel-messages/${organizationId}/${messageId}`

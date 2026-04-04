@@ -9,9 +9,9 @@ import {
 
 // Schemas
 import {
-	DeleteOrganizationGroupChatMessageArgs,
-	OrganizationGroupChatMessageArgs,
-	RetrieveAllOrganizationGroupChatMessagesArgs,
+	DeleteOrganizationChannelMessageArgs,
+	OrganizationChannelMessageArgs,
+	RetrieveAllOrganizationChannelMessagesArgs,
 } from '@repo/schemas/organization-channel-messages';
 
 /// Lib
@@ -30,12 +30,12 @@ export const useCreateOrganizationGroupChatMessage = (
 	options?: UseMutationOptions<
 		SuccessfulResponse,
 		ErrorToastResponse,
-		DataWithFiles<OrganizationGroupChatMessageArgs>
+		DataWithFiles<OrganizationChannelMessageArgs>
 	>
 ) => {
 	return useMutation({
 		mutationKey: ['accept-or-decline-request'],
-		mutationFn: (data: DataWithFiles<OrganizationGroupChatMessageArgs>) =>
+		mutationFn: (data: DataWithFiles<OrganizationChannelMessageArgs>) =>
 			createGroupChatMessage(data),
 		onSuccess: async (...args) => {
 			// Handling with websockets
@@ -49,13 +49,13 @@ export const useDeleteOrganizationGroupChatMessage = (
 	options?: UseMutationOptions<
 		SuccessfulResponse,
 		ErrorToastResponse,
-		DeleteOrganizationGroupChatMessageArgs
+		DeleteOrganizationChannelMessageArgs
 	>
 ) => {
 	const queryClient = useQueryClient();
 	return useMutation({
 		mutationKey: ['accept-or-decline-request'],
-		mutationFn: (data: DeleteOrganizationGroupChatMessageArgs) =>
+		mutationFn: (data: DeleteOrganizationChannelMessageArgs) =>
 			deleteOrganizationGroupChatMessage(data),
 		onSuccess: async (...args) => {
 			await queryClient.invalidateQueries({
@@ -69,7 +69,7 @@ export const useDeleteOrganizationGroupChatMessage = (
 };
 
 export const useRetrieveAllOrganizationGroupChatMessages = (
-	data: RetrieveAllOrganizationGroupChatMessagesArgs,
+	data: RetrieveAllOrganizationChannelMessagesArgs,
 	options?: Omit<
 		UseSuspenseQueryOptions<RetrieveAllOrganizationGroupChatMessagesResponse>,
 		'queryKey' | 'queryFn'

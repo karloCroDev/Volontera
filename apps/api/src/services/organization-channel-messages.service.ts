@@ -7,9 +7,9 @@ import { hasWantedOrganizationRole } from "@repo/permissons/index";
 
 // Schemas
 import {
-  CreateOrganizationGroupChatMessageArgs,
-  RetrieveAllOrganizationGroupChatMessagesArgs,
-  DeleteOrganizationGroupChatMessageArgs,
+  CreateOrganizationChannelMessageArgs,
+  DeleteOrganizationChannelMessageArgs,
+  RetrieveAllOrganizationChannelMessagesArgs,
 } from "@repo/schemas/organization-channel-messages";
 
 // Models
@@ -41,7 +41,7 @@ import { retrieveOrganizationGroupChatChannels } from "@/models/organization-cha
 
 export async function retrieveAllOrganizationGroupChatMessagesService({
   organizationId,
-}: RetrieveAllOrganizationGroupChatMessagesArgs) {
+}: RetrieveAllOrganizationChannelMessagesArgs) {
   const organizationGroupChat =
     await retrieveOrganizationGroupChatChannels(organizationId);
 
@@ -110,7 +110,7 @@ export async function createOrganizationGroupChatMessageService({
   data,
   userId,
 }: {
-  data: CreateOrganizationGroupChatMessageArgs;
+  data: CreateOrganizationChannelMessageArgs;
   userId: User["id"];
 }) {
   const channels = await retrieveOrganizationGroupChatChannels(
@@ -206,7 +206,7 @@ export async function deleteOrganizationGroupChatMessageService({
   data,
   userId,
 }: {
-  data: DeleteOrganizationGroupChatMessageArgs;
+  data: DeleteOrganizationChannelMessageArgs;
   userId: User["id"];
 }) {
   const { organizationId, deletedMessageIds } =

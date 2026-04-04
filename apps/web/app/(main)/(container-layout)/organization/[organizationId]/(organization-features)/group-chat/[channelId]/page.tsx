@@ -1,51 +1,43 @@
 // External packages
-import Link from 'next/link';
-import { Pen, Trash2 } from 'lucide-react';
+import { notFound } from 'next/navigation';
+import { dehydrate, QueryClient } from '@tanstack/react-query';
 
-// Components
-import { Button } from '@/components/ui/button';
-import { Container } from '@/components/ui/container';
+// Lib
+import { retreiveAllrganizationGroupChatMessages } from '@/lib/server/organization-group-chat';
 
 // Modules
-import { CreateChannelDialog } from '@/modules/main/organization/channels/add-channel-dialog';
-import { EditChannelDialog } from '@/modules/main/organization/channels/edit-channel-dialog';
-import { DeleteChannelDialog } from '@/modules/main/organization/channels/delete-channel-dialog';
+import { SocketRoomContext } from '@/modules/main/organization/group-chat/socker-room-context';
+import { GroupChatMapping } from '@/modules/main/organization/group-chat/group-chat-mapping';
+import { AddMessageForm } from '@/modules/main/organization/group-chat/add-message-form';
+import { MessagesReplyProvider } from '@/components/ui/message/reply-context';
 
-export default async function GroupChatChannelPage({
+export default async function GroupChatPage({
 	params,
 }: {
-	params: Promise<{
-		organizationId: string;
-		channelId: string;
-	}>;
+	params: Promise<{ organizationId: string; channelId: string }>;
 }) {
 	const { organizationId, channelId } = await params;
-	console.log(organizationId, channelId);
-	return (
-		<>
-			<div className="no-scrollbar flex min-h-[600px] flex-1 flex-col gap-4 overflow-y-scroll">
-				{[...Array(10)].map((_, indx) => (
-					<Container key={indx} className="flex rounded-lg">
-						<Link
-							className="flex-1 px-4 py-3"
-							href={`/organization/${organizationId}/group-chat/${indx}`}
-						>
-							<div>
-								<p className="text-lg font-bold"># General</p>
-								<p className="text-muted-foreground text-sm">Description</p>
-							</div>
-						</Link>
 
-						<div className="flex items-center justify-center gap-6 px-3">
-							<EditChannelDialog />
-							<DeleteChannelDialog channelName="yessir" />
-						</div>
-					</Container>
-				))}
+	const groupChat =
+		await retreiveAllrganizationGroupChatMessages(organizationId);
+
+	if (!groupChat.success) notFound();
+
+	const queryClient = new QueryClient();
+	await queryClient.prefetchQuery({
+		queryKey: ['organization-group-chat', organizationId],
+		queryFn: async () => groupChat,
+	});
+	const dehydratedState = dehydrate(queryClient);
+
+	return (
+		<SocketRoomContext>
+			<div className="relative min-h-[600px] flex-1 gap-4 px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
+				<MessagesReplyProvider>
+					<GroupChatMapping dehydratedState={dehydratedState} />
+					<AddMessageForm groupChatId={groupChat.organizationGroupChat.id} />
+				</MessagesReplyProvider>
 			</div>
-			<div className="flex items-center justify-end pt-2">
-				<CreateChannelDialog />
-			</div>
-		</>
+		</SocketRoomContext>
 	);
 }

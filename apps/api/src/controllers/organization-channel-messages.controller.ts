@@ -10,8 +10,8 @@ import {
 
 // Schemas
 import {
-  DeleteOrganizationGroupChatMessageArgs,
-  RetrieveAllOrganizationGroupChatMessagesArgs,
+  DeleteOrganizationChannelMessageArgs,
+  RetrieveAllOrganizationChannelMessagesArgs,
 } from "@repo/schemas/organization-channel-messages";
 
 // Lib
@@ -23,7 +23,7 @@ export async function retrieveOrganizationChannelMessagesController(
 ) {
   try {
     const result = await retrieveAllOrganizationGroupChatMessagesService(
-      req.params as RetrieveAllOrganizationGroupChatMessagesArgs,
+      req.params as RetrieveAllOrganizationChannelMessagesArgs,
     );
 
     return res.status(result.status).json(result.body);
@@ -54,7 +54,7 @@ export async function deleteOrganizationChannelMessageController(
 ) {
   try {
     const result = await deleteOrganizationGroupChatMessageService({
-      data: req.params as DeleteOrganizationGroupChatMessageArgs,
+      data: req.params as DeleteOrganizationChannelMessageArgs,
       userId: req.user.userId,
     });
 

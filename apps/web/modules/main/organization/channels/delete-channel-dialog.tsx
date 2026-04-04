@@ -14,8 +14,8 @@ export const DeleteChannelDialog: React.FC<{
 	return (
 		<Dialog
 			triggerChildren={
-				<Button variant="ghost" isFullyRounded className="group p-3">
-					<Trash2 className="group-hover:text-destructive transition-colors" />
+				<Button variant="ghost" isFullyRounded className="group/delete p-3">
+					<Trash2 className="group-hover/delete:text-destructive size-5 transition-colors" />
 				</Button>
 			}
 			title={`Delete ${channelName} channel?`}

@@ -38,24 +38,3 @@ export const deleteOrganizationChannelSchema = z
 export type DeleteOrganizationChannelArgs = z.infer<
   typeof deleteOrganizationChannelSchema
 >;
-
-// Backward-compatible aliases
-export const retrieveOrganizationGroupChatChannelsSchema =
-  retrieveOrganizationChannelsSchema;
-export type RetrieveOrganizationGroupChatChannelsArgs =
-  RetrieveOrganizationChannelsArgs;
-
-export const createOrganizationGroupChatChannelSchema =
-  createOrganizationChannelSchema;
-export type CreateOrganizationGroupChatChannelArgs =
-  CreateOrganizationChannelArgs;
-
-export const updateOrganizationGroupChatChannelSchema =
-  updateOrganizationChannelSchema;
-export type UpdateOrganizationGroupChatChannelArgs =
-  UpdateOrganizationChannelArgs;
-
-export const deleteOrganizationGroupChatChannelSchema =
-  deleteOrganizationChannelSchema;
-export type DeleteOrganizationGroupChatChannelArgs =
-  DeleteOrganizationChannelArgs;
