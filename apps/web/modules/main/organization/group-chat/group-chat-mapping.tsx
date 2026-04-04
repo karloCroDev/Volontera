@@ -111,7 +111,7 @@ export const GroupChatMapping = withReactQueryProvider(() => {
 						<Message
 							key={message.id}
 							date={new Date(message.createdAt)}
-							variant={user?.id === message.author.id ? 'primary' : 'secondary'}
+							variant={user!.id === message.author.id ? 'primary' : 'secondary'}
 							reply={message.parentMessage?.content || undefined}
 							isBeingRepliedTo={replyingTo?.id === message.id}
 							onReplyClick={() =>

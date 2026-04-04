@@ -38,6 +38,7 @@ export const EditChannelDialog: React.FC<{
 			control,
 			formState: { errors },
 			handleSubmit,
+			reset,
 		} = useForm({
 			resolver: zodResolver(updateOrganizationChannelSchema),
 			defaultValues: {
@@ -58,6 +59,7 @@ export const EditChannelDialog: React.FC<{
 						variant: 'success',
 					});
 					setIsOpen(false);
+					reset();
 				},
 				onError: ({ message, title }) => {
 					toast({

@@ -32,6 +32,7 @@ export const CreateChannelDialog: React.FC<{
 		control,
 		formState: { errors },
 		handleSubmit,
+		reset,
 	} = useForm({
 		resolver: zodResolver(createOrganizationChannelSchema),
 		defaultValues: {
@@ -41,6 +42,7 @@ export const CreateChannelDialog: React.FC<{
 		},
 	});
 
+	const [isOpen, setIsOpen] = React.useState(false);
 	const onSubmit = (data: CreateOrganizationChannelArgs) => {
 		mutate(data, {
 			onSuccess: ({ message, title }) => {
@@ -49,12 +51,22 @@ export const CreateChannelDialog: React.FC<{
 					content: message,
 					variant: 'success',
 				});
+				setIsOpen(false);
+				reset();
 			},
-			onError: () => {},
+			onError: ({ message, title }) => {
+				toast({
+					title,
+					content: message,
+					variant: 'error',
+				});
+			},
 		});
 	};
 	return (
 		<Dialog
+			onOpenChange={setIsOpen}
+			isOpen={isOpen}
 			triggerChildren={<Button iconRight={<Plus />}> Create channel</Button>}
 			title="Create new channel"
 			subtitle="Create a new channel to start chatting with your organization members"

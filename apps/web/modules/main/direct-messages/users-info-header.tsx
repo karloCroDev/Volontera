@@ -30,58 +30,60 @@ export const UsersInfoHeader = withReactQueryProvider(() => {
 	const { onlineUsers } = useSocketContext();
 
 	return (
-		user && (
-			<div className="border-input-border flex h-28 items-center gap-4 border-b px-4 sm:px-6 lg:px-8">
-				<LinkAsButton
-					variant="blank"
-					href="/direct-messages"
-					className="block lg:hidden"
-				>
-					<ArrowLeft />
-				</LinkAsButton>
-
-				<Link href={`/profile/${user.id}`}>
-					<Avatar
-						imageProps={{
-							src:
-								`${process.env.NEXT_PUBLIC_AWS_CLOUDFRONT_URL}/${user?.image}` ||
-								undefined,
-						}}
-						size="xl"
+		<div className="border-input-border flex h-28 items-center gap-4 border-b px-4 sm:px-6 lg:px-8">
+			{user && (
+				<>
+					<LinkAsButton
+						variant="blank"
+						href="/direct-messages"
+						className="block lg:hidden"
 					>
-						{convertToFullname({
-							firstname: user.firstName,
-							lastname: user.lastName,
-						})}
-					</Avatar>
-				</Link>
-				<Link href={`/profile/${user.id}`}>
-					{user && (
-						<h4 className="text-lg lg:text-xl">
+						<ArrowLeft />
+					</LinkAsButton>
+
+					<Link href={`/profile/${user.id}`}>
+						<Avatar
+							imageProps={{
+								src:
+									`${process.env.NEXT_PUBLIC_AWS_CLOUDFRONT_URL}/${user?.image}` ||
+									undefined,
+							}}
+							size="xl"
+						>
 							{convertToFullname({
 								firstname: user.firstName,
 								lastname: user.lastName,
 							})}
-						</h4>
-					)}
+						</Avatar>
+					</Link>
+					<Link href={`/profile/${user.id}`}>
+						{user && (
+							<h4 className="text-lg lg:text-xl">
+								{convertToFullname({
+									firstname: user.firstName,
+									lastname: user.lastName,
+								})}
+							</h4>
+						)}
 
-					{user && (
-						<p className="text-muted-foreground">
-							{onlineUsers.includes(user.id)
-								? 'Currently online'
-								: ` Last online: ${formatTime(new Date(user.updatedAt))}`}
-						</p>
-					)}
-				</Link>
-				<DotWithLabel
-					className="ml-auto"
-					label={onlineUsers.includes(user.id) ? 'Online' : 'Offline'}
-					dotProps={{
-						state: onlineUsers.includes(user.id) ? 'success' : 'destructive',
-						size: 'md',
-					}}
-				/>
-			</div>
-		)
+						{user && (
+							<p className="text-muted-foreground">
+								{onlineUsers.includes(user.id)
+									? 'Currently online'
+									: ` Last online: ${formatTime(new Date(user.updatedAt))}`}
+							</p>
+						)}
+					</Link>
+					<DotWithLabel
+						className="ml-auto"
+						label={onlineUsers.includes(user.id) ? 'Online' : 'Offline'}
+						dotProps={{
+							state: onlineUsers.includes(user.id) ? 'success' : 'destructive',
+							size: 'md',
+						}}
+					/>
+				</>
+			)}
+		</div>
 	);
 });

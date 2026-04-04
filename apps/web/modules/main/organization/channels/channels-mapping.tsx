@@ -6,6 +6,7 @@ import Link from 'next/link';
 
 // Hooks
 import { useRetrieveOrganizationChannels } from '@/hooks/data/organization-channel';
+import { useRetrieveOrganizationMember } from '@/hooks/data/organization-managment';
 
 // Components
 import { Container } from '@/components/ui/container';
@@ -13,6 +14,8 @@ import { Container } from '@/components/ui/container';
 // Modules
 import { EditChannelDialog } from '@/modules/main/organization/channels/edit-channel-dialog';
 import { DeleteChannelDialog } from '@/modules/main/organization/channels/delete-channel-dialog';
+
+// Lib
 import { withReactQueryProvider } from '@/lib/utils/react-query';
 
 export const ChannelsMapping = withReactQueryProvider(
@@ -21,6 +24,9 @@ export const ChannelsMapping = withReactQueryProvider(
 			organizationId,
 		});
 
+		const { data: member } = useRetrieveOrganizationMember({
+			organizationId,
+		});
 		return channels.organizationChannels.length > 0 ? (
 			channels.organizationChannels.map((channel) => (
 				<Container
@@ -41,18 +47,21 @@ export const ChannelsMapping = withReactQueryProvider(
 						</div>
 					</Link>
 
-					<div className="flex items-center justify-center gap-6 px-3 opacity-0 transition-opacity group-hover/container:opacity-100">
-						<EditChannelDialog
-							channelId={channel.id}
-							channelName={channel.name}
-							description={channel.description || ''}
-							organizationId={organizationId}
-						/>
-						<DeleteChannelDialog
-							channelId={channel.id}
-							channelName={channel.name}
-						/>
-					</div>
+					{(member?.organizationMember.role === 'ADMIN' ||
+						member?.organizationMember.role === 'OWNER') && (
+						<div className="flex items-center justify-center gap-6 px-3 opacity-0 transition-opacity group-hover/container:opacity-100">
+							<EditChannelDialog
+								channelId={channel.id}
+								channelName={channel.name}
+								description={channel.description || ''}
+								organizationId={organizationId}
+							/>
+							<DeleteChannelDialog
+								channelId={channel.id}
+								channelName={channel.name}
+							/>
+						</div>
+					)}
 				</Container>
 			))
 		) : (

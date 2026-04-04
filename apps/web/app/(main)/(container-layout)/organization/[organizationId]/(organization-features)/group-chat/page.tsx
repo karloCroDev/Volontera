@@ -8,6 +8,8 @@ import { retrieveOrganizationChannelsServer } from '@/lib/server/organization-ch
 import { CreateChannelDialog } from '@/modules/main/organization/channels/add-channel-dialog';
 import { ChannelsMapping } from '@/modules/main/organization/channels/channels-mapping';
 import { dehydrate, QueryClient } from '@tanstack/react-query';
+import { retrieveOrganizationMember } from '@/lib/server/organization-managment';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export default async function GroupChatChannelPage({
 	params,
@@ -17,9 +19,12 @@ export default async function GroupChatChannelPage({
 	}>;
 }) {
 	const { organizationId } = await params;
-	const channels = await retrieveOrganizationChannelsServer(organizationId);
+	const [channels, member] = await Promise.all([
+		retrieveOrganizationChannelsServer(organizationId),
+		retrieveOrganizationMember(organizationId),
+	]);
 
-	if (!channels.success) notFound();
+	if (!channels.success || !member.success) notFound();
 
 	const queryClient = new QueryClient();
 	await queryClient.prefetchQuery({
@@ -36,8 +41,10 @@ export default async function GroupChatChannelPage({
 						All group chat channels that are assigned inside this organization
 					</p>
 				</div>
-
-				<CreateChannelDialog organizationId={organizationId} />
+				{(member.organizationMember.role === 'ADMIN' ||
+					member.organizationMember.role === 'OWNER') && (
+					<CreateChannelDialog organizationId={organizationId} />
+				)}
 			</div>
 
 			<div className="no-scrollbar border-input-border relative flex min-h-[600px] flex-1 flex-col gap-4 overflow-y-scroll rounded-lg border p-4">
