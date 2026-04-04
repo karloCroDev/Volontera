@@ -45,12 +45,11 @@ export const ConversationMapping = withReactQueryProvider(() => {
 			},
 			{ enabled: !!recieverId }
 		);
+	const activeConversationId = conversation?.conversationId;
 
 	// Samo stavljam nove poruke kada se razgovor učita
 	const [messages, setMessages] = React.useState(conversation?.directMessages);
-	React.useEffect(() => {
-		setMessages(conversation?.directMessages);
-	}, [conversation]);
+
 	// Slušam nove poruke preko socketa
 	const { socketGlobal } = useSocketContext();
 	React.useEffect(() => {
@@ -63,10 +62,16 @@ export const ConversationMapping = withReactQueryProvider(() => {
 		};
 
 		const handleMessageDeleted = ({
+			conversationId: payloadConversationId,
 			messageId,
 			messageIds,
 		}: DeleteDirectMessageArgs & { messageIds?: string[] }) => {
-			// If server includes conversationId, ignore deletes from other conversations
+			if (
+				activeConversationId &&
+				payloadConversationId !== activeConversationId
+			)
+				return;
+
 			const idsToDelete = new Set(
 				messageIds?.length ? messageIds : [messageId]
 			);
@@ -85,7 +90,13 @@ export const ConversationMapping = withReactQueryProvider(() => {
 			socketGlobal.off('new-chat', handleNewChat);
 			socketGlobal.off('direct-messages:message-deleted', handleMessageDeleted);
 		};
-	}, [recieverId, replyingTo?.id, setReplyingTo, socketGlobal]);
+	}, [
+		activeConversationId,
+		recieverId,
+		replyingTo?.id,
+		setReplyingTo,
+		socketGlobal,
+	]);
 
 	// Dobivam trenutno ulogiranog korisnika za prikaz varijanti poruka
 	const { data: user } = useSession();
@@ -123,6 +134,7 @@ export const ConversationMapping = withReactQueryProvider(() => {
 								onReplyClick={() =>
 									setReplyingTo({
 										id: message.id,
+										conversationId: message.conversationId,
 										content: message.content,
 									})
 								}
@@ -153,6 +165,7 @@ export const ConversationMapping = withReactQueryProvider(() => {
 								}
 								deleteAction={() =>
 									mutateDeleteMessage({
+										conversationId: message.conversationId,
 										messageId: message.id,
 									})
 								}

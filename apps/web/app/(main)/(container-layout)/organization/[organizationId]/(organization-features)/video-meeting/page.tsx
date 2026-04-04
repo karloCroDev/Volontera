@@ -1,37 +1,48 @@
 // External packages
-import { Volume2 } from 'lucide-react';
+import { dehydrate, QueryClient } from '@tanstack/react-query';
+import { notFound } from 'next/navigation';
 
-// Components
-import { Button } from '@/components/ui/button';
-import { ChatParticipantsWindow } from '@/modules/main/organization/video-meeting/chat-participants-window';
-import { ChatParticipantsProvider } from '@/modules/main/organization/video-meeting/chat-participants-provider';
-import { VideoOptions } from '@/modules/main/organization/video-meeting/video-options';
+// Modules
+import { VideoMeetingRoom } from '@/modules/main/organization/video-meeting/video-meeting-room';
 
-export default async function VideoMeetingPage() {
+// Lib
+import { getSession } from '@/lib/server/user';
+import { getOrganizationDetailsById } from '@/lib/server/organization';
+import { retrieveOrganizationMember } from '@/lib/server/organization-managment';
+import { getOrganizationVideoMeetingState } from '@/lib/server/organization-video-meeting';
+
+export default async function VideoMeetingPage({
+	params,
+}: {
+	params: Promise<{
+		organizationId: string;
+	}>;
+}) {
+	const { organizationId } = await params;
+	const queryClient = new QueryClient();
+
+	const [session, organizationDetailsById, member] = await Promise.all([
+		getSession(),
+		getOrganizationDetailsById(organizationId),
+		retrieveOrganizationMember(organizationId),
+		queryClient.prefetchQuery({
+			queryKey: ['organization-video-meeting', organizationId],
+			queryFn: () => getOrganizationVideoMeetingState(organizationId),
+		}),
+	]);
+
+	if (!session.success || !organizationDetailsById.success || !member.success) {
+		notFound();
+	}
+
+	const dehydratedState = dehydrate(queryClient);
+
 	return (
-		<ChatParticipantsProvider>
-			<div className="flex h-full flex-col gap-4">
-				<div className="border-input-border relative flex-1 rounded-lg border shadow-lg">
-					<div className="absolute bottom-4 left-4">
-						{/* add slider for audio */}
-						<Button variant="ghost" className="p-2" isFullyRounded>
-							<Volume2 />
-						</Button>
-					</div>
-
-					<ChatParticipantsWindow />
-				</div>
-
-				<div className="flex h-20 gap-4 overflow-x-scroll">
-					<div className="flex flex-1 gap-4">
-						<div className="border-input-border relative size-20 rounded border shadow-lg" />
-					</div>
-
-					<hr className="bg-input-border h-full w-px border-0" />
-
-					<VideoOptions />
-				</div>
-			</div>
-		</ChatParticipantsProvider>
+		<VideoMeetingRoom
+			organizationId={organizationId}
+			currentUser={session}
+			userRole={member.organizationMember.role}
+			dehydratedState={dehydratedState}
+		/>
 	);
 }

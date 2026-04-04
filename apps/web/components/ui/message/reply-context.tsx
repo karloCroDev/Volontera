@@ -5,6 +5,7 @@ import * as React from 'react';
 
 type ReplyingToMessage = {
 	id: string;
+	conversationId?: string;
 	content: string;
 };
 

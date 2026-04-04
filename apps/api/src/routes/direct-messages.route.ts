@@ -72,7 +72,7 @@ directMessagesRoutes.post(
 );
 
 directMessagesRoutes.delete(
-  "/:messageId",
+  "/:conversationId/:messageId",
   validate({
     schema: deleteDirectMessageSchema,
     responseOutput: "toast",

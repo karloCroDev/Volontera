@@ -31,11 +31,13 @@ export const conversationSchema = z.object({
 export type ConversationArgs = z.infer<typeof conversationSchema>;
 
 export const deleteDirectMessageSchema = z.object({
+  conversationId: z.cuid(),
   messageId: z.cuid(),
 });
 export type DeleteDirectMessageArgs = z.infer<typeof deleteDirectMessageSchema>;
 
 export const replyMessageSchema = z.object({
+  conversationId: z.cuid(),
   content: z.string().min(1).max(200),
   parentMessageId: z.cuid(),
   imageKeys: z.array(z.string()).optional(),
@@ -43,6 +45,7 @@ export const replyMessageSchema = z.object({
 export type ReplyMessageArgs = z.infer<typeof replyMessageSchema>;
 
 export const createReplySchema = z.object({
+  conversationId: z.cuid(),
   content: z.string().min(1).max(200),
   parentMessageId: z.cuid(),
   images: uploadImageSchema.shape.image.array().optional(),

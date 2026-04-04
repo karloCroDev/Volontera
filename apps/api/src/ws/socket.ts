@@ -38,12 +38,35 @@ io.on("connection", (socket) => {
     socket.join(`organization:${organizationId}`);
   });
 
+  socket.on("organization-video-meeting-room", (organizationId: string) => {
+    const prevOrganizationId = socket.data.videoMeetingOrganizationId as
+      | string
+      | undefined;
+
+    if (prevOrganizationId && prevOrganizationId !== organizationId) {
+      socket.leave(`organization:${prevOrganizationId}:video-meeting`);
+    }
+
+    socket.data.videoMeetingOrganizationId = organizationId;
+    socket.join(`organization:${organizationId}:video-meeting`);
+  });
+
   socket.on("organization-group-chat-room:leave", (organizationId: string) => {
     socket.leave(`organization:${organizationId}`);
     if (socket.data.organizationId === organizationId) {
       delete socket.data.organizationId;
     }
   });
+
+  socket.on(
+    "organization-video-meeting-room:leave",
+    (organizationId: string) => {
+      socket.leave(`organization:${organizationId}:video-meeting`);
+      if (socket.data.videoMeetingOrganizationId === organizationId) {
+        delete socket.data.videoMeetingOrganizationId;
+      }
+    },
+  );
 
   // Handelam samo kada se korisnik disconnecta, jer npr.
   socket.on("disconnect", () => {

@@ -79,9 +79,10 @@ export const MessageForm = withReactQueryProvider(() => {
 
 		// Ovako moram handleati reply opciju jer ovisi kojem apiu ću poslati podatke, a oba imaju različite zahtjeve za payload (nije idealno, ali ne vidim jednostavnije rješenje) paa moram testirati zadovoljavajucu zod schemu
 		if (isReplying) {
-			if (!replyingTo?.id) return;
+			if (!replyingTo?.id || !replyingTo.conversationId) return;
 
 			const parsedReply = createReplySchema.safeParse({
+				conversationId: replyingTo.conversationId,
 				content: formData.content,
 				parentMessageId: replyingTo.id,
 				...(imagePayload.length > 0 ? { images: imagePayload } : {}),

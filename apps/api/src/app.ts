@@ -27,6 +27,7 @@ import { paymentRoutes } from "@/routes/payment.route";
 import { notificationRoutes } from "@/routes/notification.route";
 import { imageRoutes } from "@/routes/image.route";
 import { organizationRoutes } from "@/routes/organization.route";
+import { organizationVideoMeetingRoutes } from "@/routes/organization-video-meeting.route";
 import { searchRoutes } from "@/routes/search.route";
 import { postRoutes } from "@/routes/post.route";
 import { commentRoutes } from "@/routes/comment.route";
@@ -110,6 +111,16 @@ app.use(
     limit: 35,
   }),
   organizationRoutes,
+);
+app.use(
+  "/organization-video-meeting",
+  authMiddleware,
+  hasRoleMiddleware,
+  rateLimitMiddleware({
+    additionalTags: ["organization-video-meeting"],
+    limit: 50,
+  }),
+  organizationVideoMeetingRoutes,
 );
 app.use(
   "/organization-managment",
