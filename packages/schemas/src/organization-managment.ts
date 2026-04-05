@@ -26,6 +26,13 @@ export const leaveOrganizationSchema = z
   .extend(organizationIdSchema.shape);
 export type LeaveOrganizationArgs = z.infer<typeof leaveOrganizationSchema>;
 
+export const leaveOrganizationReasonSchema = z.object({
+  reason: z.string().min(1).or(z.literal("")).optional(),
+});
+export type LeaveOrganizationReasonArgs = z.infer<
+  typeof leaveOrganizationReasonSchema
+>;
+
 export const demoteOrPromoteOrganizationMemberSchema = z.object({
   organizationId: z.cuid(),
   userId: z.cuid(),
@@ -56,6 +63,11 @@ export type AcceptOrDeclineUsersRequestToJoinOrganizationArgs = z.infer<
 export const retrieveDataAboutOrganizationSchema = organizationIdSchema;
 export type RetrieveDataAboutOrganizationArgs = z.infer<
   typeof retrieveDataAboutOrganizationSchema
+>;
+
+export const retrieveAllOrganizationLeaveFeedbacksSchema = organizationIdSchema;
+export type RetrieveAllOrganizationLeaveFeedbacksArgs = z.infer<
+  typeof retrieveAllOrganizationLeaveFeedbacksSchema
 >;
 
 export const updateOrganizationSchema = organizationIdSchema.extend({

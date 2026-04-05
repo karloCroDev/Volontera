@@ -128,7 +128,7 @@ export const ConversationMapping = withReactQueryProvider(
 									key={message.id}
 									variant={
 										// Preftcham korisnika
-										message.author.id === user!.id ? 'primary' : 'secondary'
+										message.author.id === user?.id ? 'primary' : 'secondary'
 									}
 									date={new Date(message.createdAt)}
 									reply={message.parentMessage?.content || undefined}
