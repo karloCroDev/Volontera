@@ -6,8 +6,6 @@ import { fileURLToPath } from "node:url";
 import {
   OrganizationJoinRequestStatus,
   OrganizationMemberRole,
-  OrganizationTasksAndCalendarStatus,
-  SenderType,
 } from "../generated/prisma";
 
 // Load env from common monorepo locations (supports running from workspace root or package folder)
@@ -64,9 +62,6 @@ const ORG_IMAGE_BY_NAME: Record<
   },
 };
 
-const ONE_DAY_MS = 24 * 60 * 60 * 1000;
-const toIsoDate = (d: Date) => d.toISOString().slice(0, 10);
-
 async function clearDatabase() {
   await prisma.postCommentsReplyLikes.deleteMany();
   await prisma.postCommentsLikes.deleteMany();
@@ -76,9 +71,9 @@ async function clearDatabase() {
   await prisma.postImages.deleteMany();
   await prisma.post.deleteMany();
 
-  await prisma.organizationGroupChatMessageImage.deleteMany();
-  await prisma.organizationGroupChatMessage.deleteMany();
-  await prisma.organizationGroupChat.deleteMany();
+  await prisma.organizationChannelChatMessageImage.deleteMany();
+  await prisma.organizationChannelChatMessage.deleteMany();
+  await prisma.organizationChannels.deleteMany();
 
   await prisma.organizatonMembersAsiggnedToTask.deleteMany();
   await prisma.organizationTaskInfo.deleteMany();
@@ -229,14 +224,6 @@ async function main() {
         include: { organizationInfo: { include: { additionalLinks: true } } },
       });
     }),
-  );
-
-  const orgChats = await Promise.all(
-    organizations.map((org) =>
-      prisma.organizationGroupChat.create({
-        data: { organizationId: org.id },
-      }),
-    ),
   );
 
   const orgMembersByOrgId = new Map<
@@ -503,197 +490,6 @@ async function main() {
       }
     }
   }
-
-  // ---------- Group chat messages ----------
-  for (let i = 0; i < organizations.length; i++) {
-    const org = organizations[i]!;
-    const chat = orgChats[i]!;
-    const members = orgMembersByOrgId.get(org.id)!.members;
-    const memberUsers = members.map(
-      (m) => users.find((u) => u.id === m.userId)!,
-    );
-
-    const messages = [
-      "Reminder: the event is tomorrow - meet at 8:30 AM.",
-      "We still need 2 people for logistics (equipment transport).",
-      "If anyone has extra gloves or trash bags, please let us know.",
-      "Thanks everyone for showing up - let's leave the place cleaner than we found it.",
-    ];
-
-    for (const content of messages) {
-      const author = faker.helpers.arrayElement(memberUsers);
-      await prisma.organizationGroupChatMessage.create({
-        data: {
-          groupChatId: chat.id,
-          authorId: author.id,
-          content,
-        },
-      });
-    }
-  }
-
-  // ---------- Direct messages ----------
-  const dmA = volunteers[0]!;
-  const dmB = volunteers[1]!;
-  const pairKey = [dmA.id, dmB.id].sort().join(":");
-  const conversation = await prisma.directMessagesConversations.create({
-    data: {
-      pairKey,
-      lastMessage: "See you at the event - thanks!",
-    },
-  });
-  await prisma.conversationParticipants.createMany({
-    data: [
-      { conversationId: conversation.id, userId: dmA.id },
-      { conversationId: conversation.id, userId: dmB.id },
-    ],
-  });
-  const dm1 = await prisma.directMessages.create({
-    data: {
-      conversationId: conversation.id,
-      authorId: dmA.id,
-      content:
-        "Hey! Are you free this Saturday for the cleanup? I can pick you up on the way.",
-    },
-  });
-  await prisma.directMessagesImages.create({
-    data: {
-      messageId: dm1.id,
-      imageUrl: faker.image.urlLoremFlickr({ category: "volunteer" }),
-    },
-  });
-  await prisma.directMessages.create({
-    data: {
-      conversationId: conversation.id,
-      authorId: dmB.id,
-      content: "Yes, that works! Thanks - I'll send you my location.",
-    },
-  });
-
-  // ---------- Help + Notifications ----------
-  for (const u of users) {
-    await prisma.help.createMany({
-      data: [
-        {
-          userId: u.id,
-          senderType: SenderType.USER,
-          content: "Can you suggest volunteering ideas for this month?",
-        },
-      ],
-    });
-
-    await prisma.notification.createMany({
-      data: [
-        {
-          userId: u.id,
-          content: "A new volunteering opportunity was posted near you.",
-          isRead: faker.datatype.boolean(),
-        },
-        {
-          userId: u.id,
-          content: "Reminder: complete your profile to apply more easily.",
-          isRead: faker.datatype.boolean(),
-        },
-      ],
-    });
-  }
-
-  // ---------- Tasks ----------
-  for (const org of organizations) {
-    const board = await prisma.organizationTasksBoards.create({
-      data: {
-        organizationId: org.id,
-        title: "Volunteer operations board",
-      },
-    });
-    const members = orgMembersByOrgId.get(org.id)!.members;
-    const boardAuthorId = org.ownerId;
-
-    const taskSpecs = [
-      {
-        title: "Coordinate volunteers for the weekend event",
-        description:
-          "Responsibilities: volunteer list, outreach, role assignment, and attendance confirmation.",
-        status: OrganizationTasksAndCalendarStatus.MEDIUM_PRIORITY,
-      },
-      {
-        title: "Prepare equipment and safety brief",
-        description:
-          "Prepare gloves, bags, first-aid kit, and a short safety checklist.",
-        status: OrganizationTasksAndCalendarStatus.HIGH_PRIORITY,
-      },
-      {
-        title: "Publish recap after the event",
-        description:
-          "Write a short summary: volunteer count, impact metrics, and next steps.",
-        status: OrganizationTasksAndCalendarStatus.LOW_PRIORITY,
-      },
-    ];
-
-    for (const spec of taskSpecs) {
-      const task = await prisma.organizationTask.create({
-        data: {
-          organizationId: org.id,
-          organizationTasksBoardId: board.id,
-          title: spec.title,
-          dueDate: toIsoDate(
-            new Date(
-              Date.now() + faker.number.int({ min: 3, max: 21 }) * ONE_DAY_MS,
-            ),
-          ),
-          status: spec.status,
-          authorId: boardAuthorId,
-        },
-      });
-      const info = await prisma.organizationTaskInfo.create({
-        data: {
-          organizationTaskId: task.id,
-          description: spec.description,
-        },
-      });
-
-      // Assign 2 members to the task card
-      const assignees = faker.helpers.shuffle(members).slice(0, 2);
-      for (const m of assignees) {
-        await prisma.organizatonMembersAsiggnedToTask.create({
-          data: {
-            organizationMemberId: m.id,
-            organizationTaskInfoId: info.id,
-          },
-        });
-      }
-
-      // Questions
-      const questionAuthors = faker.helpers.shuffle(members).slice(0, 2);
-      for (const qa of questionAuthors) {
-        await prisma.organizationTaskQuestions.create({
-          data: {
-            organizationTaskId: task.id,
-            authorId: qa.userId,
-            question: faker.helpers.arrayElement([
-              "What are the on-site roles?",
-              "Do we have a bad-weather plan?",
-              "Who coordinates transport and where do we meet?",
-            ]),
-          },
-        });
-      }
-    }
-
-    // Leave feedback example (optional suggestions filled)
-    const feedbackAuthor = faker.helpers.arrayElement(volunteers);
-    await prisma.organizationLeaveFeedback.create({
-      data: {
-        organizationId: org.id,
-        authorId: feedbackAuthor.id,
-        reason: "Schedule change - I can't participate regularly right now.",
-        suggestions:
-          "A monthly calendar + a short pre-event checklist would be very helpful.",
-      },
-    });
-  }
-
-  // (No special admin user required in this dataset)
 }
 
 main()
