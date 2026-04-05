@@ -5,6 +5,7 @@ import { catchError } from '@/lib/utils/error';
 // Schemas
 import {
 	CreateOrganizationArgs,
+	GetOrganizationDetailsByIdArgs,
 	ToggleFollowOrganizationArgs,
 	SendRequestToJoinOrganizationArgs,
 } from '@repo/schemas/organization';
@@ -49,6 +50,17 @@ export async function listOrganizationsUser() {
 export async function listOrganizationsOrganizator() {
 	try {
 		const res = await API().get('/organization/list-organizations-organizator');
+		return res.data;
+	} catch (err) {
+		catchError(err);
+	}
+}
+
+export async function getOrganizationDetailsById({
+	organizationId,
+}: GetOrganizationDetailsByIdArgs) {
+	try {
+		const res = await API().get(`/organization/id/${organizationId}`);
 		return res.data;
 	} catch (err) {
 		catchError(err);
