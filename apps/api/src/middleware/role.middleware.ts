@@ -1,6 +1,13 @@
 // External packages
 import { Request, Response, NextFunction } from "express";
 
+// Permissons
+import {
+  isAdminAccount,
+  isOrganizationAccount,
+  isRegularUserAccount,
+} from "@repo/permissons/index";
+
 export function userMiddleware(
   req: Request,
   res: Response,
@@ -8,8 +15,10 @@ export function userMiddleware(
 ) {
   const { role, onboardingFinished } = req.user;
 
-  if (role !== "USER" || !onboardingFinished) {
-    return res.status(400).json({ message: "Forbidden: Users only" });
+  if (isRegularUserAccount(role) || !onboardingFinished) {
+    return res
+      .status(400)
+      .json({ success: false, message: "Forbidden: Users only" });
   }
 
   next();
@@ -22,8 +31,10 @@ export function organizationMiddleware(
 ) {
   const { role, onboardingFinished } = req.user;
 
-  if (role !== "ORGANIZATION" || !onboardingFinished) {
-    return res.status(400).json({ message: "Forbidden: Organizations only" });
+  if (isOrganizationAccount(role) || !onboardingFinished) {
+    return res
+      .status(400)
+      .json({ success: false, message: "Forbidden: Organizations only" });
   }
 
   next();
@@ -33,10 +44,12 @@ export async function superAdminMiddleware(
   res: Response,
   next: NextFunction,
 ) {
-  const { role } = req.user;
+  const { role, onboardingFinished } = req.user;
 
-  if (role !== "ADMIN") {
-    return res.status(400).json({ message: "Forbidden: Super Admins only" });
+  if (isAdminAccount(role) || !onboardingFinished) {
+    return res
+      .status(400)
+      .json({ success: false, message: "Forbidden: Super Admins only" });
   }
 
   next();
@@ -51,6 +64,7 @@ export async function hasRoleMiddleware(
 
   if (!role) {
     return res.status(400).json({
+      success: false,
       message:
         "Please choose application role before fulffiling additional details",
     });

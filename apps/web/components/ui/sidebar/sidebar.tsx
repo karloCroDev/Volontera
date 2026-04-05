@@ -10,12 +10,6 @@ import {
 	Settings,
 	X,
 } from 'lucide-react';
-import {
-	Dialog,
-	DialogTrigger,
-	Modal,
-	ModalOverlay,
-} from 'react-aria-components';
 import { twJoin } from 'tailwind-merge';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -33,128 +27,129 @@ import { Icon } from '@/components/ui/icon';
 
 // Types
 import { UserResponse } from '@repo/types/user';
+import { isAdminAccount } from '@repo/permissons/index';
 
 export const Sidebar: React.FC<{
 	user: UserResponse;
 }> = ({ /* eslint react/prop-types: 0 */ user }) => {
-	const { desktopOpen, mobileOpen, setMobileOpen, setDesktopOpen } =
-		useSidebarContext();
+	const { desktopOpen, setDesktopOpen } = useSidebarContext();
 
 	const pathname = usePathname();
 
 	return (
-		<>
-			<aside
-				className={twJoin(
-					`border-input-border relative mx-10 my-7 hidden h-[calc(100vh-28px-28px)] rounded-lg border p-4 shadow transition-all duration-300 lg:flex lg:flex-col`,
-					desktopOpen && 'w-80',
-					!desktopOpen && 'w-36 items-center'
-				)}
+		<aside
+			className={twJoin(
+				`border-input-border relative mx-10 my-7 hidden h-[calc(100vh-28px-28px)] rounded-lg border p-4 shadow transition-all duration-300 lg:flex lg:flex-col`,
+				desktopOpen && 'w-80',
+				!desktopOpen && 'w-36 items-center'
+			)}
+		>
+			<Button
+				variant="outline"
+				colorScheme="bland"
+				isFullyRounded
+				onClick={() => setDesktopOpen((prev) => !prev)}
+				className="bg-background top-22 absolute -right-6 p-2"
 			>
-				<Button
-					variant="outline"
-					colorScheme="bland"
-					isFullyRounded
-					onClick={() => setDesktopOpen((prev) => !prev)}
-					className="bg-background top-22 absolute -right-6 p-2"
-				>
-					<ChevronLast
-						className={twJoin(
-							'text-muted-foreground transition-transform duration-500',
-							desktopOpen && 'rotate-180'
-						)}
-					/>
-				</Button>
+				<ChevronLast
+					className={twJoin(
+						'text-muted-foreground transition-transform duration-500',
+						desktopOpen && 'rotate-180'
+					)}
+				/>
+			</Button>
 
-				{desktopOpen ? (
-					<Volontera className="mx-4 mt-4" />
-				) : (
-					<Link href="/auth/login" className="mt-4">
-						<Icon name="logo" className="size-20" />
-					</Link>
-				)}
-				<hr className="bg-input-border my-6 h-px w-full border-0" />
-				<div
-					className={`no-scrollbar flex flex-col overflow-y-scroll ${desktopOpen ? 'gap-4' : 'gap-6'}`}
-				>
-					<Link href="/home">
-						{desktopOpen ? (
-							<SidebarItem
-								iconLeft={<Home className="size-5" />}
-								isSelected={pathname.includes('/home')}
-							>
-								Home
-							</SidebarItem>
-						) : (
-							<SidebarItem
-								isSelected={pathname.includes('/home')}
-								size="lg"
-								isFullyRounded
-								className="p-4"
-							>
-								<Home className="size-8" />
-							</SidebarItem>
-						)}
-					</Link>
-					<Organizations />
+			{desktopOpen ? (
+				<Volontera className="mx-4 mt-4" />
+			) : (
+				<Link href="/auth/login" className="mt-4">
+					<Icon name="logo" className="size-20" />
+				</Link>
+			)}
+			<hr className="bg-input-border my-6 h-px w-full border-0" />
+			<div
+				className={`no-scrollbar flex flex-col overflow-y-scroll ${desktopOpen ? 'gap-4' : 'gap-6'}`}
+			>
+				<Link href="/home">
+					{desktopOpen ? (
+						<SidebarItem
+							iconLeft={<Home className="size-5" />}
+							isSelected={pathname.includes('/home')}
+						>
+							Home
+						</SidebarItem>
+					) : (
+						<SidebarItem
+							isSelected={pathname.includes('/home')}
+							size="lg"
+							isFullyRounded
+							className="p-4"
+						>
+							<Home className="size-8" />
+						</SidebarItem>
+					)}
+				</Link>
+				<Organizations />
 
-					<Link href="/direct-messages">
-						{desktopOpen ? (
-							<SidebarItem
-								iconLeft={<MessageCircleMore className="size-5" />}
-								isSelected={pathname.includes('/direct-messages')}
-							>
-								Direct messages
-							</SidebarItem>
-						) : (
-							<SidebarItem
-								size="lg"
-								isFullyRounded
-								className="p-4"
-								isSelected={pathname.includes('/direct-messages')}
-							>
-								<MessageCircleMore className="size-8" />
-							</SidebarItem>
-						)}
-					</Link>
-					<Link href="/settings">
-						{desktopOpen ? (
-							<SidebarItem
-								iconLeft={<Settings className="size-5" />}
-								isSelected={pathname.includes('/settings')}
-							>
-								Settings
-							</SidebarItem>
-						) : (
-							<SidebarItem
-								size="lg"
-								isFullyRounded
-								className="p-4"
-								isSelected={pathname.includes('/settings')}
-							>
-								<Settings className="size-8" />
-							</SidebarItem>
-						)}
-					</Link>
-					<Link href="/help">
-						{desktopOpen ? (
-							<SidebarItem
-								iconLeft={<HelpCircle className="size-5" />}
-								isSelected={pathname.includes('/help')}
-							>
-								Help
-							</SidebarItem>
-						) : (
-							<SidebarItem
-								size="lg"
-								isFullyRounded
-								className="p-4"
-								isSelected={pathname.includes('/help')}
-							>
-								<HelpCircle className="size-8" />
-							</SidebarItem>
-						)}
-					</Link>
+				<Link href="/direct-messages">
+					{desktopOpen ? (
+						<SidebarItem
+							iconLeft={<MessageCircleMore className="size-5" />}
+							isSelected={pathname.includes('/direct-messages')}
+						>
+							Direct messages
+						</SidebarItem>
+					) : (
+						<SidebarItem
+							size="lg"
+							isFullyRounded
+							className="p-4"
+							isSelected={pathname.includes('/direct-messages')}
+						>
+							<MessageCircleMore className="size-8" />
+						</SidebarItem>
+					)}
+				</Link>
+				<Link href="/settings">
+					{desktopOpen ? (
+						<SidebarItem
+							iconLeft={<Settings className="size-5" />}
+							isSelected={pathname.includes('/settings')}
+						>
+							Settings
+						</SidebarItem>
+					) : (
+						<SidebarItem
+							size="lg"
+							isFullyRounded
+							className="p-4"
+							isSelected={pathname.includes('/settings')}
+						>
+							<Settings className="size-8" />
+						</SidebarItem>
+					)}
+				</Link>
+				<Link href="/help">
+					{desktopOpen ? (
+						<SidebarItem
+							iconLeft={<HelpCircle className="size-5" />}
+							isSelected={pathname.includes('/help')}
+						>
+							Help
+						</SidebarItem>
+					) : (
+						<SidebarItem
+							size="lg"
+							isFullyRounded
+							className="p-4"
+							isSelected={pathname.includes('/help')}
+						>
+							<HelpCircle className="size-8" />
+						</SidebarItem>
+					)}
+				</Link>
+
+				{isAdminAccount(user.role) && (
 					<Link href="/dashboard">
 						{desktopOpen ? (
 							<SidebarItem
@@ -174,81 +169,9 @@ export const Sidebar: React.FC<{
 							</SidebarItem>
 						)}
 					</Link>
-				</div>
-				<UserInformation user={user} />
-			</aside>
-
-			{/* Mobile sidebar */}
-
-			<DialogTrigger isOpen={mobileOpen} onOpenChange={setMobileOpen}>
-				<ModalOverlay
-					isDismissable
-					className="fixed inset-0 isolate z-20 flex items-center justify-center overflow-y-auto bg-black/25 text-center backdrop-blur"
-				>
-					<Modal
-						className={({ isEntering, isExiting }) =>
-							twJoin(
-								'bg-muted !z-max border-input-border absolute left-0 top-0 m-2 h-[calc(100%-16px)] w-3/4 rounded-xl border px-2 py-4 duration-300 md:lg:w-1/4',
-								isEntering && 'animate-in slide-in-from-left',
-								isExiting && 'animate-out slide-out-to-left'
-							)
-						}
-					>
-						<Dialog className="flex h-full flex-col">
-							<div className="mb-4 flex items-center justify-between px-2">
-								<Volontera />
-
-								<Button slot="close" isFullyRounded className="p-2">
-									<X />
-								</Button>
-							</div>
-							<hr className="bg-input-border mb-6 h-px border-0" />
-
-							<div className="flex w-3/4 flex-col gap-2 md:w-3/5">
-								<div className="flex flex-1 flex-col gap-4">
-									<Link href="/home">
-										<SidebarItem
-											iconLeft={<Home className="size-5" />}
-											isSelected={pathname.includes('/home')}
-										>
-											Home
-										</SidebarItem>
-									</Link>
-									<Organizations />
-								</div>
-
-								<Link href="/direct-messages">
-									<SidebarItem
-										iconLeft={<MessageCircleMore className="size-5" />}
-										isSelected={pathname.includes('/direct-messages')}
-									>
-										Direct messages
-									</SidebarItem>
-								</Link>
-								<Link href="/settings">
-									<SidebarItem
-										iconLeft={<Settings className="size-5" />}
-										isSelected={pathname.includes('/settings')}
-									>
-										Settings
-									</SidebarItem>
-								</Link>
-								<Link href="/help">
-									<SidebarItem
-										iconLeft={<HelpCircle className="size-5" />}
-										isSelected={pathname.includes('/help')}
-									>
-										Help
-									</SidebarItem>
-								</Link>
-							</div>
-							<div className="mt-auto">
-								<UserInformation user={user} />
-							</div>
-						</Dialog>
-					</Modal>
-				</ModalOverlay>
-			</DialogTrigger>
-		</>
+				)}
+			</div>
+			<UserInformation user={user} />
+		</aside>
 	);
 };

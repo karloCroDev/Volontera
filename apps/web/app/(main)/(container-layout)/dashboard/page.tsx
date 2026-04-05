@@ -20,11 +20,22 @@ import { DashboardDurationDays } from '@repo/types/dashboard';
 import { PieChart } from '@/components/ui/charts/pie-chart';
 import { BarChart } from '@/components/ui/charts/bar-chart';
 
+// Lib
+import { getSession } from '@/lib/server/user';
+import { redirect } from 'next/navigation';
+
+// Permissons
+import { isAdminAccount } from '@repo/permissons/index';
+
 export default async function DashboardPage({
 	searchParams,
 }: {
 	searchParams: Promise<{ durationDays?: string }>;
 }) {
+	const user = await getSession();
+
+	if (!user.success || !isAdminAccount(user.role)) redirect('/home');
+
 	const queryClient = new QueryClient();
 	await queryClient.prefetchQuery({
 		queryKey: ['dashboard', 'users', { offset: 0, limit: 8, filter: null }],
