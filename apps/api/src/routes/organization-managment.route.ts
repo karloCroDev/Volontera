@@ -7,6 +7,7 @@ import {
   retrieveAllRequestsToJoinOrganizationController,
   retrieveAllUsersInOrganizationController,
   retrieveOrganizationMemberController,
+  retrieveAllOrganizationLeaveFeedbacksController,
   acceptOrDeclineUsersRequestToJoinOrganizationController,
   demoteOrPromoteOrganizationMemberController,
   removeOrganizationMemberController,
@@ -24,8 +25,10 @@ import {
   retirveAllRequestsToJoinOrganizationSchema,
   removeOrganizationMemberSchema,
   retrieveAllMembersInOrganizationSchema,
+  retrieveAllOrganizationLeaveFeedbacksSchema,
   retrieveOrganizationMemberSchema,
   leaveOrganizationSchema,
+  leaveOrganizationReasonSchema,
   retrieveDataAboutOrganizationSchema,
   updateOrganizationSchema,
 } from "@repo/schemas/organization-managment";
@@ -88,12 +91,31 @@ organizationManagmentRoutes.delete(
     type: "params",
     responseOutput: "form",
   }),
+  validate({
+    schema: leaveOrganizationReasonSchema,
+    type: "body",
+    responseOutput: "form",
+  }),
   organizationRolesMiddleware({
     type: "params",
     aquiredRoles: ["MEMBER", "ADMIN"],
     ownerHasAllAccess: false,
   }),
   leaveOrganizationController,
+);
+
+organizationManagmentRoutes.get(
+  "/leave-feedbacks/:organizationId",
+  validate({
+    schema: retrieveAllOrganizationLeaveFeedbacksSchema,
+    type: "params",
+    responseOutput: "server",
+  }),
+  proPlanUserMiddleware,
+  organizationRolesMiddleware({
+    type: "params",
+  }),
+  retrieveAllOrganizationLeaveFeedbacksController,
 );
 
 // Admin

@@ -183,6 +183,7 @@ export async function leaveOrganization({
   reason?: string;
 }) {
   return prisma.$transaction(async (tx) => {
+    // TODO: Vidi hoću li ostaviti korisnikove stare informacije
     await tx.organizationJoinRequest.deleteMany({
       where: {
         organizationId,
@@ -256,5 +257,21 @@ export async function retrieveDataAboutOrganization(
       memberUserCount,
       totalUserCount,
     };
+  });
+}
+
+export async function retrieveAllOrganizationLeaveFeedbacks(
+  organizationId: Organization["id"],
+) {
+  return prisma.organizationLeaveFeedback.findMany({
+    where: {
+      organizationId,
+    },
+    include: {
+      author: true,
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
   });
 }

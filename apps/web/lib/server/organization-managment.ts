@@ -4,6 +4,7 @@ import { serverFetch } from '@/lib/utils/server-fetch';
 // Types
 import { ServerHandleResponse } from '@repo/types/general';
 import {
+	RetrieveAllOrganizationLeaveFeedbacksResponse,
 	RetirveAllRequestsToJoinOrganizationResponse,
 	RetrieveAllMembersInOrganizationResponse,
 	RetrieveDataAboutOrganizationResponse,
@@ -49,5 +50,19 @@ export async function retrieveDataAboutOrganization(
 	return await serverFetch({
 		url: `organization-managment/data/${organizationId}`,
 		init: { next: { tags: ['organization-data'] }, cache: 'no-store' },
+	});
+}
+
+export async function retrieveAllOrganizationLeaveFeedbacks(
+	organizationId: string
+): Promise<
+	RetrieveAllOrganizationLeaveFeedbacksResponse | ServerHandleResponse<false>
+> {
+	return await serverFetch({
+		url: `organization-managment/leave-feedbacks/${organizationId}`,
+		init: {
+			next: { tags: ['organization-leave-feedbacks'] },
+			cache: 'no-store',
+		},
 	});
 }
