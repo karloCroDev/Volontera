@@ -58,7 +58,7 @@ export default async function DashboardPage({
 	// KPI cards data
 	const metricCards = [
 		{
-			title: 'Total volunteers',
+			title: 'Total volunteers (standard users)',
 			total: metrics.success ? metrics.totalVolunteers : 0,
 			seriesKey: 'totalVolunteers' as const,
 		},
@@ -88,11 +88,11 @@ export default async function DashboardPage({
 
 	const barChartData = [
 		{
-			name: 'Volunteers monthly',
+			name: 'Volunteers (standard users) monthly',
 			value: metrics.success ? metrics.usersWithPaidPlan : 0,
 		},
 		{
-			name: 'Volunteers yearly',
+			name: 'Volunteers (standard users) yearly',
 			value: metrics.success ? metrics.userWithYearlyPaidPlan : 0,
 		},
 		{

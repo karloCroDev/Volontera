@@ -7,7 +7,6 @@ import { ChevronLeft, ChevronRight, SearchIcon } from 'lucide-react';
 
 // Components
 import { Button } from '@/components/ui/button';
-import { Avatar } from '@/components/ui/avatar';
 import { Input } from '@/components/ui/input';
 import { SelectContainer, SelectItem } from '@/components/ui/select';
 
@@ -17,7 +16,6 @@ import { useDebounce } from '@/hooks/utils/useDebounce';
 
 // Lib
 import { withReactQueryProvider } from '@/lib/utils/react-query';
-import { convertToFullname } from '@/lib/utils/converter';
 
 // Modules
 import {
@@ -138,7 +136,7 @@ const VolunteersSelect = ({
 			isProportionalWidth
 		>
 			<SelectItem value="all">Everyone</SelectItem>
-			<SelectItem value="users">Volunteers</SelectItem>
+			<SelectItem value="users">Users</SelectItem>
 			<SelectItem value="organizators">Organizators</SelectItem>
 		</SelectContainer>
 	);

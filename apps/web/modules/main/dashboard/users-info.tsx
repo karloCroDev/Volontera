@@ -71,7 +71,7 @@ export const UserInfo: React.FC<{
 			</div>
 			<div className="flex items-center gap-8">
 				<p className="text-muted-foreground ml-auto text-sm">
-					{user.role === 'ORGANIZATION' ? 'Organizator' : 'Volunteer'}
+					{user.role === 'ORGANIZATION' ? 'Organizator' : 'User'}
 				</p>
 				<Button
 					size="xs"
