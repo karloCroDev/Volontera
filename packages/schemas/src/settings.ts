@@ -3,25 +3,24 @@ import { z } from "zod";
 
 export const settingsSchema = z
   .object({
-    firstName: z.string().min(2).max(8).or(z.literal("")), // CLUTCH
-    lastName: z.string().min(2).max(8).or(z.literal("")), // CLUTCH
+    firstName: z.string().min(2).max(16).or(z.literal("")),
+    lastName: z.string().min(2).max(16).or(z.literal("")),
 
-    image: z.object({
-      filename: z.string(),
-      contentType: z.string(),
-      size: z.number(),
-      deleteImage: z.string().or(z.literal("")).optional(),
-    }),
+    // Keep image payload permissive on client-side; server decides upload/delete logic.
+    image: z
+      .object({
+        filename: z.string().optional(),
+        contentType: z.string().optional(),
+        size: z.number().optional(),
+        deleteImage: z.string().nullable().optional(),
+      })
+      .optional(),
     DOB: z.string().or(z.literal("")),
     bio: z.string().min(2).or(z.literal("")),
     workOrSchool: z.string().min(2).max(20).or(z.literal("")),
     address: z.string().min(2).max(50).or(z.literal("")),
   })
-  .partial()
-  .refine(
-    (obj) => Object.values(obj).some((v) => v !== undefined && v !== ""),
-    { message: "At least one field must be provided", path: ["root"] },
-  );
+  .partial();
 
 export type SettingsArgs = z.infer<typeof settingsSchema>;
 

@@ -44,9 +44,28 @@ export async function changeProfileInfoService({
     imagePayload.image = "";
   }
 
+  const hasUploadMetadata = Boolean(
+    data.image &&
+      "filename" in data.image &&
+      data.image.filename &&
+      "contentType" in data.image &&
+      data.image.contentType &&
+      "size" in data.image &&
+      typeof data.image.size === "number",
+  );
+
   let presignedURL = "";
-  if (data.image) {
-    const imageURL = await createUploadUrl(data.image);
+  if (
+    hasUploadMetadata &&
+    data.image?.contentType &&
+    data.image?.filename &&
+    data.image?.size
+  ) {
+    const imageURL = await createUploadUrl({
+      contentType: data.image.contentType,
+      filename: data.image.filename,
+      size: data.image.size,
+    });
     imagePayload.image = imageURL.key;
     presignedURL = imageURL.url;
   }

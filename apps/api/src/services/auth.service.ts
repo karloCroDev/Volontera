@@ -162,13 +162,14 @@ export async function resetPasswordService(rawData: unknown) {
 
   const hashedPassword = bcrypt.hashSync(data.password, 10);
 
-  const user = await resetPasswordByToken({
+  // TODO: Pogledaj u DB schemi sto sam napravio lose
+  const { count } = await resetPasswordByToken({
     resetToken: data.token,
     expireDate: BigInt(Date.now()),
     hashedPassword,
   });
 
-  if (!user) {
+  if (count === 0) {
     return formOutput({
       status: 400,
       message: "Invalid token",

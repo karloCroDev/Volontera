@@ -15,7 +15,7 @@ export function userMiddleware(
 ) {
   const { role, onboardingFinished } = req.user;
 
-  if (isRegularUserAccount(role) || !onboardingFinished) {
+  if (!isRegularUserAccount(role) || !onboardingFinished) {
     return res
       .status(400)
       .json({ success: false, message: "Forbidden: Users only" });
@@ -31,7 +31,7 @@ export function organizationMiddleware(
 ) {
   const { role, onboardingFinished } = req.user;
 
-  if (isOrganizationAccount(role) || !onboardingFinished) {
+  if (!isOrganizationAccount(role) || !onboardingFinished) {
     return res
       .status(400)
       .json({ success: false, message: "Forbidden: Organizations only" });
@@ -46,7 +46,7 @@ export async function superAdminMiddleware(
 ) {
   const { role, onboardingFinished } = req.user;
 
-  if (isAdminAccount(role) || !onboardingFinished) {
+  if (!isAdminAccount(role) || !onboardingFinished) {
     return res
       .status(400)
       .json({ success: false, message: "Forbidden: Super Admins only" });

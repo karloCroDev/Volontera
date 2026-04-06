@@ -155,6 +155,13 @@ export async function retrieveOrganizationMemberService({
     userId,
   });
 
+  if (!organizationMember) {
+    return serverFetchOutput({
+      message: "Organization doesn't exists",
+      success: false,
+      status: 400,
+    });
+  }
   return serverFetchOutput({
     message: "Organization member retrieved successfully",
     success: true,
