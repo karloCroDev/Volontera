@@ -4,6 +4,7 @@ import {
   serverFetchOutput,
   toastResponseOutput,
 } from "@/lib/utils/service-output";
+import { cacheKey, redisDeleteKey } from "@/lib/cache-json";
 
 // Models
 import {
@@ -16,6 +17,7 @@ import {
   retrieveOrganizationMember,
   retirveAllRequestsToJoinOrganization,
   retrieveAllMembersInOrganization,
+  retrieveAllOrganizationLeaveFeedbacks,
   demoteOrPromoteOrganizationMember,
   removeOrganizationMember,
   acceptOrDeclineUsersRequestToJoinOrganization,
@@ -38,6 +40,7 @@ import {
   RemoveOrganizationMemberArgs,
   RetirveAllRequestsToJoinOrganizationArgs,
   RetrieveAllMembersInOrganizationArgs,
+  RetrieveAllOrganizationLeaveFeedbacksArgs,
   RetrieveDataAboutOrganizationArgs,
   RetrieveOrganizationMemberArgs,
 } from "@repo/schemas/organization-managment";
@@ -183,7 +186,12 @@ export async function leaveOrganizationService({
   await leaveOrganization({
     organizationId: data.organizationId,
     userId,
+    reason: data.reason,
   });
+
+  await redisDeleteKey(
+    cacheKey(["org", "member-role", data.organizationId, userId]),
+  );
 
   return toastResponseOutput({
     status: 200,
@@ -215,6 +223,22 @@ export async function retrieveDataAboutOrganizationService({
       mediumPriority,
       memberUserCount,
       totalUserCount,
+    },
+  });
+}
+
+export async function retrieveAllOrganizationLeaveFeedbacksService({
+  organizationId,
+}: RetrieveAllOrganizationLeaveFeedbacksArgs) {
+  const leaveFeedbacks =
+    await retrieveAllOrganizationLeaveFeedbacks(organizationId);
+
+  return serverFetchOutput({
+    status: 200,
+    success: true,
+    message: "Leave feedbacks retrieved successfully",
+    data: {
+      leaveFeedbacks,
     },
   });
 }

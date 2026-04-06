@@ -10,6 +10,7 @@ import {
 // Lib
 import {
 	createOrganization,
+	getOrganizationDetailsById,
 	listOrganizationsOrganizator,
 	listOrganizationsUser,
 	sendRequestToJoinOrganization,
@@ -19,6 +20,7 @@ import {
 // Schemas
 import {
 	CreateOrganizationArgs,
+	GetOrganizationDetailsByIdArgs,
 	ToggleFollowOrganizationArgs,
 	SendRequestToJoinOrganizationArgs,
 } from '@repo/schemas/organization';
@@ -31,6 +33,7 @@ import {
 } from '@repo/types/general';
 import {
 	CreateOrganizationResponse,
+	GetOrganizationDetailsByIdResponse,
 	ListOrganizationsOrganizatorResponse,
 } from '@repo/types/organization';
 import { DataWithFiles } from '@repo/types/upload';
@@ -75,6 +78,21 @@ export function useListOrganizations(
 			: listOrganizationsUser,
 		enabled: !!role,
 		refetchOnWindowFocus: false,
+		...options,
+	});
+}
+
+export function useGetOrganizationDetailsById(
+	data: GetOrganizationDetailsByIdArgs,
+	options?: Omit<
+		UseQueryOptions<GetOrganizationDetailsByIdResponse>,
+		'queryKey' | 'queryFn'
+	>
+) {
+	return useQuery<GetOrganizationDetailsByIdResponse>({
+		queryKey: ['organization-details', data.organizationId],
+		queryFn: () => getOrganizationDetailsById(data),
+		enabled: !!data.organizationId,
 		...options,
 	});
 }

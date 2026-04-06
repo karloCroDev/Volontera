@@ -9,6 +9,7 @@ import { SidebarProvider } from '@/components/ui/sidebar/sidebar-provider';
 // Types
 import { getSession } from '@/lib/server/user';
 import { SocketContextProvider } from '@/modules/main/direct-messages/socket-context';
+import { MobileSidebar } from '@/components/ui/sidebar/mobile-sidebar';
 
 export default async function MainLayout({
 	children,
@@ -27,7 +28,7 @@ export default async function MainLayout({
 			<SidebarProvider>
 				<div className="flex h-screen">
 					<Sidebar user={user} />
-
+					<MobileSidebar user={user} />
 					<div className="flex flex-1 flex-col">
 						<div className="border-input-border rounded-lg shadow lg:my-7 lg:mb-5 lg:mr-10 lg:h-[calc(100vh-28px-28px)] lg:border">
 							<Header />

@@ -7,6 +7,7 @@ import {
   deleteOrganizationService,
   demoteOrPromoteOrganizationMemberService,
   leaveOrganizationService,
+  retrieveAllOrganizationLeaveFeedbacksService,
   removeOrganizationMemberService,
   retirveAllRequestsToJoinOrganizationService,
   retrieveAllMembersInOrganizationService,
@@ -19,6 +20,7 @@ import {
 import {
   DeleteOrganizationArgs,
   LeaveOrganizationArgs,
+  RetrieveAllOrganizationLeaveFeedbacksArgs,
   RetirveAllRequestsToJoinOrganizationArgs,
   RetrieveAllMembersInOrganizationArgs,
   RetrieveDataAboutOrganizationArgs,
@@ -116,9 +118,27 @@ export async function acceptOrDeclineUsersRequestToJoinOrganizationController(
 export async function leaveOrganizationController(req: Request, res: Response) {
   try {
     const result = await leaveOrganizationService({
-      data: req.params as LeaveOrganizationArgs,
+      data: {
+        ...(req.params as LeaveOrganizationArgs),
+        ...(req.body as LeaveOrganizationArgs),
+      },
       userId: req.user.userId,
     });
+    return res.status(result.status).json(result.body);
+  } catch (err) {
+    handleServerErrorResponse(res, err);
+  }
+}
+
+export async function retrieveAllOrganizationLeaveFeedbacksController(
+  req: Request,
+  res: Response,
+) {
+  try {
+    const result = await retrieveAllOrganizationLeaveFeedbacksService(
+      req.params as RetrieveAllOrganizationLeaveFeedbacksArgs,
+    );
+
     return res.status(result.status).json(result.body);
   } catch (err) {
     handleServerErrorResponse(res, err);

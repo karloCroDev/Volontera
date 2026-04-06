@@ -22,24 +22,46 @@ import { useSidebarContext } from '@/components/ui/sidebar/sidebar-provider';
 
 // Hooks
 import { useIsMobile } from '@/hooks/utils/useIsMobile';
+import { useGetOrganizationDetailsById } from '@/hooks/data/organization';
+import { useRetrieveOrganizationChannelsQuery } from '@/hooks/data/organization-channel';
 
-export const Header = () => {
+// Lib
+import { withReactQueryProvider } from '@/lib/utils/react-query';
+
+export const Header = withReactQueryProvider(() => {
 	const isMobile = useIsMobile();
 
 	const { setMobileOpen } = useSidebarContext();
 	const pathname = usePathname();
-	const params = useParams();
+	const params = useParams<{
+		organizationId?: string;
+		channelId?: string;
+		userId?: string;
+		postId?: string;
+	}>();
 
-	const organizationId = params.organizationId;
-	const userId = params.userId;
-	const postId = params.postId;
+	const { data: organizationData } = useGetOrganizationDetailsById(
+		{
+			organizationId: params.organizationId || '',
+		},
+		{
+			enabled: !!params.organizationId,
+		}
+	);
+
+	const { data: channelsData } = useRetrieveOrganizationChannelsQuery(
+		{
+			organizationId: params.organizationId || '',
+		},
+		{
+			enabled: !!params.organizationId && !!params.channelId,
+		}
+	);
 
 	const pathnameWithoutSearchParams = pathname.split('?')[0];
 
 	const splittedPathname =
 		!isMobile && pathnameWithoutSearchParams?.split('/').filter(Boolean);
-
-	// TODO: Fetch the organization names if I have any more time
 
 	const shouldSkipCrumb = (segment: string) => {
 		if (segment === 'organization') return true;
@@ -51,22 +73,38 @@ export const Header = () => {
 			splittedPathname[0] === 'organization'
 		)
 			return true;
-		if (segment === organizationId) return false;
-		if (segment === userId) return false;
-		if (segment === postId) return false;
+		if (segment === params.organizationId) return false;
+		if (segment === params.userId) return false;
+		if (segment === params.postId) return false;
 		return false;
 	};
 
-	const getCrumbLabel = (segment: string) => {
-		if (segment === organizationId) return 'Organization';
-		if (segment === userId) return 'Profile';
-		if (segment === postId) return 'Post';
-		return segment
-			.split('-')
-			.filter(Boolean)
-			.map((part) => part.charAt(0).toUpperCase() + part.slice(1))
-			.join(' ');
-	};
+	const getCrumbLabel = React.useCallback(
+		(segment: string) => {
+			const channel = channelsData?.organizationChannels?.find(
+				(c) => c.id === params.channelId
+			);
+
+			if (segment === params.organizationId)
+				return organizationData?.organization?.name || 'Organization';
+			if (segment === params.channelId) return channel?.name || 'Channel';
+			if (segment === params.userId) return 'Profile';
+			if (segment === params.postId) return 'Post';
+			return segment
+				.split('-')
+				.filter(Boolean)
+				.map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+				.join(' ');
+		},
+		[
+			channelsData,
+			organizationData,
+			params.channelId,
+			params.organizationId,
+			params.postId,
+			params.userId,
+		]
+	);
 
 	return (
 		<div className="border-input-border border-b">
@@ -115,7 +153,7 @@ export const Header = () => {
 			</nav>
 		</div>
 	);
-};
+});
 const Breadcrumb: React.FC<
 	React.ComponentPropsWithoutRef<'li'> &
 		BreadcrumbProps & {

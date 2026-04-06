@@ -8,6 +8,7 @@ import {
 	AcceptOrDeclineUsersRequestToJoinOrganizationArgs,
 	DeleteOrganizationArgs,
 	DemoteOrPromoteOrganizationMemberArgs,
+	LeaveOrganizationArgs,
 	RemoveOrganizationMemberArgs,
 	RetirveAllRequestsToJoinOrganizationArgs,
 	RetrieveAllMembersInOrganizationArgs,
@@ -96,10 +97,12 @@ export async function retrieveOrganizationMember({
 
 export async function leaveOrganization({
 	organizationId,
-}: RetrieveOrganizationMemberArgs) {
+	reason,
+}: LeaveOrganizationArgs) {
 	try {
 		const res = await API().delete(
-			`/organization-managment/leave/${organizationId}`
+			`/organization-managment/leave/${organizationId}`,
+			{ data: { reason } }
 		);
 		return res.data;
 	} catch (err) {

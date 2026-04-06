@@ -215,25 +215,20 @@ app.use(
   homeRoute,
 );
 
-app.use(
-  "/dashboard",
-  authMiddleware,
-  //  superAdminMiddleware,
-  dashboardRoutes,
-);
+app.use("/dashboard", authMiddleware, superAdminMiddleware, dashboardRoutes);
 
 // Test
-app.get(
-  "/test",
-  authMiddleware,
-  rateLimitMiddleware({
-    additionalTags: ["protected-user"],
-    limit: 5,
-  }),
-  (req, res) => {
-    res.json({ message: "Awesome you accessed the proteced route" });
-  },
-);
+// app.get(
+//   "/test",
+//   authMiddleware,
+//   rateLimitMiddleware({
+//     additionalTags: ["protected-user"],
+//     limit: 5,
+//   }),
+//   (req, res) => {
+//     res.json({ message: "Awesome you accessed the proteced route" });
+//   },
+// );
 
 // IMPORTANT: Stop redis server (wsl)
 

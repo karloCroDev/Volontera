@@ -18,8 +18,12 @@ export function hasWantedOrganizationRole({
   return requiredRoles.includes(userRole);
 }
 
+export function isAdminAccount(role?: UserRole | null) {
+  return role === "ADMIN";
+}
+
 export function isOrganizationAccount(role?: UserRole | null) {
-  return role === "ORGANIZATION";
+  return role === "ORGANIZATION" || role === "ADMIN";
 }
 
 export function isRegularUserAccount(role?: UserRole | null) {

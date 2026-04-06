@@ -26,6 +26,7 @@ import { Header } from '@/modules/landing-page/header';
 import { getSession } from '@/lib/server/user';
 import { getBillingLink } from '@/lib/server/payment';
 import { Footer } from '@/modules/landing-page/footer';
+import { isOrganizationAccount } from '@repo/permissons/index';
 
 export default async function LandingPage() {
 	const user = await getSession();
@@ -151,7 +152,7 @@ export default async function LandingPage() {
 							<h2 className="mb-4 text-center text-4xl font-bold" id="pricing">
 								Subscription plans{' '}
 								{user.success &&
-									(user.role === 'ORGANIZATION'
+									(isOrganizationAccount(user.role)
 										? 'for organizations'
 										: 'for users')}
 							</h2>

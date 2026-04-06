@@ -1,4 +1,5 @@
 import {
+  OrganizationLeaveFeedback,
   OrganizationJoinRequest,
   OrganizationMember,
   User,
@@ -33,6 +34,13 @@ export type RetrieveDataAboutOrganizationResponse =
     highPriority: number;
     lowPriority: number;
     mediumPriority: number;
+  };
+
+export type RetrieveAllOrganizationLeaveFeedbacksResponse =
+  ServerHandleResponse<true> & {
+    leaveFeedbacks: (OrganizationLeaveFeedback & {
+      author: Omit<User, "password">;
+    })[];
   };
 
 export type UpdateOrganizationResponse = SuccessfulResponse & {

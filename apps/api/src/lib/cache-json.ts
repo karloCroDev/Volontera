@@ -26,6 +26,15 @@ export async function redisGetOrSetJson<T>({
   }
 }
 
+export async function redisDeleteKey(key: string) {
+  try {
+    const client = await initalizeRedisClient();
+    await client.del(key);
+  } catch {
+    // Ako je redis server dolje da nebi padala cijela aplikacija
+  }
+}
+
 export function cacheKey(parts: (string | number | undefined | null)[]) {
   return parts
     .filter((p) => p !== undefined && p !== null)

@@ -6,9 +6,7 @@ import { LineChart } from '@/components/ui/charts/line-chart';
 import { Container } from '@/components/ui/container';
 
 // Types
-import { DashboardKPIIntervalPoint } from '@repo/types/dashboard';
-
-type KPIKey = 'totalVolunteers' | 'totalOrganizations' | 'totalOrganizators';
+import { DashboardKPIMetricsResponse } from '@repo/types/dashboard';
 
 export const TotalUsersKPI = ({
 	title,
@@ -18,8 +16,8 @@ export const TotalUsersKPI = ({
 }: {
 	title: string;
 	total: number;
-	series: DashboardKPIIntervalPoint[];
-	seriesKey: KPIKey;
+	series: DashboardKPIMetricsResponse['kpiSeries'];
+	seriesKey: 'totalVolunteers' | 'totalOrganizations' | 'totalOrganizators';
 }) => {
 	const chartData = series.map((point) => ({
 		week: point.week,

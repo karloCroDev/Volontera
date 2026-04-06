@@ -27,8 +27,9 @@ export const ChannelsMapping = withReactQueryProvider(
 		const { data: member } = useRetrieveOrganizationMember({
 			organizationId,
 		});
-		return channels.organizationChannels.length > 0 ? (
-			channels.organizationChannels.map((channel) => (
+		// Ovo je suspendirano, ali pošto se koristi i u drugim komponentama koje nisu suspendirane, onda mi je lakše napisati samo useQuery iako znamo da dobijamo 100% tu vrijednost odmah sa servera zato ide
+		return channels!.organizationChannels.length > 0 ? (
+			channels!.organizationChannels.map((channel) => (
 				<Container
 					key={channel.id}
 					className="hover:border-accent group/container flex rounded-lg transition-[border]"

@@ -2,8 +2,10 @@
 import {
 	useMutation,
 	UseMutationOptions,
+	useQuery,
 	useQueryClient,
 	useSuspenseQuery,
+	UseQueryOptions,
 	UseSuspenseQueryOptions,
 } from '@tanstack/react-query';
 
@@ -37,6 +39,21 @@ export const useRetrieveOrganizationChannels = (
 	return useSuspenseQuery<RetrieveOrganizationChannelsResponse>({
 		queryKey: ['organization-channels', data.organizationId],
 		queryFn: () => retrieveOrganizationChannels(data),
+		...options,
+	});
+};
+
+export const useRetrieveOrganizationChannelsQuery = (
+	data: RetrieveOrganizationChannelsArgs,
+	options?: Omit<
+		UseQueryOptions<RetrieveOrganizationChannelsResponse>,
+		'queryKey' | 'queryFn'
+	>
+) => {
+	return useQuery<RetrieveOrganizationChannelsResponse>({
+		queryKey: ['organization-channels', data.organizationId],
+		queryFn: () => retrieveOrganizationChannels(data),
+		enabled: !!data.organizationId,
 		...options,
 	});
 };

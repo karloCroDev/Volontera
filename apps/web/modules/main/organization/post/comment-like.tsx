@@ -114,7 +114,7 @@ export const CommentLike: React.FC<{
 	});
 
 	return (
-		<div className="ml-auto flex items-center gap-6 text-sm">
+		<div className="ml-auto flex flex-col items-center gap-3 text-sm md:flex-row md:gap-6">
 			<div className="flex items-center gap-2">
 				<p suppressHydrationWarning>{comment._count.postCommentsLikes}</p>
 				<Button

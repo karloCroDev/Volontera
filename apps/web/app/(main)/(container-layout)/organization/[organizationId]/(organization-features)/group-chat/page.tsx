@@ -9,7 +9,6 @@ import { CreateChannelDialog } from '@/modules/main/organization/channels/add-ch
 import { ChannelsMapping } from '@/modules/main/organization/channels/channels-mapping';
 import { dehydrate, QueryClient } from '@tanstack/react-query';
 import { retrieveOrganizationMember } from '@/lib/server/organization-managment';
-import { Skeleton } from '@/components/ui/skeleton';
 
 export default async function GroupChatChannelPage({
 	params,

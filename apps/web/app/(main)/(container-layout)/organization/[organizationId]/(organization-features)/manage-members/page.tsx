@@ -5,6 +5,7 @@ import { ChartArea } from 'lucide-react';
 // Modules
 import { CurrentMembers } from '@/modules/main/organization/manage-members/current-members';
 import { RequestsForm } from '@/modules/main/organization/manage-members/requests-form';
+import { LeaveFeedbacks } from '@/modules/main/organization/manage-members/leave-feedbacks';
 import { PieChart } from '@/components/ui/charts/pie-chart';
 import { BarChart } from '@/components/ui/charts/bar-chart';
 import { DeleteOrganizationDialog } from '@/modules/main/organization/manage-members/delete-organization-dialog';
@@ -20,6 +21,7 @@ import {
 	retrieveOrganizationMember,
 	retrieveAllUsersInOrganization,
 	retrieveDataAboutOrganization,
+	retrieveAllOrganizationLeaveFeedbacks,
 } from '@/lib/server/organization-managment';
 
 // Types
@@ -56,6 +58,17 @@ export default async function ManagePage({
 		notFound();
 	}
 
+	const leaveFeedbacks = organizationData.success
+		? await retrieveAllOrganizationLeaveFeedbacks(organizationId)
+		: null;
+
+	if (
+		organizationData.success &&
+		(!leaveFeedbacks || !leaveFeedbacks.success)
+	) {
+		notFound();
+	}
+
 	return (
 		<>
 			<h2 className="mb-6 text-xl underline underline-offset-4 lg:text-2xl">
@@ -76,6 +89,15 @@ export default async function ManagePage({
 				{/* <span className="italic">({organizationData.totalUserCount - 1})</span> */}
 			</h2>
 			<CurrentMembers users={users} />
+
+			<h2 className="mb-6 mt-10 text-xl underline underline-offset-4 lg:text-2xl">
+				Leave feedbacks
+			</h2>
+			{organizationData.success && leaveFeedbacks?.success ? (
+				<LeaveFeedbacks leaveFeedbacks={leaveFeedbacks} />
+			) : (
+				<Paywall />
+			)}
 
 			<h2 className="mb-6 mt-10 text-xl underline underline-offset-4 lg:text-2xl">
 				Settings
