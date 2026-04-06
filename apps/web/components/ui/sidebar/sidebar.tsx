@@ -8,7 +8,6 @@ import {
 	Home,
 	MessageCircleMore,
 	Settings,
-	X,
 } from 'lucide-react';
 import { twJoin } from 'tailwind-merge';
 import Link from 'next/link';

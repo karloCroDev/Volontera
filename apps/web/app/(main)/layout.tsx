@@ -19,8 +19,12 @@ export default async function MainLayout({
 	const user = await getSession();
 
 	if (!user.success) redirect('/auth/login');
-	if (user.success && !user.onboardingFinished)
-		redirect('/onboarding/app-type');
+
+	if (user.success) {
+		if (!user.onboardingFinished) redirect('/onboarding/app-type');
+
+		if (user.isBanned) redirect('/account-banned');
+	}
 
 	return (
 		// Socket context provider je pomaknut put gore kako bi odmah nakon što je korisnik logirano dobio status online tj. da koristi aplikaciju

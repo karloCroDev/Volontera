@@ -1,5 +1,5 @@
 // External packages
-import { notFound } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 import { Suspense } from 'react';
 import Image from 'next/image';
 
@@ -58,6 +58,10 @@ export default async function OrganizationPage({
 	]);
 
 	if (!organizationDetailsById.success) notFound();
+
+	// Msm da je okej ako mu dopustim ovakav access organizaciji, nema potrebe da to onemogućim članu
+	// if (member.success && member.organizationMember.role === 'BANNED')
+	// 	redirect(`/organization/${organizationId}/banned`);
 
 	const isOwner =
 		session.success &&

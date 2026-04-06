@@ -8,6 +8,7 @@ import { FormProvider, useForm } from 'react-hook-form';
 
 // Components
 import { Button } from '@/components/ui/button';
+import { Error } from '@/components/ui/error';
 
 // Modules
 import { PersonalInformationForm } from '@/modules/main/settings/personal-information-form';
@@ -31,8 +32,8 @@ export const FormWrapper = withReactQueryProvider(() => {
 	const { data: user } = useSession();
 
 	const methods = useForm<SettingsArgs>({
+		// @ts-ignore
 		resolver: zodResolver(settingsSchema),
-
 		defaultValues: {
 			firstName: '',
 			lastName: '',
@@ -40,9 +41,11 @@ export const FormWrapper = withReactQueryProvider(() => {
 			bio: '',
 			workOrSchool: '',
 			DOB: '',
+			image: undefined,
 		},
 	});
 
+	// TODO: Ovo handleaj tako da prebacis korisnika sa servera
 	// Pošto ovi podatci ne dolaze odmah, nego se fetchaju asinhrono, treba ih postaviti kad stignu
 	React.useEffect(() => {
 		if (!user) return;
@@ -53,16 +56,24 @@ export const FormWrapper = withReactQueryProvider(() => {
 			workOrSchool: user.workOrSchool ?? '',
 			address: user.address ?? '',
 			DOB: user.DOB ?? '',
+			image: undefined,
 		});
-	}, [user]);
-
-	const canSubmit = methods.formState.isDirty;
-
-	const { mutate, isPending } = useChangeProfileInfo();
+	}, [user, methods]);
 
 	const [currentImage, setCurrentImage] = React.useState<File | undefined>(
 		undefined
 	);
+
+	const imageValue = methods.watch('image');
+	const canSubmit =
+		methods.formState.isDirty ||
+		Boolean(currentImage) ||
+		Boolean(
+			imageValue && 'deleteImage' in imageValue && imageValue.deleteImage
+		);
+
+	const { mutate, isPending } = useChangeProfileInfo();
+
 	const onSubmit = (data: SettingsArgs) => {
 		mutate(
 			{ data, file: currentImage },
@@ -75,7 +86,8 @@ export const FormWrapper = withReactQueryProvider(() => {
 					});
 
 					IRevalidateTag('session');
-					methods.reset();
+					setCurrentImage(undefined);
+					methods.reset(methods.getValues());
 				},
 				onError(err) {
 					const message =
@@ -93,6 +105,7 @@ export const FormWrapper = withReactQueryProvider(() => {
 			}
 		);
 	};
+
 	return (
 		<FormProvider {...methods}>
 			<Form
@@ -104,6 +117,11 @@ export const FormWrapper = withReactQueryProvider(() => {
 					setCurrentImage={setCurrentImage}
 				/>
 				<PersonalInformationForm />
+				{methods.formState.errors.root?.message && (
+					<Error className="mt-4">
+						{methods.formState.errors.root.message}
+					</Error>
+				)}
 				<Button
 					type="submit"
 					className="ml-auto mt-10 w-full md:w-fit"

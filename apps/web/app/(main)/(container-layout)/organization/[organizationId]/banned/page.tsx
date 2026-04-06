@@ -1,13 +1,15 @@
 // External packages
 import { ArrowLeft, Ban, MessageCircle } from 'lucide-react';
+import { redirect } from 'next/navigation';
 
 // Components
 import { LinkAsButton } from '@/components/ui/link-as-button';
 import { Avatar } from '@/components/ui/avatar';
 import { Separator } from '@/components/ui/separator';
 import { Container } from '@/components/ui/container';
+
+// Lib
 import { getOrganizationDetailsById } from '@/lib/server/organization';
-import { redirect } from 'next/navigation';
 import { convertToFullname, convertToPascalCase } from '@/lib/utils/converter';
 import { retrieveOrganizationMember } from '@/lib/server/organization-managment';
 
@@ -20,7 +22,7 @@ export default async function BannedPage({
 
 	const member = await retrieveOrganizationMember(organizationId);
 
-	if (!member.success || !member.organizationMember.isBanned)
+	if (!member.success || member.organizationMember.role !== 'BANNED')
 		redirect(`/organization/${organizationId}`);
 
 	const organization = await getOrganizationDetailsById(organizationId);

@@ -1,11 +1,16 @@
-import { Avatar } from '@/components/ui/avatar';
-import { Container } from '@/components/ui/container';
-import { LinkAsButton } from '@/components/ui/link-as-button';
-import { Separator } from '@/components/ui/separator';
+// External packages
+import { Ban } from 'lucide-react';
+import { redirect } from 'next/navigation';
+
+// Components
 import { Volontera } from '@/components/ui/volonotera';
-import { ArrowLeft, Ban, MessageCircle } from 'lucide-react';
+import { getSession } from '@/lib/server/user';
 
 export default async function BannedPage() {
+	const user = await getSession();
+
+	if (user.success && !user.isBanned) redirect('/home');
+
 	return (
 		<div className="flex h-screen flex-col items-center justify-center">
 			<Ban className="text-destructive size-80" />
