@@ -12,11 +12,10 @@ import { CheckboxVisually, CheckboxWithLabel } from '@/components/ui/checkbox';
 import { Avatar } from '@/components/ui/avatar';
 import { Accordion } from '@/components/ui/accordion';
 
-// Types
 // Schemas
 import { NotificationIdsArgs } from '@repo/schemas/notification';
 
-// Hokks
+// Hooks
 import {
 	useDeleteNotifications,
 	useGetUsersNotifications,
@@ -43,11 +42,11 @@ export const NotificationSandbox = withReactQueryProvider(() => {
 				notificationIds: ids,
 			},
 			{
-				onSuccess: () => {
+				onSuccess: ({ message, title }) => {
 					setIds([]);
 					toast({
-						title: 'Notifications deleted',
-						content: 'Selected notifications have been deleted successfully',
+						title,
+						content: message,
 						variant: 'success',
 					});
 				},
@@ -111,7 +110,7 @@ export const NotificationSandbox = withReactQueryProvider(() => {
 									}}
 								>
 									<CheckboxVisually
-										variant={notification.isRead ? 'suiccess' : 'secondary'}
+										variant={notification.isRead ? 'success' : 'secondary'}
 									/>
 								</Checkbox>
 

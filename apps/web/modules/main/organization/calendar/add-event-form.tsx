@@ -112,10 +112,9 @@ export const AddEventForm: React.FC<{
 		);
 	};
 
-	console.log(errors);
 	return (
 		<Form className="flex flex-col gap-2" onSubmit={handleSubmit(onSubmit)}>
-			<div className="flex flex-col md:flex-row md:justify-between">
+			<div className="no-scrollbar flex flex-col gap-x-6 gap-y-4 overflow-x-scroll lg:flex-row lg:justify-between">
 				<div className="flex gap-3">
 					<div>
 						<p className="text-muted-foreground mb-1 text-xs">Start time</p>
