@@ -13,26 +13,26 @@ import { Avatar } from '@/components/ui/avatar';
 import { Accordion } from '@/components/ui/accordion';
 
 // Types
-import { NotificationResponse } from '@repo/types/notification';
-
 // Schemas
 import { NotificationIdsArgs } from '@repo/schemas/notification';
 
 // Hokks
-import { useDeleteNotifications } from '@/hooks/data/notification';
+import {
+	useDeleteNotifications,
+	useGetUsersNotifications,
+} from '@/hooks/data/notification';
 
 // Lib
 import { toast } from '@/lib/utils/toast';
 import { withReactQueryProvider } from '@/lib/utils/react-query';
-import { IRevalidateTag } from '@/lib/server/revalidation';
 import { convertToFullname } from '@/lib/utils/converter';
 
-export const NotificationSandbox: React.FC<{
-	notifications: NotificationResponse['notifications'];
-}> = withReactQueryProvider(({ notifications }) => {
+export const NotificationSandbox = withReactQueryProvider(() => {
 	const [ids, setIds] = React.useState<NotificationIdsArgs['notificationIds']>(
 		[]
 	);
+	const { data } = useGetUsersNotifications();
+	const notifications = data.notifications;
 
 	const { mutate, isPending } = useDeleteNotifications();
 
@@ -50,7 +50,6 @@ export const NotificationSandbox: React.FC<{
 						content: 'Selected notifications have been deleted successfully',
 						variant: 'success',
 					});
-					IRevalidateTag('notification-user');
 				},
 				onError: ({ message, title }) => {
 					toast({

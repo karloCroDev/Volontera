@@ -1,5 +1,6 @@
 // Components
 import { Heading } from '@/components/ui/heading';
+import { dehydrate, QueryClient } from '@tanstack/react-query';
 
 // Lib
 import {
@@ -12,8 +13,13 @@ import { NotificationSandbox } from '@/modules/main/notifications/notification-s
 
 export default async function Notifications() {
 	const notifications = await getUsersNotifications();
+	const queryClient = new QueryClient();
 
-	console.log('Notifications: ', notifications);
+	if (notifications.success) {
+		queryClient.setQueryData(['notifications'], notifications);
+	}
+
+	const dehydratedState = dehydrate(queryClient);
 	await getMarkAllNotificationsAsRead(); // Svaki put kad se otvori notifikacijski page, sve notifikacije se oznace kao procitane (nece biti odmah prikazane kao procitane na UI-u samo updateam)
 
 	return (
@@ -23,7 +29,7 @@ export default async function Notifications() {
 			</Heading>
 
 			{notifications.success ? (
-				<NotificationSandbox notifications={notifications.notifications} />
+				<NotificationSandbox dehydratedState={dehydratedState} />
 			) : (
 				<p className="text-muted-foreground mt-10">
 					Failed to load notifications.

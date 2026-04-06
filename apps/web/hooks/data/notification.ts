@@ -1,5 +1,6 @@
 // External packages
 import { ErrorToastResponse, SuccessfulResponse } from '@repo/types/general';
+import { NotificationResponse } from '@repo/types/notification';
 import {
 	useMutation,
 	UseMutationOptions,
@@ -25,9 +26,12 @@ import {
 
 // See if I am going to handle this optimistically (probably not)
 export const useGetUsersNotifications = (
-	options?: Omit<UseSuspenseQueryOptions<boolean>, 'queryKey' | 'queryFn'>
+	options?: Omit<
+		UseSuspenseQueryOptions<NotificationResponse>,
+		'queryKey' | 'queryFn'
+	>
 ) => {
-	return useSuspenseQuery({
+	return useSuspenseQuery<NotificationResponse>({
 		queryKey: ['notifications'],
 		queryFn: getUsersNotifications,
 		...options,
@@ -76,6 +80,9 @@ export const useDeleteNotifications = (
 		mutationFn: (values: NotificationIdsArgs) => deleteNotifications(values),
 		onSuccess: async (...args) => {
 			await queryClient.invalidateQueries({ queryKey: ['notifications'] });
+			await queryClient.invalidateQueries({
+				queryKey: ['has-unread-notifications'],
+			});
 			await options?.onSuccess?.(...args);
 		},
 		...options,
