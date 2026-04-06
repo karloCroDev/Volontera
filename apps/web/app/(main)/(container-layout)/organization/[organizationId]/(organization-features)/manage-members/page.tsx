@@ -1,6 +1,6 @@
 // External packages
 import { notFound } from 'next/navigation';
-import { ChartArea } from 'lucide-react';
+import { dehydrate, QueryClient } from '@tanstack/react-query';
 
 // Modules
 import { CurrentMembers } from '@/modules/main/organization/manage-members/current-members';
@@ -8,12 +8,12 @@ import { RequestsForm } from '@/modules/main/organization/manage-members/request
 import { LeaveFeedbacks } from '@/modules/main/organization/manage-members/leave-feedbacks';
 import { PieChart } from '@/components/ui/charts/pie-chart';
 import { BarChart } from '@/components/ui/charts/bar-chart';
+import { IndicatorKPI } from '@/components/ui/charts/indicator-kpi';
 import { DeleteOrganizationDialog } from '@/modules/main/organization/manage-members/delete-organization-dialog';
 
 // Components
 import { Paywall } from '@/components/ui/paywall';
 import { LinkAsButton } from '@/components/ui/link-as-button';
-import { Container } from '@/components/ui/container';
 
 // Lib
 import {
@@ -29,6 +29,7 @@ import { RetrieveDataAboutOrganizationResponse } from '@repo/types/organization-
 
 // Permissions
 import { hasWantedOrganizationRole } from '@repo/permissons/index';
+import { GraphCardTemplate } from '@/modules/main/dashboard/graph-card-template';
 
 export default async function ManagePage({
 	params,
@@ -69,6 +70,14 @@ export default async function ManagePage({
 		notFound();
 	}
 
+	const queryClient = new QueryClient();
+	queryClient.setQueryData(
+		['organization-join-requests', organizationId],
+		requests
+	);
+	queryClient.setQueryData(['organization-users', organizationId], users);
+	const dehydratedState = dehydrate(queryClient);
+
 	return (
 		<>
 			<h2 className="mb-6 text-xl underline underline-offset-4 lg:text-2xl">
@@ -83,12 +92,18 @@ export default async function ManagePage({
 			<h2 className="mb-6 text-xl underline underline-offset-4 lg:text-2xl">
 				Requests
 			</h2>
-			<RequestsForm requests={requests} />
+			<RequestsForm
+				dehydratedState={dehydratedState}
+				organizationId={organizationId}
+			/>
 			<h2 className="mb-6 mt-10 text-xl underline underline-offset-4 lg:text-2xl">
 				Members{' '}
 				{/* <span className="italic">({organizationData.totalUserCount - 1})</span> */}
 			</h2>
-			<CurrentMembers users={users} />
+			<CurrentMembers
+				dehydratedState={dehydratedState}
+				organizationId={organizationId}
+			/>
 
 			<h2 className="mb-6 mt-10 text-xl underline underline-offset-4 lg:text-2xl">
 				Leave feedbacks
@@ -140,65 +155,40 @@ const Dashboard = ({
 	return (
 		<div className="mb-6 flex flex-col gap-8 lg:flex-row">
 			<div className="no-scrollbar flex gap-4 overflow-x-scroll lg:flex-col">
-				<TaskKPI count={organizationData.highPriority} title="High Priority" />
-				<TaskKPI
+				<IndicatorKPI
+					count={organizationData.highPriority}
+					title="High Priority"
+					specific="tasks"
+				/>
+				<IndicatorKPI
 					count={organizationData.mediumPriority}
 					title="Medium Priority"
+					specific="tasks"
 				/>
-				<TaskKPI count={organizationData.lowPriority} title="Low Priority" />
+				<IndicatorKPI
+					count={organizationData.lowPriority}
+					title="Low Priority"
+					specific="tasks"
+				/>
 			</div>
 
-			<ChartContainer
+			<GraphCardTemplate
 				title="Tasks ratio"
 				subtitle="Total tasks ration between priorities inside the organization"
 			>
 				<div className="mx-auto mt-auto w-3/4 flex-1 text-sm">
 					<PieChart data={pieTasks} dataKey="count" />
 				</div>
-			</ChartContainer>
+			</GraphCardTemplate>
 
-			<ChartContainer
+			<GraphCardTemplate
 				title="Members"
 				subtitle="Total members ratio between roles inside the organization"
 			>
 				<div className="mx-auto mt-auto w-3/4 flex-1 text-sm">
 					<BarChart data={barUser} xKey="name" yKey="value" />
 				</div>
-			</ChartContainer>
+			</GraphCardTemplate>
 		</div>
 	);
 };
-
-const ChartContainer: React.FC<{
-	children: React.ReactNode;
-	title: string;
-	subtitle: string;
-}> = (
-	// eslint-disable-next-line react/prop-types
-	{ children, title, subtitle }
-) => (
-	<Container className="flex aspect-[4/3] max-h-80 flex-1 flex-col overflow-hidden rounded-md p-4 shadow-md">
-		<h4 className="text-md">{title}</h4>
-		<p className="text-muted-foreground mb-4 text-sm">{subtitle}</p>
-		{children}
-	</Container>
-);
-
-const TaskKPI: React.FC<{
-	title: string;
-	count: number;
-}> = (
-	// eslint-disable-next-line react/prop-types
-	{ title, count }
-) => (
-	<Container className="min-w-80 rounded-md p-4 shadow">
-		<div className="flex justify-between">
-			<p>
-				{title} <span className="text-muted-foreground ml-2">(task)</span>
-			</p>
-			<ChartArea className="text-muted-foreground size-3" />
-		</div>
-
-		<p className="text-lg">{count}</p>
-	</Container>
-);

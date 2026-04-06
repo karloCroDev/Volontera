@@ -85,6 +85,7 @@ export const FormWrapper = withReactQueryProvider(() => {
 						variant: 'success',
 					});
 
+					// Za sve što je možda prikazano na serveru a nije u client componenti (kako bi sačuvali SSR prednosti onda ovako samo duplo checkiram)
 					IRevalidateTag('session');
 					setCurrentImage(undefined);
 					methods.reset(methods.getValues());

@@ -38,6 +38,7 @@ import {
 // Types
 import {
 	RetirveAllRequestsToJoinOrganizationResponse,
+	RetrieveAllMembersInOrganizationResponse,
 	RetrieveOrganizationMemberResponse,
 	UpdateOrganizationResponse,
 } from '@repo/types/organization-managment';
@@ -61,9 +62,16 @@ export const useAcceptOrDeclineUsersRequestToJoinOrganization = (
 		mutationFn: (data: AcceptOrDeclineUsersRequestToJoinOrganizationArgs) =>
 			acceptOrDeclineUsersRequestToJoinOrganization(data),
 		onSuccess: async (...args) => {
+			const [, variables] = args;
 			await queryClient.invalidateQueries({
 				queryKey: ['organization'],
 				exact: false,
+			});
+			await queryClient.invalidateQueries({
+				queryKey: ['organization-join-requests', variables.organizationId],
+			});
+			await queryClient.invalidateQueries({
+				queryKey: ['organization-users', variables.organizationId],
 			});
 			await options?.onSuccess?.(...args);
 		},
@@ -88,6 +96,9 @@ export const useDemoteOrPromoteOrganizationMember = (
 				queryKey: ['organization'],
 				exact: false,
 			});
+			await queryClient.invalidateQueries({
+				queryKey: ['organization-users', args[1].organizationId],
+			});
 			await options?.onSuccess?.(...args);
 		},
 		...options,
@@ -110,6 +121,12 @@ export const useRemoveOrganizationMember = (
 			await queryClient.invalidateQueries({
 				queryKey: ['organization'],
 				exact: false,
+			});
+			await queryClient.invalidateQueries({
+				queryKey: ['organization-users', args[1].organizationId],
+			});
+			await queryClient.invalidateQueries({
+				queryKey: ['organization-join-requests', args[1].organizationId],
 			});
 			await options?.onSuccess?.(...args);
 		},
@@ -157,11 +174,11 @@ export const useRetrieveOrganizationMember = (
 export const useRetrieveAllMembersInOrganization = (
 	data: RetrieveAllMembersInOrganizationArgs,
 	options?: Omit<
-		UseQueryOptions<RetrieveAllMembersInOrganizationArgs>,
+		UseSuspenseQueryOptions<RetrieveAllMembersInOrganizationResponse>,
 		'queryKey' | 'queryFn'
 	>
 ) => {
-	return useQuery<RetrieveAllMembersInOrganizationArgs>({
+	return useSuspenseQuery<RetrieveAllMembersInOrganizationResponse>({
 		queryKey: ['organization-users', data.organizationId],
 		queryFn: () => retrieveAllUsersInOrganization(data),
 		...options,

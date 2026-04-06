@@ -1,5 +1,7 @@
 // Components
 import { Heading } from '@/components/ui/heading';
+
+// Lib
 import {
 	getMarkAllNotificationsAsRead,
 	getUsersNotifications,
