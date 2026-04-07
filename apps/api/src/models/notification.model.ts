@@ -45,6 +45,31 @@ export async function hasUnreadNotifications({
   return count;
 }
 
+export async function retrieveAllUnreadNotificationsFromUsers({
+  timeInterval = 24,
+}: {
+  timeInterval?: number;
+}) {
+  return await prisma.user.findMany({
+    select: {
+      id: true,
+      email: true,
+      firstName: true,
+      notifications: {
+        where: {
+          isRead: false,
+          createdAt: {
+            gte: new Date(Date.now() - timeInterval * 60 * 60 * 1000),
+          },
+        },
+        select: {
+          id: true,
+        },
+      },
+    },
+  });
+}
+
 export async function deleteNotifications({
   notificationIds,
 }: {
