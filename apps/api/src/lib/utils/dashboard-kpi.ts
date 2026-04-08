@@ -1,50 +1,33 @@
 // Types
+import {
+  addDays,
+  eachWeekOfInterval,
+  format,
+  startOfDay,
+  startOfWeek,
+  subDays,
+} from "date-fns";
 import { DashboardDurationDays } from "@repo/types/dashboard";
 
-export type DashboardKPIRows = {
-  volunteerRows: Array<{ createdAt: Date }>;
-  organizationRows: Array<{ createdAt: Date }>;
-  organizatorRows: Array<{ createdAt: Date }>;
+type DashboardKPIRows = {
+  volunteerRows: { createdAt: Date }[];
+  organizationRows: { createdAt: Date }[];
+  organizatorRows: { createdAt: Date }[];
 };
 
-export type WeeklyKPI = {
+type WeeklyKPI = {
   week: string;
   totalVolunteers: number;
   totalOrganizations: number;
   totalOrganizators: number;
 };
 
-const DATE_LABEL_FORMATTER = new Intl.DateTimeFormat("en-US", {
-  month: "short",
-  day: "numeric",
-});
-
 export function getSinceDate(durationDays: DashboardDurationDays) {
-  const since = new Date();
-  since.setDate(since.getDate() - durationDays);
-  since.setHours(0, 0, 0, 0);
-  return since;
-}
-
-function toDateKey(date: Date) {
-  return date.toISOString().slice(0, 10);
+  return startOfDay(subDays(new Date(), durationDays));
 }
 
 function startOfWeekMonday(date: Date) {
-  const value = new Date(date);
-  value.setHours(0, 0, 0, 0);
-
-  const day = value.getDay();
-  const diff = day === 0 ? -6 : 1 - day;
-  value.setDate(value.getDate() + diff);
-
-  return value;
-}
-
-function addDays(date: Date, days: number) {
-  const value = new Date(date);
-  value.setDate(value.getDate() + days);
-  return value;
+  return startOfWeek(date, { weekStartsOn: 1 });
 }
 
 function groupRowsByWeekCount(items: Array<{ createdAt: Date }>) {
@@ -52,7 +35,7 @@ function groupRowsByWeekCount(items: Array<{ createdAt: Date }>) {
 
   for (const item of items) {
     const weekStart = startOfWeekMonday(item.createdAt);
-    const key = toDateKey(weekStart);
+    const key = format(weekStart, "yyyy-MM-dd");
     const current = map.get(key) ?? 0;
     map.set(key, current + 1);
   }
@@ -62,9 +45,10 @@ function groupRowsByWeekCount(items: Array<{ createdAt: Date }>) {
 
 function formatWeekLabel(weekStart: Date) {
   const weekEnd = addDays(weekStart, 6);
-  return `${DATE_LABEL_FORMATTER.format(weekStart)} - ${DATE_LABEL_FORMATTER.format(weekEnd)}`;
+  return `${format(weekStart, "MMM d")} - ${format(weekEnd, "MMM d")}`;
 }
 
+// Ideja je da podatke koje dobijemo iz baze formatiramo u seriju podataka grupiranu po 7 dana kako bi dobili dobar uvid u datumske trendove linisjki chartova
 export function buildWeeklyKPISeries({
   since,
   kpiRows,
@@ -79,21 +63,24 @@ export function buildWeeklyKPISeries({
   const startWeek = startOfWeekMonday(since);
   const currentWeek = startOfWeekMonday(new Date());
 
-  const series: WeeklyKPI[] = [];
-  const cursor = new Date(startWeek);
+  const series = eachWeekOfInterval(
+    {
+      start: startWeek,
+      end: currentWeek,
+    },
+    {
+      weekStartsOn: 1,
+    },
+  ).map((weekStart) => {
+    const key = format(weekStart, "yyyy-MM-dd");
 
-  while (cursor <= currentWeek) {
-    const key = toDateKey(cursor);
-
-    series.push({
-      week: formatWeekLabel(cursor),
+    return {
+      week: formatWeekLabel(weekStart),
       totalVolunteers: volunteersByWeek.get(key) ?? 0,
       totalOrganizations: organizationsByWeek.get(key) ?? 0,
       totalOrganizators: organizatorsByWeek.get(key) ?? 0,
-    });
-
-    cursor.setDate(cursor.getDate() + 7);
-  }
+    };
+  });
 
   return series;
 }

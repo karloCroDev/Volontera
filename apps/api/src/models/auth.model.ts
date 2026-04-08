@@ -1,3 +1,6 @@
+// External packages
+import { getTime } from "date-fns";
+
 // Database
 import { Accounts, prisma, User } from "@repo/database";
 
@@ -84,7 +87,7 @@ export async function findUserForOtpVerification(email: string) {
     where: {
       email,
       verificationTokenExpiresAt: {
-        gt: BigInt(Date.now()),
+        gt: BigInt(getTime(new Date())),
       },
     },
   });

@@ -1,6 +1,7 @@
 // External packages
 import bcrypt from "bcrypt";
 import { createElement } from "react";
+import { addHours, getTime } from "date-fns";
 
 // Config
 import { resend } from "@/lib/config/resend";
@@ -23,7 +24,7 @@ export async function verifyUser(email: string) {
   });
   const hashedOtp = bcrypt.hashSync(verificationToken, 10);
 
-  const expireDate: bigint = BigInt(Date.now() + 1 * 60 * 60 * 1000); // 1 hour
+  const expireDate: bigint = BigInt(getTime(addHours(new Date(), 1)));
 
   return { hashedOtp, expireDate } as const;
 }

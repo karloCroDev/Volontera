@@ -1,5 +1,6 @@
 // Database
 import { prisma, User, Notification } from "@repo/database";
+import { subHours } from "date-fns";
 
 export async function retrieveUserNotifications(userId: User["id"]) {
   return await prisma.notification.findMany({
@@ -52,7 +53,7 @@ export async function retrieveAllUnreadNotificationsFromUsers({
         where: {
           isRead: false,
           createdAt: {
-            gte: new Date(Date.now() - timeInterval * 60 * 60 * 1000),
+            gte: subHours(new Date(), timeInterval),
           },
         },
         select: {
