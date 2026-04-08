@@ -1,10 +1,16 @@
+// External packages
+import * as React from 'react';
+import { PlayCircle } from 'lucide-react';
+
+// Components
 import { Button } from '@/components/ui/button';
 import { Container } from '@/components/ui/container';
+
+// Modueles
 import { useVideoMeetingRoomContext } from '@/modules/main/organization/video-meeting/video-meeting-room-context';
+
+// Types
 import { RetrieveOrganizationMemberResponse } from '@repo/types/organization-managment';
-import { UserResponse } from '@repo/types/user';
-import { PlayCircle } from 'lucide-react';
-import React from 'react';
 
 export const MeetingEntrance: React.FC<{
 	userRole: RetrieveOrganizationMemberResponse['organizationMember']['role'];

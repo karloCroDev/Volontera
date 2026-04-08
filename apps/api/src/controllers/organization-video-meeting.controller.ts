@@ -26,11 +26,7 @@ export async function getOrganizationVideoMeetingStateController(
         .organizationId as AllOrganizationVideoMeetingArgs["organizationId"],
     );
 
-    return res.status(200).json({
-      success: true,
-      message: "Video meeting state retrieved successfully",
-      ...result,
-    });
+    return res.status(result.status).json(result.body);
   } catch (err) {
     handleServerErrorResponse(res, err);
   }
@@ -47,11 +43,7 @@ export async function startOrganizationVideoMeetingController(
       userId: req.user.userId,
     });
 
-    return res.status(200).json({
-      success: true,
-      message: "Video meeting started successfully",
-      ...result,
-    });
+    return res.status(result.status).json(result.body);
   } catch (err) {
     handleServerErrorResponse(res, err);
   }
@@ -68,18 +60,7 @@ export async function joinOrganizationVideoMeetingController(
       userId: req.user.userId,
     });
 
-    if (!result) {
-      return res.status(404).json({
-        success: false,
-        message: "No active meeting found",
-      });
-    }
-
-    return res.status(200).json({
-      success: true,
-      message: "Joined video meeting successfully",
-      ...result,
-    });
+    return res.status(result.status).json(result.body);
   } catch (err) {
     handleServerErrorResponse(res, err);
   }
@@ -96,13 +77,7 @@ export async function leaveOrganizationVideoMeetingController(
       userId: req.user.userId,
     });
 
-    return res.status(200).json({
-      success: true,
-      message: result.ended
-        ? "Video meeting ended successfully"
-        : "Left video meeting successfully",
-      ...result,
-    });
+    return res.status(result.status).json(result.body);
   } catch (err) {
     handleServerErrorResponse(res, err);
   }
@@ -118,13 +93,7 @@ export async function endOrganizationVideoMeetingController(
         .organizationId as AllOrganizationVideoMeetingArgs["organizationId"],
     });
 
-    return res.status(200).json({
-      success: true,
-      message: result.ended
-        ? "Video meeting ended successfully"
-        : "No active meeting found",
-      ...result,
-    });
+    return res.status(result.status).json(result.body);
   } catch (err) {
     handleServerErrorResponse(res, err);
   }

@@ -1,16 +1,21 @@
+// External packages
 import {
   CreateAttendeeCommand,
   CreateMeetingCommand,
   DeleteAttendeeCommand,
   DeleteMeetingCommand,
-  type Attendee,
-  type Meeting,
+  Attendee,
+  Meeting,
 } from "@aws-sdk/client-chime-sdk-meetings";
 import { OrganizationMemberRole, prisma } from "@repo/database";
 import { randomUUID } from "crypto";
 
+// Lib
 import { chimeClient } from "@/lib/config/aws";
 import { initalizeRedisClient } from "@/lib/config/redis";
+import { serverFetchOutput } from "@/lib/utils/service-output";
+
+// Websockets
 import { io } from "@/ws/socket";
 
 type VideoMeetingParticipant = {
@@ -55,7 +60,7 @@ const getRedisClient = async () => {
 const getParticipantProfile = async (
   organizationId: string,
   userId: string,
-): Promise<MeetingParticipantProfile> => {
+): Promise<MeetingParticipantProfile | null> => {
   const member = await prisma.organizationMember.findUnique({
     where: {
       organizationId_userId: {
@@ -69,7 +74,7 @@ const getParticipantProfile = async (
   });
 
   if (!member) {
-    throw new Error("Organization member not found");
+    return null;
   }
 
   return {
@@ -144,11 +149,16 @@ const emitMeetingUpdate = async (
 export async function getOrganizationVideoMeetingState(organizationId: string) {
   const meeting = await readStoredMeeting(organizationId);
 
-  return {
-    organizationId,
-    isActive: !!meeting,
-    meeting,
-  };
+  return serverFetchOutput({
+    status: 200,
+    success: true,
+    message: "Video meeting state retrieved successfully",
+    data: {
+      organizationId,
+      isActive: !!meeting,
+      meeting,
+    },
+  });
 }
 
 export async function startOrganizationVideoMeeting({
@@ -162,6 +172,15 @@ export async function startOrganizationVideoMeeting({
 
   if (existingMeeting) {
     const profile = await getParticipantProfile(organizationId, userId);
+
+    if (!profile) {
+      return serverFetchOutput({
+        status: 404,
+        success: false,
+        message: "Organization member not found",
+      });
+    }
+
     const attendeeResult = await chimeClient.send(
       new CreateAttendeeCommand({
         MeetingId: existingMeeting.meeting.MeetingId!,
@@ -170,7 +189,11 @@ export async function startOrganizationVideoMeeting({
     );
 
     if (!attendeeResult.Attendee) {
-      throw new Error("Unable to create meeting attendee");
+      return serverFetchOutput({
+        status: 500,
+        success: false,
+        message: "Unable to create meeting attendee",
+      });
     }
 
     const updatedParticipants = existingMeeting.participants.filter(
@@ -193,19 +216,32 @@ export async function startOrganizationVideoMeeting({
     await saveStoredMeeting(updatedMeeting);
     await emitMeetingUpdate(organizationId, updatedMeeting);
 
-    return {
-      organizationId,
-      isActive: true,
-      meeting: updatedMeeting,
-      participant: updatedMeeting.participants.find(
-        (entry) => entry.userId === userId,
-      )!,
-      meetingResponse: { Meeting: existingMeeting.meeting },
-      attendeeResponse: attendeeResult,
-    };
+    return serverFetchOutput({
+      status: 200,
+      success: true,
+      message: "Video meeting started successfully",
+      data: {
+        organizationId,
+        isActive: true,
+        meeting: updatedMeeting,
+        participant: updatedMeeting.participants.find(
+          (entry) => entry.userId === userId,
+        )!,
+        meetingResponse: { Meeting: existingMeeting.meeting },
+        attendeeResponse: attendeeResult,
+      },
+    });
   }
 
   const profile = await getParticipantProfile(organizationId, userId);
+
+  if (!profile) {
+    return serverFetchOutput({
+      status: 404,
+      success: false,
+      message: "Organization member not found",
+    });
+  }
 
   const meetingResult = await chimeClient.send(
     new CreateMeetingCommand({
@@ -217,7 +253,11 @@ export async function startOrganizationVideoMeeting({
   );
 
   if (!meetingResult.Meeting) {
-    throw new Error("Unable to create video meeting");
+    return serverFetchOutput({
+      status: 500,
+      success: false,
+      message: "Unable to create video meeting",
+    });
   }
 
   const attendeeResult = await chimeClient.send(
@@ -228,7 +268,11 @@ export async function startOrganizationVideoMeeting({
   );
 
   if (!attendeeResult.Attendee) {
-    throw new Error("Unable to create meeting attendee");
+    return serverFetchOutput({
+      status: 500,
+      success: false,
+      message: "Unable to create meeting attendee",
+    });
   }
 
   const meeting: StoredOrganizationVideoMeeting = {
@@ -249,14 +293,19 @@ export async function startOrganizationVideoMeeting({
   await saveStoredMeeting(meeting);
   await emitMeetingUpdate(organizationId, meeting);
 
-  return {
-    organizationId,
-    isActive: true,
-    meeting,
-    participant: meeting.participants[0],
-    meetingResponse: meetingResult,
-    attendeeResponse: attendeeResult,
-  };
+  return serverFetchOutput({
+    status: 200,
+    success: true,
+    message: "Video meeting started successfully",
+    data: {
+      organizationId,
+      isActive: true,
+      meeting,
+      participant: meeting.participants[0],
+      meetingResponse: meetingResult,
+      attendeeResponse: attendeeResult,
+    },
+  });
 }
 
 export async function joinOrganizationVideoMeeting({
@@ -269,10 +318,22 @@ export async function joinOrganizationVideoMeeting({
   const meeting = await readStoredMeeting(organizationId);
 
   if (!meeting) {
-    return null;
+    return serverFetchOutput({
+      status: 404,
+      success: false,
+      message: "No active meeting found",
+    });
   }
 
   const profile = await getParticipantProfile(organizationId, userId);
+
+  if (!profile) {
+    return serverFetchOutput({
+      status: 404,
+      success: false,
+      message: "Organization member not found",
+    });
+  }
 
   const attendeeResult = await chimeClient.send(
     new CreateAttendeeCommand({
@@ -282,7 +343,11 @@ export async function joinOrganizationVideoMeeting({
   );
 
   if (!attendeeResult.Attendee) {
-    throw new Error("Unable to join the meeting");
+    return serverFetchOutput({
+      status: 500,
+      success: false,
+      message: "Unable to join the meeting",
+    });
   }
 
   const filteredParticipants = meeting.participants.filter(
@@ -305,16 +370,21 @@ export async function joinOrganizationVideoMeeting({
   await saveStoredMeeting(updatedMeeting);
   await emitMeetingUpdate(organizationId, updatedMeeting);
 
-  return {
-    organizationId,
-    isActive: true,
-    meeting: updatedMeeting,
-    participant: updatedMeeting.participants.find(
-      (participant) => participant.userId === userId,
-    )!,
-    meetingResponse: { Meeting: meeting.meeting },
-    attendeeResponse: attendeeResult,
-  };
+  return serverFetchOutput({
+    status: 200,
+    success: true,
+    message: "Joined video meeting successfully",
+    data: {
+      organizationId,
+      isActive: true,
+      meeting: updatedMeeting,
+      participant: updatedMeeting.participants.find(
+        (participant) => participant.userId === userId,
+      )!,
+      meetingResponse: { Meeting: meeting.meeting },
+      attendeeResponse: attendeeResult,
+    },
+  });
 }
 
 export async function leaveOrganizationVideoMeeting({
@@ -327,12 +397,17 @@ export async function leaveOrganizationVideoMeeting({
   const meeting = await readStoredMeeting(organizationId);
 
   if (!meeting) {
-    return {
-      organizationId,
-      isActive: false,
-      ended: false,
-      meeting: null,
-    };
+    return serverFetchOutput({
+      status: 200,
+      success: true,
+      message: "No active meeting found",
+      data: {
+        organizationId,
+        isActive: false,
+        ended: false,
+        meeting: null,
+      },
+    });
   }
 
   const currentParticipant = meeting.participants.find(
@@ -340,24 +415,25 @@ export async function leaveOrganizationVideoMeeting({
   );
 
   if (!currentParticipant) {
-    return {
-      organizationId,
-      isActive: true,
-      ended: false,
-      meeting,
-    };
+    return serverFetchOutput({
+      status: 200,
+      success: true,
+      message: "Left video meeting successfully",
+      data: {
+        organizationId,
+        isActive: true,
+        ended: false,
+        meeting,
+      },
+    });
   }
 
   if (currentParticipant.isHost || meeting.hostUserId === userId) {
-    try {
-      await chimeClient.send(
-        new DeleteMeetingCommand({
-          MeetingId: meeting.meeting.MeetingId!,
-        }),
-      );
-    } catch {
-      // Meeting can already be deleted by another host action or timeout.
-    }
+    await chimeClient.send(
+      new DeleteMeetingCommand({
+        MeetingId: meeting.meeting.MeetingId!,
+      }),
+    );
 
     await deleteStoredMeeting(organizationId);
     await emitMeetingUpdate(organizationId, null);
@@ -368,25 +444,26 @@ export async function leaveOrganizationVideoMeeting({
       },
     );
 
-    return {
-      organizationId,
-      isActive: false,
-      ended: true,
-      meeting: null,
-    };
+    return serverFetchOutput({
+      status: 200,
+      success: true,
+      message: "Video meeting ended successfully",
+      data: {
+        organizationId,
+        isActive: false,
+        ended: true,
+        meeting: null,
+      },
+    });
   }
 
   if (currentParticipant.attendeeId) {
-    try {
-      await chimeClient.send(
-        new DeleteAttendeeCommand({
-          MeetingId: meeting.meeting.MeetingId!,
-          AttendeeId: currentParticipant.attendeeId,
-        }),
-      );
-    } catch {
-      // Removing a stale attendee should not block the user from leaving.
-    }
+    await chimeClient.send(
+      new DeleteAttendeeCommand({
+        MeetingId: meeting.meeting.MeetingId!,
+        AttendeeId: currentParticipant.attendeeId,
+      }),
+    );
   }
 
   const updatedMeeting: StoredOrganizationVideoMeeting = {
@@ -400,12 +477,17 @@ export async function leaveOrganizationVideoMeeting({
   await saveStoredMeeting(updatedMeeting);
   await emitMeetingUpdate(organizationId, updatedMeeting);
 
-  return {
-    organizationId,
-    isActive: true,
-    ended: false,
-    meeting: updatedMeeting,
-  };
+  return serverFetchOutput({
+    status: 200,
+    success: true,
+    message: "Left video meeting successfully",
+    data: {
+      organizationId,
+      isActive: true,
+      ended: false,
+      meeting: updatedMeeting,
+    },
+  });
 }
 
 export async function endOrganizationVideoMeeting({
@@ -416,21 +498,22 @@ export async function endOrganizationVideoMeeting({
   const meeting = await readStoredMeeting(organizationId);
 
   if (!meeting) {
-    return {
-      organizationId,
-      ended: false,
-    };
+    return serverFetchOutput({
+      status: 200,
+      success: true,
+      message: "No active meeting found",
+      data: {
+        organizationId,
+        ended: false,
+      },
+    });
   }
 
-  try {
-    await chimeClient.send(
-      new DeleteMeetingCommand({
-        MeetingId: meeting.meeting.MeetingId!,
-      }),
-    );
-  } catch {
-    // Meeting can already be deleted by another host action or timeout.
-  }
+  await chimeClient.send(
+    new DeleteMeetingCommand({
+      MeetingId: meeting.meeting.MeetingId!,
+    }),
+  );
 
   await deleteStoredMeeting(organizationId);
   await emitMeetingUpdate(organizationId, null);
@@ -439,8 +522,13 @@ export async function endOrganizationVideoMeeting({
     { organizationId },
   );
 
-  return {
-    organizationId,
-    ended: true,
-  };
+  return serverFetchOutput({
+    status: 200,
+    success: true,
+    message: "Video meeting ended successfully",
+    data: {
+      organizationId,
+      ended: true,
+    },
+  });
 }
