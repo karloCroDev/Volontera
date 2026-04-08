@@ -25,8 +25,6 @@ export const EditBoardDialog: React.FC<{
 	title: string;
 	boardId: string;
 }> = ({ title, boardId }) => {
-	// TODO: Retrieve board info and populate the fields
-
 	const params = useParams<{ organizationId: string }>();
 	const { mutate } = useDeleteOrganizationTaskBoard();
 	return (

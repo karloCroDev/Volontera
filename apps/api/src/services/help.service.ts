@@ -4,7 +4,6 @@ import { User } from "@repo/database";
 // Lib
 import { getLlmResponse, safetyCheckLlmReponse } from "@/lib/llm-response";
 import { toastResponseOutput } from "@/lib/utils/service-output";
-import { violenceRegex } from "@/lib/utils/regex";
 
 // Models
 import {
@@ -36,7 +35,7 @@ export async function addQuestionService({
       / organizations/group-chat - Once the user has joined an organization, they can access the group chat for that organization where they can communicate with other members and organization heads.
       / organization/tasks - Once the user has joined an organization, they can see all the tasks in a kanban board view assigned to them by the organization heads and manage their tasks.
       `;
-  // TODO: Write all routes and features (do this once the frontend is done)
+
   const appRules =
     role === "USER"
       ? `You are a helpful AI assistant that has context about this application Volontera and tries to assist and navigate users throughout the application. Awesome so here are the app routes with features descibed once the users is logged in.

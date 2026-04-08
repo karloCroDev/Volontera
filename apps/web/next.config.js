@@ -16,15 +16,6 @@ const nextConfig = {
 		],
 	},
 
-	// async redirects() {
-	// 	return [
-	// 		{
-	// 			source: '/',
-	// 			destination: '/auth/login',
-	// 			permanent: false, // use true if this will never change
-	// 		},
-	// 	];
-	// },
 	// output: 'standalone', TODO: Docker
 };
 

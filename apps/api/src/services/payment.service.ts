@@ -97,7 +97,6 @@ export async function webhookService({
         });
 
         if (subscription.metadata?.userId) {
-          // TODO: If this doesn't work then I need to handle with the customerId
           await createNotification({
             senderId: subscription.metadata.userId,
             userId: subscription.metadata.userId,

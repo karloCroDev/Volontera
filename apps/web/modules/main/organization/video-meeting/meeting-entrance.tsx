@@ -36,7 +36,6 @@ export const MeetingEntrance: React.FC<{
 							</Button>
 						)}
 
-					{/* TODO: Vidi hoću li ostaviti po default da se odmah redirecta ili ćemo to druukčije riješiti */}
 					{hasActiveMeeting && (
 						<Button
 							variant="outline"

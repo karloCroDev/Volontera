@@ -74,7 +74,6 @@ export const PaymentPlanCard: React.FC<
 				{reasons}
 			</ul>
 
-			{/* TODO: Get the url from the stripe */}
 			{link}
 		</Container>
 	);

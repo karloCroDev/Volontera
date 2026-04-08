@@ -4,6 +4,8 @@ import { redirect } from 'next/navigation';
 
 // Components
 import { Volontera } from '@/components/ui/volonotera';
+
+// Lib
 import { getSession } from '@/lib/server/user';
 
 export default async function BannedPage() {

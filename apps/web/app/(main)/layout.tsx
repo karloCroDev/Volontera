@@ -18,6 +18,7 @@ export default async function MainLayout({
 }) {
 	const user = await getSession();
 
+	if (!user.success && !user.isBanned) redirect('/account-banned');
 	if (!user.success) redirect('/auth/login');
 
 	if (user.success) {
