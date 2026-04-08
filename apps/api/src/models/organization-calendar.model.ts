@@ -1,5 +1,6 @@
 // Database
 import { OrganizationTasksAndCalendarStatus, prisma } from "@repo/database";
+import { addDays, addMonths, startOfDay, startOfMonth } from "date-fns";
 
 export async function retrieveOrganizationCalendar({
   organizationId,
@@ -12,11 +13,9 @@ export async function retrieveOrganizationCalendar({
 }) {
   const shouldFilterByMonth = month !== undefined && year !== undefined;
   const monthStart = shouldFilterByMonth
-    ? new Date(year, month - 1, 1, 0, 0, 0, 0)
+    ? startOfMonth(new Date(year, month - 1, 1))
     : undefined;
-  const monthEnd = shouldFilterByMonth
-    ? new Date(year, month, 1, 0, 0, 0, 0)
-    : undefined;
+  const monthEnd = shouldFilterByMonth ? addMonths(monthStart!, 1) : undefined;
 
   return await prisma.organizationCalendar.findUnique({
     where: {
@@ -80,24 +79,8 @@ export async function findOverlappingOrganizationEvent({
   endTime: Date;
   excludeEventId?: string;
 }) {
-  const dayStart = new Date(
-    date.getFullYear(),
-    date.getMonth(),
-    date.getDate(),
-    0,
-    0,
-    0,
-    0,
-  );
-  const dayEnd = new Date(
-    date.getFullYear(),
-    date.getMonth(),
-    date.getDate() + 1,
-    0,
-    0,
-    0,
-    0,
-  );
+  const dayStart = startOfDay(date);
+  const dayEnd = addDays(dayStart, 1);
 
   return await prisma.organizationCalendarEvent.findFirst({
     where: {

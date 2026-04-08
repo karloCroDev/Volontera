@@ -2,6 +2,7 @@
 import bcrypt from "bcrypt";
 import crypto from "crypto";
 import { createElement } from "react";
+import { addHours, getTime } from "date-fns";
 
 // Lib
 import { resend } from "@/lib/config/resend";
@@ -110,7 +111,7 @@ export async function registerService({
 
 export async function forgotPasswordService({ email }: ForgotPasswordArgs) {
   const resetToken = crypto.randomBytes(20).toString("hex");
-  const resetTokenExpireDate: bigint = BigInt(Date.now() + 60 * 60 * 1000); // 1 hour
+  const resetTokenExpireDate: bigint = BigInt(getTime(addHours(new Date(), 1)));
 
   const user = await updateResetPasswordToken({
     email,
@@ -153,7 +154,7 @@ export async function resetPasswordService(data: ResetPasswordArgs) {
 
   await resetPasswordByToken({
     resetToken: data.token,
-    expireDate: BigInt(Date.now()),
+    expireDate: BigInt(getTime(new Date())),
     hashedPassword,
   });
 

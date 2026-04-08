@@ -3,6 +3,7 @@ import {
   serverFetchOutput,
   toastResponseOutput,
 } from "@/lib/utils/service-output";
+import { isBefore } from "date-fns";
 import { createMultipleNotifications } from "@/models/notification.model";
 
 // Models
@@ -30,6 +31,7 @@ export async function retrieveOrganizationCalendarService({
   month,
   year,
 }: RetrieveOrganizationCalendarArgs) {
+  // servis vraca mjesecni presjek za trazenu godinu i organizaciju.
   const calendar = await retrieveOrganizationCalendar({
     organizationId,
     month,
@@ -55,7 +57,10 @@ export async function createOrganizationEventService({
   const endTime = new Date(data.endTime);
   const date = new Date(data.date);
 
-  if (startTime.getTime() < Date.now()) {
+  // string datume odmah normalizujemo u date objekte radi sigurnijeg poredenja.
+
+  // blokiramo kreiranje eventa u proslosti.
+  if (isBefore(startTime, new Date())) {
     return toastResponseOutput({
       status: 400,
       title: "Invalid Event Date",
@@ -63,6 +68,7 @@ export async function createOrganizationEventService({
     });
   }
 
+  // cuvamo kalendar od kolizije termina na isti dan.
   const overlappingEvent = await findOverlappingOrganizationEvent({
     calendarId: data.calendarId,
     date,
@@ -78,6 +84,7 @@ export async function createOrganizationEventService({
     });
   }
 
+  // event se upisuje tek nakon svih poslovnih validacija iznad.
   await createOrganizationEvent({
     calendarId: data.calendarId,
     content: data.content,
@@ -87,6 +94,7 @@ export async function createOrganizationEventService({
     status: data.status,
   });
 
+  // notifikacije idu svim clanovima osim korisniku koji je kreirao event.
   const members = await retrieveOrganizationMembers(data.organizationId);
   const membersToNotify = members.filter((member) => member.userId !== userId);
 
@@ -112,7 +120,7 @@ export async function updateOrganizationEventService(
   const startTime = new Date(data.startTime);
   const endTime = new Date(data.endTime);
 
-  if (startTime.getTime() < Date.now()) {
+  if (isBefore(startTime, new Date())) {
     return toastResponseOutput({
       status: 400,
       title: "Invalid Event Date",
@@ -132,6 +140,7 @@ export async function updateOrganizationEventService(
     });
   }
 
+  // kod update-a ignorisemo trenutni event da overlap provjera bude tacna.
   const overlappingEvent = await findOverlappingOrganizationEvent({
     calendarId: existingEvent.calendarId,
     date: existingEvent.date,
@@ -165,6 +174,7 @@ export async function updateOrganizationEventService(
 export async function deleteOrganizationEventService({
   eventId,
 }: DeleteOrganizationEventArgs) {
+  // delete je namjerno jednostavan: model sloj brine o samom uklanjanju zapisa.
   await deleteOrganizationEvent(eventId);
 
   return toastResponseOutput({

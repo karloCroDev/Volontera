@@ -1,5 +1,6 @@
 // Database
 import { UserRole } from "@repo/database";
+import { ServerHandleResponse } from "./general";
 
 // TODO: Karlo ako budem mogao prebaciti ove typove na neko centraliziranije mjesto tj. da mogu dobiti direktno od AWS SDK-a, a ne da moram prebacivati!
 export type OrganizationVideoMeetingRole = UserRole;
@@ -37,7 +38,7 @@ export type OrganizationVideoMeetingParticipant = {
   isHost: boolean;
 };
 
-export type OrganizationVideoMeetingState = {
+export type OrganizationVideoMeetingState = ServerHandleResponse<true> & {
   organizationId: string;
   isActive: boolean;
   meeting: {
@@ -50,16 +51,16 @@ export type OrganizationVideoMeetingState = {
   } | null;
 };
 
-export type OrganizationVideoMeetingJoinResponse =
-  OrganizationVideoMeetingState & {
+export type OrganizationVideoMeetingJoinResponse = ServerHandleResponse<true> &
+  Omit<OrganizationVideoMeetingState, "message" | "success"> & {
     isActive: boolean;
     participant: OrganizationVideoMeetingParticipant;
     meetingResponse: ChimeMeetingResponse;
     attendeeResponse: ChimeAttendeeResponse;
   };
 
-export type OrganizationVideoMeetingLeaveResponse =
-  OrganizationVideoMeetingState & {
+export type OrganizationVideoMeetingLeaveResponse = ServerHandleResponse<true> &
+  Omit<OrganizationVideoMeetingState, "message" | "success"> & {
     isActive: boolean;
     ended: boolean;
   };
