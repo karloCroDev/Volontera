@@ -9,6 +9,12 @@ import {
   unbanUserService,
 } from "@/services/dashboard.service";
 
+// Schemas
+import {
+  DashboardKPIMetricsQuery,
+  DashboardUsersPaginationQuery,
+} from "@repo/schemas/dashboard";
+
 // Lib
 import { handleServerErrorResponse } from "@/lib/utils/error-response";
 
@@ -17,7 +23,9 @@ export async function retrieveKPIMetricsController(
   res: Response,
 ) {
   try {
-    const result = await retrieveKPIMetricsService({ data: req.body });
+    const result = await retrieveKPIMetricsService({
+      data: req.query as DashboardKPIMetricsQuery,
+    });
     return res.status(result.status).json(result.body);
   } catch (err) {
     handleServerErrorResponse(res, err);
@@ -30,7 +38,7 @@ export async function retrievePaginatedUsersController(
 ) {
   try {
     const result = await retrievePaginatedUsersService({
-      data: req.body,
+      data: req.query as unknown as DashboardUsersPaginationQuery,
       userId: req.user.userId,
     });
     return res.status(result.status).json(result.body);

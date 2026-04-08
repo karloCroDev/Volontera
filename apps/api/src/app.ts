@@ -109,7 +109,7 @@ app.use(
   hasRoleMiddleware,
   rateLimitMiddleware({
     additionalTags: ["organization"],
-    limit: 35,
+    limit: 50,
   }),
   organizationRoutes,
 );
@@ -210,7 +210,7 @@ app.use(
   hasRoleMiddleware,
   rateLimitMiddleware({
     additionalTags: ["home"],
-    limit: 20,
+    limit: 40,
   }),
   homeRoute,
 );

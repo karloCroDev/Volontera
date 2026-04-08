@@ -33,7 +33,6 @@ export default async function BoardPage({
 	const canMoveTasks = hasWantedOrganizationRole({
 		userRole: member.organizationMember.role,
 		requiredRoles: ['ADMIN'],
-		ownerHasAllAccess: true,
 	});
 
 	return (

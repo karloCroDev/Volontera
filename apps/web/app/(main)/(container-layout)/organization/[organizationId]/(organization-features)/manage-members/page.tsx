@@ -51,7 +51,6 @@ export default async function ManagePage({
 		!hasWantedOrganizationRole({
 			userRole: member.success ? member.organizationMember.role : undefined,
 			requiredRoles: ['OWNER'],
-			ownerHasAllAccess: false,
 		}) ||
 		!requests.success ||
 		!users.success

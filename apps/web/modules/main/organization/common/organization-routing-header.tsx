@@ -101,7 +101,6 @@ export const OrganizationRoutingHeader: React.FC<{
 				{hasWantedOrganizationRole({
 					userRole: member.organizationMember.role,
 					requiredRoles: ['OWNER'],
-					ownerHasAllAccess: false,
 				}) && (
 					<>
 						<LinkAsButton

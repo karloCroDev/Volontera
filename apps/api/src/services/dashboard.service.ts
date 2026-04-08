@@ -38,9 +38,7 @@ export async function retrieveKPIMetricsService({
   data: DashboardKPIMetricsQuery;
 }) {
   const durationDays = parseDurationDays(data.durationDays);
-  const rawMetrics = await retrieveKPIMetrics({ durationDays });
-
-  const { kpiRows, ...metrics } = rawMetrics;
+  const { kpiRows, ...metrics } = await retrieveKPIMetrics({ durationDays });
 
   const kpiSeries = buildWeeklyKPISeries({
     since: metrics.since,
