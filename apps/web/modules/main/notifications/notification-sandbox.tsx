@@ -92,63 +92,67 @@ export const NotificationSandbox = withReactQueryProvider(() => {
 			{notifications.length > 0 ? (
 				<Accordion
 					type="multiple"
-					items={notifications.map((notification) => ({
-						value: `item-${notification.id}`,
-						trigger: (
-							<div className="border-input-border flex w-full items-center gap-4 border-t px-6 py-3 lg:gap-6">
-								<Checkbox
-									className="group"
-									isSelected={ids.includes(notification.id)}
-									onChange={(val) => {
-										if (val) {
-											setIds((prev) => [...prev, notification.id]);
-										} else {
-											setIds((prev) =>
-												prev.filter((id) => id !== notification.id)
-											);
-										}
-									}}
-								>
-									<CheckboxVisually
-										variant={notification.isRead ? 'success' : 'secondary'}
-									/>
-								</Checkbox>
-
-								<Link href="/" className="flex items-center gap-4">
-									<Avatar
-										size="sm"
-										imageProps={{
-											src: notification.user.image
-												? `${process.env.NEXT_PUBLIC_AWS_CLOUDFRONT_URL}/${notification.user.image}`
-												: undefined,
+					items={notifications.map((notification) => {
+						return {
+							value: `item-${notification.id}`,
+							trigger: (
+								<div className="border-input-border flex w-full items-center gap-4 border-t px-6 py-3 lg:gap-6">
+									<Checkbox
+										className="group"
+										isSelected={ids.includes(notification.id)}
+										onChange={(val) => {
+											if (val) {
+												setIds((prev) => [...prev, notification.id]);
+											} else {
+												setIds((prev) =>
+													prev.filter((id) => id !== notification.id)
+												);
+											}
 										}}
-										isVerified={notification.user.subscriptionTier === 'PRO'}
 									>
-										{convertToFullname({
-											firstname: notification.user.firstName,
-											lastname: notification.user.lastName,
-										})}
-									</Avatar>
+										<CheckboxVisually
+											variant={notification.isRead ? 'success' : 'secondary'}
+										/>
+									</Checkbox>
 
-									<p className="text-muted-foreground text-sm underline-offset-2 hover:underline">
-										{convertToFullname({
-											firstname: notification.user.firstName,
-											lastname: notification.user.lastName,
-										})}
-									</p>
-								</Link>
+									<Link href="/" className="flex items-center gap-4">
+										<Avatar
+											size="sm"
+											imageProps={{
+												src: notification.sender?.image
+													? `${process.env.NEXT_PUBLIC_AWS_CLOUDFRONT_URL}/${notification.sender.image}`
+													: undefined,
+											}}
+											isVerified={
+												notification.sender.subscriptionTier === 'PRO'
+											}
+										>
+											{convertToFullname({
+												firstname: notification.sender.firstName,
+												lastname: notification.sender.lastName,
+											})}
+										</Avatar>
 
-								<ChevronDown className="ml-auto transition-transform duration-300 group-data-[state=closed]:rotate-0 group-data-[state=open]:rotate-180" />
-							</div>
-						),
-						contentProps: {
-							children: (
-								<div className="p-4">
-									<p>{notification.content}</p>
+										<p className="text-muted-foreground text-sm underline-offset-2 hover:underline">
+											{convertToFullname({
+												firstname: notification.sender.firstName,
+												lastname: notification.sender.lastName,
+											})}
+										</p>
+									</Link>
+
+									<ChevronDown className="ml-auto transition-transform duration-300 group-data-[state=closed]:rotate-0 group-data-[state=open]:rotate-180" />
 								</div>
 							),
-						},
-					}))}
+							contentProps: {
+								children: (
+									<div className="p-4">
+										<p>{notification.content}</p>
+									</div>
+								),
+							},
+						};
+					})}
 				/>
 			) : (
 				<p className="text-muted-foreground my-auto p-6 text-center">

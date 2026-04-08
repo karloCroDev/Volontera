@@ -9,10 +9,8 @@ import { cacheKey, redisDeleteKey } from "@/lib/cache-json";
 // Models
 import {
   createNotification,
-  createNotifications,
+  createMultipleNotifications,
 } from "@/models/notification.model";
-
-// Models
 import {
   retrieveOrganizationMember,
   retirveAllRequestsToJoinOrganization,
@@ -79,18 +77,23 @@ export async function retrieveAllMembersInOrganizationService({
   });
 }
 
-export async function acceptOrDeclineUsersRequestToJoinOrganizationService(
-  data: AcceptOrDeclineUsersRequestToJoinOrganizationArgs,
-) {
+export async function acceptOrDeclineUsersRequestToJoinOrganizationService({
+  data,
+  userId,
+}: {
+  data: AcceptOrDeclineUsersRequestToJoinOrganizationArgs;
+  userId: User["id"];
+}) {
   const affectedRequesterIds =
     await acceptOrDeclineUsersRequestToJoinOrganization(data);
 
   // Ili su svi prihvaćeni ili su svi odbijeni
   const isApproved = data.status === "APPROVED";
 
-  await createNotifications(
+  await createMultipleNotifications(
     affectedRequesterIds.map((requesterId) => ({
       userId: requesterId,
+      senderId: userId,
       content: isApproved
         ? "Your request to join the organization has been accepted."
         : "Your request to join the organization has been declined.",
@@ -106,16 +109,23 @@ export async function acceptOrDeclineUsersRequestToJoinOrganizationService(
   });
 }
 
-export async function demoteOrPromoteOrganizationMemberService(
-  data: DemoteOrPromoteOrganizationMemberArgs,
-) {
+export async function demoteOrPromoteOrganizationMemberService({
+  actorUserId,
+  data,
+}: {
+  data: DemoteOrPromoteOrganizationMemberArgs;
+  actorUserId: User["id"];
+}) {
   const result = await demoteOrPromoteOrganizationMember(data);
   await createNotification({
     content:
       result.role === "ADMIN"
         ? "You have been promoted to admin in the organization."
-        : "You have been demoted to member in the organization.",
+        : result.role === "MEMBER"
+          ? "You have been promoted to member in the organization."
+          : "Your have beeen banned from this organization.",
     userId: data.userId,
+    senderId: actorUserId,
   });
 
   return toastResponseOutput({
@@ -125,14 +135,19 @@ export async function demoteOrPromoteOrganizationMemberService(
   });
 }
 
-export async function removeOrganizationMemberService(
-  data: RemoveOrganizationMemberArgs,
-) {
+export async function removeOrganizationMemberService({
+  actorUserId,
+  data,
+}: {
+  data: RemoveOrganizationMemberArgs;
+  actorUserId: User["id"];
+}) {
   await removeOrganizationMember(data);
 
   await createNotification({
     content: "You have been removed from the organization.",
     userId: data.userId,
+    senderId: actorUserId,
   });
 
   return toastResponseOutput({

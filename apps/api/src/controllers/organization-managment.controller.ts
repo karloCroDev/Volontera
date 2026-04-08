@@ -82,7 +82,10 @@ export async function demoteOrPromoteOrganizationMemberController(
   res: Response,
 ) {
   try {
-    const result = await demoteOrPromoteOrganizationMemberService(req.body);
+    const result = await demoteOrPromoteOrganizationMemberService({
+      actorUserId: req.user.userId,
+      data: req.body,
+    });
     return res.status(result.status).json(result.body);
   } catch (err) {
     handleServerErrorResponse(res, err);
@@ -94,7 +97,10 @@ export async function removeOrganizationMemberController(
   res: Response,
 ) {
   try {
-    const result = await removeOrganizationMemberService(req.body);
+    const result = await removeOrganizationMemberService({
+      data: req.body,
+      actorUserId: req.user.userId,
+    });
     return res.status(result.status).json(result.body);
   } catch (err) {
     handleServerErrorResponse(res, err);
@@ -106,9 +112,10 @@ export async function acceptOrDeclineUsersRequestToJoinOrganizationController(
   res: Response,
 ) {
   try {
-    const result = await acceptOrDeclineUsersRequestToJoinOrganizationService(
-      req.body,
-    );
+    const result = await acceptOrDeclineUsersRequestToJoinOrganizationService({
+      data: req.body,
+      userId: req.user.userId,
+    });
     return res.status(result.status).json(result.body);
   } catch (err) {
     handleServerErrorResponse(res, err);

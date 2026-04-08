@@ -13,7 +13,7 @@ import {
 } from "@repo/schemas/organization-channel-messages";
 
 // Models
-import { createNotifications } from "@/models/notification.model";
+import { createMultipleNotifications } from "@/models/notification.model";
 import {
   retrieveAllMembersInOrganization,
   retrieveOrganizationMember,
@@ -167,9 +167,10 @@ export async function createOrganizationGroupChatMessageService({
     });
 
     if (members.length > 0) {
-      await createNotifications(
+      await createMultipleNotifications(
         members.map((member) => ({
           userId: member.userId,
+          senderId: userId,
           content: `New message in organization group chat: ${data.content}`,
         })),
       );

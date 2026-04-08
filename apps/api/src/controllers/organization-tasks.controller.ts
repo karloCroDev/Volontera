@@ -198,7 +198,10 @@ export async function retrieveTaskQuestionsController(
 
 export async function updateTaskInfoController(req: Request, res: Response) {
   try {
-    const result = await updateTaskInfoService(req.body as UpdateTaskInfoArgs);
+    const result = await updateTaskInfoService({
+      data: req.body as UpdateTaskInfoArgs,
+      userId: req.user.userId,
+    });
     return res.status(result.status).json(result.body);
   } catch (err) {
     handleServerErrorResponse(res, err);

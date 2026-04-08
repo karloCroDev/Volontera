@@ -211,6 +211,7 @@ export async function startConversationOrStartAndSendDirectMessageService({
   await createNotification({
     content: `New direct message from ${message.author.firstName} ${message.author.lastName}: ${data.content.substring(0, 20)}`,
     userId: data.particpantId,
+    senderId: userId,
   });
 
   return toastResponseOutput({
@@ -263,6 +264,7 @@ export async function createDirectMessageReplyService({
     await createNotification({
       content: `New direct message reply from ${reply.author.firstName} ${reply.author.lastName}: ${data.content.substring(0, 20)}`,
       userId: receiverUserId,
+      senderId: userId,
     });
   }
 

@@ -13,7 +13,6 @@ import {
 import {
   CreateOrganizationEventArgs,
   DeleteOrganizationEventArgs,
-  RetrieveOrganizationCalendarArgs,
   retrieveOrganizationCalendarArgsSchema,
   UpdateOrganizationEventArgs,
 } from "@repo/schemas/organization-calendar";
@@ -31,9 +30,7 @@ export async function retrieveOrganizationCalendarController(
       ...req.query,
     });
 
-    const result = await retrieveOrganizationCalendarService(
-      data as RetrieveOrganizationCalendarArgs,
-    );
+    const result = await retrieveOrganizationCalendarService(data);
 
     return res.status(result.status).json(result.body);
   } catch (error) {
@@ -46,9 +43,10 @@ export async function createOrganizationEventController(
   res: Response,
 ) {
   try {
-    const result = await createOrganizationEventService(
-      req.body as CreateOrganizationEventArgs,
-    );
+    const result = await createOrganizationEventService({
+      data: req.body as CreateOrganizationEventArgs,
+      userId: req.user.userId,
+    });
 
     return res.status(result.status).json(result.body);
   } catch (error) {

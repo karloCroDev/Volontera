@@ -64,7 +64,8 @@ model User {
 
   //  Relations
   help                         Help[]
-  notifications                Notification[]
+  notifications                Notification[]             @relation("NotificationRecipient")
+  sentNotifications            Notification[]             @relation("NotificationSender")
   conversationParticipants     ConversationParticipants[]
   directMessagesConversations  DirectMessages[]
   organizationFollowers        OrganizationFollowers[]
@@ -122,16 +123,19 @@ model Help {
 
 // Notifikacije
 model Notification {
-  id      String  @id @default(cuid())
-  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId  String
-  content String
-  isRead  Boolean @default(false)
+  id       String  @id @default(cuid())
+  user     User    @relation("NotificationRecipient", fields: [userId], references: [id], onDelete: Cascade)
+  userId   String
+  sender   User    @relation("NotificationSender", fields: [senderId], references: [id], onDelete: Cascade)
+  senderId String // Handleamo ADMINA kao organizaciju, tako da ako bude nekih generalnih obavijesti. Kasnije rollbackaj na verziju gdje može biti i null (tj da iz nekog centraliziranog mijesta bez userId šaljemo)
+  content  String
+  isRead   Boolean @default(false)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@index([userId, isRead, createdAt])
+  @@index([senderId, createdAt])
 }
 
 // Direct messages (DMs)
