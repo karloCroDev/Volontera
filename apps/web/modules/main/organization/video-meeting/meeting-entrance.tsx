@@ -1,14 +1,16 @@
 import { Button } from '@/components/ui/button';
 import { Container } from '@/components/ui/container';
+import { useVideoMeetingRoomContext } from '@/modules/main/organization/video-meeting/video-meeting-room-context';
+import { RetrieveOrganizationMemberResponse } from '@repo/types/organization-managment';
+import { UserResponse } from '@repo/types/user';
 import { PlayCircle } from 'lucide-react';
 import React from 'react';
 
 export const MeetingEntrance: React.FC<{
-	hasActiveMeeting: boolean;
-	userRole: 'OWNER' | 'ADMIN' | 'MEMBER' | 'BANNED';
-	enterMeeting: (action: 'start' | 'join') => Promise<void>;
-	isJoining: boolean;
-}> = ({ enterMeeting, hasActiveMeeting, userRole, isJoining }) => {
+	userRole: RetrieveOrganizationMemberResponse['organizationMember']['role'];
+}> = ({ userRole }) => {
+	const { enterMeeting, hasActiveMeeting, isJoining } =
+		useVideoMeetingRoomContext();
 	return (
 		<Container className="flex flex-1 items-center justify-center rounded-lg border p-8">
 			<div className="max-w-xl text-center">
