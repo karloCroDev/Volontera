@@ -57,15 +57,17 @@ import { safetyCheckLlmReponse } from "@/lib/llm-response";
 import { isUserOnProPlan } from "@/lib/payment";
 
 // Models
-import { createNotifications } from "@/models/notification.model";
+import { createMultipleNotifications } from "@/models/notification.model";
 
 // Ovo je model samo za notifikacije korisnicima koji su dodijeljeni na task (nakon update ili kreacije)
 async function notifyAssignedMembersForTask({
   taskId,
   content,
+  senderId,
 }: {
   taskId: OrganizationTask["id"];
   content: string;
+  senderId: User["id"];
 }) {
   const taskInfo = await retrieveTaskInfo(taskId);
 
@@ -74,9 +76,14 @@ async function notifyAssignedMembersForTask({
       (assignedMember) => assignedMember.organizationMember.userId,
     ) ?? [];
 
-  await createNotifications(
-    assignedUserIds.map((userId) => ({
+  const recipients = assignedUserIds.filter(
+    (assignedUserId) => assignedUserId !== senderId,
+  );
+
+  await createMultipleNotifications(
+    recipients.map((userId) => ({
       userId,
+      senderId,
       content,
     })),
   );
@@ -102,22 +109,17 @@ export async function createTaskBoardService({
       });
     }
 
-    // 3 linije obrane prije slanja u LLM. Pogledajte apps\api\src\services\help.service.ts za objašnjenje
-    const innapropriateContent = toastResponseOutput({
-      status: 400,
-      message: "Inappropriate content detected",
-      title: "Inappropriate content detected",
-    });
-    if (violenceRegex.test(`${data.descriptionAi} ${data.title}`)) {
-      return innapropriateContent;
-    }
-
+    // 3. linije obrane - regex + flash LLM model kako bi provjerili je li se šalje neprimjereni sadržaj u LLM i time uštedili na troškovima API-ja
     const AIGuard = await safetyCheckLlmReponse(
       `${data.descriptionAi} ${data.title}`,
     );
 
     if (AIGuard === "Y") {
-      return innapropriateContent;
+      return toastResponseOutput({
+        status: 400,
+        message: "Inappropriate content detected",
+        title: "Inappropriate content detected",
+      });
     }
   }
 
@@ -253,6 +255,7 @@ export async function createTaskService({
   await notifyAssignedMembersForTask({
     taskId: task.id,
     content: `You've been assigned to a task: ${data.title}`,
+    senderId: userId,
   });
 
   return toastResponseOutput({
@@ -269,26 +272,19 @@ export async function createLlmTaskService({
   data: CreateLlmTaskArgs;
   userId: User["id"];
 }) {
-  // 3 linije obrane prije slanja u LLM. Pogledajte apps\api\src\services\help.service.ts za objašnjenje
-  const innapropriateContent = toastResponseOutput({
-    status: 400,
-    message: "Inappropriate content detected",
-    title: "Inappropriate content detected",
-  });
-
-  if (violenceRegex.test(`${data.description} ${data.title}`)) {
-    return innapropriateContent;
-  }
-
+  // 3. linije obrane - regex + flash LLM model kako bi provjerili je li se šalje neprimjereni sadržaj u LLM i time uštedili na troškovima API-ja
   const AIGuard = await safetyCheckLlmReponse(
     `${data.description} ${data.title}`,
   );
 
   if (AIGuard === "Y") {
-    return innapropriateContent;
+    return toastResponseOutput({
+      status: 400,
+      message: "Inappropriate content detected",
+      title: "Inappropriate content detected",
+    });
   }
 
-  //////////////////////////////////////////////////////////////////////////
   const llmTask = await createLlmTask({
     taskTitle: data.title,
     taskDescription: data.description,
@@ -307,6 +303,7 @@ export async function createLlmTaskService({
   await notifyAssignedMembersForTask({
     taskId: createdTask.id,
     content: `You've been assigned to a task: ${data.title}`,
+    senderId: userId,
   });
 
   return toastResponseOutput({
@@ -350,12 +347,19 @@ export async function retrieveTaskQuestionsService({
   });
 }
 
-export async function updateTaskInfoService(data: UpdateTaskInfoArgs) {
+export async function updateTaskInfoService({
+  data,
+  userId,
+}: {
+  data: UpdateTaskInfoArgs;
+  userId: User["id"];
+}) {
   await updateTaskInfo(data);
 
   await notifyAssignedMembersForTask({
     taskId: data.taskId,
     content: `Task updated: ${data.title}`,
+    senderId: userId,
   });
 
   return toastResponseOutput({

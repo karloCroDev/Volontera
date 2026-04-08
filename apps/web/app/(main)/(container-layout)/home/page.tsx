@@ -50,34 +50,25 @@ async function Posts({ filter }: { filter?: 'following' }) {
 
 	await queryClient.prefetchInfiniteQuery({
 		queryKey,
-		initialPageParam: 0,
+		initialPageParam: null as string | null,
 		queryFn: async ({ pageParam }) => {
-			const offset = (pageParam ?? 0) as number;
 			return await retrieveHomePosts({
 				filter,
 				limit,
-				offset,
+				cursor: pageParam ?? undefined,
 			});
 		},
-		getNextPageParam: (lastPage: HomePostsPage, allPages: HomePostsPage[]) => {
-			const loadedCount = allPages.reduce(
-				(acc, page) =>
-					acc + ((page as { posts?: unknown[] }).posts?.length ?? 0),
-				0
-			);
-			const lastPostsLength =
-				(lastPage as { posts?: unknown[] }).posts?.length ?? 0;
-			if (lastPostsLength < limit) return undefined;
-			return loadedCount;
-		},
+		getNextPageParam: (lastPage: HomePostsPage) =>
+			'nextCursor' in lastPage ? (lastPage.nextCursor ?? undefined) : undefined,
 	});
 
 	const dehydratedState = dehydrate(queryClient);
 	const prefetched =
-		queryClient.getQueryData<InfiniteData<HomePostsPage, number>>(queryKey);
-	const firstPage = prefetched?.pages?.[0];
+		queryClient.getQueryData<InfiniteData<HomePostsPage, string | null>>(
+			queryKey
+		);
 
-	return firstPage?.success ? (
+	return prefetched?.pages?.[0]?.success ? (
 		<HomePostsMapping dehydratedState={dehydratedState} />
 	) : (
 		<p className="text-muted-foreground text-center xl:col-span-2">

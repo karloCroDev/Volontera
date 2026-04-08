@@ -14,9 +14,12 @@ import {
 	Column,
 } from '@react-email/components';
 
-export const DeletedAccount: React.FC<{
+type DeletedAccountProps = {
 	firstName: string;
-}> = ({ firstName }) => {
+};
+
+// TODO: Dodaj slike lokalno ili na s3, nemoj prebacivati url slika
+export const DeletedAccount = ({ firstName }: DeletedAccountProps) => {
 	return (
 		<Html>
 			<Tailwind>
@@ -63,4 +66,9 @@ export const DeletedAccount: React.FC<{
 		</Html>
 	);
 };
+
+DeletedAccount.PreviewProps = {
+	firstName: 'Ana',
+} satisfies DeletedAccountProps;
+
 export default DeletedAccount;

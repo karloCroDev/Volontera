@@ -16,10 +16,16 @@ import {
 	Button,
 } from '@react-email/components';
 
-export const Notification: React.FC<{
+type NotificationProps = {
 	firstName: string;
 	notificationsCount: number;
-}> = ({ firstName, notificationsCount }) => {
+};
+
+// TODO: Dodaj slike lokalno ili na s3, nemoj prebacivati url slika
+export const Notification = ({
+	firstName,
+	notificationsCount,
+}: NotificationProps) => {
 	return (
 		<Html>
 			<Tailwind>
@@ -73,4 +79,10 @@ export const Notification: React.FC<{
 		</Html>
 	);
 };
+
+Notification.PreviewProps = {
+	firstName: 'Ana',
+	notificationsCount: 4,
+} satisfies NotificationProps;
+
 export default Notification;

@@ -74,8 +74,7 @@ export const Message: React.FC<
 						<CheckCheck className="text-muted-foreground size-4" />
 					</div>
 				</div>
-
-				<ReplyButton onPress={onReplyClick} />
+				{onReplyClick && <ReplyButton onPress={onReplyClick} />}
 				{variant === 'primary' && deleteAction && (
 					<DeleteMessageButton action={deleteAction} />
 				)}

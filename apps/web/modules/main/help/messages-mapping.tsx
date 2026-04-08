@@ -23,9 +23,7 @@ import { HelpMessageForm } from '@/modules/main/help/help-message-form';
 
 export const MessagesMapping = withReactQueryProvider(
 	({ user }: { user: UserResponse }) => {
-		const { data: helpConversation } = useGetHelpConversation({
-			// Prefetched via React Query hydration on the server
-		});
+		const { data: helpConversation } = useGetHelpConversation();
 
 		const [mutating, setMutating] = React.useState(false);
 

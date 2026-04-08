@@ -17,9 +17,9 @@ export async function retrieveRecentAlgoPostsService({
   userId: User["id"];
   data: RetrieveAlgoPostsSchemaArgs;
 }) {
-  const posts = await retrieveAlgoPosts({
+  const { posts, nextCursor } = await retrieveAlgoPosts({
     userId,
-    offset: data.offset,
+    cursor: data.cursor,
     limit: data.limit,
     filter: data.filter,
   });
@@ -27,6 +27,6 @@ export async function retrieveRecentAlgoPostsService({
     status: 200,
     message: "Successfully retrieved algorithmic posts",
     success: true,
-    data: { posts },
+    data: { posts, nextCursor },
   });
 }

@@ -12,6 +12,8 @@ import { getOrganizationDetailsById } from '@/lib/server/organization';
 import { getSession } from '@/lib/server/user';
 import { convertToFullname } from '@/lib/utils/converter';
 
+// USER-INVATATION JE JEDINA ZNAČAJKA KOJA JOŠ NIJE IMPLEMENTIRANA!!! (nije u dokumentaciji ni nigdje drugdje spomenuta, samo je UI emaila i stranice napravljen, ali ništa drugo osim toga)
+
 export default async function InvitePage({
 	params,
 }: {
@@ -26,17 +28,6 @@ export default async function InvitePage({
 	const organization = await getOrganizationDetailsById(organizationId);
 	if (!organization.success) redirect('/home');
 
-	const userFullName =
-		convertToFullname({
-			firstname: user.firstName,
-			lastname: user.lastName,
-		}) || user.email;
-	const ownerFullName =
-		convertToFullname({
-			firstname: organization.organization.owner.firstName,
-			lastname: organization.organization.owner.lastName,
-		}) || organization.organization.owner.email;
-
 	return (
 		<div className="flex h-full items-center justify-center">
 			<Container className="mx-auto flex w-fit flex-col justify-center rounded-lg p-6 shadow-lg lg:p-8">
@@ -48,7 +39,10 @@ export default async function InvitePage({
 				</p>
 				<p className="text-muted-foreground mt-2 text-sm leading-6 lg:text-base">
 					<strong className="text-background-foreground">
-						{ownerFullName}
+						{convertToFullname({
+							firstname: organization.organization.owner.firstName,
+							lastname: organization.organization.owner.lastName,
+						})}
 					</strong>{' '}
 					has invited you to join{' '}
 					<strong className="text-background-foreground">
@@ -62,10 +56,12 @@ export default async function InvitePage({
 						colorScheme="orange"
 						imageProps={{
 							src: user.image ?? '',
-							alt: `${userFullName} profile picture`,
 						}}
 					>
-						{userFullName}
+						{convertToFullname({
+							firstname: user.firstName,
+							lastname: user.lastName,
+						})}
 					</Avatar>
 
 					<div className="text-muted-foreground bg-muted flex size-12 items-center justify-center rounded-full">

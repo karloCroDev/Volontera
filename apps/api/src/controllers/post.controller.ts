@@ -81,7 +81,7 @@ export async function retrieveOrganizationPostsController(
       data: {
         ...(req.params as RetrieveOrganizationPostsArgs),
         ...query,
-      } as RetrieveOrganizationPostsRequestArgs,
+      } as RetrieveOrganizationPostsRequestArgs, // Drugi put pozivam ovo isto, jer dobivam podatke iz querija tj. brojevi su stringovi
       userId: req.user.userId,
     });
     return res.status(result.status).json(result.body);

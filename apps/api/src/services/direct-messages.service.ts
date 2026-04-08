@@ -7,9 +7,14 @@ import {
   startConversationOSendDirectMessage,
   createDirectMessageReply,
 } from "@/models/direct-messages.model";
+import { createNotification } from "@/models/notification.model";
 
 // Lib
 import { createUploadUrl } from "@/lib/aws-s3-functions";
+import {
+  serverFetchOutput,
+  toastResponseOutput,
+} from "@/lib/utils/service-output";
 
 // Database
 import { User } from "@repo/database";
@@ -26,11 +31,6 @@ import { PresignImagesSchemaArgs } from "@repo/schemas/image";
 
 // Websockets
 import { getReceiverSocketId, io } from "@/ws/socket";
-import {
-  serverFetchOutput,
-  toastResponseOutput,
-} from "@/lib/utils/service-output";
-import { createNotification } from "@/models/notification.model";
 import { resolveImageKeysToUrls } from "@/services/image.service";
 
 export async function presignDirectMessageImagesService({
@@ -211,6 +211,7 @@ export async function startConversationOrStartAndSendDirectMessageService({
   await createNotification({
     content: `New direct message from ${message.author.firstName} ${message.author.lastName}: ${data.content.substring(0, 20)}`,
     userId: data.particpantId,
+    senderId: userId,
   });
 
   return toastResponseOutput({
@@ -263,6 +264,7 @@ export async function createDirectMessageReplyService({
     await createNotification({
       content: `New direct message reply from ${reply.author.firstName} ${reply.author.lastName}: ${data.content.substring(0, 20)}`,
       userId: receiverUserId,
+      senderId: userId,
     });
   }
 

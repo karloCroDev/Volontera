@@ -18,6 +18,9 @@ import { RetrieveOrganizationCalendarResponse } from '@repo/types/organization-c
 
 // Lib
 import { formatDate } from '@/lib/utils/time-adjustments';
+import { hasWantedOrganizationRole } from '@repo/permissons';
+import { useRetrieveOrganizationMember } from '@/hooks/data/organization-managment';
+import { useParams } from 'next/navigation';
 
 export const EventDialog: React.FC<{
 	date: CalendarCellProps['date'];
@@ -25,6 +28,11 @@ export const EventDialog: React.FC<{
 	calendarId: string;
 	timeZone: string;
 }> = ({ date, events, calendarId, timeZone }) => {
+	const params = useParams<{ organizationId: string }>();
+
+	const { data: member } = useRetrieveOrganizationMember({
+		organizationId: params.organizationId,
+	});
 	const isPastDate = React.useMemo(
 		() => date.compare(today(timeZone)) < 0,
 		[date, timeZone]
@@ -69,14 +77,16 @@ export const EventDialog: React.FC<{
 					)}
 				</div>
 
-				<hr className="bg-input-border my-6 h-px w-full border-0" />
-
-				<AddEventForm calendarId={calendarId} date={date} />
+				{hasWantedOrganizationRole({
+					requiredRoles: ['OWNER', 'ADMIN'],
+					userRole: member?.organizationMember.role,
+				}) && (
+					<>
+						<hr className="bg-input-border my-6 h-px w-full border-0" />
+						<AddEventForm calendarId={calendarId} date={date} />
+					</>
+				)}
 			</div>
 		</Dialog>
 	);
-};
-
-const DayCell = () => {
-	return;
 };

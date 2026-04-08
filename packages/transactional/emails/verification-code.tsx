@@ -13,9 +13,13 @@ import {
 	Column,
 } from '@react-email/components';
 
-export const VerificationCode: React.FC<{
+type VerificationCodeProps = {
 	verificationCode: string;
-}> = ({ verificationCode }) => {
+};
+
+export const VerificationCode = ({
+	verificationCode,
+}: VerificationCodeProps) => {
 	return (
 		<Html>
 			<Tailwind>
@@ -36,7 +40,7 @@ export const VerificationCode: React.FC<{
 										</Column>
 										<Column align="right">
 											{/* Stavi sliku 
-                      <div className="rounded-full bg-black size-10" /> */}
+					  <div className="rounded-full bg-black size-10" /> */}
 										</Column>
 									</Row>
 								</Column>
@@ -68,5 +72,9 @@ export const VerificationCode: React.FC<{
 		</Html>
 	);
 };
+
+VerificationCode.PreviewProps = {
+	verificationCode: '123456',
+} satisfies VerificationCodeProps;
 
 export default VerificationCode;

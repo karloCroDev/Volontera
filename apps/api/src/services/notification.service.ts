@@ -72,6 +72,7 @@ export async function createNotificationService({
 }) {
   await createNotification({
     userId,
+    senderId: userId,
     content: data.content,
   });
 

@@ -50,8 +50,7 @@ export const PostsMapping = withReactQueryProvider(() => {
 					userRole: member?.success
 						? member.organizationMember.role
 						: undefined,
-					requiredRoles: ['ADMIN'],
-					ownerHasAllAccess: true,
+					requiredRoles: ['ADMIN', 'OWNER'],
 				})}
 			/>
 		))

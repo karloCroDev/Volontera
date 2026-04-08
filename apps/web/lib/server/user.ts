@@ -6,7 +6,10 @@ import { UserResponse } from '@repo/types/user';
 import { ServerHandleResponse } from '@repo/types/general';
 
 export async function getSession(): Promise<
-	UserResponse | ServerHandleResponse<false>
+	| UserResponse
+	| (ServerHandleResponse<false> & {
+			isBanned?: true; // Specialni scenario koji moram handleati zbog toga što korisnik postoji ali mu je account banned, tako da mu neću dati pristup aplikaciji, ali ću ga preusmjeriti na account banned stranicu umjesto na login stranicu
+	  })
 > {
 	return await serverFetch({
 		url: 'user/session',

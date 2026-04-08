@@ -1,13 +1,14 @@
 // Database
 import { OrganizationMemberRole, UserRole } from "@repo/database";
 
+// TODO: Ovo treba refactorirati jer ownerHasAllaccess vjv jer nema smisla da ovo ostavim ovaj ownerHasAllAccess
 export function hasWantedOrganizationRole({
   requiredRoles,
   userRole,
   ownerHasAllAccess = false,
 }: {
   userRole?: OrganizationMemberRole | null;
-  requiredRoles: readonly OrganizationMemberRole[];
+  requiredRoles: OrganizationMemberRole[];
   ownerHasAllAccess?: boolean;
 }) {
   if (!userRole) return false;

@@ -13,7 +13,7 @@ import {
 } from "@repo/schemas/organization-channel-messages";
 
 // Models
-import { createNotifications } from "@/models/notification.model";
+import { createMultipleNotifications } from "@/models/notification.model";
 import {
   retrieveAllMembersInOrganization,
   retrieveOrganizationMember,
@@ -114,7 +114,7 @@ export async function createOrganizationGroupChatMessageService({
     return toastResponseOutput({
       title: "Error",
       message: "Channel not found for this organization",
-      status: 404,
+      status: 400,
     });
   }
 
@@ -158,7 +158,6 @@ export async function createOrganizationGroupChatMessageService({
     hasWantedOrganizationRole({
       userRole: member?.role,
       requiredRoles: ["ADMIN"],
-      ownerHasAllAccess: true,
     })
   ) {
     const members = await retrieveAllMembersInOrganization({
@@ -167,9 +166,10 @@ export async function createOrganizationGroupChatMessageService({
     });
 
     if (members.length > 0) {
-      await createNotifications(
+      await createMultipleNotifications(
         members.map((member) => ({
           userId: member.userId,
+          senderId: userId,
           content: `New message in organization group chat: ${data.content}`,
         })),
       );
@@ -190,18 +190,17 @@ export async function deleteOrganizationGroupChatMessageService({
   data: DeleteOrganizationChannelMessageArgs;
   userId: User["id"];
 }) {
-  const { organizationId, deletedMessageIds } =
-    await deleteOrganizationChannelChatMessage({
-      messageId: data.messageId,
-      userId,
-    });
+  const { deletedMessageIds } = await deleteOrganizationChannelChatMessage({
+    messageId: data.messageId,
+    userId,
+  });
 
-  io.to(`organization:${organizationId ?? data.organizationId}`).emit(
+  io.to(`organization:${data.organizationId}`).emit(
     "organization-group-chat:message-deleted",
     {
       messageId: data.messageId,
       messageIds: deletedMessageIds,
-      organizationId: organizationId ?? data.organizationId,
+      organizationId: data.organizationId,
     },
   );
 

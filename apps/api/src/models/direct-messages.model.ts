@@ -1,4 +1,5 @@
 // Database
+import { sortPairKey } from "@/lib/utils/pair-key";
 import { prisma, User, DirectMessages } from "@repo/database";
 
 export async function listAllDirectMessagesConversation(userId: User["id"]) {
@@ -32,7 +33,7 @@ export async function getDirectMessagesConversationById({
   senderId: User["id"];
   recieverId: User["id"];
 }) {
-  const pairKey = [senderId, recieverId].sort().join(":");
+  const pairKey = sortPairKey({ senderId, recieverId });
   return prisma.directMessagesConversations.findUnique({
     where: {
       pairKey,
@@ -197,7 +198,7 @@ export async function startConversationOSendDirectMessage({
   imageKeys?: string[];
 }) {
   // Pair key mi olakšava način na koji ću pronaći konverzaciju između dva korisnika, također mi omogućava da ako se 2 iste poruke pošalju u isto vrijeme, da ne dobijem konflikt u bazi podataka jer će pair key uvijek biti isti za ta dva korisnika.
-  const pairKey = [senderId, recieverId].sort().join(":"); // Uvijek isti redoslijed korisnika bez obzira tko šalje poruku
+  const pairKey = sortPairKey({ senderId, recieverId });
 
   // Koristim transakciju jer imamo veći broj operacija koje moramo obaviti. Ideja je kada korisnik pošalje poruku, ako ne postoji konverzacija između ta dva korisnika, da se kreira nova konverzacija i da se u nju doda poruka. Ako konverzacija postoji, samo se doda poruka u postojeću konverzaciju. Također, potrebno je ažurirati i posljednju poruku u konverzaciji, kako bi ju prikazali u listi konverzacija.
 

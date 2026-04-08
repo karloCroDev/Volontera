@@ -6,16 +6,16 @@ import { RetrieveAlgoPostsSchemaArgs } from "@repo/schemas/home";
 
 export async function retrieveAlgoPosts({
   userId,
-  offset = 0,
+  cursor,
   limit = 10,
   filter,
 }: {
   userId: User["id"];
-  offset?: number;
+  cursor?: string;
   limit?: number;
   filter?: RetrieveAlgoPostsSchemaArgs["filter"];
 }) {
-  return prisma.post.findMany({
+  const posts = await prisma.post.findMany({
     where:
       filter === "following"
         ? {
@@ -71,9 +71,26 @@ export async function retrieveAlgoPosts({
         },
       },
     },
-    skip: +offset,
-    take: +limit,
+    orderBy: [{ createdAt: "desc" }, { id: "desc" }],
+    ...(cursor
+      ? {
+          cursor: { id: cursor },
+          skip: 1,
+        }
+      : {}),
+    take: +limit + 1,
   });
+
+  const hasMore = posts.length > limit;
+  const slicedPosts = hasMore ? posts.slice(0, limit) : posts;
+  const nextCursor = hasMore
+    ? (slicedPosts[slicedPosts.length - 1]?.id ?? null)
+    : null;
+
+  return {
+    posts: slicedPosts,
+    nextCursor,
+  };
 }
 
 export async function retrieveCronPosts() {

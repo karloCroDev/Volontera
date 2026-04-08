@@ -4,12 +4,14 @@ import { notFound } from 'next/navigation';
 
 // Modules
 import { VideoMeetingRoom } from '@/modules/main/organization/video-meeting/video-meeting-room';
+import { VideoMeetingRoomContextProvider } from '@/modules/main/organization/video-meeting/video-meeting-room-context';
 
 // Lib
 import { getSession } from '@/lib/server/user';
 import { getOrganizationDetailsById } from '@/lib/server/organization';
 import { retrieveOrganizationMember } from '@/lib/server/organization-managment';
 import { getOrganizationVideoMeetingState } from '@/lib/server/organization-video-meeting';
+import { ReactQueryProvider } from '@/lib/utils/react-query';
 
 export default async function VideoMeetingPage({
 	params,
@@ -38,11 +40,17 @@ export default async function VideoMeetingPage({
 	const dehydratedState = dehydrate(queryClient);
 
 	return (
-		<VideoMeetingRoom
-			organizationId={organizationId}
-			currentUser={session}
-			userRole={member.organizationMember.role}
-			dehydratedState={dehydratedState}
-		/>
+		<ReactQueryProvider dehydratedState={dehydratedState}>
+			<VideoMeetingRoomContextProvider
+				organizationId={organizationId}
+				currentUser={session}
+				userRole={member.organizationMember.role}
+			>
+				<VideoMeetingRoom
+					currentUser={session}
+					userRole={member.organizationMember.role}
+				/>
+			</VideoMeetingRoomContextProvider>
+		</ReactQueryProvider>
 	);
 }

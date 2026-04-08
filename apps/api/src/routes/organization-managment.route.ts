@@ -77,10 +77,6 @@ organizationManagmentRoutes.get(
     type: "params",
     responseOutput: "server",
   }),
-  organizationRolesMiddleware({
-    type: "params",
-    aquiredRoles: ["MEMBER", "ADMIN"],
-  }),
   retrieveOrganizationMemberController,
 );
 

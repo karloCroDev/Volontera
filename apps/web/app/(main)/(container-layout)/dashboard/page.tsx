@@ -55,6 +55,8 @@ export default async function DashboardPage({
 			: 30,
 	});
 
+	console.log(metrics);
+
 	// KPI cards data
 	const metricCards = [
 		{

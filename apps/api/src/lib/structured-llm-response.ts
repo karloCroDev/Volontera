@@ -1,22 +1,9 @@
 // External packages
 import { zodToJsonSchema } from "zod-to-json-schema";
-import { z } from "zod";
+import { aiTaskSchema, aiTasksSchema } from "@repo/schemas/ai";
 
 // Lib
 import { getLlmResponse } from "@/lib/llm-response";
-
-// Rađeno po dokumentaciji: https://ai.google.dev/gemini-api/docs/structured-output?example=recipe
-const aiOneTaskSchema = z.object({
-  title: z.string().min(1).describe("The title of the task"),
-  description: z.string().min(1).describe("The description of the task"),
-  dueDate: z
-    .string()
-    .min(1)
-    .describe("The due date of the task in format YYYY-MM-DD."),
-  status: z.enum(["LOW_PRIORITY", "MEDIUM_PRIORITY", "HIGH_PRIORITY"]),
-});
-
-const aiTasksSchema = z.array(aiOneTaskSchema).min(1).max(3);
 
 // Strogo definirana zod schema kako bi dobili strukturirani odgovor od LLM-a koji se može direktno parsirati i koristiti u aplikaciji
 export async function createTasksLlmWithBoard({
@@ -55,10 +42,10 @@ export async function createLlmTask({
   const response = await getLlmResponse(prompt, {
     config: {
       responseMimeType: "application/json",
-      responseJsonSchema: zodToJsonSchema(aiOneTaskSchema as unknown as any),
+      responseJsonSchema: zodToJsonSchema(aiTaskSchema as unknown as any),
     },
   });
 
-  const parsedResponse = aiOneTaskSchema.parse(JSON.parse(response));
+  const parsedResponse = aiTaskSchema.parse(JSON.parse(response));
   return parsedResponse;
 }

@@ -76,6 +76,7 @@ export async function webhookService({
       });
 
       await createNotification({
+        senderId: userId,
         userId,
         content:
           "Your subscription has been activated successfully! Thank you for choosing our pro plan",
@@ -96,8 +97,8 @@ export async function webhookService({
         });
 
         if (subscription.metadata?.userId) {
-          // TODO: If this doesn't work then I need to handle with the customerId
           await createNotification({
+            senderId: subscription.metadata.userId,
             userId: subscription.metadata.userId,
             content: "Your subscription has been cancelled.",
           });
@@ -139,6 +140,7 @@ export async function webhookService({
 
         if (subscription.metadata?.userId) {
           await createNotification({
+            senderId: subscription.metadata.userId,
             userId: subscription.metadata.userId, // Bit će sigurno, ali onako za svaki slučaj
             content: "Your subscription has been updated successfully.",
           });

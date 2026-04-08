@@ -6,6 +6,7 @@ import {
 
 // Schemas
 import {
+  DashboardBanOrUnbanUserArgs,
   DashboardKPIMetricsQuery,
   DashboardUsersPaginationQuery,
 } from "@repo/schemas/dashboard";
@@ -21,6 +22,15 @@ import {
 // Lib
 import { parseDurationDays } from "@/lib/utils/dates";
 import { buildWeeklyKPISeries } from "../lib/utils/dashboard-kpi";
+import { resend } from "@/lib/config/resend";
+
+// External packages
+import { createElement } from "react";
+
+// Transactional emails
+import { BannedUser } from "@repo/transactional/banned-user";
+import { UnbannedUser } from "@repo/transactional/unbanned-user";
+import { User } from "@repo/database";
 
 export async function retrieveKPIMetricsService({
   data,
@@ -28,9 +38,7 @@ export async function retrieveKPIMetricsService({
   data: DashboardKPIMetricsQuery;
 }) {
   const durationDays = parseDurationDays(data.durationDays);
-  const rawMetrics = await retrieveKPIMetrics({ durationDays });
-
-  const { kpiRows, ...metrics } = rawMetrics;
+  const { kpiRows, ...metrics } = await retrieveKPIMetrics({ durationDays });
 
   const kpiSeries = buildWeeklyKPISeries({
     since: metrics.since,
@@ -77,13 +85,37 @@ export async function retrievePaginatedUsersService({
 }
 
 export async function banUserService({
-  userId,
+  data,
   adminUserId,
 }: {
-  userId: string;
-  adminUserId: string;
+  data: DashboardBanOrUnbanUserArgs;
+  adminUserId: User["id"];
 }) {
-  const bannedUser = await banUser(userId);
+  if (data.userId === adminUserId) {
+    return toastResponseOutput({
+      status: 400,
+      title: "Invalid action",
+      message: "You cannot ban your own account",
+    });
+  }
+  const bannedUser = await banUser(data.userId);
+
+  const { error } = await resend.emails.send({
+    from: process.env.RESEND_FROM!,
+    to: bannedUser.email,
+    subject: "Your Volontera account has been banned",
+    react: createElement(BannedUser, {
+      firstName: bannedUser.firstName,
+    }),
+  });
+
+  if (error) {
+    return toastResponseOutput({
+      status: 400,
+      title: "Email Sending Failed",
+      message: "User was banned, but notification email could not be sent.",
+    });
+  }
 
   return toastResponseOutput({
     status: 200,
@@ -93,13 +125,13 @@ export async function banUserService({
 }
 
 export async function unbanUserService({
-  userId,
+  data,
   adminUserId,
 }: {
-  userId: string;
+  data: DashboardBanOrUnbanUserArgs;
   adminUserId: string;
 }) {
-  if (userId === adminUserId) {
+  if (data.userId === adminUserId) {
     return toastResponseOutput({
       status: 400,
       title: "Invalid action",
@@ -107,13 +139,22 @@ export async function unbanUserService({
     });
   }
 
-  const unbannedUser = await unbanUser(userId);
+  const unbannedUser = await unbanUser(data.userId);
 
-  if (!unbannedUser) {
+  const { error } = await resend.emails.send({
+    from: process.env.RESEND_FROM!,
+    to: unbannedUser.email,
+    subject: "Your Volontera account has been unbanned",
+    react: createElement(UnbannedUser, {
+      firstName: unbannedUser.firstName,
+    }),
+  });
+
+  if (error) {
     return toastResponseOutput({
-      status: 404,
-      title: "User not found",
-      message: "Could not find a user to unban",
+      status: 400,
+      title: "Email Sending Failed",
+      message: "User was unbanned, but notification email could not be sent.",
     });
   }
 

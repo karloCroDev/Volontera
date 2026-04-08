@@ -214,7 +214,7 @@ export default async function LandingPage() {
 												<div className="py-4">
 													Yes. The Beginner&apos;s Kit plan is free and includes
 													core features. Paid plans unlock additional
-													capabilities and subscription management features.",
+													capabilities and subscription management features.
 												</div>
 											),
 										},

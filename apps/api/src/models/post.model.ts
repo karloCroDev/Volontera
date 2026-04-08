@@ -224,7 +224,6 @@ export async function likePost({
   return prisma.postLikes.create({
     data: {
       postId,
-
       userId,
     },
   });

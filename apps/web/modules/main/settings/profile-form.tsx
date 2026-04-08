@@ -99,69 +99,99 @@ export const ProfileForm: React.FC<{
 					<Controller
 						control={control}
 						name="image"
-						render={({ field: { onChange } }) => (
-							<>
-								<AriaLabel htmlFor="image">
-									<Avatar
-										imageProps={{
-											src:
-												(currentImage && URL.createObjectURL(currentImage)) ||
-												`${process.env.NEXT_PUBLIC_AWS_CLOUDFRONT_URL}/${user?.image}` ||
-												'',
-											alt: 'Avatar',
+						render={({ field: { onChange, value } }) => {
+							const isDeletePending =
+								Boolean(user?.image) &&
+								Boolean(
+									value &&
+										'deleteImage' in value &&
+										value.deleteImage === user?.image
+								);
+
+							return (
+								<>
+									<AriaLabel htmlFor="image">
+										<Avatar
+											imageProps={{
+												src:
+													(currentImage && URL.createObjectURL(currentImage)) ||
+													(isDeletePending
+														? ''
+														: `${process.env.NEXT_PUBLIC_AWS_CLOUDFRONT_URL}/${user?.image}`) ||
+													'',
+												alt: 'Avatar',
+											}}
+											isVerified={user?.subscriptionTier === 'PRO'}
+											size="4xl"
+											isInput
+											deleteButton={
+												(currentImage || user?.image) && (
+													<Button
+														className="p-3"
+														type="button"
+														isFullyRounded
+														colorScheme="yellow"
+														onClick={(e) => {
+															e.preventDefault();
+															e.stopPropagation();
+														}}
+														onPress={() => {
+															if (currentImage) {
+																setCurrentImage(undefined);
+																if (user?.image) {
+																	onChange({
+																		deleteImage: user.image ?? '',
+																	});
+																} else {
+																	onChange(undefined);
+																}
+																return;
+															}
+
+															if (user?.image && !isDeletePending) {
+																onChange({
+																	deleteImage: user.image ?? '',
+																});
+															} else {
+																onChange(undefined);
+															}
+														}}
+													>
+														<Trash2 className="size-4" />
+													</Button>
+												)
+											}
+										>
+											{user &&
+												convertToFullname({
+													firstname: user.firstName,
+													lastname: user.lastName,
+												})}
+										</Avatar>
+									</AriaLabel>
+
+									<AriaInput
+										id="image"
+										type="file"
+										accept="image/*"
+										onChange={(e) => {
+											const file = e.target?.files?.[0];
+
+											if (!file) return;
+
+											onChange({
+												filename: file.name,
+												contentType: file.type,
+												size: file.size,
+												deleteImage: user?.image ?? '',
+											});
+											setCurrentImage(file);
 										}}
-										isVerified={user?.subscriptionTier === 'PRO'}
-										size="4xl"
-										isInput
-										deleteButton={
-											currentImage && (
-												<Button
-													className="p-3"
-													isFullyRounded
-													colorScheme="yellow"
-													onPress={() => {
-														setCurrentImage(undefined);
-														if (user?.image) {
-															onChange({
-																deleteImage: user.image,
-															});
-														}
-													}}
-												>
-													<Trash2 className="size-4" />
-												</Button>
-											)
-										}
-									>
-										{user &&
-											convertToFullname({
-												firstname: user.firstName,
-												lastname: user.lastName,
-											})}
-									</Avatar>
-								</AriaLabel>
-
-								<AriaInput
-									id="image"
-									type="file"
-									accept="image/*"
-									onChange={(e) => {
-										const file = e.target?.files?.[0];
-
-										if (!file) return;
-
-										onChange({
-											filename: file.name,
-											contentType: file.type,
-											size: file.size,
-											deleteImage: user?.image,
-										});
-										setCurrentImage(file);
-									}}
-									className="sr-only"
-								/>
-							</>
-						)}
+										className="sr-only"
+									/>
+								</>
+							);
+						}}
 					/>
 				</div>
 			</div>

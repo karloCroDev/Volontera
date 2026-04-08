@@ -3,6 +3,7 @@ import {
   serverFetchOutput,
   toastResponseOutput,
 } from "@/lib/utils/service-output";
+import { createMultipleNotifications } from "@/models/notification.model";
 
 // Models
 import {
@@ -13,6 +14,7 @@ import {
   retrieveOrganizationCalendarEventById,
   updateOrganizationEvent,
 } from "@/models/organization-calendar.model";
+import { retrieveOrganizationMembers } from "@/models/organization-tasks.model";
 
 // Schemas
 import {
@@ -21,6 +23,7 @@ import {
   RetrieveOrganizationCalendarArgs,
   UpdateOrganizationEventArgs,
 } from "@repo/schemas/organization-calendar";
+import { User } from "@repo/database";
 
 export async function retrieveOrganizationCalendarService({
   organizationId,
@@ -41,9 +44,13 @@ export async function retrieveOrganizationCalendarService({
   });
 }
 
-export async function createOrganizationEventService(
-  data: CreateOrganizationEventArgs,
-) {
+export async function createOrganizationEventService({
+  data,
+  userId,
+}: {
+  data: CreateOrganizationEventArgs;
+  userId: User["id"];
+}) {
   const startTime = new Date(data.startTime);
   const endTime = new Date(data.endTime);
   const date = new Date(data.date);
@@ -79,6 +86,17 @@ export async function createOrganizationEventService(
     endTime,
     status: data.status,
   });
+
+  const members = await retrieveOrganizationMembers(data.organizationId);
+  const membersToNotify = members.filter((member) => member.userId !== userId);
+
+  await createMultipleNotifications(
+    membersToNotify.map((member) => ({
+      userId: member.userId,
+      senderId: userId,
+      content: `A new event has been added to the calendar of the organization. Event content: ${data.content}`,
+    })),
+  );
 
   return toastResponseOutput({
     status: 200,

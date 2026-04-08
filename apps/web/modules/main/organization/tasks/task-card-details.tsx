@@ -124,8 +124,7 @@ export const TaskCardDetails: React.FC<{
 		<div className="no-scrollbar flex max-h-[600px] w-full flex-col justify-between gap-4 overflow-y-scroll lg:aspect-video lg:max-h-[800px] lg:flex-row">
 			{hasWantedOrganizationRole({
 				userRole: member?.success ? member.organizationMember.role : undefined,
-				requiredRoles: ['ADMIN'],
-				ownerHasAllAccess: true,
+				requiredRoles: ['ADMIN', 'OWNER'],
 			}) ? (
 				<Form
 					className="no-scrollbar flex flex-1 flex-col lg:overflow-y-scroll"

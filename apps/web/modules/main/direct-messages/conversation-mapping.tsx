@@ -148,6 +148,7 @@ export const ConversationMapping = withReactQueryProvider(
 														? `${process.env.NEXT_PUBLIC_AWS_CLOUDFRONT_URL}/${message.author.image}`
 														: '',
 												}}
+												isVerified={message.author.subscriptionTier === 'PRO'}
 											>
 												{convertToFullname({
 													firstname: message.author.firstName,
