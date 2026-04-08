@@ -19,6 +19,7 @@ type RecentLoginProps = {
 	lastTimeLoggedIn: Date;
 };
 
+// TODO: Dodaj slike lokalno ili na s3, nemoj prebacivati url slika
 export const RecentLogin = ({
 	firstName,
 	lastTimeLoggedIn,

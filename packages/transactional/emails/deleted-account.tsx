@@ -18,6 +18,7 @@ type DeletedAccountProps = {
 	firstName: string;
 };
 
+// TODO: Dodaj slike lokalno ili na s3, nemoj prebacivati url slika
 export const DeletedAccount = ({ firstName }: DeletedAccountProps) => {
 	return (
 		<Html>

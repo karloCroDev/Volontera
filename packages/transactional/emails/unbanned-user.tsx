@@ -20,6 +20,7 @@ type UnbannedUserProps = {
 	firstName?: string;
 };
 
+// TODO: Dodaj slike lokalno ili na s3, nemoj prebacivati url slika
 export const UnbannedUser = ({ firstName }: UnbannedUserProps) => {
 	return (
 		<Html>

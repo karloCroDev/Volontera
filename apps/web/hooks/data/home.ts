@@ -26,34 +26,23 @@ export const useInfiniteHomePosts = (
 			Error,
 			InfiniteData<RetrieveHomePostsResponse>,
 			ReturnType<typeof homeQueryKeys.feed>,
-			number
+			string | null
 		>,
 		'queryKey' | 'queryFn' | 'initialPageParam' | 'getNextPageParam'
 	>
 ) => {
 	const query = useInfiniteQuery({
 		queryKey: homeQueryKeys.feed(data.filter, data.limit),
-		initialPageParam: 0,
+		initialPageParam: null,
 		queryFn: ({ pageParam }) => {
-			const offset = pageParam ?? 0;
 			return retrieveRecentAlgoHomePosts({
 				limit: data.limit,
-				offset,
+				cursor: pageParam ?? undefined,
 				filter: data.filter,
 			});
 		},
-		getNextPageParam: (
-			lastPage: RetrieveHomePostsResponse,
-			allPages: RetrieveHomePostsResponse[]
-		) => {
-			const loadedCount = allPages.reduce(
-				(acc, page) => acc + (page.posts?.length ?? 0),
-				0
-			);
-
-			if ((lastPage.posts?.length ?? 0) < data.limit) return undefined;
-			return loadedCount;
-		},
+		getNextPageParam: (lastPage: RetrieveHomePostsResponse) =>
+			lastPage.nextCursor ?? undefined,
 		...options,
 	});
 

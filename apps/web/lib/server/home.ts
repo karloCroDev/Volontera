@@ -10,14 +10,14 @@ import { RetrieveHomePostsResponse } from '@repo/types/home';
 
 export async function retrieveHomePosts({
 	limit = 6,
-	offset = 0,
+	cursor,
 	filter,
 }: RetrieveAlgoPostsSchemaArgs): Promise<
 	RetrieveHomePostsResponse | ServerHandleResponse<false>
 > {
 	const query = new URLSearchParams();
 	query.set('limit', String(limit));
-	query.set('offset', String(offset));
+	if (cursor) query.set('cursor', cursor);
 	if (filter) query.set('filter', filter);
 
 	return await serverFetch({

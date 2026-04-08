@@ -20,6 +20,7 @@ type BannedUserProps = {
 	firstName?: string;
 };
 
+// TODO: Dodaj slike lokalno ili na s3, nemoj prebacivati url slika
 export const BannedUser = ({ firstName }: BannedUserProps) => {
 	return (
 		<Html>

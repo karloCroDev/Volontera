@@ -20,6 +20,7 @@ type WelcomeEmailProps = {
 	firstName: string;
 };
 
+// TODO: Dodaj slike lokalno ili na s3, nemoj prebacivati url slika
 export const WelcomeEmail = ({ firstName }: WelcomeEmailProps) => {
 	return (
 		<Html>

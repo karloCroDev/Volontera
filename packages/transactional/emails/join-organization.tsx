@@ -32,6 +32,7 @@ function getInitial(name?: string) {
 	return name?.charAt(0).toUpperCase() || '';
 }
 
+// TODO: Dodaj slike lokalno ili na s3, nemoj prebacivati url slika
 export const JoinOrganization = ({
 	username,
 	userImage,

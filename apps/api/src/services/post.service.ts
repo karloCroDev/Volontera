@@ -1,6 +1,5 @@
 // Models
 import { calculatePostRankingScore } from "@/lib/utils/algorithm-formula";
-import { createUploadUrl } from "@/lib/aws-s3-functions";
 import { getOrganizationDetailsById } from "@/models/organization.model";
 import {
   createPost,
@@ -13,14 +12,13 @@ import {
   updatePost,
 } from "@/models/post.model";
 
-// Services
-
 // Lib
 import { isOrganizationOwnerOnProPlan, isUserOnProPlan } from "@/lib/payment";
 import {
   serverFetchOutput,
   toastResponseOutput,
 } from "@/lib/utils/service-output";
+import { createUploadUrl } from "@/lib/aws-s3-functions";
 
 // Database
 import { User } from "@repo/database";

@@ -21,6 +21,7 @@ type NotificationProps = {
 	notificationsCount: number;
 };
 
+// TODO: Dodaj slike lokalno ili na s3, nemoj prebacivati url slika
 export const Notification = ({
 	firstName,
 	notificationsCount,

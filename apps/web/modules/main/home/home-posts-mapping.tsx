@@ -19,17 +19,14 @@ export const HomePostsMapping = withReactQueryProvider(() => {
 	const filterParam = seachParams.get('filter');
 	const filter = filterParam === 'following' ? 'following' : undefined;
 
-	const query = useInfiniteHomePosts(
-		{
-			filter,
-			limit: 6,
-			offset: 0,
-		},
-		{}
-	);
+	const query = useInfiniteHomePosts({
+		filter,
+		limit: 6,
+	});
 
 	const posts = query.data?.pages.flatMap((p) => p.posts) ?? [];
 
+	// Observer prati kada korisnik dođe do kraja liste postova i ako postoji još postova za učitavanje, automatski triggera funkciju za učitavanje više postova.
 	const loadMoreRef = React.useRef<HTMLDivElement>(null);
 	React.useEffect(() => {
 		if (!loadMoreRef.current) return;
