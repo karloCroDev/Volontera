@@ -16,9 +16,11 @@ import {
 	Button,
 } from '@react-email/components';
 
-export const WelcomeEmail: React.FC<{
+type WelcomeEmailProps = {
 	firstName: string;
-}> = ({ firstName }) => {
+};
+
+export const WelcomeEmail = ({ firstName }: WelcomeEmailProps) => {
 	return (
 		<Html>
 			<Tailwind>
@@ -76,5 +78,9 @@ export const WelcomeEmail: React.FC<{
 		</Html>
 	);
 };
+
+WelcomeEmail.PreviewProps = {
+	firstName: 'Ana',
+} satisfies WelcomeEmailProps;
 
 export default WelcomeEmail;

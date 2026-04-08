@@ -21,6 +21,14 @@ import {
 // Lib
 import { parseDurationDays } from "@/lib/utils/dates";
 import { buildWeeklyKPISeries } from "../lib/utils/dashboard-kpi";
+import { resend } from "@/lib/config/resend";
+
+// External packages
+import { createElement } from "react";
+
+// Transactional emails
+import { BannedUser } from "@repo/transactional/banned-user";
+import { UnbannedUser } from "@repo/transactional/unbanned-user";
 
 export async function retrieveKPIMetricsService({
   data,
@@ -85,6 +93,23 @@ export async function banUserService({
 }) {
   const bannedUser = await banUser(userId);
 
+  const { error } = await resend.emails.send({
+    from: process.env.RESEND_FROM!,
+    to: bannedUser.email,
+    subject: "Your Volontera account has been banned",
+    react: createElement(BannedUser, {
+      firstName: bannedUser.firstName,
+    }),
+  });
+
+  if (error) {
+    return toastResponseOutput({
+      status: 400,
+      title: "Email Sending Failed",
+      message: "User was banned, but notification email could not be sent.",
+    });
+  }
+
   return toastResponseOutput({
     status: 200,
     title: `User ${bannedUser.firstName} ${bannedUser.lastName} banned`,
@@ -114,6 +139,23 @@ export async function unbanUserService({
       status: 404,
       title: "User not found",
       message: "Could not find a user to unban",
+    });
+  }
+
+  const { error } = await resend.emails.send({
+    from: process.env.RESEND_FROM!,
+    to: unbannedUser.email,
+    subject: "Your Volontera account has been unbanned",
+    react: createElement(UnbannedUser, {
+      firstName: unbannedUser.firstName,
+    }),
+  });
+
+  if (error) {
+    return toastResponseOutput({
+      status: 400,
+      title: "Email Sending Failed",
+      message: "User was unbanned, but notification email could not be sent.",
     });
   }
 

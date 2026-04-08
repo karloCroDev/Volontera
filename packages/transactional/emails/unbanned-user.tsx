@@ -1,5 +1,4 @@
 // External packages
-import 'dotenv/config';
 import {
 	Body,
 	Container,
@@ -7,35 +6,33 @@ import {
 	Heading,
 	Hr,
 	Html,
+	Preview,
 	Section,
 	Tailwind,
 	Text,
 	Img,
 	Row,
 	Column,
-	Button,
+	Link,
 } from '@react-email/components';
 
-type NotificationProps = {
-	firstName: string;
-	notificationsCount: number;
+type UnbannedUserProps = {
+	firstName?: string;
 };
 
-export const Notification = ({
-	firstName,
-	notificationsCount,
-}: NotificationProps) => {
+export const UnbannedUser = ({ firstName }: UnbannedUserProps) => {
 	return (
 		<Html>
 			<Tailwind>
 				<Head />
 				<Body className="mx-auto my-auto bg-white font-sans lg:px-6">
 					<Container className="my-10 rounded-lg border-2 border-solid border-[#f59f0a] p-4">
+						<Preview>Your Volontera account is active again</Preview>
 						<Section>
 							<Row>
 								<Column>
 									<Heading className="text-2xl font-semibold italic underline underline-offset-4">
-										{notificationsCount} New notifications
+										Account Unbanned
 									</Heading>
 								</Column>
 								<Column>
@@ -53,24 +50,23 @@ export const Notification = ({
 						</Section>
 						<Hr className="!border-[#91400d]" />
 						<Img
-							src="https://img.freepik.com/premium-vector/notification-bell-illustration_525134-59.jpg"
+							src="https://marketplace.canva.com/1FPbU/MAG2dA1FPbU/1/tl/canva-illustration-of-woman-celebrating-success-at-computer-MAG2dA1FPbU.png"
 							className="aspect-[4/3] w-full rounded object-cover"
 						/>
 						<Section className="text-center">
-							<Text className="text-3xl font-semibold">Hi {firstName} </Text>
-							<Text className="text-base">
-								We wanted to let you know that you have new notifications in
-								your Volontera account.
+							<Text className="text-2xl font-semibold">
+								Your account has been unbanned, {firstName}.
 							</Text>
-						</Section>
-
-						<Section className="text-center">
-							<Button
-								href={`${process.env.NEXT_PUBLIC_URL}/notifications`}
-								className="mx-auto w-[calc(100%-32px)] cursor-pointer rounded bg-[#91400d] text-center leading-10 text-white"
-							>
-								Check out now
-							</Button>
+							<Text className="text-base">
+								You can now use Volontera again. If you have any questions or
+								concerns, please contact our support team at{' '}
+								<Link
+									href="mailto:karlo.webdev@gmail.com"
+									className="text-blue-600 underline underline-offset-2"
+								>
+									karlo.webdev@gmail.com
+								</Link>
+							</Text>
 						</Section>
 					</Container>
 				</Body>
@@ -78,10 +74,8 @@ export const Notification = ({
 		</Html>
 	);
 };
+export default UnbannedUser;
 
-Notification.PreviewProps = {
+UnbannedUser.PreviewProps = {
 	firstName: 'Ana',
-	notificationsCount: 4,
-} satisfies NotificationProps;
-
-export default Notification;
+} satisfies UnbannedUserProps;

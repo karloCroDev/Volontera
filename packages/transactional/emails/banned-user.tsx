@@ -1,5 +1,4 @@
 // External packages
-import 'dotenv/config';
 import {
 	Body,
 	Container,
@@ -7,35 +6,33 @@ import {
 	Heading,
 	Hr,
 	Html,
+	Preview,
 	Section,
 	Tailwind,
 	Text,
 	Img,
 	Row,
 	Column,
-	Button,
+	Link,
 } from '@react-email/components';
 
-type NotificationProps = {
-	firstName: string;
-	notificationsCount: number;
+type BannedUserProps = {
+	firstName?: string;
 };
 
-export const Notification = ({
-	firstName,
-	notificationsCount,
-}: NotificationProps) => {
+export const BannedUser = ({ firstName }: BannedUserProps) => {
 	return (
 		<Html>
 			<Tailwind>
 				<Head />
 				<Body className="mx-auto my-auto bg-white font-sans lg:px-6">
 					<Container className="my-10 rounded-lg border-2 border-solid border-[#f59f0a] p-4">
+						<Preview>Important update about your Volontera account</Preview>
 						<Section>
 							<Row>
 								<Column>
 									<Heading className="text-2xl font-semibold italic underline underline-offset-4">
-										{notificationsCount} New notifications
+										Account Banned
 									</Heading>
 								</Column>
 								<Column>
@@ -53,24 +50,25 @@ export const Notification = ({
 						</Section>
 						<Hr className="!border-[#91400d]" />
 						<Img
-							src="https://img.freepik.com/premium-vector/notification-bell-illustration_525134-59.jpg"
+							src="https://cdn.hashnode.com/res/hashnode/image/upload/v1730432079765/693e74bb-dbe4-4426-a3f4-3dd3bddc9dd3.jpeg"
 							className="aspect-[4/3] w-full rounded object-cover"
 						/>
 						<Section className="text-center">
-							<Text className="text-3xl font-semibold">Hi {firstName} </Text>
-							<Text className="text-base">
-								We wanted to let you know that you have new notifications in
-								your Volontera account.
+							<Text className="text-2xl font-semibold">
+								You have violated our terms of service, {firstName}.
 							</Text>
-						</Section>
-
-						<Section className="text-center">
-							<Button
-								href={`${process.env.NEXT_PUBLIC_URL}/notifications`}
-								className="mx-auto w-[calc(100%-32px)] cursor-pointer rounded bg-[#91400d] text-center leading-10 text-white"
-							>
-								Check out now
-							</Button>
+							<Text className="text-base">
+								You have been violated our terms of service and have been banned
+								from using Volontera. If you think this is a mistake, please
+								contact our support team for more information. We are here to
+								help you and resolve any issues you may have. Contact us at{' '}
+								<Link
+									href="mailto:karlo.webdev@gmail.com"
+									className="text-blue-600 underline underline-offset-2"
+								>
+									karlo.webdev@gmail.com
+								</Link>
+							</Text>
 						</Section>
 					</Container>
 				</Body>
@@ -78,10 +76,8 @@ export const Notification = ({
 		</Html>
 	);
 };
+export default BannedUser;
 
-Notification.PreviewProps = {
+BannedUser.PreviewProps = {
 	firstName: 'Ana',
-	notificationsCount: 4,
-} satisfies NotificationProps;
-
-export default Notification;
+} satisfies BannedUserProps;

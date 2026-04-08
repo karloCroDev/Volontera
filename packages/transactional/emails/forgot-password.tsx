@@ -15,9 +15,11 @@ import {
 	Button,
 } from '@react-email/components';
 
-export const ForgotPassword: React.FC<{
+type ForgotPasswordProps = {
 	link: string;
-}> = ({ link }) => {
+};
+
+export const ForgotPassword = ({ link }: ForgotPasswordProps) => {
 	return (
 		<Html>
 			<Tailwind>
@@ -71,4 +73,9 @@ export const ForgotPassword: React.FC<{
 		</Html>
 	);
 };
+
+ForgotPassword.PreviewProps = {
+	link: 'https://volontera.app/auth/login/forgot-password/reset-password?token=sample-token',
+} satisfies ForgotPasswordProps;
+
 export default ForgotPassword;

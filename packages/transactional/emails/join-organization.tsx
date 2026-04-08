@@ -17,19 +17,19 @@ import {
 	Text,
 } from '@react-email/components';
 
-const getInitial = (name?: string) => {
-	const trimmed = name?.trim();
-	if (!trimmed) return '?';
-	return trimmed[0]?.toUpperCase() ?? '?';
-};
+// USER-INVATATION JE JEDINA ZNAČAJKA KOJA JOŠ NIJE IMPLEMENTIRANA!!! (nije u dokumentaciji ni nigdje drugdje spomenuta, samo je UI emaila i stranice napravljen, ali ništa drugo osim toga)
 
-interface JoinOrganizationProps {
+type JoinOrganizationProps = {
 	username?: string;
 	userImage?: string;
 	invitedByUsername?: string;
 	invitedByEmail?: string;
 	organizationName?: string;
 	organizationImage?: string;
+};
+
+function getInitial(name?: string) {
+	return name?.charAt(0).toUpperCase() || '';
 }
 
 export const JoinOrganization = ({

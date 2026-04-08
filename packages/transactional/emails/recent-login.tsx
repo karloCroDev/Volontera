@@ -14,10 +14,15 @@ import {
 	Column,
 } from '@react-email/components';
 
-export const RecentLogin: React.FC<{
+type RecentLoginProps = {
 	firstName: string;
 	lastTimeLoggedIn: Date;
-}> = ({ firstName, lastTimeLoggedIn }) => {
+};
+
+export const RecentLogin = ({
+	firstName,
+	lastTimeLoggedIn,
+}: RecentLoginProps) => {
 	return (
 		<Html>
 			<Tailwind>
@@ -81,5 +86,10 @@ export const RecentLogin: React.FC<{
 		</Html>
 	);
 };
+
+RecentLogin.PreviewProps = {
+	firstName: 'Ana',
+	lastTimeLoggedIn: new Date(),
+} satisfies RecentLoginProps;
 
 export default RecentLogin;
