@@ -109,22 +109,17 @@ export async function createTaskBoardService({
       });
     }
 
-    // 3 linije obrane prije slanja u LLM. Pogledajte apps\api\src\services\help.service.ts za objašnjenje
-    const innapropriateContent = toastResponseOutput({
-      status: 400,
-      message: "Inappropriate content detected",
-      title: "Inappropriate content detected",
-    });
-    if (violenceRegex.test(`${data.descriptionAi} ${data.title}`)) {
-      return innapropriateContent;
-    }
-
+    // 3. linije obrane - regex + flash LLM model kako bi provjerili je li se šalje neprimjereni sadržaj u LLM i time uštedili na troškovima API-ja
     const AIGuard = await safetyCheckLlmReponse(
       `${data.descriptionAi} ${data.title}`,
     );
 
     if (AIGuard === "Y") {
-      return innapropriateContent;
+      return toastResponseOutput({
+        status: 400,
+        message: "Inappropriate content detected",
+        title: "Inappropriate content detected",
+      });
     }
   }
 
@@ -277,26 +272,19 @@ export async function createLlmTaskService({
   data: CreateLlmTaskArgs;
   userId: User["id"];
 }) {
-  // 3 linije obrane prije slanja u LLM. Pogledajte apps\api\src\services\help.service.ts za objašnjenje
-  const innapropriateContent = toastResponseOutput({
-    status: 400,
-    message: "Inappropriate content detected",
-    title: "Inappropriate content detected",
-  });
-
-  if (violenceRegex.test(`${data.description} ${data.title}`)) {
-    return innapropriateContent;
-  }
-
+  // 3. linije obrane - regex + flash LLM model kako bi provjerili je li se šalje neprimjereni sadržaj u LLM i time uštedili na troškovima API-ja
   const AIGuard = await safetyCheckLlmReponse(
     `${data.description} ${data.title}`,
   );
 
   if (AIGuard === "Y") {
-    return innapropriateContent;
+    return toastResponseOutput({
+      status: 400,
+      message: "Inappropriate content detected",
+      title: "Inappropriate content detected",
+    });
   }
 
-  //////////////////////////////////////////////////////////////////////////
   const llmTask = await createLlmTask({
     taskTitle: data.title,
     taskDescription: data.description,

@@ -34,6 +34,7 @@ import {
   RetrievePostArgs,
   UpdatePostArgs,
 } from "@repo/schemas/post";
+import { safetyCheckLlmReponse } from "@/lib/llm-response";
 
 // Organization admins only
 export async function createPostService({
@@ -43,6 +44,18 @@ export async function createPostService({
   data: CreatePostArgs;
   userId: User["id"];
 }) {
+  // 3. linije obrane - regex + flash LLM model kako bi provjerili je li se šalje neprimjereni sadržaj kako bi zaštitili korisnike od slanja neprimjernog sadržaja javno
+  const AIGuard = await safetyCheckLlmReponse(`${data.title} ${data.content}`);
+
+  if (AIGuard === "Y") {
+    return toastResponseOutput({
+      status: 400,
+      title: "Inappropriate content detected",
+      message:
+        "Inappropriate content detected, please modify your post so that it works with the given content",
+    });
+  }
+
   const uploadImages = await Promise.all(
     data.images.map((image) => createUploadUrl(image)),
   );
@@ -108,6 +121,18 @@ export async function retrievePostDataService({ postId }: RetrievePostArgs) {
 }
 
 export async function updatePostService(data: UpdatePostArgs) {
+  // 3. linije obrane - regex + flash LLM model kako bi provjerili je li se šalje neprimjereni sadržaj kako bi zaštitili korisnike od slanja neprimjernog sadržaja javno
+  const AIGuard = await safetyCheckLlmReponse(`${data.title} ${data.content}`);
+
+  if (AIGuard === "Y") {
+    return toastResponseOutput({
+      status: 400,
+      title: "Inappropriate content detected",
+      message:
+        "Inappropriate content detected, please modify your post so that it works with the given content",
+    });
+  }
+
   let presignedUrls: string[] = [];
   const images = await Promise.all(
     data.images.map(async (img) => {
@@ -122,7 +147,6 @@ export async function updatePostService(data: UpdatePostArgs) {
     }),
   );
 
-  // Maybe return if I want to see it immediately!
   await updatePost({
     postId: data.postId,
     title: data.title,

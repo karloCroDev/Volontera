@@ -28,7 +28,7 @@ export async function retrieveOrganizationCalendarController(
     const data = retrieveOrganizationCalendarArgsSchema.parse({
       ...req.params,
       ...req.query,
-    });
+    }); // Drugi put pozivam ovo isto, jer dobivam podatke iz querija tj. brojevi su stringovi
 
     const result = await retrieveOrganizationCalendarService(data);
 

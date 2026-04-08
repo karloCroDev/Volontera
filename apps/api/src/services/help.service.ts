@@ -25,16 +25,6 @@ export async function addQuestionService({
   userId: string;
   role: Required<User["role"]>;
 }) {
-  const innapropriateContent = toastResponseOutput({
-    status: 400,
-    message: "Inappropriate content detected",
-    title: "Inappropriate content detected",
-  });
-  // 1 linija obrane - regex filter
-  if (violenceRegex.test(data.message)) {
-    return innapropriateContent;
-  }
-
   const routesDescription = `
       / home - Infinite scroll of all available posts about volunteering achievments made by every organization where users can like, comment, and share posts.
       / settings - Users can update their personal information, change password, and delete account.
@@ -58,11 +48,15 @@ export async function addQuestionService({
            /organization/manage-members - Organization heads can manage all the members of the organization, approve or reject join requests, and assign roles to members. Also it includes in the pro plan a dashboard that can be easily used inside the app.
         `;
 
-  // 2. linija obrane - Lightweight model koji koristi kako bi provjerili je li korisnik pita harmful pitanja
+  // 3. linije obrane - regex + flash LLM model kako bi provjerili je li se šalje neprimjereni sadržaj u LLM i time uštedili na troškovima API-ja
   const AIGuard = await safetyCheckLlmReponse(data.message);
 
   if (AIGuard === "Y") {
-    return innapropriateContent;
+    return toastResponseOutput({
+      status: 400,
+      message: "Inappropriate content detected",
+      title: "Inappropriate content detected",
+    });
   }
 
   const llmResponse = await getLlmResponse(
