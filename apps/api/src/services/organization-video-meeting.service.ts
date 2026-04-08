@@ -1,4 +1,3 @@
-// External packages
 import {
   CreateAttendeeCommand,
   CreateMeetingCommand,
@@ -7,23 +6,26 @@ import {
   Attendee,
   Meeting,
 } from "@aws-sdk/client-chime-sdk-meetings";
-import { OrganizationMemberRole, prisma } from "@repo/database";
+import {
+  Organization,
+  OrganizationMemberRole,
+  prisma,
+  User,
+} from "@repo/database";
 import { randomUUID } from "crypto";
 
-// Lib
 import { chimeClient } from "@/lib/config/aws";
 import { initalizeRedisClient } from "@/lib/config/redis";
 import { serverFetchOutput } from "@/lib/utils/service-output";
 
-// Websockets
 import { io } from "@/ws/socket";
 
 type VideoMeetingParticipant = {
-  userId: string;
+  userId: User["id"];
   attendeeId: string;
-  firstName: string;
-  lastName: string;
-  image: string | null;
+  firstName: User["firstName"];
+  lastName: User["lastName"];
+  image: User["image"];
   role: OrganizationMemberRole;
   isHost: boolean;
 };
@@ -45,17 +47,13 @@ type MeetingParticipantProfile = {
   role: OrganizationMemberRole;
 };
 
-const MEETING_TTL_SECONDS = 60 * 60 * 8;
+const MEETING_TTL_SECONDS = 60 * 60 * 1; // 1 sat TTL na sastanak u Redis pohrani, nakon čega se smatra neaktivnim i briše iz pohrane automatski
 
 const getMeetingKey = (organizationId: string) =>
   `organization-video-meeting:${organizationId}`;
 
 const getMeetingRoom = (organizationId: string) =>
   `organization:${organizationId}:video-meeting`;
-
-const getRedisClient = async () => {
-  return await initalizeRedisClient();
-};
 
 const getParticipantProfile = async (
   organizationId: string,
@@ -95,6 +93,7 @@ const buildParticipant = ({
   attendee: Attendee;
   isHost: boolean;
 }): VideoMeetingParticipant => ({
+  // fallback na userId stiti nas od edge case-a kad aws ne vrati attendee id.
   userId: profile.userId,
   attendeeId: attendee.AttendeeId || profile.userId,
   firstName: profile.firstName,
@@ -104,8 +103,9 @@ const buildParticipant = ({
   isHost,
 });
 
+// Čitamo aktivni sastanak iz Redisa kako bismo brzo vratili trenutno stanje svim klijentima
 const readStoredMeeting = async (organizationId: string) => {
-  const redis = await getRedisClient();
+  const redis = await initalizeRedisClient();
   const rawMeeting = await redis.get(getMeetingKey(organizationId));
 
   if (!rawMeeting) {
@@ -115,8 +115,9 @@ const readStoredMeeting = async (organizationId: string) => {
   return JSON.parse(rawMeeting) as StoredOrganizationVideoMeeting;
 };
 
+// Spremamo stanje sastanka u Redis i obnavljamo TTL kako aktivan sastanak ne bi prerano istekao
 const saveStoredMeeting = async (meeting: StoredOrganizationVideoMeeting) => {
-  const redis = await getRedisClient();
+  const redis = await initalizeRedisClient();
 
   await redis.set(
     getMeetingKey(meeting.organizationId),
@@ -128,7 +129,7 @@ const saveStoredMeeting = async (meeting: StoredOrganizationVideoMeeting) => {
 };
 
 const deleteStoredMeeting = async (organizationId: string) => {
-  const redis = await getRedisClient();
+  const redis = await initalizeRedisClient();
   await redis.del(getMeetingKey(organizationId));
 };
 
@@ -146,7 +147,10 @@ const emitMeetingUpdate = async (
   );
 };
 
-export async function getOrganizationVideoMeetingState(organizationId: string) {
+// Dohvaćamo trenutno stanje video sastanka organizacije iz redis pohrane
+export async function getOrganizationVideoMeetingState(
+  organizationId: Organization["id"],
+) {
   const meeting = await readStoredMeeting(organizationId);
 
   return serverFetchOutput({
@@ -161,12 +165,13 @@ export async function getOrganizationVideoMeetingState(organizationId: string) {
   });
 }
 
+// Pokrećemo novi video sastanak ili vraćamo pristup postojećem sastanku uz izradu attendee zapisa za korisnika
 export async function startOrganizationVideoMeeting({
   organizationId,
   userId,
 }: {
-  organizationId: string;
-  userId: string;
+  organizationId: Organization["id"];
+  userId: User["id"];
 }) {
   const existingMeeting = await readStoredMeeting(organizationId);
 
@@ -175,7 +180,7 @@ export async function startOrganizationVideoMeeting({
 
     if (!profile) {
       return serverFetchOutput({
-        status: 404,
+        status: 400,
         success: false,
         message: "Organization member not found",
       });
@@ -237,7 +242,7 @@ export async function startOrganizationVideoMeeting({
 
   if (!profile) {
     return serverFetchOutput({
-      status: 404,
+      status: 400,
       success: false,
       message: "Organization member not found",
     });
@@ -308,18 +313,19 @@ export async function startOrganizationVideoMeeting({
   });
 }
 
+// Pridružujemo korisnika aktivnom video sastanku i ažuriramo popis sudionika
 export async function joinOrganizationVideoMeeting({
   organizationId,
   userId,
 }: {
-  organizationId: string;
-  userId: string;
+  organizationId: Organization["id"];
+  userId: User["id"];
 }) {
   const meeting = await readStoredMeeting(organizationId);
 
   if (!meeting) {
     return serverFetchOutput({
-      status: 404,
+      status: 400,
       success: false,
       message: "No active meeting found",
     });
@@ -329,7 +335,7 @@ export async function joinOrganizationVideoMeeting({
 
   if (!profile) {
     return serverFetchOutput({
-      status: 404,
+      status: 400,
       success: false,
       message: "Organization member not found",
     });
@@ -387,12 +393,13 @@ export async function joinOrganizationVideoMeeting({
   });
 }
 
+// Uklanjamo korisnika iz video sastanka, a izlazak domaćina završava sastanak za sve sudionike
 export async function leaveOrganizationVideoMeeting({
   organizationId,
   userId,
 }: {
-  organizationId: string;
-  userId: string;
+  organizationId: Organization["id"];
+  userId: User["id"];
 }) {
   const meeting = await readStoredMeeting(organizationId);
 
@@ -490,10 +497,11 @@ export async function leaveOrganizationVideoMeeting({
   });
 }
 
+// Administrativno završavamo aktivni video sastanak i čistimo stanje sastanka iz rdisa
 export async function endOrganizationVideoMeeting({
   organizationId,
 }: {
-  organizationId: string;
+  organizationId: Organization["id"];
 }) {
   const meeting = await readStoredMeeting(organizationId);
 

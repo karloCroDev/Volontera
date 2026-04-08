@@ -33,6 +33,8 @@ import { PresignImagesSchemaArgs } from "@repo/schemas/image";
 import { getReceiverSocketId, io } from "@/ws/socket";
 import { resolveImageKeysToUrls } from "@/services/image.service";
 
+// Ako su želim se osigurati da su slike koje šaljemo klijentima nisu javne već da su to privremeni presigned URL-ovi koje hashiramo preko image key-a koji je pohranjen u bazi. Na taj način osiguravamo da samo ovlašteni korisnici mogu pristupiti slikama i da URL-ovi imaju ograničen rok trajanja radi sigurnosti (za razliku od javinh URL ova). Zato ovdje resolvamo slike
+
 export async function presignDirectMessageImagesService({
   images: dataImages,
 }: PresignImagesSchemaArgs) {

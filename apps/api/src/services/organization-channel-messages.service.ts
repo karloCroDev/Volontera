@@ -1,4 +1,6 @@
-// Models
+// External packages
+import { compareAsc } from "date-fns";
+
 // Database
 import { User } from "@repo/database";
 
@@ -38,6 +40,8 @@ import {
   deleteOrganizationChannelChatMessage,
 } from "@/models/organization-channel-messages.model";
 
+// Ako su želim se osigurati da su slike koje šaljemo klijentima nisu javne već da su to privremeni presigned URL-ovi koje hashiramo preko image key-a koji je pohranjen u bazi. Na taj način osiguravamo da samo ovlašteni korisnici mogu pristupiti slikama i da URL-ovi imaju ograničen rok trajanja radi sigurnosti (za razliku od javinh URL ova). Zato ovdje resolvamo slike
+
 export async function retrieveAllMesssagesFromChannelService({
   organizationId,
   groupChatId,
@@ -57,10 +61,11 @@ export async function retrieveAllMesssagesFromChannelService({
   }
 
   const messages = organizationChannel.messages
-    .sort(
-      (firstMessage, secondMessage) =>
-        new Date(firstMessage.createdAt).getTime() -
-        new Date(secondMessage.createdAt).getTime(),
+    .sort((firstMessage, secondMessage) =>
+      compareAsc(
+        new Date(firstMessage.createdAt),
+        new Date(secondMessage.createdAt),
+      ),
     )
     .map((message) => ({
       ...message,
@@ -153,11 +158,11 @@ export async function createOrganizationGroupChatMessageService({
     enrichedMessage,
   );
 
-  // Ako je admin ili korisnik onda se svima pošalje notifikacija
+  // Ako je admin ili vlasnik onda se svima pošalje notifikacija
   if (
     hasWantedOrganizationRole({
       userRole: member?.role,
-      requiredRoles: ["ADMIN"],
+      requiredRoles: ["ADMIN", "OWNER"],
     })
   ) {
     const members = await retrieveAllMembersInOrganization({
