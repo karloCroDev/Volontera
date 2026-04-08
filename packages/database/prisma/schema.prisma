@@ -48,7 +48,7 @@ model User {
 
   // Verification token
   verificationToken          String? @unique
-  verificationTokenExpiresAt BigInt?
+  verificationTokenExpiresAt BigInt? @unique
 
   // Stripe
   customerId       String?          @unique

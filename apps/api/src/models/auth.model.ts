@@ -64,7 +64,7 @@ export async function resetPasswordByToken({
   expireDate: bigint;
   hashedPassword: string;
 }) {
-  return prisma.user.updateMany({
+  return prisma.user.update({
     where: {
       resetToken,
       resetTokenExpireDate: {

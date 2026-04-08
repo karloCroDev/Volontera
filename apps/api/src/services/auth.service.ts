@@ -11,7 +11,7 @@ import {
   ForgotPasswordArgs,
   LoginArgs,
   RegisterArgs,
-  resetPasswordSchema,
+  ResetPasswordArgs,
 } from "@repo/schemas/auth";
 
 // Models
@@ -148,33 +148,14 @@ export async function forgotPasswordService({ email }: ForgotPasswordArgs) {
   });
 }
 
-export async function resetPasswordService(rawData: unknown) {
-  const parsed = resetPasswordSchema.safeParse(rawData);
-
-  if (!parsed.success) {
-    return formOutput({
-      status: 400,
-      message: "Invalid data",
-    });
-  }
-
-  const data = parsed.data;
-
+export async function resetPasswordService(data: ResetPasswordArgs) {
   const hashedPassword = bcrypt.hashSync(data.password, 10);
 
-  // TODO: Pogledaj u DB schemi sto sam napravio lose
-  const { count } = await resetPasswordByToken({
+  await resetPasswordByToken({
     resetToken: data.token,
     expireDate: BigInt(Date.now()),
     hashedPassword,
   });
-
-  if (count === 0) {
-    return formOutput({
-      status: 400,
-      message: "Invalid token",
-    });
-  }
 
   return toastResponseOutput({
     status: 200,
