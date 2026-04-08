@@ -1,3 +1,10 @@
+// Evo ovdje su svi resorsi za korištenje amazonovg chime sdka po čemu je rađena naša aplikacija: https://docs.aws.amazon.com/chime-sdk/
+
+//  Dokumentacija za JS tj. TS u našem slučaju integraciju: https://github.com/aws/amazon-chime-sdk-js
+
+// Primjeri po kojem sam se vodio: https://github.com/aws-samples/amazon-chime-sdk
+
+// External packages
 import {
   CreateAttendeeCommand,
   CreateMeetingCommand,
@@ -14,10 +21,12 @@ import {
 } from "@repo/database";
 import { randomUUID } from "crypto";
 
+// Lib
 import { chimeClient } from "@/lib/config/aws";
 import { initalizeRedisClient } from "@/lib/config/redis";
 import { serverFetchOutput } from "@/lib/utils/service-output";
 
+// Websockets
 import { io } from "@/ws/socket";
 
 type VideoMeetingParticipant = {
@@ -148,7 +157,7 @@ const emitMeetingUpdate = async (
 };
 
 // Dohvaćamo trenutno stanje video sastanka organizacije iz redis pohrane
-export async function getOrganizationVideoMeetingState(
+export async function getOrganizationVideoMeetingStateService(
   organizationId: Organization["id"],
 ) {
   const meeting = await readStoredMeeting(organizationId);
@@ -166,7 +175,7 @@ export async function getOrganizationVideoMeetingState(
 }
 
 // Pokrećemo novi video sastanak ili vraćamo pristup postojećem sastanku uz izradu attendee zapisa za korisnika
-export async function startOrganizationVideoMeeting({
+export async function startOrganizationVideoMeetingService({
   organizationId,
   userId,
 }: {
@@ -314,7 +323,7 @@ export async function startOrganizationVideoMeeting({
 }
 
 // Pridružujemo korisnika aktivnom video sastanku i ažuriramo popis sudionika
-export async function joinOrganizationVideoMeeting({
+export async function joinOrganizationVideoMeetingService({
   organizationId,
   userId,
 }: {
@@ -394,7 +403,7 @@ export async function joinOrganizationVideoMeeting({
 }
 
 // Uklanjamo korisnika iz video sastanka, a izlazak domaćina završava sastanak za sve sudionike
-export async function leaveOrganizationVideoMeeting({
+export async function leaveOrganizationVideoMeetingService({
   organizationId,
   userId,
 }: {
@@ -498,7 +507,7 @@ export async function leaveOrganizationVideoMeeting({
 }
 
 // Administrativno završavamo aktivni video sastanak i čistimo stanje sastanka iz rdisa
-export async function endOrganizationVideoMeeting({
+export async function endOrganizationVideoMeetingService({
   organizationId,
 }: {
   organizationId: Organization["id"];

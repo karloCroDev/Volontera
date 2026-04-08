@@ -1,4 +1,4 @@
-# Ignorirajte docker setup nije dobro implementiran, treba ga napraiviti po turborepu
+# Ignorirajte docker setup nije dobro implementiran, treba ga napraiviti posebno po pravilu turborepo setupa. Runnajte aplikaciju lokalno bez dockera
 
 services:
   db:

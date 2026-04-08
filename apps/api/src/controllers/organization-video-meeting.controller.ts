@@ -3,11 +3,11 @@ import { Request, Response } from "express";
 
 // Services
 import {
-  endOrganizationVideoMeeting,
-  getOrganizationVideoMeetingState,
-  joinOrganizationVideoMeeting,
-  leaveOrganizationVideoMeeting,
-  startOrganizationVideoMeeting,
+  endOrganizationVideoMeetingService,
+  getOrganizationVideoMeetingStateService,
+  joinOrganizationVideoMeetingService,
+  leaveOrganizationVideoMeetingService,
+  startOrganizationVideoMeetingService,
 } from "@/services/organization-video-meeting.service";
 
 // Lib
@@ -21,7 +21,7 @@ export async function getOrganizationVideoMeetingStateController(
   res: Response,
 ) {
   try {
-    const result = await getOrganizationVideoMeetingState(
+    const result = await getOrganizationVideoMeetingStateService(
       req.params
         .organizationId as AllOrganizationVideoMeetingArgs["organizationId"],
     );
@@ -37,7 +37,7 @@ export async function startOrganizationVideoMeetingController(
   res: Response,
 ) {
   try {
-    const result = await startOrganizationVideoMeeting({
+    const result = await startOrganizationVideoMeetingService({
       organizationId: req.params
         .organizationId as AllOrganizationVideoMeetingArgs["organizationId"],
       userId: req.user.userId,
@@ -54,7 +54,7 @@ export async function joinOrganizationVideoMeetingController(
   res: Response,
 ) {
   try {
-    const result = await joinOrganizationVideoMeeting({
+    const result = await joinOrganizationVideoMeetingService({
       organizationId: req.params
         .organizationId as AllOrganizationVideoMeetingArgs["organizationId"],
       userId: req.user.userId,
@@ -71,7 +71,7 @@ export async function leaveOrganizationVideoMeetingController(
   res: Response,
 ) {
   try {
-    const result = await leaveOrganizationVideoMeeting({
+    const result = await leaveOrganizationVideoMeetingService({
       organizationId: req.params
         .organizationId as AllOrganizationVideoMeetingArgs["organizationId"],
       userId: req.user.userId,
@@ -88,7 +88,7 @@ export async function endOrganizationVideoMeetingController(
   res: Response,
 ) {
   try {
-    const result = await endOrganizationVideoMeeting({
+    const result = await endOrganizationVideoMeetingService({
       organizationId: req.params
         .organizationId as AllOrganizationVideoMeetingArgs["organizationId"],
     });
