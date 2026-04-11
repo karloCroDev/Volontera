@@ -11,7 +11,8 @@ import { getSession } from '@/lib/server/user';
 export default async function BannedPage() {
 	const user = await getSession();
 
-	if (user.success && !user.isBanned) redirect('/home');
+	if (!user.success && !user.isBanned) redirect('/auth/login');
+	if (!user.isBanned) redirect('/home');
 
 	return (
 		<div className="flex h-screen flex-col items-center justify-center">

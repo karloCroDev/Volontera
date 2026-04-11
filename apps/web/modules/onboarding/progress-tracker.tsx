@@ -13,7 +13,7 @@ export const ProgressTracker = () => {
 	const type = pathname.split('/').at(-1);
 
 	return (
-		<aside className="mt-16 flex h-fit flex-col items-center lg:mt-0 lg:h-full lg:justify-center">
+		<aside className="mt-16 flex h-fit flex-col items-center pb-2 lg:mt-0 lg:h-full lg:justify-center">
 			<h1 className="text-balance text-center text-lg font-semibold lg:text-2xl">
 				A few steps away from accessing the Volontera
 			</h1>
@@ -78,7 +78,7 @@ const StatusCheckpoint = ({
 			</div>
 			<div>
 				<p className="sm:text-md text-balance text-center lg:text-lg">{type}</p>
-				<p className="text-muted-foreground">
+				<p className="text-muted-foreground text-center lg:text-start">
 					{isRequired ? 'Required' : 'Optional'}
 				</p>
 			</div>

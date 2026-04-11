@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation';
 
 // Components
 import { Layout, LayoutColumn } from '@/components/ui/layout-grid';
+import { Volontera } from '@/components/ui/volonotera';
 
 // Modules
 import { ProgressTracker } from '@/modules/onboarding/progress-tracker';
@@ -21,7 +22,7 @@ export default async function OnboardingLayout({
 	if (user.success && user.onboardingFinished) redirect('/home');
 
 	return (
-		<Layout className="h-screen place-content-center px-4">
+		<Layout className="place-content-center px-4 lg:h-screen">
 			<LayoutColumn
 				start={1}
 				end={{ base: 13, lg: 6 }}
@@ -32,10 +33,14 @@ export default async function OnboardingLayout({
 			<LayoutColumn
 				start={{ base: 1, lg: 7 }}
 				end={13}
-				className="order-1 lg:order-none"
+				className="order-1 mt-32 lg:order-none lg:mt-0"
 			>
 				{children}
 			</LayoutColumn>
+
+			<div className="border-b-input-border h-22 absolute left-0 top-0 flex w-full items-center border-b pl-6 sm:pl-12 lg:pl-16">
+				<Volontera />
+			</div>
 		</Layout>
 	);
 }

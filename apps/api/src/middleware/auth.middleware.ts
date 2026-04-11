@@ -8,7 +8,7 @@ import { cacheKey, redisGetOrSetJson } from "@/lib/cache-json";
 import { User } from "@repo/database";
 import { success } from "zod";
 
-type JwtUser = {
+export type JwtUser = {
   userId: string;
   role: User["role"];
   onboardingFinished: User["onboardingFinished"];

@@ -113,7 +113,7 @@ export const AdditionalInformationForm = withReactQueryProvider(() => {
 	};
 	return (
 		<Form
-			className="mt-20 flex flex-col items-center gap-6 lg:gap-8"
+			className="mt-12 flex flex-col items-center gap-6 lg:gap-8"
 			onSubmit={handleSubmit(onSubmit)}
 		>
 			<div className="relative">
@@ -128,7 +128,7 @@ export const AdditionalInformationForm = withReactQueryProvider(() => {
 										src: pfpImage,
 										alt: 'Avatar',
 									}}
-									size="full"
+									size="4xl"
 									isInput
 									deleteButton={
 										currentImage && (
@@ -228,10 +228,10 @@ export const AdditionalInformationForm = withReactQueryProvider(() => {
 
 			<Button
 				className="w-full"
-				size="lg"
 				iconRight={!isDirty && <ArrowRight />}
 				colorScheme={isDirty ? 'orange' : 'bland'}
 				type="submit"
+				size="lg"
 				isLoading={isPending || isSkipping}
 				isDisabled={isPending || isSkipping}
 			>
