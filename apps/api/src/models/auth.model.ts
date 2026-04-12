@@ -67,7 +67,7 @@ export async function resetPasswordByToken({
   expireDate: bigint;
   hashedPassword: string;
 }) {
-  return prisma.user.update({
+  return prisma.user.updateMany({
     where: {
       resetToken,
       resetTokenExpireDate: {
@@ -112,7 +112,7 @@ export async function updateVerificationToken({
   hashedOtp: User["verificationToken"];
   expireDate: User["verificationTokenExpiresAt"];
 }) {
-  return prisma.user.updateMany({
+  return prisma.user.update({
     where: {
       email,
       AND: [

@@ -3,6 +3,7 @@ import bcrypt from "bcrypt";
 import crypto from "crypto";
 import { createElement } from "react";
 import { addHours, getTime } from "date-fns";
+import { User } from "@repo/database";
 
 // Lib
 import { resend } from "@/lib/config/resend";
@@ -29,17 +30,24 @@ import {
 
 // Lib
 import { verifyUser } from "@/lib/utils/verify-user";
+import { formOutput, toastResponseOutput } from "@/lib/utils/service-output";
+import { hasPassword } from "@/lib/utils/password-checker";
 
 // Transactional emails
 import { ForgotPassword } from "@repo/transactional/forgot-password";
 import { RecentLogin } from "@repo/transactional/recent-login";
-import { formOutput, toastResponseOutput } from "@/lib/utils/service-output";
-import { User } from "@repo/database";
 
 export async function loginService(data: LoginArgs) {
   const user = await findUserByEmail(data.email);
   if (!user) {
     return formOutput({ status: 400, message: "Invalid email" });
+  }
+
+  if (!hasPassword(user.password)) {
+    return formOutput({
+      status: 400,
+      message: "This account uses Google sign-in and does not have a password.",
+    });
   }
 
   const passwordIsValid = bcrypt.compareSync(data.password, user.password);
@@ -110,21 +118,29 @@ export async function registerService({
 }
 
 export async function forgotPasswordService({ email }: ForgotPasswordArgs) {
+  const user = await findUserByEmail(email);
+  if (!user) {
+    return formOutput({
+      status: 400,
+      message: "Account with that email does not exist",
+    });
+  }
+
+  if (!hasPassword(user.password)) {
+    return formOutput({
+      status: 400,
+      message: "This account uses Google sign-in and does not have a password.",
+    });
+  }
+
   const resetToken = crypto.randomBytes(20).toString("hex");
   const resetTokenExpireDate: bigint = BigInt(getTime(addHours(new Date(), 1)));
 
-  const user = await updateResetPasswordToken({
+  await updateResetPasswordToken({
     email,
     resetToken,
     resetTokenExpireDate,
   });
-
-  if (!user) {
-    return {
-      status: 400,
-      body: { message: "Invalid email" },
-    };
-  }
 
   const resetLink = `${process.env.WEB_URL}/auth/login/forgot-password/reset-password?token=${resetToken}`;
 
@@ -206,13 +222,13 @@ export async function verifyOtpService({
 export async function resetVerifyTokenService(email: string) {
   const { hashedOtp, expireDate } = await verifyUser(email);
 
-  const { count } = await updateVerificationToken({
+  const updateToken = await updateVerificationToken({
     email,
     hashedOtp: hashedOtp ?? null,
     expireDate: expireDate ?? null,
   });
 
-  if (count === 0) {
+  if (!updateToken) {
     return formOutput({
       status: 400,
       message: "Error with email",

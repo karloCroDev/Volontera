@@ -4,6 +4,7 @@ import { serverFetchOutput } from "@/lib/utils/service-output";
 // Models
 import {
   findUserById,
+  findSessionUserById,
   retrieveAllOrganizationsForUser,
   retrieveAllPostsForUser,
 } from "@/models/user.model";
@@ -27,6 +28,30 @@ export async function getUserByIdService({ userId }: UserSchemaArgs) {
     message: "User fetched successfully",
     success: true,
     data: user,
+  });
+}
+
+export async function getSessionUserByIdService({ userId }: UserSchemaArgs) {
+  const user = await findSessionUserById(userId);
+
+  if (!user) {
+    return serverFetchOutput({
+      message: "There is no user that we could find with that ID",
+      success: false,
+      status: 400,
+    });
+  }
+
+  const { password, ...safeUser } = user;
+
+  return serverFetchOutput({
+    status: 200,
+    message: "User fetched successfully",
+    success: true,
+    data: {
+      ...safeUser,
+      hasPassword: Boolean,
+    },
   });
 }
 
