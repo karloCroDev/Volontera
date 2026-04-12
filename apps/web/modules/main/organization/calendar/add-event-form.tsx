@@ -105,7 +105,6 @@ export const AddEventForm: React.FC<{
 					setEndTime('10:00');
 				},
 				onError(err) {
-					console.log(err.message);
 					setError('root', { type: 'server', message: err.message });
 				},
 			}

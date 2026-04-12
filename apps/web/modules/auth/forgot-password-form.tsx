@@ -36,7 +36,7 @@ export const ForgotPasswordForm = withReactQueryProvider(() => {
 		},
 	});
 
-	const onSubmit = async (data: ForgotPasswordArgs) => {
+	const onSubmit = (data: ForgotPasswordArgs) => {
 		mutate(data, {
 			onSuccess({ message, title }) {
 				toast({
@@ -46,10 +46,13 @@ export const ForgotPasswordForm = withReactQueryProvider(() => {
 				});
 			},
 			onError(err) {
-				setError('root', err);
+				setError('root', {
+					message: err.message,
+				});
 			},
 		});
 	};
+
 	return (
 		<Form
 			className="mt-12 flex flex-col gap-8 lg:mt-16"

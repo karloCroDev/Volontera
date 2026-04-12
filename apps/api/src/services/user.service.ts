@@ -1,4 +1,5 @@
 // Lib
+import { hasPassword } from "@/lib/utils/password-checker";
 import { serverFetchOutput } from "@/lib/utils/service-output";
 
 // Models
@@ -50,7 +51,7 @@ export async function getSessionUserByIdService({ userId }: UserSchemaArgs) {
     success: true,
     data: {
       ...safeUser,
-      hasPassword: Boolean,
+      hasPassword: hasPassword(password),
     },
   });
 }
