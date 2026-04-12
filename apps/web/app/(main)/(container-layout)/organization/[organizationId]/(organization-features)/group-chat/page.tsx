@@ -9,6 +9,7 @@ import { CreateChannelDialog } from '@/modules/main/organization/channels/add-ch
 import { ChannelsMapping } from '@/modules/main/organization/channels/channels-mapping';
 import { dehydrate, QueryClient } from '@tanstack/react-query';
 import { retrieveOrganizationMember } from '@/lib/server/organization-managment';
+import { hasWantedOrganizationRole } from '@repo/permissons/index';
 
 export default async function GroupChatChannelPage({
 	params,
@@ -40,10 +41,10 @@ export default async function GroupChatChannelPage({
 						All group chat channels that are assigned inside this organization
 					</p>
 				</div>
-				{(member.organizationMember.role === 'ADMIN' ||
-					member.organizationMember.role === 'OWNER') && (
-					<CreateChannelDialog organizationId={organizationId} />
-				)}
+				{hasWantedOrganizationRole({
+					requiredRoles: ['ADMIN', 'OWNER'],
+					userRole: member.organizationMember.role,
+				}) && <CreateChannelDialog organizationId={organizationId} />}
 			</div>
 
 			<div className="no-scrollbar border-input-border relative flex min-h-[600px] flex-1 flex-col gap-4 overflow-y-scroll rounded-lg border p-4">

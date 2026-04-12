@@ -44,14 +44,14 @@ postRoutes
       responseOutput: "form",
     }),
     organizationRolesMiddleware({
-      aquiredRoles: ["ADMIN"],
+      aquiredRoles: ["ADMIN", "OWNER"],
       type: "body",
     }),
     createPostController,
   )
   .delete(
     organizationRolesMiddleware({
-      aquiredRoles: ["ADMIN"],
+      aquiredRoles: ["ADMIN", "OWNER"],
       type: "body",
     }),
     validate({
@@ -62,7 +62,7 @@ postRoutes
   )
   .patch(
     organizationRolesMiddleware({
-      aquiredRoles: ["ADMIN"],
+      aquiredRoles: ["ADMIN", "OWNER"],
     }),
     validate({
       schema: updatePostSchema,

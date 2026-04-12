@@ -35,7 +35,7 @@ organizationChannelRoute.get(
   }),
   organizationRolesMiddleware({
     type: "params",
-    aquiredRoles: ["MEMBER", "ADMIN"],
+    aquiredRoles: ["MEMBER", "ADMIN", "OWNER"],
   }),
   retrieveOrganizationChannelsController,
 );
@@ -47,7 +47,7 @@ organizationChannelRoute.post(
     responseOutput: "toast",
   }),
   organizationRolesMiddleware({
-    aquiredRoles: ["ADMIN"],
+    aquiredRoles: ["ADMIN", "OWNER"],
   }),
   createOrganizationChannelController,
 );
@@ -71,7 +71,7 @@ organizationChannelRoute.patch(
     type: "body",
   }),
   organizationRolesMiddleware({
-    aquiredRoles: ["ADMIN"],
+    aquiredRoles: ["ADMIN", "OWNER"],
     type: "params",
   }),
   updateOrganizationChannelController,
@@ -85,7 +85,7 @@ organizationChannelRoute.delete(
     type: "params",
   }),
   organizationRolesMiddleware({
-    aquiredRoles: ["ADMIN"],
+    aquiredRoles: ["ADMIN", "OWNER"],
     type: "params",
   }),
   deleteOrganizationChannelController,

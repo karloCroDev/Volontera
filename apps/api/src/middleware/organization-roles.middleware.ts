@@ -16,11 +16,9 @@ import { hasWantedOrganizationRole } from "@repo/permissons/index";
 export function organizationRolesMiddleware({
   aquiredRoles,
   type = "body",
-  ownerHasAllAccess = true,
 }: {
-  aquiredRoles?: OrganizationMemberRole[];
+  aquiredRoles: OrganizationMemberRole[];
   type?: "body" | "query" | "params";
-  ownerHasAllAccess?: boolean;
 }) {
   return async (req: Request, res: Response, next: NextFunction) => {
     const { userId } = req.user;
@@ -52,11 +50,7 @@ export function organizationRolesMiddleware({
 
     const allowed = hasWantedOrganizationRole({
       userRole: cachedMember.role,
-      requiredRoles:
-        aquiredRoles && aquiredRoles.length > 0
-          ? aquiredRoles
-          : [OrganizationMemberRole.OWNER],
-      ownerHasAllAccess,
+      requiredRoles: aquiredRoles,
     });
 
     if (!allowed) {
