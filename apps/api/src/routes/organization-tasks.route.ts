@@ -60,7 +60,7 @@ organizationTasksRoutes.post(
     responseOutput: "toast",
     type: "body",
   }),
-  organizationRolesMiddleware({ aquiredRoles: ["ADMIN"] }),
+  organizationRolesMiddleware({ aquiredRoles: ["ADMIN", "OWNER"] }),
   createTaskBoardController,
 );
 
@@ -71,7 +71,7 @@ organizationTasksRoutes.patch(
     responseOutput: "toast",
     type: "body",
   }),
-  organizationRolesMiddleware({ aquiredRoles: ["ADMIN"] }),
+  organizationRolesMiddleware({ aquiredRoles: ["ADMIN", "OWNER"] }),
   updateOrganizationTaskBoardTitleController,
 );
 
@@ -83,7 +83,7 @@ organizationTasksRoutes.delete(
     type: "params",
   }),
   organizationRolesMiddleware({
-    aquiredRoles: ["ADMIN"],
+    aquiredRoles: ["ADMIN", "OWNER"],
     type: "params",
   }),
   deleteOrganizationTaskBoardController,
@@ -98,7 +98,7 @@ organizationTasksRoutes.get(
   }),
   organizationRolesMiddleware({
     type: "params",
-    aquiredRoles: ["MEMBER", "ADMIN"],
+    aquiredRoles: ["MEMBER", "ADMIN", "OWNER"],
   }),
   retrieveAllOrganizationBoardsController,
 );
@@ -118,7 +118,7 @@ organizationTasksRoutes.get(
   }),
   organizationRolesMiddleware({
     type: "params",
-    aquiredRoles: ["MEMBER", "ADMIN"],
+    aquiredRoles: ["MEMBER", "ADMIN", "OWNER"],
   }),
   retrieveAllOrganizationBoardsWithTasksController,
 );
@@ -133,7 +133,7 @@ organizationTasksRoutes.get(
   }),
   organizationRolesMiddleware({
     type: "params",
-    aquiredRoles: ["MEMBER", "ADMIN"],
+    aquiredRoles: ["MEMBER", "ADMIN", "OWNER"],
   }),
   retrieveOrganizationMembersController,
 );
@@ -153,7 +153,7 @@ organizationTasksRoutes.get(
   }),
   organizationRolesMiddleware({
     type: "params",
-    aquiredRoles: ["MEMBER", "ADMIN"],
+    aquiredRoles: ["MEMBER", "ADMIN", "OWNER"],
   }),
   retrieveAllBoardTasksController,
 );
@@ -165,7 +165,7 @@ organizationTasksRoutes.post(
     responseOutput: "toast",
     type: "body",
   }),
-  organizationRolesMiddleware({ aquiredRoles: ["ADMIN"] }),
+  organizationRolesMiddleware({ aquiredRoles: ["ADMIN", "OWNER"] }),
   createTaskController,
 );
 organizationTasksRoutes.post(
@@ -175,7 +175,7 @@ organizationTasksRoutes.post(
     responseOutput: "toast",
     type: "body",
   }),
-  organizationRolesMiddleware({ aquiredRoles: ["ADMIN"] }),
+  organizationRolesMiddleware({ aquiredRoles: ["ADMIN", "OWNER"] }),
   proPlanUserMiddleware, // TODO: See if I am going to handle if the organization is premium or the user
   createLlmTaskController,
 );
@@ -188,7 +188,7 @@ organizationTasksRoutes.get(
     type: "params",
   }),
   organizationRolesMiddleware({
-    aquiredRoles: ["MEMBER", "ADMIN"],
+    aquiredRoles: ["MEMBER", "ADMIN", "OWNER"],
     type: "params",
   }),
   retrieveTaskInfoController,
@@ -202,7 +202,7 @@ organizationTasksRoutes.get(
     type: "params",
   }),
   organizationRolesMiddleware({
-    aquiredRoles: ["MEMBER", "ADMIN"],
+    aquiredRoles: ["MEMBER", "ADMIN", "OWNER"],
     type: "params",
   }),
   retrieveTaskQuestionsController,
@@ -215,7 +215,7 @@ organizationTasksRoutes.patch(
     responseOutput: "toast",
     type: "body",
   }),
-  organizationRolesMiddleware({ aquiredRoles: ["ADMIN"] }),
+  organizationRolesMiddleware({ aquiredRoles: ["ADMIN", "OWNER"] }),
   updateTaskInfoController,
 );
 
@@ -226,7 +226,7 @@ organizationTasksRoutes.patch(
     responseOutput: "toast",
     type: "body",
   }),
-  organizationRolesMiddleware({ aquiredRoles: ["ADMIN"] }),
+  organizationRolesMiddleware({ aquiredRoles: ["ADMIN", "OWNER"] }),
   moveTaskController,
 );
 
@@ -238,7 +238,7 @@ organizationTasksRoutes.delete(
     type: "params",
   }),
   organizationRolesMiddleware({
-    aquiredRoles: ["ADMIN"],
+    aquiredRoles: ["ADMIN", "OWNER"],
     type: "params",
   }),
   deleteTaskByIdController,
@@ -252,7 +252,7 @@ organizationTasksRoutes.post(
     responseOutput: "toast",
     type: "body",
   }),
-  organizationRolesMiddleware({ aquiredRoles: ["MEMBER", "ADMIN"] }),
+  organizationRolesMiddleware({ aquiredRoles: ["MEMBER", "ADMIN", "OWNER"] }),
   createTaskQuestionController,
 );
 
@@ -264,7 +264,7 @@ organizationTasksRoutes.delete(
     type: "params",
   }),
   organizationRolesMiddleware({
-    aquiredRoles: ["MEMBER", "ADMIN"],
+    aquiredRoles: ["MEMBER", "ADMIN", "OWNER"],
     type: "params",
   }),
   deleteTaskQuestionController,

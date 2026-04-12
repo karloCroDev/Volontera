@@ -30,7 +30,7 @@ organizationVideoMeetingRoutes.get(
   }),
   organizationRolesMiddleware({
     type: "params",
-    aquiredRoles: ["MEMBER", "ADMIN"],
+    aquiredRoles: ["MEMBER", "ADMIN", "OWNER"],
   }),
   getOrganizationVideoMeetingStateController,
 );
@@ -44,7 +44,7 @@ organizationVideoMeetingRoutes.post(
   }),
   organizationRolesMiddleware({
     type: "params",
-    aquiredRoles: ["ADMIN"],
+    aquiredRoles: ["ADMIN", "OWNER"],
   }),
   startOrganizationVideoMeetingController,
 );
@@ -58,7 +58,7 @@ organizationVideoMeetingRoutes.post(
   }),
   organizationRolesMiddleware({
     type: "params",
-    aquiredRoles: ["MEMBER", "ADMIN"],
+    aquiredRoles: ["MEMBER", "ADMIN", "OWNER"],
   }),
   joinOrganizationVideoMeetingController,
 );
@@ -72,7 +72,7 @@ organizationVideoMeetingRoutes.post(
   }),
   organizationRolesMiddleware({
     type: "params",
-    aquiredRoles: ["MEMBER", "ADMIN"],
+    aquiredRoles: ["MEMBER", "ADMIN", "OWNER"],
   }),
   leaveOrganizationVideoMeetingController,
 );
@@ -86,7 +86,7 @@ organizationVideoMeetingRoutes.post(
   }),
   organizationRolesMiddleware({
     type: "params",
-    aquiredRoles: ["ADMIN"],
+    aquiredRoles: ["ADMIN", "OWNER"],
   }),
   endOrganizationVideoMeetingController,
 );

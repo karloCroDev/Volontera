@@ -21,18 +21,18 @@ import { Container } from '@/components/ui/container';
 import { PricingPlans } from '@/modules/main/select-plan/pricing-plans';
 import { CTA } from '@/modules/landing-page/cta';
 import { Header } from '@/modules/landing-page/header';
+import { Footer } from '@/modules/landing-page/footer';
 
 // Lib
 import { getSession } from '@/lib/server/user';
 import { getBillingLink } from '@/lib/server/payment';
-import { Footer } from '@/modules/landing-page/footer';
+
+// Permissons
 import { isOrganizationAccount } from '@repo/permissons/index';
 
 export default async function LandingPage() {
 	const user = await getSession();
-	const billingLink = user.success
-		? await getBillingLink()
-		: ({ success: false as const, message: '' } as const);
+	const billingLink = user.success ? await getBillingLink() : user;
 
 	return (
 		<>

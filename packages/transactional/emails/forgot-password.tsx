@@ -75,7 +75,7 @@ export const ForgotPassword = ({ link }: ForgotPasswordProps) => {
 };
 
 ForgotPassword.PreviewProps = {
-	link: 'https://volontera.app/auth/login/forgot-password/reset-password?token=sample-token',
+	link: '',
 } satisfies ForgotPasswordProps;
 
 export default ForgotPassword;

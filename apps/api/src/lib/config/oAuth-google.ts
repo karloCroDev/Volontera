@@ -2,14 +2,12 @@
 import passport from "passport";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 
-// Root types
-import { JwtUser } from "@/@types/jwt";
-
 // Database
 import { prisma } from "@repo/database";
 
 // Models
 import { upsertOAuthUser, addAccountToOAuthUser } from "@/models/auth.model";
+import { JwtUser } from "@/middleware/auth.middleware";
 
 const googleClientId = process.env.GOOGLE_CLIENT_ID;
 const googleClientSecret = process.env.GOOGLE_CLIENT_SECRET;

@@ -17,6 +17,7 @@ import { DeleteChannelDialog } from '@/modules/main/organization/channels/delete
 
 // Lib
 import { withReactQueryProvider } from '@/lib/utils/react-query';
+import { hasWantedOrganizationRole } from '@repo/permissons/index';
 
 export const ChannelsMapping = withReactQueryProvider(
 	({ organizationId }: { organizationId: string }) => {
@@ -48,8 +49,10 @@ export const ChannelsMapping = withReactQueryProvider(
 						</div>
 					</Link>
 
-					{(member?.organizationMember.role === 'ADMIN' ||
-						member?.organizationMember.role === 'OWNER') && (
+					{hasWantedOrganizationRole({
+						requiredRoles: ['ADMIN', 'OWNER'],
+						userRole: member?.organizationMember.role,
+					}) && (
 						<div className="flex items-center justify-center gap-6 px-3 opacity-0 transition-opacity group-hover/container:opacity-100">
 							<EditChannelDialog
 								channelId={channel.id}

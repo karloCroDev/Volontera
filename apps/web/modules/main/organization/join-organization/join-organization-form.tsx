@@ -63,7 +63,9 @@ export const JoinOrganizationForm: React.FC<{
 					router.push(`/organization/${data.organizationId}`);
 				},
 				onError: (err) => {
-					setError('root', err);
+					setError('root', {
+						message: err.message,
+					});
 				},
 			}
 		);

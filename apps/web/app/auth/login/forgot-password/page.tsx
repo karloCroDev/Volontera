@@ -2,7 +2,7 @@
 import Link from 'next/link';
 
 // Components
-import { Layout, LayoutColumn } from '@/components/ui/layout-grid';
+import { LayoutColumn } from '@/components/ui/layout-grid';
 import { ArrowLeft } from 'lucide-react';
 import { Icon } from '@/components/ui/icon';
 
@@ -11,7 +11,7 @@ import { ForgotPasswordForm } from '@/modules/auth/forgot-password-form';
 
 export default function ForgotPasswordPage() {
 	return (
-		<Layout className="gap-x16 lg:gap-x-20 xl:gap-x-24">
+		<>
 			<LayoutColumn
 				start={{
 					base: 1,
@@ -20,7 +20,7 @@ export default function ForgotPasswordPage() {
 					base: 13,
 					lg: 7,
 				}}
-				className="flex h-screen flex-col items-center justify-center"
+				className="flex flex-col items-center justify-center lg:h-screen"
 			>
 				<div className="w-full">
 					<Link href="/auth/login" className="self-start">
@@ -43,6 +43,6 @@ export default function ForgotPasswordPage() {
 					className="text-accent-foreground aspect-[4/3] w-full"
 				/>
 			</LayoutColumn>
-		</Layout>
+		</>
 	);
 }

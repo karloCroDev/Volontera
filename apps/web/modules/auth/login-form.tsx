@@ -54,7 +54,9 @@ export const LoginForm = withReactQueryProvider(() => {
 				});
 			},
 			onError(err) {
-				setError('root', err);
+				setError('root', {
+					message: err.message,
+				});
 			},
 		});
 	};

@@ -15,8 +15,8 @@ export default async function AdditionalInformation() {
 		redirect('/onboarding/app-type');
 
 	return (
-		<div>
-			<div className="flex items-baseline gap-6 lg:gap-8">
+		<>
+			<div className="flex items-baseline gap-6 overflow-y-scroll lg:mt-0 lg:gap-8">
 				<Link href="/onboarding/app-type">
 					<ArrowLeft />
 				</Link>
@@ -29,6 +29,6 @@ export default async function AdditionalInformation() {
 				</div>
 			</div>
 			<AdditionalInformationForm />
-		</div>
+		</>
 	);
 }

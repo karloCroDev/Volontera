@@ -11,12 +11,17 @@ import { useVideoMeetingRoomContext } from '@/modules/main/organization/video-me
 
 // Types
 import { RetrieveOrganizationMemberResponse } from '@repo/types/organization-managment';
+import { hasWantedOrganizationRole } from '@repo/permissons/index';
 
 export const MeetingEntrance: React.FC<{
 	userRole: RetrieveOrganizationMemberResponse['organizationMember']['role'];
 }> = ({ userRole }) => {
 	const { enterMeeting, hasActiveMeeting, isJoining } =
 		useVideoMeetingRoomContext();
+	const canStartMeeting = hasWantedOrganizationRole({
+		requiredRoles: ['OWNER', 'ADMIN'],
+		userRole,
+	});
 	return (
 		<Container className="flex flex-1 items-center justify-center rounded-lg border p-8">
 			<div className="max-w-xl text-center">
@@ -28,21 +33,17 @@ export const MeetingEntrance: React.FC<{
 				<p className="text-muted-foreground mt-3">
 					{hasActiveMeeting
 						? 'A meeting is currently live. Join to enter the room.'
-						: userRole === 'OWNER' || userRole === 'ADMIN'
+						: canStartMeeting
 							? 'Start the organization meeting when you are ready. Once it begins, members can join immediately.'
 							: 'There is no meeting ongoing right now. Wait for the owner or an admin to start one.'}
 				</p>
 
 				<div className="mt-6 flex flex-wrap justify-center gap-3">
-					{!hasActiveMeeting &&
-						(userRole === 'OWNER' || userRole === 'ADMIN') && (
-							<Button
-								onPress={() => enterMeeting('start')}
-								isLoading={isJoining}
-							>
-								Start meeting
-							</Button>
-						)}
+					{!hasActiveMeeting && canStartMeeting && (
+						<Button onPress={() => enterMeeting('start')} isLoading={isJoining}>
+							Start meeting
+						</Button>
+					)}
 
 					{hasActiveMeeting && (
 						<Button

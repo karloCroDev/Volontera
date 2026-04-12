@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 
 // Components
-import { Layout, LayoutColumn } from '@/components/ui/layout-grid';
+import { LayoutColumn } from '@/components/ui/layout-grid';
 import { Icon } from '@/components/ui/icon';
 
 // Modules
@@ -11,7 +11,7 @@ import { RegisterForm } from '@/modules/auth/register-form';
 
 export default function RegisterPage() {
 	return (
-		<Layout className="gap-x16 lg:gap-x-20 xl:gap-x-24">
+		<>
 			<LayoutColumn start={1} end={7} className="hidden items-center lg:flex">
 				<Icon
 					name="register-represntation"
@@ -26,7 +26,7 @@ export default function RegisterPage() {
 				end={{
 					base: 13,
 				}}
-				className="flex h-screen flex-col items-center justify-center"
+				className="flex flex-col items-center justify-center lg:h-screen"
 			>
 				<div className="w-full">
 					<Link href="/auth/login" className="self-start">
@@ -47,6 +47,6 @@ export default function RegisterPage() {
 					<RegisterForm />
 				</div>
 			</LayoutColumn>
-		</Layout>
+		</>
 	);
 }

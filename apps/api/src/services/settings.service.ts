@@ -35,7 +35,7 @@ export async function changeProfileInfoService({
   userId,
 }: {
   data: SettingsArgs;
-  userId: string;
+  userId: User["id"];
 }) {
   const imagePayload: Partial<User> = {};
 
@@ -90,7 +90,7 @@ export async function resetPasswordInAppService({
   data,
   userId,
 }: {
-  userId: string;
+  userId: User["id"];
   data: ResetPasswordSettingsArgs;
 }) {
   // Dohvaćam korisnika
@@ -99,8 +99,7 @@ export async function resetPasswordInAppService({
   if (!currentPasswordInUse) {
     return formOutput({
       status: 400,
-
-      message: "You cannot change password for this account (social login)",
+      message: "This account uses Google sign-in and does not have a password.",
     });
   }
 
@@ -125,8 +124,7 @@ export async function resetPasswordInAppService({
       message: "New password cannot be the same as the current password",
     });
   }
-
-  // Hash new password
+  // Hasham novu zaporku
   const hashedNewPassword = bcrypt.hashSync(data.newPassword, 10);
 
   await updateUsersPassword({

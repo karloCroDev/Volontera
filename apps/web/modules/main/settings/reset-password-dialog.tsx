@@ -10,6 +10,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 // Components
 import { Button } from '@/components/ui/button';
 import { Dialog } from '@/components/ui/dialog';
+import { Error } from '@/components/ui/error';
 import { getTextFieldBasicStyles, Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
@@ -21,6 +22,7 @@ import {
 
 // Hooks
 import { useResetPasswordInApp } from '@/hooks/data/settings';
+import { useSession } from '@/hooks/data/user';
 
 // Lib
 import { toast } from '@/lib/utils/toast';
@@ -42,6 +44,8 @@ export const PasswordDialog = () => {
 	});
 
 	const { mutate, isPending } = useResetPasswordInApp();
+	const { data: session } = useSession();
+	const isOAuthOnlyAccount = session?.hasPassword === false;
 
 	const [handleDialog, setHandleDialog] = React.useState(false);
 
@@ -58,7 +62,9 @@ export const PasswordDialog = () => {
 				setHandleDialog(false);
 			},
 			onError(err) {
-				setError('root', err);
+				setError('root', {
+					message: err.message,
+				});
 			},
 		});
 	};
@@ -79,75 +85,97 @@ export const PasswordDialog = () => {
 				</Button>
 			}
 			title="Reset password"
-			subtitle="Reset your current password"
+			subtitle={
+				isOAuthOnlyAccount
+					? 'This account is connected with Google sign-in'
+					: 'Reset your current password'
+			}
 		>
-			<Form
-				className="flex flex-col gap-6 lg:gap-8"
-				onSubmit={handleSubmit(onSubmit)}
-			>
-				<div>
-					<Label className="text-base">Current password</Label>
-					<Controller
-						control={control}
-						name="currentPassword"
-						render={({ field }) => (
-							<Input
-								label="Current password"
-								className="mt-2"
-								inputProps={{
-									...field,
-									type: 'password',
-								}}
-								error={errors.currentPassword?.message}
-							/>
-						)}
-					/>
+			{isOAuthOnlyAccount ? (
+				<div className="flex flex-col gap-4">
+					<p className="text-muted-foreground text-sm">
+						This account uses Google sign-in ONLY and does not have a password.
+						Continue signing in with Google.
+					</p>
+					<Button
+						type="button"
+						className="ml-auto self-end"
+						onPress={() => setHandleDialog(false)}
+					>
+						Close
+					</Button>
 				</div>
-				<div>
-					<Label className="text-base">New password</Label>
-					<Controller
-						control={control}
-						name="newPassword"
-						render={({ field }) => (
-							<Input
-								label="New password"
-								className="mt-2"
-								inputProps={{
-									...field,
-									type: 'password',
-								}}
-								error={errors.newPassword?.message}
-							/>
-						)}
-					/>
-				</div>
-				<div>
-					<Label className="text-base">Repeat new password</Label>
-					<Controller
-						control={control}
-						name="repeatNewPassword"
-						render={({ field }) => (
-							<Input
-								label="Repeat new password"
-								className="mt-2"
-								inputProps={{
-									...field,
-									type: 'password',
-								}}
-								error={errors.repeatNewPassword?.message}
-							/>
-						)}
-					/>
-				</div>
-
-				<Button
-					className="ml-auto self-end"
-					isLoading={isPending}
-					type="submit"
+			) : (
+				<Form
+					className="flex flex-col gap-6 lg:gap-8"
+					onSubmit={handleSubmit(onSubmit)}
 				>
-					Save
-				</Button>
-			</Form>
+					<div>
+						<Label className="text-base">Current password</Label>
+						<Controller
+							control={control}
+							name="currentPassword"
+							render={({ field }) => (
+								<Input
+									label="Current password"
+									className="mt-2"
+									inputProps={{
+										...field,
+										type: 'password',
+									}}
+									error={errors.currentPassword?.message}
+								/>
+							)}
+						/>
+					</div>
+					<div>
+						<Label className="text-base">New password</Label>
+						<Controller
+							control={control}
+							name="newPassword"
+							render={({ field }) => (
+								<Input
+									label="New password"
+									className="mt-2"
+									inputProps={{
+										...field,
+										type: 'password',
+									}}
+									error={errors.newPassword?.message}
+								/>
+							)}
+						/>
+					</div>
+					<div>
+						<Label className="text-base">Repeat new password</Label>
+						<Controller
+							control={control}
+							name="repeatNewPassword"
+							render={({ field }) => (
+								<Input
+									label="Repeat new password"
+									className="mt-2"
+									inputProps={{
+										...field,
+										type: 'password',
+									}}
+									error={errors.repeatNewPassword?.message}
+								/>
+							)}
+						/>
+					</div>
+
+					{errors.root?.message && <Error>{errors.root.message}</Error>}
+
+					<Button
+						className="ml-auto self-end"
+						isLoading={isPending}
+						type="submit"
+					>
+						Save
+					</Button>
+				</Form>
+			)}
 		</Dialog>
 	);
 };

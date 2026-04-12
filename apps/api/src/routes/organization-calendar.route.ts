@@ -40,7 +40,7 @@ organizationCalendarRoutes.get(
     type: "query",
   }),
   organizationRolesMiddleware({
-    aquiredRoles: ["MEMBER", "ADMIN"],
+    aquiredRoles: ["MEMBER", "ADMIN", "OWNER"],
     type: "params",
   }),
   retrieveOrganizationCalendarController,
@@ -55,7 +55,7 @@ organizationCalendarRoutes
       type: "body",
     }),
     organizationRolesMiddleware({
-      aquiredRoles: ["ADMIN"],
+      aquiredRoles: ["ADMIN", "OWNER"],
     }),
     createOrganizationEventController,
   )
@@ -66,7 +66,7 @@ organizationCalendarRoutes
       type: "body",
     }),
     organizationRolesMiddleware({
-      aquiredRoles: ["ADMIN"],
+      aquiredRoles: ["ADMIN", "OWNER"],
     }),
     updateOrganizationEventController,
   );
@@ -79,7 +79,7 @@ organizationCalendarRoutes.delete(
     type: "params",
   }),
   organizationRolesMiddleware({
-    aquiredRoles: ["ADMIN"],
+    aquiredRoles: ["ADMIN", "OWNER"],
     type: "params",
   }),
   deleteOrganizationEventController,

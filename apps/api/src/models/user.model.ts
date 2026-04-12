@@ -10,6 +10,12 @@ export async function findUserById(userId: User["id"]) {
   });
 }
 
+export async function findSessionUserById(userId: User["id"]) {
+  return prisma.user.findUnique({
+    where: { id: userId },
+  });
+}
+
 export async function retrieveAllOrganizationsForUser(userId: User["id"]) {
   return prisma.organization.findMany({
     where: {

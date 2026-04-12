@@ -5,7 +5,9 @@ import { OrganizationWithOwner } from "./organization";
 
 // Session (User)
 export type UserResponse = Omit<PrismaUser, "password"> &
-  ServerHandleResponse<true>;
+  ServerHandleResponse<true> & {
+    hasPassword?: boolean;
+  };
 
 export type RetrievePostsUserResponse = RetrieveOrganizationPostsResponse;
 

@@ -51,7 +51,7 @@ organizationManagmentRoutes.get(
   }),
   organizationRolesMiddleware({
     type: "params",
-    aquiredRoles: ["MEMBER", "ADMIN"],
+    aquiredRoles: ["MEMBER", "ADMIN", "OWNER"],
   }),
   retrieveAllRequestsToJoinOrganizationController,
 );
@@ -65,7 +65,7 @@ organizationManagmentRoutes.get(
   }),
   organizationRolesMiddleware({
     type: "params",
-    aquiredRoles: ["MEMBER", "ADMIN"],
+    aquiredRoles: ["MEMBER", "ADMIN", "OWNER"],
   }),
   retrieveAllUsersInOrganizationController,
 );
@@ -95,7 +95,6 @@ organizationManagmentRoutes.delete(
   organizationRolesMiddleware({
     type: "params",
     aquiredRoles: ["MEMBER", "ADMIN"],
-    ownerHasAllAccess: false,
   }),
   leaveOrganizationController,
 );
@@ -110,6 +109,7 @@ organizationManagmentRoutes.get(
   proPlanUserMiddleware,
   organizationRolesMiddleware({
     type: "params",
+    aquiredRoles: ["OWNER"],
   }),
   retrieveAllOrganizationLeaveFeedbacksController,
 );
@@ -125,6 +125,7 @@ organizationManagmentRoutes.get(
   proPlanUserMiddleware,
   organizationRolesMiddleware({
     type: "params",
+    aquiredRoles: ["OWNER"],
   }),
   retrieveDataAboutOrganizationController,
 );
@@ -135,7 +136,7 @@ organizationManagmentRoutes.post(
     schema: acceptOrDeclineUsersRequestToJoinOrganizationSchema,
     responseOutput: "toast",
   }),
-  organizationRolesMiddleware({}),
+  organizationRolesMiddleware({ aquiredRoles: ["OWNER"] }),
   acceptOrDeclineUsersRequestToJoinOrganizationController,
 );
 
@@ -145,7 +146,7 @@ organizationManagmentRoutes.post(
     schema: demoteOrPromoteOrganizationMemberSchema,
     responseOutput: "toast",
   }),
-  organizationRolesMiddleware({}),
+  organizationRolesMiddleware({ aquiredRoles: ["OWNER"] }),
   demoteOrPromoteOrganizationMemberController,
 );
 
@@ -155,7 +156,7 @@ organizationManagmentRoutes.post(
     schema: removeOrganizationMemberSchema,
     responseOutput: "toast",
   }),
-  organizationRolesMiddleware({}),
+  organizationRolesMiddleware({ aquiredRoles: ["OWNER"] }),
   removeOrganizationMemberController,
 );
 
@@ -169,6 +170,7 @@ organizationManagmentRoutes.delete(
   }),
   organizationRolesMiddleware({
     type: "params",
+    aquiredRoles: ["OWNER"],
   }),
   deleteOrganizationController,
 );
@@ -179,6 +181,6 @@ organizationManagmentRoutes.patch(
     schema: updateOrganizationSchema,
     responseOutput: "form",
   }),
-  organizationRolesMiddleware({}),
+  organizationRolesMiddleware({ aquiredRoles: ["OWNER"] }),
   updateOrganizationController,
 );

@@ -2,14 +2,14 @@
 import Link from 'next/link';
 
 // Components
-import { Layout, LayoutColumn } from '@/components/ui/layout-grid';
+import { LayoutColumn } from '@/components/ui/layout-grid';
 import { LoginForm } from '@/modules/auth/login-form';
 import { ArrowLeft } from 'lucide-react';
 import { Icon } from '@/components/ui/icon';
 
 export default function LoginPage() {
 	return (
-		<Layout className="gap-x16 lg:gap-x-20 xl:gap-x-24">
+		<>
 			<LayoutColumn
 				start={{
 					base: 1,
@@ -18,7 +18,7 @@ export default function LoginPage() {
 					base: 13,
 					lg: 7,
 				}}
-				className="flex h-screen flex-col items-center justify-center"
+				className="flex flex-col items-center justify-center lg:h-screen"
 			>
 				<div className="w-full">
 					<Link href="/auth/register" className="self-start">
@@ -47,6 +47,6 @@ export default function LoginPage() {
 					className="text-primary aspect-[4/3] w-full"
 				/>
 			</LayoutColumn>
-		</Layout>
+		</>
 	);
 }

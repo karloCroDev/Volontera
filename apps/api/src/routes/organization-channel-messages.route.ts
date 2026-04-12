@@ -33,7 +33,7 @@ organizationChannelMessagesRoute.get(
   }),
   organizationRolesMiddleware({
     type: "params",
-    aquiredRoles: ["MEMBER", "ADMIN"],
+    aquiredRoles: ["MEMBER", "ADMIN", "OWNER"],
   }),
   retrieveOrganizationChannelMessagesController,
 );
@@ -45,7 +45,7 @@ organizationChannelMessagesRoute.post(
     responseOutput: "toast",
   }),
   organizationRolesMiddleware({
-    aquiredRoles: ["ADMIN", "MEMBER"],
+    aquiredRoles: ["ADMIN", "MEMBER", "OWNER"],
   }),
   createOrganizationChannelMessageController,
 );
@@ -58,7 +58,7 @@ organizationChannelMessagesRoute.delete(
     type: "params",
   }),
   organizationRolesMiddleware({
-    aquiredRoles: ["ADMIN", "MEMBER"],
+    aquiredRoles: ["ADMIN", "MEMBER", "OWNER"],
     type: "params",
   }),
   deleteOrganizationChannelMessageController,

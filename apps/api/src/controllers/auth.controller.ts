@@ -12,7 +12,7 @@ import {
   registerService,
   resetVerifyTokenService,
   verifyOtpService,
-  type VerifyOtpServiceResult,
+  VerifyOtpServiceResult,
 } from "@/services/auth.service";
 
 // Lib

@@ -27,8 +27,6 @@ import { useSession } from '@/hooks/data/user';
 import { DeleteAccountDialog } from '@/modules/main/settings/delete-account-dialog';
 
 export const PersonalInformationForm = withReactQueryProvider(() => {
-	// Pull formState.errors from useFormContext to access all validation errors,
-	// or use Controller's fieldState.error inside each render callback.
 	const {
 		control,
 		formState: { errors },
@@ -58,28 +56,25 @@ export const PersonalInformationForm = withReactQueryProvider(() => {
 						<Controller
 							control={control}
 							name="DOB"
-							// use fieldState to get the specific error for this controller
-							render={({ field: { onChange } }) => {
-								return (
-									<>
-										<DatePicker
-											value={user?.DOB ? parseDate(user.DOB) : undefined}
-											onChange={(val) => {
-												if (!val) return;
+							render={({ field: { onChange } }) => (
+								<>
+									<DatePicker
+										value={user?.DOB ? parseDate(user.DOB) : undefined}
+										onChange={(val) => {
+											if (!val) return;
 
-												const formatted = convertCalendarDate(val);
-												onChange(formatted);
-												onChange(formatted);
-											}}
-										/>
-										{errors.DOB && (
-											<p className="text-destructive mt-1.5">
-												{errors.DOB.message}
-											</p>
-										)}
-									</>
-								);
-							}}
+											const formatted = convertCalendarDate(val);
+											onChange(formatted);
+											onChange(formatted);
+										}}
+									/>
+									{errors.DOB && (
+										<p className="text-destructive mt-1.5">
+											{errors.DOB.message}
+										</p>
+									)}
+								</>
+							)}
 						/>
 					</div>
 					<div>
@@ -118,26 +113,24 @@ export const PersonalInformationForm = withReactQueryProvider(() => {
 						<Controller
 							control={control}
 							name="address"
-							render={({ field }) => {
-								return (
-									<>
-										{!user?.address ? (
-											<Input
-												label="Address"
-												inputProps={field}
-												error={errors.workOrSchool?.message}
-											/>
-										) : (
-											<FilledInput
-												placeholderValue="Address"
-												className="mt-2"
-												inputProps={field}
-												error={errors.address?.message}
-											/>
-										)}
-									</>
-								);
-							}}
+							render={({ field }) => (
+								<>
+									{!user?.address ? (
+										<Input
+											label="Address"
+											inputProps={field}
+											error={errors.workOrSchool?.message}
+										/>
+									) : (
+										<FilledInput
+											placeholderValue="Address"
+											className="mt-2"
+											inputProps={field}
+											error={errors.address?.message}
+										/>
+									)}
+								</>
+							)}
 						/>
 					</div>
 					<div>

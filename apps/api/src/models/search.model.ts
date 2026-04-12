@@ -20,6 +20,7 @@ export async function searchUsersAndOrganizations({
               { firstName: { contains: query, mode: "insensitive" } },
               { lastName: { contains: query, mode: "insensitive" } },
               { email: { contains: query, mode: "insensitive" } },
+              { address: { contains: query, mode: "insensitive" } },
             ],
           },
         ],
@@ -32,7 +33,14 @@ export async function searchUsersAndOrganizations({
 
     const organizations = await tx.organization.findMany({
       where: {
-        name: { contains: query, mode: "insensitive" },
+        OR: [
+          { name: { contains: query, mode: "insensitive" } },
+          {
+            organizationInfo: {
+              location: { contains: query, mode: "insensitive" },
+            },
+          },
+        ],
       },
       take: 5,
     });
@@ -73,7 +81,14 @@ export async function searchUsers({
 export async function searchOrganizations({ query }: { query: string }) {
   return await prisma.organization.findMany({
     where: {
-      name: { contains: query, mode: "insensitive" },
+      OR: [
+        { name: { contains: query, mode: "insensitive" } },
+        {
+          organizationInfo: {
+            location: { contains: query, mode: "insensitive" },
+          },
+        },
+      ],
     },
   });
 }

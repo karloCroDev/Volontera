@@ -4,6 +4,7 @@ import { Request, Response } from "express";
 // Services
 import {
   getUserByIdService,
+  getSessionUserByIdService,
   retrieveAllOrganizationsForUserService,
   retrieveAllPostsForUserService,
 } from "@/services/user.service";
@@ -16,9 +17,9 @@ import { UserSchemaArgs } from "@repo/schemas/user";
 
 export async function userSessionController(req: Request, res: Response) {
   try {
-    const result = await getUserByIdService({
+    const result = await getSessionUserByIdService({
       userId: req.user.userId,
-    } as UserSchemaArgs);
+    });
 
     return res.status(result.status).json(result.body);
   } catch (err) {
