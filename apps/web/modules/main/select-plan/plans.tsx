@@ -96,7 +96,7 @@ export const Plans: React.FC<{
 						variant="outline"
 						disabled
 					>
-						Billing unavailable
+						Current plan
 					</Button>
 				)
 			}

@@ -20,6 +20,7 @@ export default async function SelectPlan() {
 
 	if (!user.success) redirect('/auth/login');
 
+	console.log(billingLink);
 	return (
 		<>
 			<div className="flex items-center justify-between">
