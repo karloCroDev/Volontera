@@ -80,18 +80,25 @@ export async function listAllDirectMessagesConversationsService(
   userId: User["id"],
 ) {
   const conversations = await listAllDirectMessagesConversation(userId);
+  const sanitizedConversations = conversations.flatMap((conversation) => {
+    const participant = conversation.participants.find(
+      (participant) => participant.userId !== userId,
+    )?.user;
+
+    // Legacy or partially-cleaned data can leave a conversation with one participant.
+    if (!participant) {
+      return [];
+    }
+
+    return [{ ...conversation, participant }];
+  });
 
   return toastResponseOutput({
     status: 200,
     title: "Direct messages conversations retrieved",
     message: "Direct messages conversations retrieved successfully",
     data: {
-      conversations: conversations.map((conversation) => ({
-        ...conversation,
-        participant: conversation.participants.find(
-          (participant) => participant.userId !== userId,
-        )!.user,
-      })),
+      conversations: sanitizedConversations,
     },
   });
 }

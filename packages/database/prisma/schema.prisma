@@ -445,7 +445,7 @@ model OrganizationChannels {
   name           String
   description    String?
   messages       OrganizationChannelChatMessage[]
-  organization   Organization                     @relation(fields: [organizationId], references: [id])
+  organization   Organization                     @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   organizationId String
 
   createdAt DateTime @default(now())
