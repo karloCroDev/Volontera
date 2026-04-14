@@ -21,7 +21,7 @@ export const VideoMeetingRoom: React.FC<{
 		useVideoMeetingRoomContext();
 
 	return (
-		<div className="flex h-full flex-col gap-4">
+		<div className="flex h-full min-h-[600px] flex-col gap-4">
 			<audio ref={audioElementRef} autoPlay />
 
 			{permissionError && (

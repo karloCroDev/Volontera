@@ -38,7 +38,7 @@ export default async function OnboardingLayout({
 				{children}
 			</LayoutColumn>
 
-			<div className="border-b-input-border h-22 absolute left-0 top-0 flex w-full items-center border-b pl-6 sm:pl-12 lg:pl-16">
+			<div className="border-b-input-border h-22 absolute left-0 top-0 flex w-full items-center border-b pl-6 sm:pl-12 lg:border-0 lg:pl-16">
 				<Volontera />
 			</div>
 		</Layout>
