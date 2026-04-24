@@ -9,7 +9,8 @@ const coerceFirstQueryValue = <T extends z.ZodTypeAny>(schema: T) =>
   }, schema);
 
 export const dashboardKPIMetricsQuerySchema = z.object({
-  durationDays: z.enum(["30", "60", "90"]).optional(),
+  durationDays: coerceFirstQueryValue(z.coerce.number().int().positive())
+    .optional(),
 });
 
 export const dashboardUsersPaginationQuerySchema = z
