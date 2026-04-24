@@ -30,7 +30,11 @@ import {
 import { PresignImagesSchemaArgs } from "@repo/schemas/image";
 
 // Websockets
-import { getReceiverSocketId, io } from "@/ws/socket";
+import {
+  areUsersInSameDirectMessagesRoom,
+  getReceiverSocketId,
+  io,
+} from "@/ws/socket";
 import { resolveImageKeysToUrls } from "@/services/image.service";
 
 // Ako su želim se osigurati da su slike koje šaljemo klijentima nisu javne već da su to privremeni presigned URL-ovi koje hashiramo preko image key-a koji je pohranjen u bazi. Na taj način osiguravamo da samo ovlašteni korisnici mogu pristupiti slikama i da URL-ovi imaju ograničen rok trajanja radi sigurnosti (za razliku od javinh URL ova). Zato ovdje resolvamo slike
@@ -217,11 +221,18 @@ export async function startConversationOrStartAndSendDirectMessageService({
   // Prikazivanje poruke sebi
   if (senderSocketId) io.to(senderSocketId).emit("new-chat", enrichedMessage);
 
-  await createNotification({
-    content: `New direct message from ${message.author.firstName} ${message.author.lastName}: ${data.content.substring(0, 20)}`,
-    userId: data.particpantId,
-    senderId: userId,
+  const areBothUsersInsideConversation = areUsersInSameDirectMessagesRoom({
+    firstUserId: userId,
+    secondUserId: data.particpantId,
   });
+
+  if (!areBothUsersInsideConversation) {
+    await createNotification({
+      content: `New direct message from ${message.author.firstName} ${message.author.lastName}: ${data.content.substring(0, 20)}`,
+      userId: data.particpantId,
+      senderId: userId,
+    });
+  }
 
   return toastResponseOutput({
     status: 200,
@@ -270,11 +281,18 @@ export async function createDirectMessageReplyService({
     (participantId) => participantId !== userId,
   );
   if (receiverUserId) {
-    await createNotification({
-      content: `New direct message reply from ${reply.author.firstName} ${reply.author.lastName}: ${data.content.substring(0, 20)}`,
-      userId: receiverUserId,
-      senderId: userId,
+    const areBothUsersInsideConversation = areUsersInSameDirectMessagesRoom({
+      firstUserId: userId,
+      secondUserId: receiverUserId,
     });
+
+    if (!areBothUsersInsideConversation) {
+      await createNotification({
+        content: `New direct message reply from ${reply.author.firstName} ${reply.author.lastName}: ${data.content.substring(0, 20)}`,
+        userId: receiverUserId,
+        senderId: userId,
+      });
+    }
   }
 
   return toastResponseOutput({
