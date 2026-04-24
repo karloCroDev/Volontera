@@ -33,7 +33,6 @@ export const DeleteAccountDialog = () => {
 				undone.
 			</p>
 
-			{/* Ako korisnik ima */}
 			<div className="mt-4 flex justify-center gap-4">
 				<Button
 					colorScheme="destructive"

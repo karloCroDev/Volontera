@@ -3,7 +3,7 @@ import { User as PrismaUser } from "@repo/database";
 
 import { ServerHandleResponse } from "./general";
 
-export type DashboardDurationDays = 30 | 60 | 90;
+export type DashboardDurationDays = number;
 
 export type DashboardKPIMetricsResponse = ServerHandleResponse<true> & {
   durationDays: DashboardDurationDays;

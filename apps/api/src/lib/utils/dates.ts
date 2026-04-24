@@ -1,10 +1,17 @@
-// Schemas
-import { DashboardKPIMetricsQuery } from "@repo/schemas/dashboard";
-
 export function parseDurationDays(
-  value: DashboardKPIMetricsQuery["durationDays"],
+  value: unknown,
 ) {
-  if (value === "60") return 60 as const;
-  if (value === "90") return 90 as const;
-  return 30 as const;
+  const firstValue = Array.isArray(value) ? value[0] : value;
+  const normalizedValue =
+    typeof firstValue === "string" ? Number(firstValue) : firstValue;
+
+  if (
+    typeof normalizedValue !== "number" ||
+    !Number.isFinite(normalizedValue) ||
+    normalizedValue <= 0
+  ) {
+    return 30;
+  }
+
+  return Math.trunc(normalizedValue);
 }

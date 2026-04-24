@@ -120,6 +120,18 @@ export const VideoMeetingRoomContextProvider: React.FC<{
 		}
 
 		try {
+			activeSession?.audioVideo.stopVideoInput();
+		} catch {
+			console.error('Error stopping video input');
+		}
+
+		try {
+			activeSession?.audioVideo.stopAudioInput();
+		} catch {
+			console.error('Error stopping audio input');
+		}
+
+		try {
 			activeSession?.audioVideo.stop();
 		} catch {
 			console.error('Error stopping audio video');

@@ -2,6 +2,17 @@
 import http from "http";
 import express from "express";
 import { Server } from "socket.io";
+import {
+  areUsersInSameDirectMessagesRoom as areUsersInSameDirectMessagesRoomHelper,
+  registerDirectMessagesSocketEvents,
+} from "@/ws/socket-direct-messages";
+import { registerOrganizationSocketEvents } from "@/ws/socket-organization";
+import {
+  getOnlineUsers,
+  getReceiverSocketId as getReceiverSocketIdHelper,
+  registerConnectedUser,
+  unregisterDisconnectedUser,
+} from "@/ws/socket-user-presence";
 
 export const app = express();
 export const server = http.createServer(app);
@@ -13,66 +24,40 @@ export const io = new Server(server, {
   },
 });
 
-const userSocketObj: Record<string, string> = {}; // {userId: socketId}
-
 export const getReceiverSocketId = (receiverId: string) => {
-  return userSocketObj[receiverId];
+  return getReceiverSocketIdHelper(receiverId);
+};
+
+export const areUsersInSameDirectMessagesRoom = ({
+  firstUserId,
+  secondUserId,
+}: {
+  firstUserId: string;
+  secondUserId: string;
+}) => {
+  return areUsersInSameDirectMessagesRoomHelper({
+    io,
+    firstUserId,
+    secondUserId,
+  });
 };
 
 io.on("connection", (socket) => {
-  const userId = socket.handshake.query.userId as string;
+  const userId = socket.handshake.query.userId as string | undefined;
 
-  if (userId) userSocketObj[userId] = socket.id;
+  registerConnectedUser({ socket, userId });
 
   // Emit => Šalje podatke svim klijentima
-  io.emit("get-online-users", Object.keys(userSocketObj));
+  io.emit("get-online-users", getOnlineUsers());
 
-  socket.on("organization-group-chat-room", (organizationId: string) => {
-    const prevOrganizationId = socket.data.organizationId as string | undefined;
-
-    if (prevOrganizationId && prevOrganizationId !== organizationId) {
-      socket.leave(`organization:${prevOrganizationId}`);
-    }
-
-    socket.data.organizationId = organizationId;
-    socket.join(`organization:${organizationId}`);
-  });
-
-  socket.on("organization-video-meeting-room", (organizationId: string) => {
-    const prevOrganizationId = socket.data.videoMeetingOrganizationId as
-      | string
-      | undefined;
-
-    if (prevOrganizationId && prevOrganizationId !== organizationId) {
-      socket.leave(`organization:${prevOrganizationId}:video-meeting`);
-    }
-
-    socket.data.videoMeetingOrganizationId = organizationId;
-    socket.join(`organization:${organizationId}:video-meeting`);
-  });
-
-  socket.on("organization-group-chat-room:leave", (organizationId: string) => {
-    socket.leave(`organization:${organizationId}`);
-    if (socket.data.organizationId === organizationId) {
-      delete socket.data.organizationId;
-    }
-  });
-
-  socket.on(
-    "organization-video-meeting-room:leave",
-    (organizationId: string) => {
-      socket.leave(`organization:${organizationId}:video-meeting`);
-      if (socket.data.videoMeetingOrganizationId === organizationId) {
-        delete socket.data.videoMeetingOrganizationId;
-      }
-    },
-  );
+  registerOrganizationSocketEvents(socket);
+  registerDirectMessagesSocketEvents({ socket, userId });
 
   // Handelam samo kada se korisnik disconnecta, jer npr.
   socket.on("disconnect", () => {
-    delete userSocketObj[userId];
+    unregisterDisconnectedUser(userId);
 
     // Once the user leaves then send the data once again
-    io.emit("get-online-users", Object.keys(userSocketObj));
+    io.emit("get-online-users", getOnlineUsers());
   });
 });

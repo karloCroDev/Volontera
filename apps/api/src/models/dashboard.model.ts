@@ -5,7 +5,7 @@ import { Prisma, UserRole } from "@repo/database";
 // Lib
 import { getSinceDate } from "@/lib/utils/dashboard-kpi";
 
-export type DashboardDurationDays = 30 | 60 | 90;
+export type DashboardDurationDays = number;
 
 export async function retrieveKPIMetrics({
   durationDays = 30,
