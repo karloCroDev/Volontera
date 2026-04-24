@@ -228,7 +228,7 @@ export const Plans: React.FC<{
 	];
 	return (
 		<>
-			<div className="no-scrollbar hidden gap-5 overflow-x-scroll md:flex">
+			<div className="no-scrollbar hidden min-h-[500px] gap-5 overflow-x-scroll md:flex">
 				{slides}
 			</div>
 

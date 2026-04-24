@@ -13,9 +13,6 @@ import {
 	retrieveDashboardPaginatedUsers,
 } from '@/lib/server/dashboard';
 
-// Types
-import { DashboardDurationDays } from '@repo/types/dashboard';
-
 // Components
 import { PieChart } from '@/components/ui/charts/pie-chart';
 import { BarChart } from '@/components/ui/charts/bar-chart';
@@ -49,10 +46,14 @@ export default async function DashboardPage({
 	const dehydratedState = dehydrate(queryClient);
 
 	const resolvedSearchParams = await searchParams;
+	const rawDurationDays = Number(resolvedSearchParams.durationDays);
+	const durationDays =
+		Number.isFinite(rawDurationDays) && rawDurationDays > 0
+			? Math.trunc(rawDurationDays)
+			: 30;
+
 	const metrics = await retrieveDashboardKPIMetrics({
-		durationDays: resolvedSearchParams.durationDays
-			? (Number(resolvedSearchParams.durationDays) as DashboardDurationDays)
-			: 30,
+		durationDays,
 	});
 
 	// KPI cards data

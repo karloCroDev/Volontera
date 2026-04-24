@@ -90,6 +90,7 @@ export default async function OrganizationPage({
 									src: `${process.env.NEXT_PUBLIC_AWS_CLOUDFRONT_URL}/${organizationDetailsById.organization.avatarImage}`,
 								}}
 								colorScheme="gray"
+								className="border-input-border border-2"
 								size="2xl"
 								isVerified={
 									organizationDetailsById.organization.owner

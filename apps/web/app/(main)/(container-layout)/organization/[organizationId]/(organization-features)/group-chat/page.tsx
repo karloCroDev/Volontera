@@ -33,7 +33,7 @@ export default async function GroupChatChannelPage({
 	});
 	const dehydratedState = dehydrate(queryClient);
 	return (
-		<>
+		<div className="flex flex-1 flex-col">
 			<div className="mb-6 flex flex-col justify-between gap-x-8 gap-y-4 overflow-x-scroll lg:flex-row lg:items-center">
 				<div>
 					<h4 className="text-xl lg:text-2xl">Group chat</h4>
@@ -53,6 +53,6 @@ export default async function GroupChatChannelPage({
 					organizationId={organizationId}
 				/>
 			</div>
-		</>
+		</div>
 	);
 }
