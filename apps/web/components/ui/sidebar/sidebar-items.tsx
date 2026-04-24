@@ -200,6 +200,7 @@ export const Organizations = () => {
 								variant="outline"
 								colorScheme="orange"
 								iconLeft={<Plus />}
+								size={isMobile ? 'sm' : 'md'}
 							>
 								Create Organization
 							</LinkAsButton>

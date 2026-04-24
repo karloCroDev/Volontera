@@ -164,8 +164,8 @@ export const Post: React.FC<{
 				)}
 			</div>
 
-			<div className="mt-auto flex items-center gap-8">
-				<div className="flex items-center gap-0 lg:gap-2">
+			<div className="no-scrollbar mt-auto flex items-center gap-8 overflow-x-scroll">
+				<div className="flex items-center gap-2">
 					By:
 					<Avatar
 						imageProps={{

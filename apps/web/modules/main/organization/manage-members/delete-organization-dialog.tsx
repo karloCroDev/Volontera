@@ -12,6 +12,7 @@ import { useDeleteOrganization } from '@/hooks/data/organization-managment';
 
 // Lib
 import { toast } from '@/lib/utils/toast';
+import { useRouter } from 'next/navigation';
 
 export const DeleteOrganizationDialog = ({
 	organizationId,
@@ -20,7 +21,7 @@ export const DeleteOrganizationDialog = ({
 }) => {
 	const [open, setOpen] = React.useState(false);
 	const { mutate, isPending } = useDeleteOrganization();
-
+	const router = useRouter();
 	return (
 		<Dialog
 			isOpen={open}
@@ -48,6 +49,8 @@ export const DeleteOrganizationDialog = ({
 								onSuccess: ({ title, message }) => {
 									setOpen(false);
 									toast({ title, content: message, variant: 'success' });
+
+									router.push('/home');
 								},
 							}
 						);

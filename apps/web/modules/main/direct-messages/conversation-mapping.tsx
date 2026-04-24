@@ -2,7 +2,6 @@
 
 // External packages
 import * as React from 'react';
-import { useSearchParams } from 'next/navigation';
 import Markdown from 'react-markdown';
 import Link from 'next/link';
 
@@ -50,6 +49,27 @@ export const ConversationMapping = withReactQueryProvider(
 
 		// Slušam nove poruke preko socketa
 		const { socketGlobal } = useSocketContext();
+
+		// Handleam socketGlobal za poruke
+		React.useEffect(() => {
+			if (!socketGlobal || !recieverId) return;
+
+			const joinConversationRoom = () => {
+				socketGlobal.emit('direct-messages-conversation-room', recieverId);
+			};
+
+			joinConversationRoom();
+			socketGlobal.on('connect', joinConversationRoom);
+
+			return () => {
+				socketGlobal.off('connect', joinConversationRoom);
+				socketGlobal.emit(
+					'direct-messages-conversation-room:leave',
+					recieverId
+				);
+			};
+		}, [recieverId, socketGlobal]);
+
 		React.useEffect(() => {
 			if (!socketGlobal) return;
 

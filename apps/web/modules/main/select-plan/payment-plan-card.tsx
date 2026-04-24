@@ -31,7 +31,7 @@ export const PaymentPlanCard: React.FC<
 		<Container
 			{...rest}
 			className={twMerge(
-				'flex h-[500px] min-w-96 flex-1 flex-col rounded-lg px-5 py-7 shadow-none',
+				'flex min-h-[500px] min-w-96 flex-1 flex-col rounded-lg px-5 py-7 shadow-none',
 				variant === 'secondary' && 'bg-accent border-accent-foreground',
 				className
 			)}
