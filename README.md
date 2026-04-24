@@ -1,84 +1,90 @@
-# Volontera – tehnička dokumentacija (sažetak) + kako pokrenuti projekt
+# Volontera – Technical Documentation (Summary) + How to Start the Project
 
-Volontera je organizirana kao **monorepo (Turborepo)** kako bi se dijelili tipovi, validacija i zajednička logika između frontenda i backenda.
+Volontera is organized as a **monorepo (Turborepo)** to share types, validation, and common logic between frontend and backend.
 
-## 1) Struktura projekta
+## 1) Project Structure
 
 ### Apps
 
-- `apps/web` – **frontend** (Next.js, App Router): stranice, komponente, feature moduli i integracija s API-jem.
-- `apps/api` – **backend** (Express + Socket.IO): rute, poslovna logika, pristup bazi i integracije (e-mail, upload, plaćanja, AI).
+- `apps/web` – **frontend** (Next.js, App Router): pages, components, feature modules, and API integration.
+- `apps/api` – **backend** (Express + Socket.IO): routes, business logic, database access, and integrations (email, upload, payments, AI).
 
-U `apps/api/src` glavni folderi:
+Main folders in `apps/api/src`:
 
 - `routes/`, `controllers/`, `services/`, `models/`, `middleware/`, `ws/`, `lib/`, `jobs/`
 
-U `apps/web` glavni folderi:
+Main folders in `apps/web`:
 
 - `app/`, `modules/`, `components/`, `hooks/`, `lib/`, `styles/`
 
-### Packages (zajednički moduli)
+### Packages (Shared Modules)
 
-- `packages/database` – Prisma (schema/migrations/generate) + shared DB client/tipovi
-- `packages/schemas` – Zod sheme + tipovi
-- `packages/permissons` – Permission logika
-- `packages/types` – zajednički TypeScript tipovi (API response strukture)
-- `packages/transactional` – e-mail predlošci (React Email)
-- `packages/eslint-config`, `packages/typescript-config` – konfiguracije alata
+- `packages/database` – Prisma (schema/migrations/generate) + shared DB client/types
+- `packages/schemas` – Zod schemas + types
+- `packages/permissons` – Permission logic
+- `packages/types` – shared TypeScript types (API response structures)
+- `packages/transactional` – email templates (React Email)
+- `packages/eslint-config`, `packages/typescript-config` – tool configurations
 
-## 2) Ključne značajke (sažetak)
+## 2) Key Features (Summary)
 
-- Registracija + OTP verifikacija e-mailom
-- Onboarding: odabir tipa računa (USER/ORGANIZATION) + dodatne informacije
-- Home feed: infinite scroll objave + like/dislike + komentari + reply
-- Direct Messages: real-time privatni chat
-- Organizacije: kreiranje, zahtjevi za pridruživanje (motivacijsko pismo), upravljanje članovima i rolama
-- Objave unutar organizacije: CRUD (admin/organizator), razvrstavanje (popularno/najnovije/najstarije)
-- Group chat unutar organizacije (real-time)
-- Zadatci (Kanban): boardovi i taskovi, assign članova; AI dostupno Pro korisnicima
-- Postavke profila + brisanje računa
-- Pomoć: AI chatbot
-- Javni profil + notifikacije
-- Mobilna responzivnost
+- Registration + OTP email verification
+- Onboarding: account type selection (USER/ORGANIZATION) + additional information
+- Home feed: infinite scroll posts + like/dislike + comments + replies
+- Direct Messages: real-time private chat
+- Organizations: creation, join requests (motivation letter), member and role management
+- Posts within organization: CRUD (admin/organizer), sorting (popular/newest/oldest)
+- Group chat within organization (real-time)
+- Tasks (Kanban): boards and tasks, member assignment; AI available for Pro users
+- Profile settings + account deletion
+- Help: AI chatbot
+- Public profile + notifications
+- Mobile responsiveness
 
-## 3) `.env` predlošci
+## 3) `.env` Templates
 
-Predlošci su u (stavite svoje .env varijable):
+Templates are located in (add your own .env variables):
 
 - `apps/api/.env.template`
 - `apps/web/.env.template`
 - `packages/database/.env.template`
 
-## 4) Instalacija
+## 4) Installation
 
-Preduvjeti:
+Prerequisites:
 
-- Node.js (pogledati točnu verziju u .nvmrc fileu)
+- Node.js (check exact version in `.nvmrc` file)
 - Yarn 1.x
-- PostgreSQL i Redis
+- PostgreSQL and Redis
 - Stripe CLI
 
-Instalacija **svih** dependenicja (pokrenuti iz root direktorija):
+Install **all** dependencies (run from root directory):
 
-- `yarn`
+```bash
+yarn
+```
 
-## 5) Pokretanje
+## 5) Running the Project
 
-### Development (samo web + api)
+### Development (web + api only)
 
-- `yarn dev:apps`
+```bash
+yarn dev:apps
+```
 
-### Build način (samo web + api)
+### Build mode (web + api only)
 
-Ovu naredbu pokreći **iz root direktorija** (ne iz `apps/*`) kako bi se koristio turbo filter i izbjeglo ručno pokretanje buildova po aplikacijama.
+Run this command **from the root directory** (not from `apps/*`) to use turbo filter and avoid manually running builds per application.
 
-- `yarn build:apps`
+```bash
+yarn build:apps
+```
 
-### Nakon toga
+### After that
 
 Backend (API):
 
-- `cd apps/api` (napraviti dva ovakva terminala)
+- `cd apps/api` (create two terminals like this)
 - Terminal 1: `yarn start`
 - Terminal 2: `stripe listen --forward-to http://localhost:API_PORT/payment/webhook`
 
@@ -87,13 +93,15 @@ Frontend (Web):
 - `cd apps/web`
 - `yarn start`
 
-## 6) Baza (Prisma)
+## 6) Database (Prisma)
 
-Najčešće komande:
+Most common commands:
 
-- `yarn workspace @repo/database db:generate`
-- `yarn workspace @repo/database db:seed`
+```bash
+yarn workspace @repo/database db:generate
+yarn workspace @repo/database db:seed
+```
 
-## 7) Napomena (experimental)
+## 7) Note (Experimental)
 
-- `Docker trenutno nije u potpunosti ispravno integriran, pa nemojte pokretati aplikaciju preko Dockera.`
+> ⚠️ **Docker is currently not fully integrated properly. Do not run the application via Docker.**
